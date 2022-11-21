@@ -1,14 +1,13 @@
-local inputList = {
-    "gameLeft",
-    "gameDown",
-    "gameUp",
-    "gameRight"
+inputList = {
+    "one4",
+    "two4",
+    "three4",
+    "four4"
 }
-
 return {
     enter = function(self)
         musicTime = 0
-        speed = 1
+        speed = 1.25
         PRESSEDMOMENTS = {
             [1] = 1,
             [2] = 1,
@@ -18,11 +17,15 @@ return {
             [6] = 1,
             [7] = 1
         }
+        lastReportedPlaytime = 0
+        previousFrameTime = 0
     end,
 
     update = function(self, dt)
-        musicTime = musicTime + 1000 * dt
-        musicPos = musicTime * speed + 200
+        if musicTimeDo then
+            musicTime = musicTime + 1000 * dt
+            musicPos = musicTime * speed + 200
+        end
         for i = 1, #charthits do
             for j = 1, #charthits[i] do
                 if charthits[i][j] then
@@ -33,7 +36,7 @@ return {
                         end
                     else
                         if charthits[i][j][1] - musicTime <= 280 - charthits[i][j][2] then 
-                            print(charthits[i][1][1] - musicPos) -- why is this negative?
+                            --print(charthits[i][1][1] - musicPos) -- why is this negative?
                             table.remove(charthits[i], 1)
                         end
                     end
@@ -45,11 +48,12 @@ return {
             curInput = inputList[i]
             notes = charthits[i]
             if input:pressed(curInput) then
+                print("Pressed " .. curInput .. " at " .. musicPos .. "ms")
                 --print("Pressed " .. curInput)
                 if notes[1] then
                     --print(notes[1][1] - musicPos)
-                    if notes[1][1] - musicPos >= 20 and notes[1][1] - musicPos <= 180 then
-                        --print("Hit!")
+                    if notes[1][1] - musicPos >= 120 and notes[1][1] - musicPos <= 200 then
+                        
                         table.remove(notes, 1)
                     end
                 end
@@ -70,16 +74,31 @@ return {
             for j = 1, #charthits[i] do
                 if charthits[i][j][1] - musicPos <= 720 then
                     if charthits[i][j][2] ~= 0 then
-                        for k = 1, charthits[i][j][2] - charthits[i][j][1], 95/2 do 
-                            --love.graphics.rectangle("fill", -200 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE + (k - 1), 75, 1)
-                            if k > 95/2 then
-                                love.graphics.draw(charthits[i][j][5], -200 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE + (k), 0, 0.5, 0.5)
-                            else
-                                love.graphics.draw(endnote, -200 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE + (k), 0, 0.5, -0.5)
+                        if mode == "Keys4" then
+                            for k = 1, charthits[i][j][2] - charthits[i][j][1], 95/2 do 
+                                --love.graphics.rectangle("fill", -200 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE + (k - 1), 75, 1)
+                                if k > 95/2 then
+                                    love.graphics.draw(charthits[i][j][5], -200 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE + (k), 0, 0.5, 0.5)
+                                else
+                                    love.graphics.draw(endnote, -200 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE + (k), 0, 0.5, -0.5)
+                                end
+                            end
+                        else
+                            for k = 1, charthits[i][j][2] - charthits[i][j][1], 95/2 do 
+                                --love.graphics.rectangle("fill", -200 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE + (k - 1), 75, 1)
+                                if k > 95/2 then
+                                    love.graphics.draw(charthits[i][j][5], -375 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE + (k), 0, 0.5, 0.5)
+                                else
+                                    love.graphics.draw(endnote, -375 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE + (k), 0, 0.5, -0.5)
+                                end
                             end
                         end
                     end
-                    love.graphics.draw(charthits[i][j][3], -200 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE, 0, 0.5, 0.5)
+                    if mode == "Keys4" then
+                        love.graphics.draw(charthits[i][j][3], -200 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE, 0, 0.5, 0.5)
+                    else
+                        love.graphics.draw(charthits[i][j][3], -375 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE, 0, 0.5, 0.5)
+                    end
                 end
             end
         end
@@ -88,7 +107,11 @@ return {
 
         love.graphics.pop()
         for i = 1, #receptors do
-            love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], -200 + 100 * (i - 1), 0, 0, 0.5, 0.5)
+            if mode == "Keys4" then
+                love.graphics.draw(receptors[2][PRESSEDMOMENTS[i]], -200 + 100 * (i - 1), 0, 0, 0.5, 0.5)
+            else
+                love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], -375 + 100 * (i - 1), 0, 0, 0.5, 0.5)
+            end
             --print("COCK")
         end 
         love.graphics.pop()

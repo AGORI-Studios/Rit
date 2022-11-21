@@ -1,10 +1,18 @@
 function love.load()
     input = (require "baton").new({ -- Load the input for it to work properly
         controls = {
-            gameLeft = {'key:d', 'axis:leftx-', 'button:dpleft'},
-            gameRight = {'key:k', 'axis:leftx+', 'button:dpright'},
-            gameUp = {'key:j', 'axis:lefty-', 'button:dpup'},
-            gameDown = {'key:f', 'axis:lefty+', 'button:dpdown'},
+            one4 = {'key:d', 'axis:leftx-', 'button:dpleft'},
+            two4 = {'key:k', 'axis:leftx+', 'button:dpright'},
+            three4 = {'key:j', 'axis:lefty-', 'button:dpup'},
+            four4 = {'key:f', 'axis:lefty+', 'button:dpdown'},
+
+            one7 = {'key:s', 'axis:leftx-', 'button:dpleft'},
+            two7 = {'key:d', 'axis:leftx+', 'button:dpright'},
+            three7 = {'key:f', 'axis:lefty-', 'button:dpup'},
+            four7 = {'key:space'},
+            five7 = {'key:j', 'axis:lefty+', 'button:dpdown'},
+            six7 = {'key:k'},
+            seven7 = {'key:l'}
         },
         joystick = love.joystick.getJoysticks()[1]
     })
@@ -45,11 +53,12 @@ function love.load()
         {0, 255, 255},
         {255, 255, 255}
     }
+    musicTimeDo = false
     game:enter()
 
     love.window.setMode(1280, 720)
 
-    quaverLoader.load("chart.qua")
+    quaverLoader.load("12.qua")
 
     PARTWHERERECEPTORSARE = 100
 end

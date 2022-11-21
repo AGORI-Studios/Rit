@@ -22,6 +22,15 @@ function quaverLoader.load(chart)
                 for i = 1, 7 do
                     receptors[i] = {love.graphics.newImage(receptor), love.graphics.newImage(receptorDown)}
                 end
+                inputList = {
+                    "one7",
+                    "two7",
+                    "three7",
+                    "four7",
+                    "five7",
+                    "six7",
+                    "seven7"
+                }
             end
         end
         -- if the line has "- Bpm: " in it, then it's the line with the BPM
@@ -55,9 +64,9 @@ function quaverLoader.load(chart)
                                 local endTime = curLine
                                 endTime = endTime:gsub("  EndTime: ", "")
                                 endTime = tonumber(endTime)
-                                charthits[lane][#charthits[lane] + 1] = {startTime*speed, endTime*speed, love.graphics.newImage(noteNORMAL), true, love.graphics.newImage(noteHOLD)}
+                                charthits[lane][#charthits[lane] + 1] = {startTime*speed+200, endTime*speed, love.graphics.newImage(noteNORMAL), true, love.graphics.newImage(noteHOLD)}
                             else
-                                charthits[lane][#charthits[lane] + 1] = {startTime*speed, 0, love.graphics.newImage(noteNORMAL), false}
+                                charthits[lane][#charthits[lane] + 1] = {startTime*speed+200, 0, love.graphics.newImage(noteNORMAL), false}
                             end
                         end
                     end
@@ -66,6 +75,7 @@ function quaverLoader.load(chart)
         end
     end
     audioFile:play()
+    musicTimeDo = true
 end
 
 return quaverLoader
