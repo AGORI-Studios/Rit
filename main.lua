@@ -2,9 +2,9 @@ function love.load()
     input = (require "baton").new({ -- Load the input for it to work properly
         controls = {
             one4 = {'key:d', 'axis:leftx-', 'button:dpleft'},
-            two4 = {'key:k', 'axis:leftx+', 'button:dpright'},
+            two4 = {'key:f', 'axis:leftx+', 'button:dpright'},
             three4 = {'key:j', 'axis:lefty-', 'button:dpup'},
-            four4 = {'key:f', 'axis:lefty+', 'button:dpdown'},
+            four4 = {'key:k', 'axis:lefty+', 'button:dpdown'},
 
             one7 = {'key:s', 'axis:leftx-', 'button:dpleft'},
             two7 = {'key:d', 'axis:leftx+', 'button:dpright'},
@@ -56,7 +56,7 @@ function love.load()
     musicTimeDo = false
     game:enter()
 
-    love.window.setMode(1280, 720)
+    love.window.setMode(1280, 720, {resizable = false, vsync = false})
 
     quaverLoader.load("chart.qua")
 
