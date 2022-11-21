@@ -24,12 +24,12 @@ return {
     update = function(self, dt)
         if musicTimeDo then
             musicTime = musicTime + 1000 * dt
-            musicPos = musicTime * speed + 200
+            musicPos = musicTime * speed+100
         end
         for i = 1, #charthits do
             for j = 1, #charthits[i] do
                 if charthits[i][j] then
-                    if charthits[i][j][1] - musicTime <= 0 then 
+                    if charthits[i][j][1] - musicTime <= -100 then 
                         --print(charthits[i][1][1] - musicPos) -- why is this negative?
                         table.remove(charthits[i], 1)
                     end
@@ -46,17 +46,17 @@ return {
                 if notes[1] then
                     --print(notes[1][1] - musicPos)
                     
-                    if notes[1][1] - musicTime >= 10 and notes[1][1] - musicTime <= 200 then
+                    if notes[1][1] - musicTime >= -50 and notes[1][1] - musicTime <= 150 then
                         --print("Hit!")
-                        print(notes[1][1] - musicTime-75)
-                        pos = math.abs(notes[1][1] - musicTime-75)
-                        if pos < 20 then
+                        print(notes[1][1] - musicTime .. "ms")
+                        pos = math.abs(notes[1][1] - musicTime)
+                        if pos < 30 then
                             print("Perfect!")
-                        elseif pos < 45 then
+                        elseif pos < 55 then
                             print("Great!")
-                        elseif pos < 70 then
+                        elseif pos < 80 then
                             print("Good!")
-                        elseif pos < 90 then
+                        elseif pos < 120 then
                             print("Okay!")
                         else
                             print("Miss!")
@@ -70,7 +70,7 @@ return {
                 PRESSEDMOMENTS[i] = 2
                 if notes[1] then
                     if notes[1][4] then
-                        if notes[1][1] - musicTime >= 10 and notes[1][1] - musicTime <= 150 then
+                        if notes[1][1] - musicTime >= -50 and notes[1][1] - musicTime <= 50 then
                             table.remove(notes, 1)
                         end
                         
