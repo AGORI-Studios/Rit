@@ -77,3 +77,5 @@ function love.draw()
         10, 10
     )
 end
+
+-- test push

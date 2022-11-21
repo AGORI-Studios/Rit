@@ -90,8 +90,6 @@ return {
             end
         end
 
-        
-
         love.graphics.pop()
         for i = 1, #receptors do
             if mode == "Keys4" then
