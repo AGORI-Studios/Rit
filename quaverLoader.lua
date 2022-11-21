@@ -58,13 +58,17 @@ function quaverLoader.load(chart)
                         lane = tonumber(lane)
                         lineAfter = file:read()
                         if lineAfter ~= nil then
-                            
                             if lineAfter:find("  EndTime: ") then
                                 curLine = lineAfter
                                 local endTime = curLine
                                 endTime = endTime:gsub("  EndTime: ", "")
+                                local length = tonumber(endTime) - startTime
                                 endTime = tonumber(endTime)
-                                charthits[lane][#charthits[lane] + 1] = {startTime*speed+200, endTime*speed, love.graphics.newImage(noteNORMAL), true, love.graphics.newImage(noteHOLD)}
+                                --charthits[lane][#charthits[lane] + 1] = {startTime*speed+200, endTime*speed, love.graphics.newImage(noteNORMAL), true, love.graphics.newImage(noteHOLD)}
+                                charthits[lane][#charthits[lane] + 1] = {startTime*speed+200, 0, love.graphics.newImage(noteNORMAL), false}
+                                for i = 0, length, 95/2 do
+                                    charthits[lane][#charthits[lane] + 1] = {startTime*speed+i+200, 0, love.graphics.newImage(noteHOLD), true}
+                                end
                             else
                                 charthits[lane][#charthits[lane] + 1] = {startTime*speed+200, 0, love.graphics.newImage(noteNORMAL), false}
                             end

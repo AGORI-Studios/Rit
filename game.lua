@@ -29,16 +29,9 @@ return {
         for i = 1, #charthits do
             for j = 1, #charthits[i] do
                 if charthits[i][j] then
-                    if not charthits[i][j][3] then
-                        if charthits[i][j][1] - musicTime <= 280 then 
-                            --print(charthits[i][1][1] - musicPos) -- why is this negative?
-                            table.remove(charthits[i], 1)
-                        end
-                    else
-                        if charthits[i][j][1] - musicTime <= 280 - charthits[i][j][2] then 
-                            --print(charthits[i][1][1] - musicPos) -- why is this negative?
-                            table.remove(charthits[i], 1)
-                        end
+                    if charthits[i][j][1] - musicTime <= 280 then 
+                        --print(charthits[i][1][1] - musicPos) -- why is this negative?
+                        table.remove(charthits[i], 1)
                     end
                 end
             end
@@ -48,12 +41,12 @@ return {
             curInput = inputList[i]
             notes = charthits[i]
             if input:pressed(curInput) then
-                print("Pressed " .. curInput .. " at " .. musicPos .. "ms")
+               -- print("Pressed " .. curInput .. " at " .. musicPos .. "ms")
                 --print("Pressed " .. curInput)
                 if notes[1] then
                     --print(notes[1][1] - musicPos)
-                    if notes[1][1] - musicPos >= 120 and notes[1][1] - musicPos <= 200 then
-                        
+                    if notes[1][1] - musicPos >= 80 and notes[1][1] - musicPos <= 240 then
+                        print("Hit!")
                         table.remove(notes, 1)
                     end
                 end
@@ -61,6 +54,14 @@ return {
             else
                 PRESSEDMOMENTS[i] = 1
                 --print(PRESSEDMOMENTS[i])
+            end
+
+            if input:down(curInput) then
+                if notes[1] then
+                    if notes[1][4] then
+                        table.remove(notes, 1)
+                    end
+                end
             end
         end
     end,
@@ -73,27 +74,6 @@ return {
         for i = 1, #charthits do
             for j = 1, #charthits[i] do
                 if charthits[i][j][1] - musicPos <= 720 then
-                    if charthits[i][j][2] ~= 0 then
-                        if mode == "Keys4" then
-                            for k = 1, charthits[i][j][2] - charthits[i][j][1], 95/2 do 
-                                --love.graphics.rectangle("fill", -200 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE + (k - 1), 75, 1)
-                                if k > 95/2 then
-                                    love.graphics.draw(charthits[i][j][5], -200 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE + (k), 0, 0.5, 0.5)
-                                else
-                                    love.graphics.draw(endnote, -200 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE + (k), 0, 0.5, -0.5)
-                                end
-                            end
-                        else
-                            for k = 1, charthits[i][j][2] - charthits[i][j][1], 95/2 do 
-                                --love.graphics.rectangle("fill", -200 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE + (k - 1), 75, 1)
-                                if k > 95/2 then
-                                    love.graphics.draw(charthits[i][j][5], -375 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE + (k), 0, 0.5, 0.5)
-                                else
-                                    love.graphics.draw(endnote, -375 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE + (k), 0, 0.5, -0.5)
-                                end
-                            end
-                        end
-                    end
                     if mode == "Keys4" then
                         love.graphics.draw(charthits[i][j][3], -200 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE, 0, 0.5, 0.5)
                     else

@@ -58,7 +58,7 @@ function love.load()
 
     love.window.setMode(1280, 720)
 
-    quaverLoader.load("12.qua")
+    quaverLoader.load("chart.qua")
 
     PARTWHERERECEPTORSARE = 100
 end
