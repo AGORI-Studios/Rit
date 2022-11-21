@@ -76,7 +76,7 @@ return {
         love.graphics.translate(0, -musicPos)
         for i = 1, #charthits do
             for j = #charthits[i], 1, -1 do
-                if charthits[i][j][1] - musicPos <= 720 then
+                if charthits[i][j][1] - musicPos <= 780 then
                     if mode == "Keys4" then
                         if not charthits[i][j][5] then
                             love.graphics.draw(charthits[i][j][3], -200 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE, 0, 0.5, 0.5)
