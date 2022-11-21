@@ -57,6 +57,7 @@ function quaverLoader.load(chart)
                         lane = lane:gsub("  Lane: ", "")
                         lane = tonumber(lane)
                         lineAfter = file:read()
+                        charthits[lane][#charthits[lane] + 1] = {startTime*speed+200, 0, love.graphics.newImage(noteNORMAL), false}
                         if lineAfter ~= nil then
                             if lineAfter:find("  EndTime: ") then
                                 curLine = lineAfter
@@ -65,12 +66,14 @@ function quaverLoader.load(chart)
                                 local length = tonumber(endTime) - startTime
                                 endTime = tonumber(endTime)
                                 --charthits[lane][#charthits[lane] + 1] = {startTime*speed+200, endTime*speed, love.graphics.newImage(noteNORMAL), true, love.graphics.newImage(noteHOLD)}
-                                charthits[lane][#charthits[lane] + 1] = {startTime*speed+200, 0, love.graphics.newImage(noteNORMAL), false}
-                                for i = 0, length, 95/2 do
-                                    charthits[lane][#charthits[lane] + 1] = {startTime*speed+i+200, 0, love.graphics.newImage(noteHOLD), true}
+                                
+                                for i = 1, length, 95/2 do
+                                    if i + 95/2 < length then
+                                        charthits[lane][#charthits[lane] + 1] = {startTime*speed+i+200, 0, love.graphics.newImage(noteHOLD), true}
+                                    else
+                                        charthits[lane][#charthits[lane] + 1] = {startTime*speed+i+200, 0, love.graphics.newImage(noteEND), true, true}
+                                    end
                                 end
-                            else
-                                charthits[lane][#charthits[lane] + 1] = {startTime*speed+200, 0, love.graphics.newImage(noteNORMAL), false}
                             end
                         end
                     end

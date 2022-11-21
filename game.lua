@@ -7,7 +7,7 @@ inputList = {
 return {
     enter = function(self)
         musicTime = 0
-        speed = 1.25
+        speed = 1
         PRESSEDMOMENTS = {
             [1] = 1,
             [2] = 1,
@@ -45,7 +45,7 @@ return {
                 --print("Pressed " .. curInput)
                 if notes[1] then
                     --print(notes[1][1] - musicPos)
-                    if notes[1][1] - musicPos >= 80 and notes[1][1] - musicPos <= 240 then
+                    if notes[1][1] - musicPos >= 80 and notes[1][1] - musicPos <= 180 then
                         print("Hit!")
                         table.remove(notes, 1)
                     end
@@ -59,7 +59,10 @@ return {
             if input:down(curInput) then
                 if notes[1] then
                     if notes[1][4] then
-                        table.remove(notes, 1)
+                        if notes[1][1] - musicPos >= 80 and notes[1][1] - musicPos <= 180 then
+                            table.remove(notes, 1)
+                        end
+                        
                     end
                 end
             end
@@ -72,10 +75,14 @@ return {
         love.graphics.push()
         love.graphics.translate(0, -musicPos)
         for i = 1, #charthits do
-            for j = 1, #charthits[i] do
+            for j = #charthits[i], 1, -1 do
                 if charthits[i][j][1] - musicPos <= 720 then
                     if mode == "Keys4" then
-                        love.graphics.draw(charthits[i][j][3], -200 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE, 0, 0.5, 0.5)
+                        if not charthits[i][j][5] then
+                            love.graphics.draw(charthits[i][j][3], -200 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE, 0, 0.5, 0.5)
+                        else
+                            love.graphics.draw(charthits[i][j][3], -200 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE, 0, 0.5, -0.5)
+                        end
                     else
                         love.graphics.draw(charthits[i][j][3], -375 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE, 0, 0.5, 0.5)
                     end
