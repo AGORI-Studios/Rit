@@ -16,10 +16,14 @@ function love.load()
 
             up = {'key:up', 'axis:lefty-', 'button:dpup'},
             down = {'key:down', 'axis:lefty+', 'button:dpdown'},
+            left = {'key:left', 'axis:leftx-', 'button:dpleft'},
+            right = {'key:right', 'axis:leftx+', 'button:dpright'},
             confirm = {'key:return'},
         },
         joystick = love.joystick.getJoysticks()[1]
     })
+
+    songRate = 1
 
     receptors = {}
     game = require "game"
@@ -202,6 +206,18 @@ function love.update(dt)
             curSongSelected = curSongSelected + 1
             if curSongSelected > #songList then
                 curSongSelected = 1
+            end
+        end
+
+        if input:pressed("left") then
+            songRate = songRate - 0.05
+            if songRate < 0.05 then
+                songRate = 0.05
+            end
+        elseif input:pressed("right") then
+            songRate = songRate + 0.05
+            if songRate > 2 then
+                songRate = 2
             end
         end
 

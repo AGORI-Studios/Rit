@@ -95,15 +95,15 @@ return {
                         if mode == "Keys4" then
                             if not charthits[i][j][5] then
                                 if charthits[i][j][4] then
-                                    love.graphics.draw(charthits[i][j][3], -200 + 100 * (i - 1), charthits[i][j][1]*speed+200-PARTWHERERECEPTORSARE, 0, 0.5, 0.5)
+                                    love.graphics.draw(charthits[i][j][3], -200 + 100 * (i - 1), charthits[i][j][1]*speed+200-100, 0, 0.5, 0.5)
                                 else
-                                    love.graphics.draw(charthits[i][j][3], -200 + 100 * (i - 1), charthits[i][j][1]*speed+200-24.5-PARTWHERERECEPTORSARE, 0, 0.5, 0.5)
+                                    love.graphics.draw(charthits[i][j][3], -200 + 100 * (i - 1), charthits[i][j][1]*speed+200-24.5-100, 0, 0.5, 0.5)
                                 end
                             else
-                                love.graphics.draw(charthits[i][j][3], -200 + 100 * (i - 1), charthits[i][j][1]*speed+200+47.5-PARTWHERERECEPTORSARE, 0, 0.5, -0.5)
+                                love.graphics.draw(charthits[i][j][3], -200 + 100 * (i - 1), charthits[i][j][1]*speed+200+47.5-100, 0, 0.5, -0.5)
                             end
                         else
-                            love.graphics.draw(charthits[i][j][3], -375 + 100 * (i - 1), charthits[i][j][1]*speed+200-PARTWHERERECEPTORSARE, 0, 0.5, 0.5)
+                            love.graphics.draw(charthits[i][j][3], -375 + 100 * (i - 1), charthits[i][j][1]*speed+200-100, 0, 0.5, 0.5)
                         end
                     end
                 end
