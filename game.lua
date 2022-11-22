@@ -83,39 +83,42 @@ return {
     end,
 
     draw = function(self)
-        love.graphics.push()
-        love.graphics.translate(love.graphics.getWidth() / 2, 0)
-        love.graphics.push()
-        love.graphics.translate(0, -musicPos)
-        for i = 1, #charthits do
-            for j = #charthits[i], 1, -1 do
-                if charthits[i][j][1] - musicPos <= 780 then
-                    if mode == "Keys4" then
-                        if not charthits[i][j][5] then
-                            if charthits[i][j][4] then
-                                love.graphics.draw(charthits[i][j][3], -200 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE*speed+200, 0, 0.5, 0.5)
+        if audioFile and audioFile:isPlaying()  then
+            
+            love.graphics.push()
+            love.graphics.translate(love.graphics.getWidth() / 2, 0)
+            love.graphics.push()
+            love.graphics.translate(0, -musicPos)
+            for i = 1, #charthits do
+                for j = #charthits[i], 1, -1 do
+                    if charthits[i][j][1]/speed - musicPos <= 780 then
+                        if mode == "Keys4" then
+                            if not charthits[i][j][5] then
+                                if charthits[i][j][4] then
+                                    love.graphics.draw(charthits[i][j][3], -200 + 100 * (i - 1), charthits[i][j][1]*speed+200-PARTWHERERECEPTORSARE, 0, 0.5, 0.5)
+                                else
+                                    love.graphics.draw(charthits[i][j][3], -200 + 100 * (i - 1), charthits[i][j][1]*speed+200-24.5-PARTWHERERECEPTORSARE, 0, 0.5, 0.5)
+                                end
                             else
-                                love.graphics.draw(charthits[i][j][3], -200 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE*speed+200-24.5, 0, 0.5, 0.5)
+                                love.graphics.draw(charthits[i][j][3], -200 + 100 * (i - 1), charthits[i][j][1]*speed+200+47.5-PARTWHERERECEPTORSARE, 0, 0.5, -0.5)
                             end
                         else
-                            love.graphics.draw(charthits[i][j][3], -200 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE*speed+200+47.5, 0, 0.5, -0.5)
+                            love.graphics.draw(charthits[i][j][3], -375 + 100 * (i - 1), charthits[i][j][1]*speed+200-PARTWHERERECEPTORSARE, 0, 0.5, 0.5)
                         end
-                    else
-                        love.graphics.draw(charthits[i][j][3], -375 + 100 * (i - 1), charthits[i][j][1]-PARTWHERERECEPTORSARE*speed+200, 0, 0.5, 0.5)
                     end
                 end
             end
-        end
 
-        love.graphics.pop()
-        for i = 1, #receptors do
-            if mode == "Keys4" then
-                love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], -200 + 100 * (i - 1), 0, 0, 0.5, 0.5)
-            else
-                love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], -375 + 100 * (i - 1), 0, 0, 0.5, 0.5)
-            end
-            --print("COCK")
-        end 
-        love.graphics.pop()
+            love.graphics.pop()
+            for i = 1, #receptors do
+                if mode == "Keys4" then
+                    love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], -200 + 100 * (i - 1), 0, 0, 0.5, 0.5)
+                else
+                    love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], -375 + 100 * (i - 1), 0, 0, 0.5, 0.5)
+                end
+                --print("COCK")
+            end 
+            love.graphics.pop()
+        end
     end,
 }

@@ -2,15 +2,18 @@ local quaverLoader = {}
 lineCount = 0
 function quaverLoader.load(chart)
     -- read the first line of the file
-    local file = io.open(chart, "r")
+    local file = love.filesystem.read(chart)
 
-    for line in file:lines() do
+    for line in love.filesystem.lines(chart) do
         lineCount = lineCount + 1
-        if line:find("AudioFile: ") then
+        --if line:find("AudioFile: ") then
+        if line:find("AudioFile:") then
             curLine = line
             local audioPath = curLine
             audioPath = audioPath:gsub("AudioFile: ", "")
+            audioPath = "song/" .. audioPath
             audioFile = love.audio.newSource(audioPath, "stream")
+            print(audioPath)
         end
         if line:find("Mode: ") then
             modeLine = line
@@ -44,37 +47,32 @@ function quaverLoader.load(chart)
         if not line:find("HitObjects:") and not line:find("HitObjects: []") then
             if line:find("- StartTime: ") then
                 curLine = line
-                local startTime = curLine
+                startTime = curLine
                 startTime = startTime:gsub("- StartTime: ", "")
                 startTime = tonumber(startTime)
+                --print("mf")
                 -- get our next line
-                local nextLine = file:read()
-                if nextLine ~= nil then
-                    -- if the next line has "- Lane: " in it, then it's the line with the lane
-                    if nextLine:find("Lane:") then
-                        curLine = nextLine
-                        local lane = curLine
-                        lane = lane:gsub("  Lane: ", "")
-                        lane = tonumber(lane)
-                        lineAfter = file:read()
-                        charthits[lane][#charthits[lane] + 1] = {startTime, 0, love.graphics.newImage(noteNORMAL), false}
-                        if lineAfter ~= nil then
-                            if lineAfter:find("  EndTime: ") then
-                                curLine = lineAfter
-                                local endTime = curLine
-                                endTime = endTime:gsub("  EndTime: ", "")
-                                local length = tonumber(endTime) - startTime
-                                endTime = tonumber(endTime)
-                                
-                                for i = 1, length, 95/2 do
-                                    if i + 95/2 < length then
-                                        charthits[lane][#charthits[lane] + 1] = {startTime+i, 0, love.graphics.newImage(noteHOLD), true}
-                                    else
-                                        charthits[lane][#charthits[lane] + 1] = {startTime+i, 0, love.graphics.newImage(noteEND), true, true}
-                                    end
-                                end
-                            end
-                        end
+            end
+            if line:find("  Lane: ") then
+                -- if the next line has "- Lane: " in it, then it's the line with the lane
+                curLine = line
+                lane = curLine
+                lane = lane:gsub("  Lane: ", "")
+                lane = tonumber(lane)
+                charthits[lane][#charthits[lane] + 1] = {startTime, 0, love.graphics.newImage(noteNORMAL), false}
+            end
+            if line:find("  EndTime: ") then
+                curLine = line
+                endTime = curLine
+                endTime = endTime:gsub("  EndTime: ", "")
+                local length = tonumber(endTime) - startTime
+                endTime = tonumber(endTime)
+                    
+                for i = 1, length, 95/2/speed do
+                    if i + 95/2/speed < length then
+                        charthits[lane][#charthits[lane] + 1] = {startTime+i, 0, love.graphics.newImage(noteHOLD), true}
+                    else
+                        charthits[lane][#charthits[lane] + 1] = {startTime+i, 0, love.graphics.newImage(noteEND), true, true}
                     end
                 end
             end
