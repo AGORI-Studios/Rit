@@ -112,17 +112,36 @@ function selectSkin(skin)
     skinIni = skin.ini
     skinFolder = skin.folder
     skinName = skin.name
-    recepterUNPRESSED = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["receptorUNPRESSED"]:gsub('"', ""))
-    recepterPRESSED = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["receptorPRESSED"]:gsub('"', ""))
-    noteNORMAL = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["noteNORMAL"]:gsub('"', ""))
-    noteHOLD = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["noteHOLD"]:gsub('"', ""))
-    noteEND = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["noteEND"]:gsub('"', ""))
+    isMultiple = skinIni["skin"]["multiple"]
+    isRotated = skinIni["skin"]["rotated"]
+    -- set isMultiple to a boolean
+    if string.lower(isMultiple) == "false" then
+        recepterUNPRESSED = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["receptorUNPRESSED"]:gsub('"', ""))
+        recepterPRESSED = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["receptorPRESSED"]:gsub('"', ""))
+        noteNORMAL = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["noteNORMAL"]:gsub('"', ""))
+        noteHOLD = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["noteHOLD"]:gsub('"', ""))
+        noteEND = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["noteEND"]:gsub('"', ""))
+
+        for i = 1, 4 do
+            if string.lower(isRotated) == "false" then
+                receptors[i] = {love.graphics.newImage(recepterUNPRESSED), love.graphics.newImage(recepterPRESSED), 0}
+            else
+                -- the note will be facing down.
+                -- rotate the note depending on 1-4
+                rotations = {
+                    math.rad(270),
+                    0,
+                    math.rad(90),
+                    math.rad(180)
+                }
+                receptors[i] = {love.graphics.newImage(recepterUNPRESSED), love.graphics.newImage(recepterPRESSED), rotations[i]}
+            end
+        end
+    else
+        print("???")
+    end
     choosingSkin = false
     choosingSong = true
-
-    for i = 1, 4 do
-        receptors[i] = {love.graphics.newImage(recepterUNPRESSED), love.graphics.newImage(recepterPRESSED)}
-    end
 
     musicPos = 0
     --quaverLoader.load("chart.qua")
@@ -206,18 +225,6 @@ function love.update(dt)
             curSongSelected = curSongSelected + 1
             if curSongSelected > #songList then
                 curSongSelected = 1
-            end
-        end
-
-        if input:pressed("left") then
-            songRate = songRate - 0.05
-            if songRate < 0.05 then
-                songRate = 0.05
-            end
-        elseif input:pressed("right") then
-            songRate = songRate + 0.05
-            if songRate > 2 then
-                songRate = 2
             end
         end
 
