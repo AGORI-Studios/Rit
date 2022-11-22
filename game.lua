@@ -134,11 +134,17 @@ return {
     end,
 
     draw = function(self)
-        if audioFile and audioFile:isPlaying()  then
-            
+        if audioFile and audioFile:isPlaying() then
             love.graphics.push()
-                love.graphics.translate(love.graphics.getWidth() / 2, 50)
                 love.graphics.push()
+                    if not settings.downscroll then
+                        love.graphics.scale(0.8, 0.8)
+                        love.graphics.translate(love.graphics.getWidth() / 2, 50)
+                    else
+                        love.graphics.scale(0.8, -0.8)
+                        love.graphics.translate(love.graphics.getWidth() / 2, -1280)
+                    end
+                    
                     love.graphics.translate(0, -musicPos)
                     
                     for i = 1, #charthits do
@@ -147,36 +153,51 @@ return {
                                 if mode == "Keys4" then
                                     if not charthits[i][j][5] then
                                         if charthits[i][j][4] then
-                                            love.graphics.draw(charthits[i][j][3], 0 + 155 * (i - 1), charthits[i][j][1]*speed+200-100, 0, 0.8, 0.8)
+                                            love.graphics.draw(charthits[i][j][3], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200-100, 0)
                                         else
-                                            love.graphics.draw(charthits[i][j][3], 0 + 155 * (i - 1), charthits[i][j][1]*speed+200-24.5-100, 0, 0.8, 0.8)
+                                            love.graphics.draw(charthits[i][j][3], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200-24.5-100, 0)
                                         end
                                     else
-                                        love.graphics.draw(charthits[i][j][3], 0 + 155 * (i - 1), charthits[i][j][1]*speed+200+47.5-100, 0, 0.8, -0.8)
+                                        love.graphics.draw(charthits[i][j][3], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200+95+24.5-100, 0, 1, -1)
                                     end
                                 else
-                                    love.graphics.draw(charthits[i][j][3], -375 + 155 * (i - 1), charthits[i][j][1]*speed+200-100, 0, 0.8, 0.8)
+                                    love.graphics.draw(charthits[i][j][3], -375 + 200 * (i - 1), charthits[i][j][1]*speed+200-100, 0)
                                 end
                             end
                         end
                     end
                 love.graphics.pop()
-
-                for i = 1, #receptors do
-                    if mode == "Keys4" then
-                        love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], 0 + 155 * (i - 1), 0, 0, 0.8, 0.8)
+                
+                love.graphics.push()
+                    if not settings.downscroll then
+                        love.graphics.scale(0.8, 0.8)
+                        love.graphics.translate(love.graphics.getWidth() / 2, 50)
                     else
-                        love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], -375 + 155 * (i - 1), 0, 0, 0.8, 0.8)
+                        love.graphics.scale(0.8, -0.8)
+                        love.graphics.translate(love.graphics.getWidth() / 2, -1280)
                     end
-                end 
+                    
+                    for i = 1, #receptors do
+                        if mode == "Keys4" then
+                            love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], 145 + 200 * (i - 1), 0, 0)
+                        else
+                            love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], -375 + 200 * (i - 1), 0, 0)
+                        end
+                    end 
+                love.graphics.pop()
+                love.graphics.translate(love.graphics.getWidth() / 2, 0)
                 love.graphics.rectangle("fill", -650, -50, health * 8+10, 20, 10, 10)
 
                 love.graphics.setFont(scoreFont)
                 scoreFormat = string.format("%07d", round(scoring.score))
-                accuracyFormat = string.format("%.2f%%", scoring.accuracy)
+                if scoring.accuracy >= 100 then
+                    accuracyFormat = "100.00%"
+                else
+                    accuracyFormat = string.format("%.2f%%", scoring.accuracy)
+                end
                 love.graphics.setFont(accuracyFont)
-                love.graphics.printf(scoreFormat, 0, -50, 1280, "right")
-                love.graphics.printf(accuracyFormat, 0, 15, 1280, "right")
+                love.graphics.printf(scoreFormat, 0, 0, 1280, "right")
+                love.graphics.printf(accuracyFormat, 0, 45, 1280, "right")
                 love.graphics.setFont(font)
             love.graphics.pop()
         end

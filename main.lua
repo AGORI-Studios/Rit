@@ -22,6 +22,9 @@ function love.load()
         },
         joystick = love.joystick.getJoysticks()[1]
     })
+    ini = require "lib.ini"
+    settingsIni = require "settings"
+    settingsIni.loadSettings()
 
     scoring = {
         score = 0,
@@ -39,7 +42,6 @@ function love.load()
     quaverLoader = require "modules.quaverLoader"
     stepmaniaLoader = require "modules.stepmaniaLoader"
 
-    ini = require "lib.ini"
     lovesize = require "lib.lovesize"
     Timer = require "lib.timer"
     charthits = {}
@@ -72,7 +74,7 @@ function love.load()
     health = 100
     game:enter()
 
-    love.window.setMode(1280, 720, {resizable = false, vsync = false})
+    love.window.setMode(settings.width, settings.height, {resizable = false, vsync = settings.vsync, fullscreen = settings.fullscreen})
     lovesize.set(1920, 1080)
 
     choosingSkin = true
