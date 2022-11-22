@@ -103,9 +103,10 @@ return {
                 love.graphics.translate(love.graphics.getWidth() / 2, 50)
                 love.graphics.push()
                     love.graphics.translate(0, -musicPos)
+                    
                     for i = 1, #charthits do
                         for j = #charthits[i], 1, -1 do
-                            if charthits[i][j][1]/speed - musicPos <= 860 then
+                            if charthits[i][j][1]/speed - musicPos <= 900 then
                                 if mode == "Keys4" then
                                     if not charthits[i][j][5] then
                                         if charthits[i][j][4] then
@@ -130,7 +131,6 @@ return {
                     else
                         love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], -375 + 155 * (i - 1), 0, 0, 0.8, 0.8)
                     end
-                    --print("COCK")
                 end 
                 love.graphics.rectangle("fill", -650, -50, health * 8+10, 20, 10, 10)
             love.graphics.pop()

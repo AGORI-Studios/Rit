@@ -37,6 +37,8 @@ function love.load()
         charthits[i] = {}
     end
     curSongSelected = 1
+    font = love.graphics.newFont("fonts/Dosis-Semibold.ttf", 16)
+    love.graphics.setFont(font)
     love.graphics.setDefaultFilter("nearest", "nearest")
 
     fourkColours = {
@@ -261,7 +263,7 @@ function love.draw()
                 else
                     love.graphics.setColor(0.5, 0.5, 0.5)
                 end
-                love.graphics.print(v.name, 0, i * 20, 0, 2, 2)
+                love.graphics.print(v.name, 0, i * 35, 0, 2, 2)
                 love.graphics.setColor(1,1,1)
             end
         elseif choosingSong then
@@ -271,7 +273,7 @@ function love.draw()
                 else
                     love.graphics.setColor(0.5, 0.5, 0.5)
                 end
-                love.graphics.print(v.title .. " - " .. v.difficultyName, 0, i * 20, 0, 2, 2)
+                love.graphics.print(v.title .. " - " .. v.difficultyName, 0, i * 35, 0, 2, 2)
                 love.graphics.setColor(1,1,1)
             end
         end
