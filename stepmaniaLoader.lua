@@ -5,10 +5,6 @@ BEAT_TICKS = 48
 STEP_TICKS = 12
 NUM_COLUMS = 4
 
-local function round(num)
-    return math.floor(num + 0.5)
-end
-
 -- make a TempoMarker class
 TempoMarker = {}
 TempoMarker.__index = TempoMarker

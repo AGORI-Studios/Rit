@@ -7,7 +7,7 @@ inputList = {
 return {
     enter = function(self)
         musicTime = 0
-        speed = 1
+        speed = 1.25
         PRESSEDMOMENTS = {
             [1] = 1,
             [2] = 1,
@@ -19,6 +19,9 @@ return {
         }
         lastReportedPlaytime = 0
         previousFrameTime = 0
+        additionalScore = 0
+        additionalAccuracy = 0
+        noteCounter = 0
     end,
 
     update = function(self, dt)
@@ -30,8 +33,9 @@ return {
             for j = 1, #charthits[i] do
                 if charthits[i][j] then
                     if charthits[i][j][1] - musicTime <= -100 then 
-                        print(charthits[i][1][1] - musicPos) -- why is this negative?
                         if not charthits[i][j][4] then
+                            noteCounter = noteCounter + 1
+                            additionalAccuracy = additionalAccuracy + 1
                             health = health - 2
                             if health < 0 then
                                 health = 0
@@ -51,30 +55,63 @@ return {
                 --print("Pressed " .. curInput)
                 if notes[1] then
                     --print(notes[1][1] - musicPos)
-                    
+                    noteCounter = noteCounter + 1
                     if notes[1][1] - musicTime >= -50 and notes[1][1] - musicTime <= 150 then
                         --print("Hit!")
                         print(notes[1][1] - musicTime .. "ms")
                         pos = math.abs(notes[1][1] - musicTime)
-                        if pos < 30 then
+                        if pos < 45 then
                             print("Perfect!")
                             health = health + 2
-                        elseif pos < 55 then
+                            additionalScore = additionalScore + 650
+                            additionalAccuracy = additionalAccuracy + 100
+                        elseif pos < 65 then
                             print("Great!")
                             health = health + 2
-                        elseif pos < 80 then
+                            additionalScore = additionalScore + 500
+                            additionalAccuracy = additionalAccuracy + 75.55
+                        elseif pos < 90 then
                             print("Good!")
                             health = health + 2
-                        elseif pos < 120 then
+                            additionalScore = additionalScore + 350
+                            additionalAccuracy = additionalAccuracy + 66.66
+                        elseif pos < 130 then
                             print("Okay!")
                             health = health + 2
+                            additionalScore = additionalScore + 200
+                            additionalAccuracy = additionalAccuracy + 33.33
                         else
                             print("Miss!")
                             health = health - 2
+                            additionalScore = additionalScore + 1.11
                         end
                         if health > 100 then
                             health = 100
                         end
+                        if scoringTimer then 
+                            Timer.cancel(scoringTimer)
+                        end
+                        if accuracyTimer then
+                            Timer.cancel(accuracyTimer)
+                        end
+                        scoringTimer = Timer.tween(
+                            0.35,
+                            scoring,
+                            {score = additionalScore},
+                            "out-quad",
+                            function()
+                                scoringTimer = nil
+                            end
+                        )
+                        accuracyTimer = Timer.tween(
+                            0.35,
+                            scoring,
+                            {accuracy = additionalAccuracy / noteCounter},
+                            "out-quad",
+                            function()
+                                accuracyTimer = nil
+                            end
+                        )
                         table.remove(notes, 1)
                     end
                 end 
@@ -133,6 +170,14 @@ return {
                     end
                 end 
                 love.graphics.rectangle("fill", -650, -50, health * 8+10, 20, 10, 10)
+
+                love.graphics.setFont(scoreFont)
+                scoreFormat = string.format("%07d", round(scoring.score))
+                accuracyFormat = string.format("%.2f%%", scoring.accuracy)
+                love.graphics.setFont(accuracyFont)
+                love.graphics.printf(scoreFormat, 0, -50, 1280, "right")
+                love.graphics.printf(accuracyFormat, 0, 15, 1280, "right")
+                love.graphics.setFont(font)
             love.graphics.pop()
         end
     end,

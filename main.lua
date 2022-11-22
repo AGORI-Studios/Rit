@@ -23,7 +23,16 @@ function love.load()
         joystick = love.joystick.getJoysticks()[1]
     })
 
+    scoring = {
+        score = 0,
+        accuracy = 0,
+    }
+
     songRate = 1
+
+    function round(num)
+        return math.floor(num + 0.5)
+    end
 
     receptors = {}
     game = require "game"
@@ -32,12 +41,15 @@ function love.load()
 
     ini = require "lib.ini"
     lovesize = require "lib.lovesize"
+    Timer = require "lib.timer"
     charthits = {}
     for i = 1, 4 do
         charthits[i] = {}
     end
     curSongSelected = 1
     font = love.graphics.newFont("fonts/Dosis-Semibold.ttf", 16)
+    scoreFont = love.graphics.newFont("fonts/Dosis-Semibold.ttf", 64)
+    accuracyFont = love.graphics.newFont("fonts/Dosis-Semibold.ttf", 48)
     love.graphics.setFont(font)
     love.graphics.setDefaultFilter("nearest", "nearest")
 
@@ -209,6 +221,7 @@ function selectSongDifficulty(song)
 end
 
 function love.update(dt)
+    Timer.update(dt)
     if not choosingSkin and not choosingSong then
         game:update(dt)
     elseif choosingSkin then
