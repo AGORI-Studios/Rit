@@ -36,8 +36,8 @@ function love.load()
 
     receptors = {}
     game = require "game"
-    quaverLoader = require "quaverLoader"
-    stepmaniaLoader = require "stepmaniaLoader"
+    quaverLoader = require "modules.quaverLoader"
+    stepmaniaLoader = require "modules.stepmaniaLoader"
 
     ini = require "lib.ini"
     lovesize = require "lib.lovesize"
@@ -75,12 +75,9 @@ function love.load()
     love.window.setMode(1280, 720, {resizable = false, vsync = false})
     lovesize.set(1920, 1080)
 
-    --quaverLoader.load("chart.qua")
-
     choosingSkin = true
     curSkinSelected = 1
     chooseSkin()
-    PARTWHERERECEPTORSARE = 100
 end
 
 function love.resize(w, h)
