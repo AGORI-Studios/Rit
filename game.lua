@@ -35,11 +35,23 @@ return {
                     if charthits[i][j][1] - musicTime <= -100 then 
                         if not charthits[i][j][4] then
                             noteCounter = noteCounter + 1
-                            additionalAccuracy = additionalAccuracy + 1
+                            additionalAccuracy = additionalAccuracy + 1.11
                             health = health - 2
                             if health < 0 then
                                 health = 0
                             end
+                            if accuracyTimer then
+                                Timer.cancel(accuracyTimer)
+                            end
+                            accuracyTimer = Timer.tween(
+                                0.35,
+                                scoring,
+                                {accuracy = additionalAccuracy / noteCounter},
+                                "out-quad",
+                                function()
+                                    accuracyTimer = nil
+                                end
+                            )
                         end
                         table.remove(charthits[i], 1)
                     end
@@ -142,7 +154,7 @@ return {
                         love.graphics.translate(love.graphics.getWidth() / 2, 50)
                     else
                         love.graphics.scale(0.8, -0.8)
-                        love.graphics.translate(love.graphics.getWidth() / 2, -1280)
+                        love.graphics.translate(love.graphics.getWidth() / 2, -1080)
                     end
                     
                     love.graphics.translate(0, -musicPos)
@@ -153,15 +165,15 @@ return {
                                 if mode == "Keys4" then
                                     if not charthits[i][j][5] then
                                         if charthits[i][j][4] then
-                                            love.graphics.draw(charthits[i][j][3], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200-100, 0)
+                                            love.graphics.draw(charthits[i][j][3], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200-100, 0, 1, flipY)
                                         else
-                                            love.graphics.draw(charthits[i][j][3], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200-24.5-100, 0)
+                                            love.graphics.draw(charthits[i][j][3], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200-24.5-100, 0, 1, flipY)
                                         end
                                     else
-                                        love.graphics.draw(charthits[i][j][3], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200+95+24.5-100, 0, 1, -1)
+                                        love.graphics.draw(charthits[i][j][3], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200+95+24.5-100, 0, 1, -flipY)
                                     end
                                 else
-                                    love.graphics.draw(charthits[i][j][3], -375 + 200 * (i - 1), charthits[i][j][1]*speed+200-100, 0)
+                                    love.graphics.draw(charthits[i][j][3], -375 + 200 * (i - 1), charthits[i][j][1]*speed+200-100, 0, 1, flipY)
                                 end
                             end
                         end
@@ -174,14 +186,14 @@ return {
                         love.graphics.translate(love.graphics.getWidth() / 2, 50)
                     else
                         love.graphics.scale(0.8, -0.8)
-                        love.graphics.translate(love.graphics.getWidth() / 2, -1280)
+                        love.graphics.translate(love.graphics.getWidth() / 2, -1080)
                     end
                     
                     for i = 1, #receptors do
                         if mode == "Keys4" then
-                            love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], 145 + 200 * (i - 1), 0, 0)
+                            love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], 145 + 200 * (i - 1), 0, 0, 1, flipY)
                         else
-                            love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], -375 + 200 * (i - 1), 0, 0)
+                            love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], -375 + 200 * (i - 1), 0, 0, 1, flipY)
                         end
                     end 
                 love.graphics.pop()
