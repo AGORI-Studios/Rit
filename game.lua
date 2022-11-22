@@ -7,7 +7,7 @@ inputList = {
 return {
     enter = function(self)
         musicTime = 0
-        speed = 1.25
+        speed = settings.scrollspeed or 1
         PRESSEDMOMENTS = {
             [1] = 1,
             [2] = 1,

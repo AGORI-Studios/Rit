@@ -22,9 +22,15 @@ function love.load()
         },
         joystick = love.joystick.getJoysticks()[1]
     })
+    flipY = 1 -- for downscroll
+
     ini = require "lib.ini"
     settingsIni = require "settings"
     settingsIni.loadSettings()
+
+    if settings.downscroll then
+        flipY = -1
+    end
 
     scoring = {
         score = 0,
