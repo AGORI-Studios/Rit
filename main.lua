@@ -31,6 +31,7 @@ function love.load()
     stepmaniaLoader = require "stepmaniaLoader"
 
     ini = require "lib.ini"
+    lovesize = require "lib.lovesize"
     charthits = {}
     for i = 1, 4 do
         charthits[i] = {}
@@ -54,9 +55,11 @@ function love.load()
         {255, 255, 255}
     }
     musicTimeDo = false
+    health = 100
     game:enter()
 
     love.window.setMode(1280, 720, {resizable = false, vsync = false})
+    lovesize.set(1920, 1080)
 
     --quaverLoader.load("chart.qua")
 
@@ -64,6 +67,10 @@ function love.load()
     curSkinSelected = 1
     chooseSkin()
     PARTWHERERECEPTORSARE = 100
+end
+
+function love.resize(w, h)
+    lovesize.resize(w, h)
 end
 
 function chooseSkin()
@@ -169,10 +176,12 @@ function chooseSongDifficulty()
                         --print(love.filesystem.getInfo("song/" .. j).type == "file")
                         local title = love.filesystem.read("song/" .. j):match("Title:(.-)\r?\n")
                         local difficultyName = love.filesystem.read("song/" .. j):match("DifficultyName:(.-)\r?\n")
+                        local BackgroundFile = love.filesystem.read("song/" .. j):match("BackgroundFile:(.-)\r?\n")
                         songList[#songList + 1] = {
                             filename = v,
                             title = title,
                             difficultyName = difficultyName,
+                            BackgroundFile = BackgroundFile:sub(2),
                             path = "song/" .. j
                         }
                     end
@@ -191,6 +200,7 @@ function selectSongDifficulty(song)
     songPath = song.path
     songTitle = song.title
     songDifficultyName = song.difficultyName
+    BackgroundFile = love.graphics.newImage("song/" .. song.BackgroundFile)
     print(songPath)
     quaverLoader.load(songPath)
     choosingSong = false
@@ -236,34 +246,36 @@ function love.update(dt)
 end
 
 function love.draw()
-    if not choosingSkin and not choosingSong then
-        game:draw()
-        love.graphics.print(
-            "FPS: " .. love.timer.getFPS() ..
-            "\nMusic time: " .. musicTime, 
-            10, 10
-        )
-    elseif choosingSkin then
-        for i, v in ipairs(skins) do
-            if i == curSkinSelected then
-                love.graphics.setColor(1, 1, 1)
-            else
-                love.graphics.setColor(0.5, 0.5, 0.5)
+    lovesize.begin()
+        if not choosingSkin and not choosingSong then
+            game:draw()
+            love.graphics.print(
+                "FPS: " .. love.timer.getFPS() ..
+                "\nMusic time: " .. musicTime, 
+                10, 20, 0, 2, 2
+            )
+        elseif choosingSkin then
+            for i, v in ipairs(skins) do
+                if i == curSkinSelected then
+                    love.graphics.setColor(1, 1, 1)
+                else
+                    love.graphics.setColor(0.5, 0.5, 0.5)
+                end
+                love.graphics.print(v.name, 0, i * 20, 0, 2, 2)
+                love.graphics.setColor(1,1,1)
             end
-            love.graphics.print(v.name, 0, i * 20)
-            love.graphics.setColor(1,1,1)
-        end
-    elseif choosingSong then
-        for i, v in ipairs(songList) do
-            if i == curSongSelected then
-                love.graphics.setColor(1, 1, 1)
-            else
-                love.graphics.setColor(0.5, 0.5, 0.5)
+        elseif choosingSong then
+            for i, v in ipairs(songList) do
+                if i == curSongSelected then
+                    love.graphics.setColor(1, 1, 1)
+                else
+                    love.graphics.setColor(0.5, 0.5, 0.5)
+                end
+                love.graphics.print(v.title .. " - " .. v.difficultyName, 0, i * 20, 0, 2, 2)
+                love.graphics.setColor(1,1,1)
             end
-            love.graphics.print(v.title .. " - " .. v.difficultyName, 0, i * 20)
-            love.graphics.setColor(1,1,1)
         end
-    end
+    lovesize.finish()
 end
 
 -- test push
