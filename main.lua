@@ -1,5 +1,5 @@
 function love.load()
-    input = (require "baton").new({ -- Load the input for it to work properly
+    input = (require "lib.baton").new({ -- Load the input for it to work properly
         controls = {
             one4 = {'key:d', 'axis:leftx-', 'button:dpleft'},
             two4 = {'key:f', 'axis:leftx+', 'button:dpright'},
