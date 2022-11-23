@@ -6,7 +6,7 @@ inputList = {
 }
 return {
     enter = function(self)
-        musicTime = 0
+        musicTime = -125
         speed = settings.scrollspeed or 1
         PRESSEDMOMENTS = {
             [1] = 1,
@@ -170,7 +170,7 @@ return {
                                             love.graphics.draw(charthits[i][j][3], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200-24.5-100, 0, 1, flipY)
                                         end
                                     else
-                                        love.graphics.draw(charthits[i][j][3], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200+95+24.5-100, 0, 1, -flipY)
+                                        love.graphics.draw(charthits[i][j][3], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200+95+24.5-100, 0, 1, flipY)
                                     end
                                 else
                                     love.graphics.draw(charthits[i][j][3], -375 + 200 * (i - 1), charthits[i][j][1]*speed+200-100, 0, 1, flipY)

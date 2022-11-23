@@ -163,8 +163,6 @@ function selectSkin(skin)
                 receptors[i] = {love.graphics.newImage(recepterUNPRESSED), love.graphics.newImage(recepterPRESSED), rotations[i]}
             end
         end
-    else
-        print("???")
     end
     choosingSkin = false
     choosingSong = true
@@ -214,13 +212,11 @@ end
 function selectSongDifficulty(song)
     song = songList[curSongSelected]
     filename = song.filename
-    print(filename)
     love.filesystem.mount("songs/"..filename, "song")
     songPath = song.path
     songTitle = song.title
     songDifficultyName = song.difficultyName
     BackgroundFile = love.graphics.newImage("song/" .. song.BackgroundFile)
-    print(songPath)
     quaverLoader.load(songPath)
     choosingSong = false
 end

@@ -20,7 +20,6 @@ function settingsIni.loadSettings()
         love.filesystem.write("settings.ini", settingsStr)
     end
     inifile = ini.load("settings.ini")
-    print(inifile)
     if inifile == nil then
         
     end
