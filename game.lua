@@ -172,16 +172,20 @@ return {
                     
                     for i = 1, #charthits do
                         for j = #charthits[i], 1, -1 do
-                            if charthits[i][j][1]/speed - musicPos <= 900 then
+                            if charthits[i][j][1]/speed - musicPos <= 1200 then
                                 if mode == "Keys4" then
                                     if not charthits[i][j][5] then
                                         if charthits[i][j][4] then
                                             love.graphics.draw(charthits[i][j][3], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200-100, 0, 1, flipY)
-                                        else
+                                        else 
                                             love.graphics.draw(charthits[i][j][3], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200-24.5-100, 0, 1, flipY)
                                         end
                                     else
-                                        love.graphics.draw(charthits[i][j][3], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200+95+24.5-100, 0, 1, flipY)
+                                        if not settings.downscroll then
+                                            love.graphics.draw(charthits[i][j][3], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200+95+24.5-100, 0, 1, -1)
+                                        else
+                                            love.graphics.draw(charthits[i][j][3], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200+49.5-100, 0, 1, flipY)
+                                        end
                                     end
                                 else
                                     love.graphics.draw(charthits[i][j][3], -375 + 200 * (i - 1), charthits[i][j][1]*speed+200-100, 0, 1, flipY)
@@ -208,7 +212,7 @@ return {
                     end 
                 love.graphics.pop()
                 love.graphics.translate(love.graphics.getWidth() / 2, 0)
-                love.graphics.rectangle("fill", -650, -50, health * 8+10, 20, 10, 10)
+                love.graphics.rectangle("fill", -650, 0, health * 8+10, 20, 10, 10)
 
                 love.graphics.setFont(scoreFont)
                 scoreFormat = string.format("%07d", round(scoring.score))

@@ -32,7 +32,6 @@ function stepLoader.load(chart)
     curChart = "Stepmania"
     love.filesystem.read(chart)
     for line in love.filesystem.lines(chart) do
-        -- if line starts with #, then it's a comment
         if line:find("#") then
             -- split the line from the :
             local splitLine = line:split(":")
