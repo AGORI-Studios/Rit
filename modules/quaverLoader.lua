@@ -2,6 +2,7 @@ local quaverLoader = {}
 lineCount = 0
 function quaverLoader.load(chart)
     -- read the first line of the file
+    curChart = "Quaver"
     local file = love.filesystem.read(chart)
 
     for line in love.filesystem.lines(chart) do

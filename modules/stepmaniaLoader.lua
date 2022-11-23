@@ -1,85 +1,93 @@
 local stepLoader = {}
-lineCount = 0
-MEASURE_TICKS = 192
-BEAT_TICKS = 48
-STEP_TICKS = 12
-NUM_COLUMS = 4
+local List = {}
 
--- make a TempoMarker class
-TempoMarker = {}
-TempoMarker.__index = TempoMarker
+function List.toQuas()
+    quas = {}
+    for i = 1, #List do
+        currentTime = -offset * 1000
 
-function TempoMarker.new(bpm, tick_pos, time_pos)
-    self = setmetatable({}, TempoMarker)
-    self.bpm = tonumber(bpm)
-    self.tick_pos = tonumber(tick_pos)
-    self.time_pos = tonumber(time_pos)
-end
+        qua = {
+            Title = title,
+            Artist = artist,
+            Creator = creator,
+            BannerFile = banner,
+            BackgroundFile = background,
+            AudioFile = music,
+            SongPreviewTime = preview,
+            Mode = "Keys4",
+            DifficultyName = difficultyname
+        }
 
-function TempoMarker.getBPM(self)
-    return self.bpm
-end
-
-function TempoMarker.getTick(self)
-    return self.tick_pos
-end
-
-function TempoMarker.getTime(self)
-    return self.time_pos
-end
-
-function TempoMarker.timeToTick(self, note_time)
-    return tonumber(round(self.tick_pos + (tonumber(note_time) - self.time_pos) * MEASURE_TICKS * self.bpm / 240000))
-end
-function TempoMarker.tickToTime(self, note_tick)
-    return self.time_pos + (tonumber(note_tick) -self.tick_pos) / MEASURE_RICKS * 240000 / self.bpm 
-end
-
-function measure_gcd(num_set, MEASURE_TICKS)
-    d = MEASURE_TICKS
-    for i = 1, #num_set do
-        d = math.gcd(d, num_set[i])
-        if d == 1 then
-            return d
-        end
-    end
-    return d
-end
-
-tempomarkers = {}
-
-function timeToTick(timestamp)
-    for i = 1, #tempomarkers do
-        if i == #tempomarkers - 1 or tempomarkers[i+1].getTime() > timestamp then
-            return tempomarkers[i].timeToTick(timestamp)
+        totalBeats = 0
+        bpmCache = {}
+        for i = 1, #bpm do
+            bpmCache[i] = bpm[i]
         end
     end
 end
 
-function tickToTime(tick)
-    for i = 1, #tempomarkers do
-        if i == #tempomarkers - 1 or tempomarkers[i+1].getTick() > tick then
-            return tempomarkers[i].tickToTime(tick)
-        end
-    end
-end
-
-function ticktoBPM(tick)
-    for i = 1, #tempomarkers do
-        if i == #tempomarkers - 1 or tempomarkers[i+1].getTick() > tick then
-            return tempomarkers[i].getBPM()
-        end
-    end
-end
+-- based off of https://github.com/Quaver/Quaver.API/tree/master/Quaver.API/Maps/Parsers/Stepmania
 
 function stepLoader.load(chart)
-    local file = io.open(chart, "r")
-    sm_header = ''
-    sm_notes = ''
-    for line in file:lines() do 
-        if line:find("#BPMS:0.000=") then
-            bpm = line:gsub("#BPMS:0.000=", "")
-            bpm = tonumber(bpm)
+    curChart = "Stepmania"
+    love.filesystem.read(chart)
+    for line in love.filesystem.lines(chart) do
+        -- if line starts with #, then it's a comment
+        if line:find("#") then
+            -- split the line from the :
+            local splitLine = line:split(":")
+            key = splitLine[1]:gsub("#", "")
+            value = splitLine[2]:gsub(";", "")
+            value = value:gsub(":", "")
+
+            if line:find("TITLE") then
+                title = value
+            elseif line:find("SUBTITLE") then
+                subtitle = value
+            elseif line:find("ARTIST") then
+                artist = value
+            elseif line:find("TITLETRANSLIT") then
+                titleTranslit = value
+            elseif line:find("SUBTITLETRANSLIT") then
+                subtitleTranslit = value
+            elseif line:find("ARTISTTRANSLIT") then
+                artistTranslit = value
+            elseif line:find("CREDIT") then
+                credit = value
+            elseif line:find("BANNER") then
+                banner = value
+            elseif line:find("BACKGROUND") then
+                background = value
+            elseif line:find("LYRICSPATH") then
+                lyricsPath = value
+            elseif line:find("CDTITLE") then
+                cdTitle = value
+            elseif line:find("MUSIC") then
+                music = value
+            elseif line:find("MUSICLENGTH") then
+                musicLength = tonumber(value)
+            elseif line:find("OFFSET") then
+                offset = tonumber(value)
+            elseif line:find("SAMPLESTART") then
+                sampleStart = tonumber(value)
+            elseif line:find("SAMPLELENGTH") then
+                sampleLength = tonumber(value)
+            elseif line:find("SELECTABLE") then
+            elseif line:find("BPMS") then
+                inBpms = true
+                bpm = tonumber(value:gsub("0.000=", ""))
+                if bpm:find(";") then
+                    inBpms = false
+                end
+            elseif line:find("STOPS") then
+                inStops = true
+                stop = value
+                if stop:find(";") then
+                    inStops = false
+                end
+            elseif line:find("NOTES") then
+
+            end
         end
     end
 end

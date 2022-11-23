@@ -140,6 +140,12 @@ function selectSkin(skin)
     skinName = skin.name
     isMultiple = skinIni["skin"]["multiple"]
     isRotated = skinIni["skin"]["rotated"]
+    
+    hitsound = love.audio.newSource(skinFolder .. "/" .. skinIni["skin"]["hitsound"]:gsub('"', ""), "static")
+    hitsound:setVolume(tonumber(skinIni["skin"]["hitsoundVolume"]))
+    hitsoundCache = {
+        hitsound:clone()
+    }
     -- set isMultiple to a boolean
     if string.lower(isMultiple) == "false" then
         recepterUNPRESSED = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["receptorUNPRESSED"]:gsub('"', ""))

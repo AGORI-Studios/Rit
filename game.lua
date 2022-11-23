@@ -65,6 +65,17 @@ return {
             if input:pressed(curInput) then
                -- print("Pressed " .. curInput .. " at " .. musicPos .. "ms")
                 --print("Pressed " .. curInput)
+                if hitsoundCache[#hitsoundCache]:isPlaying() then
+                    hitsoundCache[#hitsoundCache] = hitsoundCache[#hitsoundCache]:clone()
+                    hitsoundCache[#hitsoundCache]:play()
+                else
+                    hitsoundCache[#hitsoundCache]:play()
+                end
+                for hit = 2, #hitsoundCache do
+                    if not hitsoundCache[hit]:isPlaying() then
+                        hitsoundCache[hit] = nil -- Nil afterwords to prevent memory leak
+                    end --                             maybe, idk how love2d works lmfao
+                end
                 if notes[1] then
                     --print(notes[1][1] - musicPos)
                     noteCounter = noteCounter + 1
@@ -188,7 +199,6 @@ return {
                         love.graphics.scale(0.8, -0.8)
                         love.graphics.translate(love.graphics.getWidth() / 2, -1080)
                     end
-                    
                     for i = 1, #receptors do
                         if mode == "Keys4" then
                             love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], 145 + 200 * (i - 1), 0, 0, 1, flipY)
