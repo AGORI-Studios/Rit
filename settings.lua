@@ -43,5 +43,4 @@ function settingsIni.loadSettings()
 
     settings.volume = tonumber(settings.volume)
 end
-
 return settingsIni

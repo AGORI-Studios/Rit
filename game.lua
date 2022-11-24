@@ -5,20 +5,7 @@ inputList = {
     "four4"
 }
 function addJudgement(judgement)
-    if judgement == "marvelous" then
-        marvelous = marvelous + 1
-    elseif judgement == "perfect" then
-        perfect = perfect + 1
-    elseif judgement == "great" then
-        great = great + 1
-    elseif judgement == "good" then
-        good = good + 1
-    elseif judgement == "bad" then
-        bad = bad + 1
-    elseif judgement == "miss" then
-        miss = miss + 1
-    end
-
+    scoring[judgement] = scoring[judgement] + 1
     if judgement ~= "Miss" then
         combo = combo + 1
         if comboTimer then 
@@ -103,12 +90,11 @@ return {
             y = 2
         }
 
-        marvelous = 0
-        perfect = 0
-        great = 0
-        good = 0
-        bad = 0
-        miss = 0
+        scoring["Marvellous"] = 0
+        scoring["Perfect"] = 0
+        scoring["Great"] = 0
+        scoring["Good"] = 0
+        scoring["Miss"] = 0
         combo = 0
 
         curJudgement = "none"
@@ -175,7 +161,7 @@ return {
                         print(notes[1][1] - musicTime .. "ms")
                         pos = math.abs(notes[1][1] - musicTime)
                         if pos < 45 then
-                            judgement = "Marvelous"
+                            judgement = "Marvellous"
                             health = health + 2
                             additionalScore = additionalScore + 650
                             additionalAccuracy = additionalAccuracy + 100

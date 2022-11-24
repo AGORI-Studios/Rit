@@ -1,4 +1,6 @@
 function love.load()
+    __VERSION__ = love.filesystem.read("version.txt")
+    require "modules.loveFuncs"
     input = (require "lib.baton").new({ -- Load the input for it to work properly
         controls = {
             one4 = {'key:d', 'axis:leftx-', 'button:dpleft'},
@@ -35,6 +37,11 @@ function love.load()
     scoring = {
         score = 0,
         accuracy = 0,
+        ["Marvellous"] = 0,
+        ["Perfect"] = 0,
+        ["Great"] = 0,
+        ["Good"] = 0,
+        ["Miss"] = 0
     }
 
     songRate = 1
@@ -86,6 +93,7 @@ function love.load()
     choosingSkin = true
     curSkinSelected = 1
     chooseSkin()
+
 end
 
 function love.resize(w, h)
@@ -180,7 +188,7 @@ function selectSkin(skin)
         ["Good"] = love.graphics.newImage(skinFolder .. "/" .. skinIni["skin"]["GOOD"]:gsub('"', "")),
         ["Great"] = love.graphics.newImage(skinFolder .. "/" .. skinIni["skin"]["GREAT"]:gsub('"', "")),
         ["Perfect"] = love.graphics.newImage(skinFolder .. "/" .. skinIni["skin"]["PERFECT"]:gsub('"', "")),
-        ["Marvelous"] = love.graphics.newImage(skinFolder .. "/" .. skinIni["skin"]["MARVELOUS"]:gsub('"', "")),
+        ["Marvellous"] = love.graphics.newImage(skinFolder .. "/" .. skinIni["skin"]["MARVELLOUS"]:gsub('"', "")),
     }
     combo0 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO0"]:gsub('"', ""))
     combo1 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO1"]:gsub('"', ""))
@@ -256,6 +264,7 @@ function chooseSongDifficulty()
     -- get all .qp files in songs/
     if not love.filesystem.getInfo("songs") then
         love.filesystem.createDirectory("songs")
+        love.window.showMessageBox("Songs folder created!", "songs folder has been created at " .. love.filesystem.getSaveDirectory() .. "/songs", "info")
     end
     songList = {}
     for i, v in ipairs(love.filesystem.getDirectoryItems("songs")) do
