@@ -309,7 +309,6 @@ return {
                     love.graphics.draw(judgementImages[curJudgement], love.graphics.getWidth() / 2+325, love.graphics.getHeight() / 2, 0, ratingsize.x, ratingsize.y, judgementImages[curJudgement]:getWidth() / 2, judgementImages[curJudgement]:getHeight() / 2)
                 end
                 if combo > 0 then
-                    print(combo % 10, math.floor(combo / 10 % 10), math.floor(combo / 100 % 10))
                     love.graphics.draw(
                         comboImages[1][combo % 10],
                         love.graphics.getWidth() / 2+360,
