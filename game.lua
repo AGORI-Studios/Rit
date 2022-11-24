@@ -247,6 +247,8 @@ return {
                 PRESSEDMOMENTS[i] = 1
             end
         end
+        -- print graphics memory usage
+        print(tostring(math.floor(love.graphics.getStats().texturememory / 1048576)) .. "MB")
     end,
 
     draw = function(self)
@@ -265,19 +267,19 @@ return {
                     
                     for i = 1, #charthits do
                         for j = #charthits[i], 1, -1 do
-                            if charthits[i][j][1]/speed - musicPos <= 1200 then
+                            if charthits[i][j][1]/speed - musicPos <= 800 then
                                 if mode == "Keys4" then
                                     if not charthits[i][j][5] then
                                         if charthits[i][j][4] then
-                                            love.graphics.draw(charthits[i][j][3], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200-100, 0, 1, flipY)
+                                            love.graphics.draw(noteHoldImg, 145 + 200 * (i - 1), charthits[i][j][1]*speed+200-100, 0, 1, flipY)
                                         else 
-                                            love.graphics.draw(charthits[i][j][3], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200-24.5-100, 0, 1, flipY)
+                                            love.graphics.draw(noteNormalImg, 145 + 200 * (i - 1), charthits[i][j][1]*speed+200-24.5-100, 0, 1, flipY)
                                         end
                                     else
                                         if not settings.downscroll then
-                                            love.graphics.draw(charthits[i][j][3], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200+95+24.5-100, 0, 1, -1)
+                                            love.graphics.draw(noteEndImg, 145 + 200 * (i - 1), charthits[i][j][1]*speed+200+95+24.5-100, 0, 1, -1)
                                         else
-                                            love.graphics.draw(charthits[i][j][3], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200+49.5-100, 0, 1, flipY)
+                                            love.graphics.draw(noteEndImg, 145 + 200 * (i - 1), charthits[i][j][1]*speed+200+49.5-100, 0, 1, flipY)
                                         end
                                     end
                                 else

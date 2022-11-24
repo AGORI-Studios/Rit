@@ -154,6 +154,10 @@ function selectSkin(skin)
         noteHOLD = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["noteHOLD"]:gsub('"', ""))
         noteEND = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["noteEND"]:gsub('"', ""))
 
+        noteNormalImg = love.graphics.newImage(noteNORMAL)
+        noteHoldImg = love.graphics.newImage(noteHOLD)
+        noteEndImg = love.graphics.newImage(noteEND)
+
         for i = 1, 4 do
             if string.lower(isRotated) == "false" then
                 receptors[i] = {love.graphics.newImage(recepterUNPRESSED), love.graphics.newImage(recepterPRESSED), 0}

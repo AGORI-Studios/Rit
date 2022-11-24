@@ -62,7 +62,7 @@ function quaverLoader.load(chart)
                 lane = curLine
                 lane = lane:gsub("  Lane: ", "")
                 lane = tonumber(lane)
-                charthits[lane][#charthits[lane] + 1] = {startTime, 0, love.graphics.newImage(noteNORMAL), false}
+                charthits[lane][#charthits[lane] + 1] = {startTime, 0, 1, false}
             end
             if line:find("  EndTime: ") then
                 curLine = line
@@ -73,9 +73,9 @@ function quaverLoader.load(chart)
                     
                 for i = 1, length, 95/2/speed do
                     if i + 95/2/speed < length then
-                        charthits[lane][#charthits[lane] + 1] = {startTime+i, 0, love.graphics.newImage(noteHOLD), true}
+                        charthits[lane][#charthits[lane] + 1] = {startTime+i, 0, 1, true}
                     else
-                        charthits[lane][#charthits[lane] + 1] = {startTime+i, 0, love.graphics.newImage(noteEND), true, true}
+                        charthits[lane][#charthits[lane] + 1] = {startTime+i, 0, 1, true, true}
                     end
                 end
             end
