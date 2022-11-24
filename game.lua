@@ -4,6 +4,77 @@ inputList = {
     "three4",
     "four4"
 }
+function addJudgement(judgement)
+    if judgement == "marvelous" then
+        marvelous = marvelous + 1
+    elseif judgement == "perfect" then
+        perfect = perfect + 1
+    elseif judgement == "great" then
+        great = great + 1
+    elseif judgement == "good" then
+        good = good + 1
+    elseif judgement == "bad" then
+        bad = bad + 1
+    elseif judgement == "miss" then
+        miss = miss + 1
+    end
+
+    if judgement ~= "Miss" then
+        combo = combo + 1
+        if comboTimer then 
+            Timer.cancel(comboTimer)
+        end
+        comboSize.y = 1
+        comboTimer = Timer.tween(
+            0.1,
+            comboSize,
+            {
+                y = 2.4
+            },
+            "in-out-quad",
+            function()
+                Timer.tween(
+                    0.1,
+                    comboSize,
+                    {
+                        y = 2
+                    },
+                    "in-out-quad"
+                )
+            end
+        )
+    else
+        combo = 0
+    end
+    curJudgement = judgement
+
+    if judgeTimer then 
+        Timer.cancel(judgeTimer)
+    end
+    ratingsize.x = 1
+    ratingsize.y = 1
+    judgeTimer = Timer.tween(
+        0.1,
+        ratingsize,
+        {
+            x = 1.4,
+            y = 1.4
+        },
+        "in-out-quad",
+        function()
+            Timer.tween(
+                0.1,
+                ratingsize,
+                {
+                    x = 1,
+                    y = 1
+                },
+                "in-out-quad"
+            )
+        end
+    )
+end
+
 return {
     enter = function(self)
         musicTime = -125
@@ -22,6 +93,25 @@ return {
         additionalScore = 0
         additionalAccuracy = 0
         noteCounter = 0
+
+        ratingsize = {
+            x = 1,
+            y = 1
+        }
+        comboSize = {
+            x = 2,
+            y = 2
+        }
+
+        marvelous = 0
+        perfect = 0
+        great = 0
+        good = 0
+        bad = 0
+        miss = 0
+        combo = 0
+
+        curJudgement = "none"
     end,
 
     update = function(self, dt)
@@ -54,6 +144,7 @@ return {
                             )
                         end
                         table.remove(charthits[i], 1)
+                        addJudgement("Miss")
                     end
                 end
             end
@@ -84,30 +175,33 @@ return {
                         print(notes[1][1] - musicTime .. "ms")
                         pos = math.abs(notes[1][1] - musicTime)
                         if pos < 45 then
-                            print("Perfect!")
+                            judgement = "Marvelous"
                             health = health + 2
                             additionalScore = additionalScore + 650
                             additionalAccuracy = additionalAccuracy + 100
                         elseif pos < 65 then
-                            print("Great!")
+                            judgement = "Perfect"
                             health = health + 2
                             additionalScore = additionalScore + 500
                             additionalAccuracy = additionalAccuracy + 75.55
                         elseif pos < 90 then
-                            print("Good!")
+                            judgement = "Great"
                             health = health + 2
                             additionalScore = additionalScore + 350
                             additionalAccuracy = additionalAccuracy + 66.66
                         elseif pos < 130 then
-                            print("Okay!")
+                            judgement = "Good"
                             health = health + 2
                             additionalScore = additionalScore + 200
                             additionalAccuracy = additionalAccuracy + 33.33
                         else
-                            print("Miss!")
+                            judgement = "Miss"
                             health = health - 2
                             additionalScore = additionalScore + 1.11
                         end
+
+                        addJudgement(judgement)
+
                         if health > 100 then
                             health = 100
                         end
@@ -147,7 +241,6 @@ return {
                         if notes[1][1] - musicTime >= -50 and notes[1][1] - musicTime <= 50 then
                             table.remove(notes, 1)
                         end
-                        
                     end
                 end 
             else
@@ -211,6 +304,43 @@ return {
                         end
                     end 
                 love.graphics.pop()
+
+                if curJudgement ~= "none" then
+                    love.graphics.draw(judgementImages[curJudgement], love.graphics.getWidth() / 2+325, love.graphics.getHeight() / 2, 0, ratingsize.x, ratingsize.y, judgementImages[curJudgement]:getWidth() / 2, judgementImages[curJudgement]:getHeight() / 2)
+                end
+                if combo > 0 then
+                    print(combo % 10, math.floor(combo / 10 % 10), math.floor(combo / 100 % 10))
+                    love.graphics.draw(
+                        comboImages[1][combo % 10],
+                        love.graphics.getWidth() / 2+360,
+                        love.graphics.getHeight() / 2+100,
+                        0,
+                        comboSize.x,
+                        comboSize.y,
+                        comboImages[1][combo % 10]:getWidth() / 2,
+                        comboImages[1][combo % 10]:getHeight() / 2
+                    )
+                    love.graphics.draw(
+                        comboImages[2][math.floor(combo / 10 % 10)],
+                        love.graphics.getWidth() / 2+330,
+                        love.graphics.getHeight() / 2+100,
+                        0,
+                        comboSize.x,
+                        comboSize.y,
+                        comboImages[2][math.floor(combo / 10 % 10)]:getWidth() / 2,
+                        comboImages[2][math.floor(combo / 10 % 10)]:getHeight() / 2
+                    )
+                    love.graphics.draw(
+                        comboImages[3][math.floor(combo / 100 % 10)],
+                        love.graphics.getWidth() / 2+300,
+                        love.graphics.getHeight() / 2+100,
+                        0,
+                        comboSize.x,
+                        comboSize.y,
+                        comboImages[3][math.floor(combo / 100 % 10)]:getWidth() / 2,
+                        comboImages[3][math.floor(combo / 100 % 10)]:getHeight() / 2
+                    )
+                end
                 love.graphics.translate(love.graphics.getWidth() / 2, 0)
                 love.graphics.rectangle("fill", -650, 0, health * 8+10, 20, 10, 10)
 

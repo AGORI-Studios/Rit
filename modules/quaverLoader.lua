@@ -38,11 +38,13 @@ function quaverLoader.load(chart)
             end
         end
         -- if the line has "- Bpm: " in it, then it's the line with the BPM
-        if line:find("Bpm: ") then
+        if line:find("Bpm:") then
             curLine = line
-            local bpm = curLine
-            bpm = bpm:gsub("- Bpm: ", "") or bpm:gsub("Bpm: ", "")
-            bpm = tonumber(bpm)
+            bpm = curLine
+            -- trim the bpm of anything that isn't a number
+            bpm = bpm:gsub("%D", "")
+            bpm = tonumber(bpm) or 120
+            print(bpm)
         end
 
         if not line:find("HitObjects:") and not line:find("HitObjects: []") then

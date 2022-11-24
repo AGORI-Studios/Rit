@@ -170,6 +170,75 @@ function selectSkin(skin)
             end
         end
     end
+
+    judgementImages = {
+        ["Miss"] = love.graphics.newImage(skinFolder .. "/" .. skinIni["skin"]["MISS"]:gsub('"', "")),
+        ["Good"] = love.graphics.newImage(skinFolder .. "/" .. skinIni["skin"]["GOOD"]:gsub('"', "")),
+        ["Great"] = love.graphics.newImage(skinFolder .. "/" .. skinIni["skin"]["GREAT"]:gsub('"', "")),
+        ["Perfect"] = love.graphics.newImage(skinFolder .. "/" .. skinIni["skin"]["PERFECT"]:gsub('"', "")),
+        ["Marvelous"] = love.graphics.newImage(skinFolder .. "/" .. skinIni["skin"]["MARVELOUS"]:gsub('"', "")),
+    }
+    combo0 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO0"]:gsub('"', ""))
+    combo1 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO1"]:gsub('"', ""))
+    combo2 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO2"]:gsub('"', ""))
+    combo3 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO3"]:gsub('"', ""))
+    combo4 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO4"]:gsub('"', ""))
+    combo5 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO5"]:gsub('"', ""))
+    combo6 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO6"]:gsub('"', ""))
+    combo7 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO7"]:gsub('"', ""))
+    combo8 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO8"]:gsub('"', ""))
+    combo9 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO9"]:gsub('"', ""))
+
+    comboImages = {
+        [1] = {
+            [0] = love.graphics.newImage(combo0),
+            [1] = love.graphics.newImage(combo1),
+            [2] = love.graphics.newImage(combo2),
+            [3] = love.graphics.newImage(combo3),
+            [4] = love.graphics.newImage(combo4),
+            [5] = love.graphics.newImage(combo5),
+            [6] = love.graphics.newImage(combo6),
+            [7] = love.graphics.newImage(combo7),
+            [8] = love.graphics.newImage(combo8),
+            [9] = love.graphics.newImage(combo9)
+        },
+        [2] = {
+            [0] = love.graphics.newImage(combo0),
+            [1] = love.graphics.newImage(combo1),
+            [2] = love.graphics.newImage(combo2),
+            [3] = love.graphics.newImage(combo3),
+            [4] = love.graphics.newImage(combo4),
+            [5] = love.graphics.newImage(combo5),
+            [6] = love.graphics.newImage(combo6),
+            [7] = love.graphics.newImage(combo7),
+            [8] = love.graphics.newImage(combo8),
+            [9] = love.graphics.newImage(combo9)
+        },
+        [3] = {
+            [0] = love.graphics.newImage(combo0),
+            [1] = love.graphics.newImage(combo1),
+            [2] = love.graphics.newImage(combo2),
+            [3] = love.graphics.newImage(combo3),
+            [4] = love.graphics.newImage(combo4),
+            [5] = love.graphics.newImage(combo5),
+            [6] = love.graphics.newImage(combo6),
+            [7] = love.graphics.newImage(combo7),
+            [8] = love.graphics.newImage(combo8),
+            [9] = love.graphics.newImage(combo9)
+        },
+        [4] = {
+            [0] = love.graphics.newImage(combo0),
+            [1] = love.graphics.newImage(combo1),
+            [2] = love.graphics.newImage(combo2),
+            [3] = love.graphics.newImage(combo3),
+            [4] = love.graphics.newImage(combo4),
+            [5] = love.graphics.newImage(combo5),
+            [6] = love.graphics.newImage(combo6),
+            [7] = love.graphics.newImage(combo7),
+            [8] = love.graphics.newImage(combo8),
+            [9] = love.graphics.newImage(combo9)
+        }
+    }
     choosingSkin = false
     choosingSong = true
 
