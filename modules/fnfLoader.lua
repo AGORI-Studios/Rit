@@ -41,9 +41,9 @@ function fnfLoader.load(chart, isPlayer)
 
                         for i = 1, noteLength, 95/2/speed do
                             if i + 95/2/speed < noteLength then
-                                charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, 1, true}
+                                charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, 1, true}
                             else
-                                charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, 1, true, true}
+                                charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, 1, true, true}
                             end
                         end
                     end
@@ -56,9 +56,9 @@ function fnfLoader.load(chart, isPlayer)
 
                         for i = 1, noteLength, 95/2/speed do
                             if i + 95/2/speed < noteLength then
-                                charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, 1, true}
+                                charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, 1, true}
                             else
-                                charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, 1, true, true}
+                                charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, 1, true, true}
                             end
                         end
                     end
