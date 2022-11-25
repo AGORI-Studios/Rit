@@ -160,33 +160,45 @@ function selectSkin(skin)
         hitsound:clone()
     }
     -- set isMultiple to a boolean
-    if string.lower(isMultiple) == "false" then
-        recepterUNPRESSED = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["receptorUNPRESSED"]:gsub('"', ""))
-        recepterPRESSED = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["receptorPRESSED"]:gsub('"', ""))
-        noteNORMAL = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["noteNORMAL"]:gsub('"', ""))
-        noteHOLD = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["noteHOLD"]:gsub('"', ""))
-        noteEND = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["noteEND"]:gsub('"', ""))
+    recepterUNPRESSED1 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["receptor1UNPRESSED"]:gsub('"', ""))
+    recepterPRESSED1 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["receptor1PRESSED"]:gsub('"', ""))
 
-        noteNormalImg = love.graphics.newImage(noteNORMAL)
-        noteHoldImg = love.graphics.newImage(noteHOLD)
-        noteEndImg = love.graphics.newImage(noteEND)
+    recepterUNPRESSED2 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["receptor2UNPRESSED"]:gsub('"', ""))
+    recepterPRESSED2 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["receptor2PRESSED"]:gsub('"', ""))
 
-        for i = 1, 4 do
-            if string.lower(isRotated) == "false" then
-                receptors[i] = {love.graphics.newImage(recepterUNPRESSED), love.graphics.newImage(recepterPRESSED), 0}
-            else
-                -- the note will be facing down.
-                -- rotate the note depending on 1-4
-                rotations = {
-                    math.rad(270),
-                    0,
-                    math.rad(90),
-                    math.rad(180)
-                }
-                receptors[i] = {love.graphics.newImage(recepterUNPRESSED), love.graphics.newImage(recepterPRESSED), rotations[i]}
-            end
-        end
-    end
+    recepterUNPRESSED3 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["receptor3UNPRESSED"]:gsub('"', ""))
+    recepterPRESSED3 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["receptor3PRESSED"]:gsub('"', ""))
+
+    recepterUNPRESSED4 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["receptor4UNPRESSED"]:gsub('"', ""))
+    recepterPRESSED4 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["receptor4PRESSED"]:gsub('"', ""))
+
+    note1NORMAL = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["note1NORMAL"]:gsub('"', ""))
+    note1HOLD = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["note1HOLD"]:gsub('"', ""))
+    note1END = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["note1END"]:gsub('"', ""))
+    
+    note2NORMAL = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["note2NORMAL"]:gsub('"', ""))
+    note2HOLD = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["note2HOLD"]:gsub('"', ""))
+    note2END = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["note2END"]:gsub('"', ""))
+
+    note3NORMAL = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["note3NORMAL"]:gsub('"', ""))
+    note3HOLD = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["note3HOLD"]:gsub('"', ""))
+    note3END = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["note3END"]:gsub('"', ""))
+
+    note4NORMAL = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["note4NORMAL"]:gsub('"', ""))
+    note4HOLD = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["note4HOLD"]:gsub('"', ""))
+    note4END = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["note4END"]:gsub('"', ""))
+
+    receptors[1] = {love.graphics.newImage(recepterUNPRESSED1), love.graphics.newImage(recepterPRESSED1), 0}
+    receptors[2] = {love.graphics.newImage(recepterUNPRESSED2), love.graphics.newImage(recepterPRESSED2), 0}
+    receptors[3] = {love.graphics.newImage(recepterUNPRESSED3), love.graphics.newImage(recepterPRESSED3), 0}
+    receptors[4] = {love.graphics.newImage(recepterUNPRESSED4), love.graphics.newImage(recepterPRESSED4), 0}
+
+    noteImgs = {
+        {love.graphics.newImage(note1NORMAL), love.graphics.newImage(note1HOLD), love.graphics.newImage(note1END)},
+        {love.graphics.newImage(note2NORMAL), love.graphics.newImage(note2HOLD), love.graphics.newImage(note2END)},
+        {love.graphics.newImage(note3NORMAL), love.graphics.newImage(note3HOLD), love.graphics.newImage(note3END)},
+        {love.graphics.newImage(note4NORMAL), love.graphics.newImage(note4HOLD), love.graphics.newImage(note4END)}
+    }
 
     judgementImages = {
         ["Miss"] = love.graphics.newImage(skinFolder .. "/" .. skinIni["skin"]["MISS"]:gsub('"', "")),

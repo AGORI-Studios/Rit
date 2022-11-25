@@ -257,15 +257,15 @@ return {
                                 if mode == "Keys4" then
                                     if not charthits[i][j][5] then
                                         if charthits[i][j][4] then
-                                            love.graphics.draw(noteHoldImg, 145 + 200 * (i - 1), charthits[i][j][1]*speed+200-100, 0, 1, flipY)
+                                            love.graphics.draw(noteImgs[i][2], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200-100, 0, 1, flipY)
                                         else 
-                                            love.graphics.draw(noteNormalImg, 145 + 200 * (i - 1), charthits[i][j][1]*speed+200-24.5-100, 0, 1, flipY)
+                                            love.graphics.draw(noteImgs[i][1], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200-24.5-100, 0, 1, flipY)
                                         end
                                     else
                                         if not settings.downscroll then
-                                            love.graphics.draw(noteEndImg, 145 + 200 * (i - 1), charthits[i][j][1]*speed+200+95+24.5-100, 0, 1, -1)
+                                            love.graphics.draw(noteImgs[i][3], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200+95+24.5-100, 0, 1, -1)
                                         else
-                                            love.graphics.draw(noteEndImg, 145 + 200 * (i - 1), charthits[i][j][1]*speed+200+49.5-100, 0, 1, flipY)
+                                            love.graphics.draw(noteImgs[i][3], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200+49.5-100, 0, 1, flipY)
                                         end
                                     end
                                 else
