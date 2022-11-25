@@ -3,6 +3,7 @@ json = require "lib.json"
 local fnfLoader = {}
 
 function fnfLoader.load(chart, isPlayer)
+    curChart = "FNF"
     chart = json.decode(love.filesystem.read(chart))
     chart = chart["song"]
 
