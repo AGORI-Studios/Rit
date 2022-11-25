@@ -241,13 +241,18 @@ return {
         if audioFile and audioFile:isPlaying() then
             love.graphics.push()
                 love.graphics.push()
-                    if not settings.downscroll then
-                        love.graphics.scale(0.8, 0.8)
-                        love.graphics.translate(love.graphics.getWidth() / 2, 50)
-                    else
-                        love.graphics.scale(0.8, -0.8)
-                        love.graphics.translate(love.graphics.getWidth() / 2, -1080)
-                    end
+                    love.graphics.translate(love.graphics.getWidth() / 2, 50)
+                    for i = 1, #receptors do
+                        if mode == "Keys4" then
+                            love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], -45 + 200 * (i - 1), 0, 0, notesize, notesize)
+                        else
+                            love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], -375 + 200 * (i - 1), 0, 0, notesize, notesize)
+                        end
+                    end 
+                love.graphics.pop()
+
+                love.graphics.push()
+                    love.graphics.translate(love.graphics.getWidth() / 2, 50)
                     
                     love.graphics.translate(0, -musicPos)
                     
@@ -257,40 +262,19 @@ return {
                                 if mode == "Keys4" then
                                     if not charthits[i][j][5] then
                                         if charthits[i][j][4] then
-                                            love.graphics.draw(noteImgs[i][2], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200-100, 0, 1, flipY)
+                                            love.graphics.draw(noteImgs[i][2], -45 + 200 * (i - 1), charthits[i][j][1]*speed+200-100, 0, notesize, notesize)
                                         else 
-                                            love.graphics.draw(noteImgs[i][1], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200-24.5-100, 0, 1, flipY)
+                                            love.graphics.draw(noteImgs[i][1], -45 + 200 * (i - 1), charthits[i][j][1]*speed+200-24.5-100, 0, notesize, notesize)
                                         end
                                     else
-                                        if not settings.downscroll then
-                                            love.graphics.draw(noteImgs[i][3], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200+95+24.5-100, 0, 1, -1)
-                                        else
-                                            love.graphics.draw(noteImgs[i][3], 145 + 200 * (i - 1), charthits[i][j][1]*speed+200+49.5-100, 0, 1, flipY)
-                                        end
+                                        love.graphics.draw(noteImgs[i][3], -45 + 200 * (i - 1), charthits[i][j][1]*speed+200+95+24.5-100, 0, notesize, -notesize)
                                     end
                                 else
-                                    love.graphics.draw(charthits[i][j][3], -375 + 200 * (i - 1), charthits[i][j][1]*speed+200-100, 0, 1, flipY)
+                                    love.graphics.draw(charthits[i][j][3], -375 + 200 * (i - 1), charthits[i][j][1]*speed+200-100, 0, notesize, notesize)
                                 end
                             end
                         end
                     end
-                love.graphics.pop()
-                
-                love.graphics.push()
-                    if not settings.downscroll then
-                        love.graphics.scale(0.8, 0.8)
-                        love.graphics.translate(love.graphics.getWidth() / 2, 50)
-                    else
-                        love.graphics.scale(0.8, -0.8)
-                        love.graphics.translate(love.graphics.getWidth() / 2, -1080)
-                    end
-                    for i = 1, #receptors do
-                        if mode == "Keys4" then
-                            love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], 145 + 200 * (i - 1), 0, 0, 1, flipY)
-                        else
-                            love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], -375 + 200 * (i - 1), 0, 0, 1, flipY)
-                        end
-                    end 
                 love.graphics.pop()
 
                 if curJudgement ~= "none" then

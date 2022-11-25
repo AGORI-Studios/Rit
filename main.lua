@@ -34,7 +34,7 @@ function love.load()
     settingsIni.loadSettings()
 
     if settings.downscroll then
-        flipY = -1
+        flipY = 1
     end
 
     scoring = {
@@ -151,8 +151,8 @@ function selectSkin(skin)
     skinIni = skin.ini
     skinFolder = skin.folder
     skinName = skin.name
-    isMultiple = skinIni["skin"]["multiple"]
-    isRotated = skinIni["skin"]["rotated"]
+    notesize = skinIni["skin"]["notesize"]
+    notesize = tonumber(notesize)
     
     hitsound = love.audio.newSource(skinFolder .. "/" .. skinIni["skin"]["hitsound"]:gsub('"', ""), "static")
     hitsound:setVolume(tonumber(skinIni["skin"]["hitsoundVolume"]))
