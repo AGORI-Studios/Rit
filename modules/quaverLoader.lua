@@ -14,6 +14,10 @@ function quaverLoader.load(chart)
             audioPath = audioPath:gsub("AudioFile: ", "")
             audioPath = "song/" .. audioPath
             audioFile = love.audio.newSource(audioPath, "stream")
+            -- if file extension is .mp3
+            if audioPath:find(".mp3") then
+                musicTime = -125
+            end
             print(audioPath)
         end
         if line:find("Mode: ") then

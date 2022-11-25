@@ -64,7 +64,7 @@ end
 
 return {
     enter = function(self)
-        musicTime = -125
+        musicTime = 0
         speed = settings.scrollspeed or 1
         PRESSEDMOMENTS = {
             [1] = 1,

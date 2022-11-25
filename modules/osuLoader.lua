@@ -19,7 +19,7 @@ function osuLoader.load(file)
             if startsWith(raw_line, "//") and startsWith(raw_line, " ") startsWith(raw_line, "_") then 
                 -- just comments, ignore
             end
-
+        end
         line = raw_line
         
         -- trim the line
