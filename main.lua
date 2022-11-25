@@ -1,3 +1,6 @@
+fnfMomentShiz = {
+    true, false
+}
 function love.load()
     __VERSION__ = love.filesystem.read("version.txt")
     require "modules.loveFuncs"
@@ -54,6 +57,7 @@ function love.load()
     game = require "game"
     quaverLoader = require "modules.quaverLoader"
     stepmaniaLoader = require "modules.stepmaniaLoader"
+    fnfLoader = require "modules.fnfLoader"
 
     lovesize = require "lib.lovesize"
     Timer = require "lib.timer"
@@ -92,6 +96,7 @@ function love.load()
 
     choosingSkin = true
     curSkinSelected = 1
+    fnfMomentSelected = 1
     chooseSkin()
 
 end
@@ -266,10 +271,22 @@ function chooseSongDifficulty()
         love.filesystem.createDirectory("songs")
         love.window.showMessageBox("Songs folder created!", "songs folder has been created at " .. love.filesystem.getSaveDirectory() .. "/songs", "info")
     end
+    if not love.filesystem.getInfo("songs/quaver") then
+        love.filesystem.createDirectory("songs/quaver")
+    end
+    if not love.filesystem.getInfo("songs/osu") then
+        love.filesystem.createDirectory("songs/osu")
+    end
+    if not love.filesystem.getInfo("songs/stepmania") then
+        love.filesystem.createDirectory("songs/stepmania")
+    end
+    if not love.filesystem.getInfo("songs/fnf") then
+        love.filesystem.createDirectory("songs/fnf")
+    end
     songList = {}
-    for i, v in ipairs(love.filesystem.getDirectoryItems("songs")) do
-        if love.filesystem.getInfo("songs/" .. v).type == "file" then
-            love.filesystem.mount("songs/" .. v, "song")
+    for i, v in ipairs(love.filesystem.getDirectoryItems("songs/quaver")) do
+        if love.filesystem.getInfo("songs/quaver/" .. v).type == "file" then
+            love.filesystem.mount("songs/quaver/" .. v, "song")
             -- get all .qua files in the .qp file
             for k, j in ipairs(love.filesystem.getDirectoryItems("song")) do
                 --print(j)
@@ -287,31 +304,62 @@ function chooseSongDifficulty()
                             title = title,
                             difficultyName = difficultyName,
                             BackgroundFile = BackgroundFile:sub(2),
-                            path = "song/" .. j
+                            path = "song/" .. j,
+                            type = "Quaver"
                         }
                     end
                 end
             end
-            love.filesystem.unmount("songs/"..v)
+            love.filesystem.unmount("songs/quaver/"..v)
+        end
+    end
+    for i, v in ipairs(love.filesystem.getDirectoryItems("songs/fnf")) do
+        if love.filesystem.getInfo("songs/fnf/" .. v).type == "directory" then
+            local songDir = "songs/fnf/" .. v
+            for k, j in ipairs(love.filesystem.getDirectoryItems(songDir)) do
+                print("3")
+                print(songDir .. "/" .. j)
+                if love.filesystem.getInfo(songDir .. "/" .. j).type == "file" then
+                    if j:sub(-4) == "json" then
+                        gsubbedFile = j:gsub(".json", "")
+                        -- split from the second - (of first if there is one)
+                        local difficultyName = gsubbedFile:match("-(.*)")
+                        songList[#songList + 1] = {
+                            filename = j,
+                            title = json.decode(love.filesystem.read(songDir .. "/" .. j)).song.song,
+                            difficultyName = difficultyName,
+                            BackgroundFile = "None",
+                            path = songDir .. "/" .. j,
+                            type = "FNF"
+                        }
+                    end
+                end
+            end
         end
     end
 end
 
-function selectSongDifficulty(song)
-    song = songList[curSongSelected]
-    filename = song.filename
-    love.filesystem.mount("songs/"..filename, "song")
-    songPath = song.path
-    songTitle = song.title
-    songDifficultyName = song.difficultyName
-    BackgroundFile = love.graphics.newImage("song/" .. song.BackgroundFile)
-    quaverLoader.load(songPath)
-    choosingSong = false
+function selectSongDifficulty(song, chartVer)
+    if chartVer == "Quaver" then
+        song = songList[curSongSelected]
+        filename = song.filename
+        love.filesystem.mount("songs/quaver/"..filename, "song")
+        songPath = song.path
+        songTitle = song.title
+        songDifficultyName = song.difficultyName
+        BackgroundFile = love.graphics.newImage("song/" .. song.BackgroundFile)
+        quaverLoader.load(songPath)
+        choosingSong = false
+    elseif chartVer == "FNF" then
+        fnfChartMoment = true
+        choosingSong = false
+        print("fnfChartMoment")
+    end
 end
 
 function love.update(dt)
     Timer.update(dt)
-    if not choosingSkin and not choosingSong then
+    if not choosingSkin and not choosingSong and not fnfChartMoment then
         game:update(dt)
     elseif choosingSkin then
         if input:pressed("up") then
@@ -325,7 +373,6 @@ function love.update(dt)
                 curSkinSelected = 1
             end
         end
-
         if input:pressed("confirm") then
             selectSkin(curSkinSelected)
         end
@@ -341,17 +388,44 @@ function love.update(dt)
                 curSongSelected = 1
             end
         end
+        if input:pressed("confirm") then
+            selectSongDifficulty(curSongSelected, songList[curSongSelected].type)
+        end
+    elseif fnfChartMoment then
+        if input:pressed("right") then 
+            fnfMomentSelected = fnfMomentSelected + 1
+        elseif input:pressed("left") then
+            fnfMomentSelected = fnfMomentSelected - 1
+        end
+
+        if fnfMomentSelected > #fnfMomentShiz then
+            fnfMomentSelected = 1
+        elseif fnfMomentSelected < 1 then
+            fnfMomentSelected = #fnfMomentShiz
+        end
 
         if input:pressed("confirm") then
-            selectSongDifficulty(curSongSelected)
+            doFnfMoment(fnfMomentShiz[fnfMomentSelected])
         end
     end
     input:update(dt)
 end
 
+function doFnfMoment(fnfMoment)
+    song = songList[curSongSelected]
+    filename = song.filename
+    songPath = song.path
+    songTitle = song.title
+    songDifficultyName = song.difficultyName
+    --BackgroundFile = love.graphics.newImage("song/" .. song.BackgroundFile)
+    fnfLoader.load(songPath, fnfMomentShiz[fnfMomentSelected])
+    choosingSong = false
+    fnfChartMoment = false
+end
+
 function love.draw()
     lovesize.begin()
-        if not choosingSkin and not choosingSong then
+        if not choosingSkin and not choosingSong and not fnfChartMoment then
             game:draw()
             love.graphics.print(
                 "FPS: " .. love.timer.getFPS() ..
@@ -378,6 +452,8 @@ function love.draw()
                 love.graphics.print(v.title .. " - " .. v.difficultyName, 0, i * 35, 0, 2, 2)
                 love.graphics.setColor(1,1,1)
             end
+        elseif fnfChartMoment then
+            love.graphics.print("Play as player? " .. tostring(fnfMomentShiz[fnfMomentSelected]), 0, 0, 0, 2, 2)
         end
     lovesize.finish()
 end

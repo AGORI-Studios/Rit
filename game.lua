@@ -234,7 +234,7 @@ return {
             end
         end
         -- print graphics memory usage
-        print(tostring(math.floor(love.graphics.getStats().texturememory / 1048576)) .. "MB")
+        --print(tostring(math.floor(love.graphics.getStats().texturememory / 1048576)) .. "MB")
     end,
 
     draw = function(self)
