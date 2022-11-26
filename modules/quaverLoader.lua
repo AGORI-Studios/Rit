@@ -51,6 +51,23 @@ function quaverLoader.load(chart)
             print(bpm)
         end
 
+        if not line:find("SliderVelocities: []") then
+            if line:find("- StartTime: ") then -- if the line has "- StartTime: " in it, then it's the line with the note's start time
+                curLine = line
+                startTime = curLine
+                startTime = startTime:gsub("- StartTime: ", "")
+                startTime = tonumber(startTime)
+            end
+            if line:find("Multiplier:") then 
+                curLine = line
+                multiplier = curLine
+                multiplier = multiplier:gsub("Multiplier: ", "")
+                multiplier = tonumber(multiplier)
+
+                table.insert(chartEvents, {startTime, multiplier})
+            end
+        end
+
         if not line:find("HitObjects:") and not line:find("HitObjects: []") then
             if line:find("- StartTime: ") then
                 curLine = line

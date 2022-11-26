@@ -97,14 +97,19 @@ return {
         scoring["Miss"] = 0
         combo = 0
 
+        sv = {1} -- Scroll Velocity
+
+        chartEvents = {}
+
         curJudgement = "none"
     end,
 
     update = function(self, dt)
         if musicTimeDo then
             musicTime = musicTime + 1000 * dt
-            musicPos = musicTime * speed+100
+            musicPos = ((musicTime) * (speed)+100)
         end
+        absMusicTime = math.abs(musicTime)
         for i = 1, #charthits do
             for j = 1, #charthits[i] do
                 if charthits[i][j] then
@@ -136,6 +141,14 @@ return {
             end
         end
 
+        if chartEvents[1] then
+            if chartEvents[1][1] <= absMusicTime then
+                if settings.scrollvelocities then sv[1] = chartEvents[1][2] end
+                --print(sv[1])
+                table.remove(chartEvents, 1)
+            end
+        end
+
         for i = 1, #inputList do
             curInput = inputList[i]
             notes = charthits[i]
@@ -158,7 +171,7 @@ return {
                     noteCounter = noteCounter + 1
                     if notes[1][1] - musicTime >= -50 and notes[1][1] - musicTime <= 150 then
                         --print("Hit!")
-                        print(notes[1][1] - musicTime .. "ms")
+                        --print(notes[1][1] - musicTime .. "ms")
                         pos = math.abs(notes[1][1] - musicTime)
                         if pos < 45 then
                             judgement = "Marvellous"
@@ -254,25 +267,25 @@ return {
                 love.graphics.push()
                     love.graphics.translate(love.graphics.getWidth() / 2, 50)
                     
-                    love.graphics.translate(0, -musicPos)
+                    love.graphics.translate(0, -musicPos * sv[1])
                     
                     for i = 1, #charthits do
                         for j = #charthits[i], 1, -1 do
-                            if charthits[i][j][1]/speed - musicPos <= 800 then
+                            --if (charthits[i][j][1] * sv[1])/speed - (musicPos * sv[1]) <= 800 then
                                 if mode == "Keys4" then
                                     if not charthits[i][j][5] then
                                         if charthits[i][j][4] then
-                                            love.graphics.draw(noteImgs[i][2], -45 + 200 * (i - 1), charthits[i][j][1]*speed+200-100, 0, notesize, notesize)
+                                            love.graphics.draw(noteImgs[i][2], -45 + 200 * (i - 1), (charthits[i][j][1]*speed+200-100) * sv[1], 0, notesize, notesize)
                                         else 
-                                            love.graphics.draw(noteImgs[i][1], -45 + 200 * (i - 1), charthits[i][j][1]*speed+200-24.5-100, 0, notesize, notesize)
+                                            love.graphics.draw(noteImgs[i][1], -45 + 200 * (i - 1), (charthits[i][j][1]*speed+200-24.5-100) * sv[1], 0, notesize, notesize)
                                         end
                                     else
-                                        love.graphics.draw(noteImgs[i][3], -45 + 200 * (i - 1), charthits[i][j][1]*speed+200+95+24.5-100, 0, notesize, -notesize)
+                                        love.graphics.draw(noteImgs[i][3], -45 + 200 * (i - 1), (charthits[i][j][1]*speed+200+95+24.5-100) * sv[1], 0, notesize, -notesize)
                                     end
                                 else
-                                    love.graphics.draw(charthits[i][j][3], -375 + 200 * (i - 1), charthits[i][j][1]*speed+200-100, 0, notesize, notesize)
+                                    love.graphics.draw(charthits[i][j][3], -375 + 200 * (i - 1), (charthits[i][j][1]*speed+200-100) * sv[1], 0, notesize, notesize)
                                 end
-                            end
+                            --end
                         end
                     end
                 love.graphics.pop()
