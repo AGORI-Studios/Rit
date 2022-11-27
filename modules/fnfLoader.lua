@@ -97,6 +97,9 @@ function fnfLoader.load(chart, isPlayer)
                 end
             end
         end
+        for i = 1, 4 do 
+            table.sort(charthits[i], function(a, b) return a[1] < b[1] end)
+        end
     end
 
     if voices then

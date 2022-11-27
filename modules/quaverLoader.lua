@@ -15,9 +15,6 @@ function quaverLoader.load(chart)
             audioPath = "song/" .. audioPath
             audioFile = love.audio.newSource(audioPath, "stream")
             -- if file extension is .mp3
-            if audioPath:find(".mp3") then
-                musicTime = -125
-            end
             print(audioPath)
         end
         if line:find("Mode: ") then
@@ -51,7 +48,7 @@ function quaverLoader.load(chart)
             print(bpm)
         end
 
-        if not line:find("SliderVelocities: []") then
+        if not line:find("SliderVelocities:") then
             if line:find("- StartTime: ") then -- if the line has "- StartTime: " in it, then it's the line with the note's start time
                 curLine = line
                 startTime = curLine

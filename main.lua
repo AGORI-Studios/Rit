@@ -1,3 +1,4 @@
+local desktopWidth, desktopHeight = love.window.getDesktopDimensions()
 fnfMomentShiz = {
     true, false
 }
@@ -59,7 +60,7 @@ function love.load()
     stepmaniaLoader = require "modules.stepmaniaLoader"
     fnfLoader = require "modules.fnfLoader"
 
-    lovesize = require "lib.lovesize"
+    push = require "lib.push"
     Timer = require "lib.timer"
     charthits = {}
     for i = 1, 4 do
@@ -91,8 +92,8 @@ function love.load()
     health = 100
     game:enter()
 
-    love.window.setMode(settings.width, settings.height, {resizable = false, vsync = settings.vsync, fullscreen = settings.fullscreen})
-    lovesize.set(1920, 1080)
+    love.window.setMode(settings.width, settings.height, {resizable = true, vsync = settings.vsync, fullscreen = settings.fullscreen})
+    push.setupScreen(1920, 1080, {upscale = "normal"})
 
     choosingSkin = true
     curSkinSelected = 1
@@ -102,7 +103,7 @@ function love.load()
 end
 
 function love.resize(w, h)
-    lovesize.resize(w, h)
+    push.resize(w, h)
 end
 
 function chooseSkin()
@@ -436,7 +437,7 @@ function doFnfMoment(fnfMoment)
 end
 
 function love.draw()
-    lovesize.begin()
+    push.start()
         if not choosingSkin and not choosingSong and not fnfChartMoment then
             game:draw()
             love.graphics.print(
@@ -467,7 +468,7 @@ function love.draw()
         elseif fnfChartMoment then
             love.graphics.print("Play as player? " .. tostring(fnfMomentShiz[fnfMomentSelected]), 0, 0, 0, 2, 2)
         end
-    lovesize.finish()
+    push.finish()
 end
 
 -- test push

@@ -169,26 +169,26 @@ return {
                 if notes[1] then
                     --print(notes[1][1] - musicPos)
                     noteCounter = noteCounter + 1
-                    if notes[1][1] - musicTime >= -50 and notes[1][1] - musicTime <= 150 then
+                    if notes[1][1] - musicTime >= -80 and notes[1][1] - musicTime <= 135 then
                         --print("Hit!")
                         --print(notes[1][1] - musicTime .. "ms")
                         pos = math.abs(notes[1][1] - musicTime)
-                        if pos < 45 then
+                        if pos < 30 then
                             judgement = "Marvellous"
                             health = health + 2
                             additionalScore = additionalScore + 650
                             additionalAccuracy = additionalAccuracy + 100
-                        elseif pos < 65 then
+                        elseif pos < 45 then
                             judgement = "Perfect"
                             health = health + 2
                             additionalScore = additionalScore + 500
                             additionalAccuracy = additionalAccuracy + 75.55
-                        elseif pos < 90 then
+                        elseif pos < 60 then
                             judgement = "Great"
                             health = health + 2
                             additionalScore = additionalScore + 350
                             additionalAccuracy = additionalAccuracy + 66.66
-                        elseif pos < 130 then
+                        elseif pos < 75 then
                             judgement = "Good"
                             health = health + 2
                             additionalScore = additionalScore + 200
@@ -237,7 +237,7 @@ return {
                 PRESSEDMOMENTS[i] = 2
                 if notes[1] then
                     if notes[1][4] then
-                        if notes[1][1] - musicTime >= -50 and notes[1][1] - musicTime <= 50 then
+                        if notes[1][1] - musicTime >= -50 and notes[1][1] - musicTime <= 10 then
                             table.remove(notes, 1)
                         end
                     end
@@ -254,18 +254,18 @@ return {
         if audioFile and audioFile:isPlaying() then
             love.graphics.push()
                 love.graphics.push()
-                    love.graphics.translate(love.graphics.getWidth() / 2, 50)
+                    love.graphics.translate(push.getWidth() / 2 - 175, 50)
                     for i = 1, #receptors do
                         if mode == "Keys4" then
-                            love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], -45 + 200 * (i - 1), 0, 0, notesize, notesize)
+                            love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], -45 + 200 * (i - 1) - 275/2, 0, 0, notesize, notesize)
                         else
-                            love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], -375 + 200 * (i - 1), 0, 0, notesize, notesize)
+                            love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], -375 + 200 * (i - 1) - 275/2, 0, 0, notesize, notesize)
                         end
                     end 
                 love.graphics.pop()
 
                 love.graphics.push()
-                    love.graphics.translate(love.graphics.getWidth() / 2, 50)
+                    love.graphics.translate(push.getWidth() / 2 - 175, 50)
                     
                     love.graphics.translate(0, -musicPos * sv[1])
                     
@@ -275,15 +275,15 @@ return {
                                 if mode == "Keys4" then
                                     if not charthits[i][j][5] then
                                         if charthits[i][j][4] then
-                                            love.graphics.draw(noteImgs[i][2], -45 + 200 * (i - 1), (charthits[i][j][1]*speed+200-100) * sv[1], 0, notesize, notesize)
+                                            love.graphics.draw(noteImgs[i][2], -45 + 200 * (i - 1) - 275/2, (charthits[i][j][1]*speed+200) * sv[1], 0, notesize, notesize)
                                         else 
-                                            love.graphics.draw(noteImgs[i][1], -45 + 200 * (i - 1), (charthits[i][j][1]*speed+200-24.5-100) * sv[1], 0, notesize, notesize)
+                                            love.graphics.draw(noteImgs[i][1], -45 + 200 * (i - 1) - 275/2, (charthits[i][j][1]*speed+200-24.5) * sv[1], 0, notesize, notesize)
                                         end
                                     else
-                                        love.graphics.draw(noteImgs[i][3], -45 + 200 * (i - 1), (charthits[i][j][1]*speed+200+95+24.5-100) * sv[1], 0, notesize, -notesize)
+                                        love.graphics.draw(noteImgs[i][3], -45 + 200 * (i - 1) - 275/2, (charthits[i][j][1]*speed+200+95+24.5) * sv[1], 0, notesize, -notesize)
                                     end
                                 else
-                                    love.graphics.draw(charthits[i][j][3], -375 + 200 * (i - 1), (charthits[i][j][1]*speed+200-100) * sv[1], 0, notesize, notesize)
+                                    love.graphics.draw(charthits[i][j][3], -375 + 200 * (i - 1) - 275/2, (charthits[i][j][1]*speed+200) * sv[1], 0, notesize, notesize)
                                 end
                             --end
                         end
@@ -291,13 +291,13 @@ return {
                 love.graphics.pop()
 
                 if curJudgement ~= "none" then
-                    love.graphics.draw(judgementImages[curJudgement], love.graphics.getWidth() / 2+325, love.graphics.getHeight() / 2, 0, ratingsize.x, ratingsize.y, judgementImages[curJudgement]:getWidth() / 2, judgementImages[curJudgement]:getHeight() / 2)
+                    love.graphics.draw(judgementImages[curJudgement], push.getWidth() / 2+325-275, push.getHeight() / 2, 0, ratingsize.x, ratingsize.y, judgementImages[curJudgement]:getWidth() / 2, judgementImages[curJudgement]:getHeight() / 2)
                 end
                 if combo > 0 then
                     love.graphics.draw(
                         comboImages[1][combo % 10],
-                        love.graphics.getWidth() / 2+360,
-                        love.graphics.getHeight() / 2+100,
+                        push.getWidth() / 2+360 - 275,
+                        push.getHeight() / 2+100,
                         0,
                         comboSize.x,
                         comboSize.y,
@@ -306,8 +306,8 @@ return {
                     )
                     love.graphics.draw(
                         comboImages[2][math.floor(combo / 10 % 10)],
-                        love.graphics.getWidth() / 2+330,
-                        love.graphics.getHeight() / 2+100,
+                        push.getWidth() / 2+330 - 275,
+                        push.getHeight() / 2+100,
                         0,
                         comboSize.x,
                         comboSize.y,
@@ -316,8 +316,8 @@ return {
                     )
                     love.graphics.draw(
                         comboImages[3][math.floor(combo / 100 % 10)],
-                        love.graphics.getWidth() / 2+300,
-                        love.graphics.getHeight() / 2+100,
+                        push.getWidth() / 2+300 - 275,
+                        push.getHeight() / 2+100,
                         0,
                         comboSize.x,
                         comboSize.y,
@@ -325,8 +325,8 @@ return {
                         comboImages[3][math.floor(combo / 100 % 10)]:getHeight() / 2
                     )
                 end
-                love.graphics.translate(love.graphics.getWidth() / 2, 0)
-                love.graphics.rectangle("fill", -650, 0, health * 8+10, 20, 10, 10)
+                love.graphics.translate(push.getWidth() / 2, 0)
+                love.graphics.rectangle("fill", -1000, 0, health * 8+10, 20, 10, 10)
 
                 love.graphics.setFont(scoreFont)
                 scoreFormat = string.format("%07d", round(scoring.score))
