@@ -169,26 +169,26 @@ return {
                 if notes[1] then
                     --print(notes[1][1] - musicPos)
                     noteCounter = noteCounter + 1
-                    if notes[1][1] - musicTime >= -80 and notes[1][1] - musicTime <= 135 then
+                    if notes[1][1] - musicTime >= -80 and notes[1][1] - musicTime <= 180 then
                         --print("Hit!")
                         --print(notes[1][1] - musicTime .. "ms")
                         pos = math.abs(notes[1][1] - musicTime)
-                        if pos < 30 then
+                        if pos < 45 then
                             judgement = "Marvellous"
                             health = health + 2
                             additionalScore = additionalScore + 650
                             additionalAccuracy = additionalAccuracy + 100
-                        elseif pos < 45 then
+                        elseif pos < 60 then
                             judgement = "Perfect"
                             health = health + 2
                             additionalScore = additionalScore + 500
                             additionalAccuracy = additionalAccuracy + 75.55
-                        elseif pos < 60 then
+                        elseif pos < 75 then
                             judgement = "Great"
                             health = health + 2
                             additionalScore = additionalScore + 350
                             additionalAccuracy = additionalAccuracy + 66.66
-                        elseif pos < 75 then
+                        elseif pos < 90 then
                             judgement = "Good"
                             health = health + 2
                             additionalScore = additionalScore + 200
