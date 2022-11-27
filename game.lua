@@ -237,7 +237,7 @@ return {
                 PRESSEDMOMENTS[i] = 2
                 if notes[1] then
                     if notes[1][4] then
-                        if notes[1][1] - musicTime >= -50 and notes[1][1] - musicTime <= 10 then
+                        if notes[1][1] - musicTime >= -80 and notes[1][1] - musicTime <= 25 then
                             table.remove(notes, 1)
                         end
                     end
