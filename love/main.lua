@@ -89,9 +89,9 @@ function love.load()
         charthits[i] = {}
     end
     curSongSelected = 1
-    font = love.graphics.newFont("fonts/Dosis-Semibold.ttf", 16)
-    scoreFont = love.graphics.newFont("fonts/Dosis-Semibold.ttf", 64)
-    accuracyFont = love.graphics.newFont("fonts/Dosis-Semibold.ttf", 48)
+    font = love.graphics.newFont("fonts/Dosis-SemiBold.ttf", 16)
+    scoreFont = love.graphics.newFont("fonts/Dosis-SemiBold.ttf", 64)
+    accuracyFont = love.graphics.newFont("fonts/Dosis-SemiBold.ttf", 48)
     love.graphics.setFont(font)
     love.graphics.setDefaultFilter("nearest", "nearest")
 
