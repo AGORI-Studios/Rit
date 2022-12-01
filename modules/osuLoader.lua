@@ -1,162 +1,65 @@
 local osuLoader = {}
 
-local function stripComments(str)
+lineCount = 0
+function osuLoader.load(chart)
+    curChart = "osu!"
+    local file = love.filesystem.read(chart)
+    lines = love.filesystem.lines(chart)
+    local readChart = false
 
-function osuLoader.load(file)
-    if file == nil then
-        return
-    end
-    osuHitObject = {}
-    timingPoint = {}
-
-    isValid = true
-    originalFileName = file
-
-    section = ""
-
-    for raw_line in love.filesystem.lines(love.filesystem.read(file)) do
-        if file then
-            if startsWith(raw_line, "//") and startsWith(raw_line, " ") startsWith(raw_line, "_") then 
-                -- just comments, ignore
-            end
+    for line in lines do 
+        lineCount = lineCount + 1
+        if line:find("AudioFilename: ") then 
+            curLine = line
+            local audioPath = curLine:gsub("AudioFilename: ", "")
+            audioPath = "song/" .. audioPath
+            audioFile = love.audio.newSource(audioPath, "stream")
         end
-        line = raw_line
-        
-        -- trim the line
-        
-        lineNew = line:gsub("^%s*(.-)%s*$", "%1")
-
-        if lineNew == "[General]" then
-            section = "General"
-        elseif lineNew == "[Editor]" then
-            section = "Editor"
-        elseif lineNew == "[Metadata]" then
-            section = "Metadata"
-        elseif lineNew == "[Difficulty]" then
-            section = "Difficulty"
-        elseif lineNew == "[Events]" then
-            section = "Events"
-        elseif lineNew == "[TimingPoints]" then
-            section = "TimingPoints"
-        elseif lineNew == "[Colours]" then
-            section = "Colours"
-        elseif lineNew == "[HitObjects]" then
-            section = "HitObjects"
-        else 
+        mode = "Keys4"
+        bpm = 0
+        if line:find("[HitObjects]") then 
+            readChart = true
         end
+        if line:find(",") then 
+            local x, y, startTime, type, idk, endtime = line:match("([^,]+),([^,]+),([^,]+),([^,]+),([^,]+)")
+            x = tonumber(x)
+            if x < 500 then
+                curLine = line
+                lane = x / 128
+                lane = math.floor(lane)
+                startTime = tonumber(startTime)
+                type = tonumber(type)
+                hitSound = hitSound
 
-        if section == "[General]" then
-            if line:find(":") then
-                -- line substring
-                local key = line:sub(1, line:find(":") - 1)
-                local value = line.split(line, ":"):gsub("^%s*(.-)%s*$", "%1")
-
-                if line:find("AudioFilename") then
-                    audioFilename = value
-                elseif line:find("AudioLeadIn") then
-                    audioLeadIn = value
-                elseif line:find("PreviewTime") then
-                    previewTime = value
-                elseif line:find("Countdown") then
-                    countdown = value
-                elseif line:find("SampleSet") then
-                    sampleSet = value
-                elseif line:find("StackLeniency") then
-                    stackLeniency = value
-                elseif line:find("Mode") then
-                    mode = value
-                elseif line:find("LetterboxInBreaks") then
-                    letterboxInBreaks = value
-                elseif line:find("SpecialStyle") then
-                    specialStyle = value
-                elseif line:find("WidescreenStoryboard") then
-                    widescreenStoryboard = value
+                if lane > 4 then
+                    print("This is not a 4k chart!\nSupport for 5k+ charts will be added in the future.")
+                    choosingSong = true
+                    break
                 end
-
-            elseif section == "[Metadata]" then
-                if line:find(":") then
-                    -- line substring
-                    local key = line:sub(1, line:find(":") - 1)
-                    local value = line.split(line, ":"):gsub("^%s*(.-)%s*$", "%1")
-
-                    if line:find("Title") then
-                        title = value
-                    elseif line:find("TitleUnicode") then
-                        titleUnicode = value
-                    elseif line:find("Artist") then
-                        artist = value
-                    elseif line:find("ArtistUnicode") then
-                        artistUnicode = value
-                    elseif line:find("Creator") then
-                        creator = value
-                    elseif line:find("Version") then
-                        version = value
-                    elseif line:find("Source") then
-                        source = value
-                    elseif line:find("Tags") then
-                        tags = value
-                    elseif line:find("BeatmapID") then
-                        beatmapID = value
-                    elseif line:find("BeatmapSetID") then
-                        beatmapSetID = value
+                
+                if startTime == nil then 
+                    startTime = 0
+                end
+                charthits[lane + 1][#charthits[lane+1] + 1] = {startTime, 0, 1, false}
+                if endtime then 
+                    length = startTime - endtime
+                    if length ~= startTime then 
+                        for i = 1, length, 95/2/speed do 
+                            if i + 95/2/speed < length then 
+                                charthits[lane+1][#charthits[lane+1] + 1] = {startTime+i, 0, 1, true}
+                            else
+                                charthits[lane+1][#charthits[lane+1] + 1] = {startTime+i, 0, 1, true, true}
+                            end
+                        end
                     end
                 end
-
-            elseif section == "[TimingPoints]" then
-                if line:find(",") then
-                    values = line.split(line, ",")
-
-                    msecPerBeat = values[1]
-
-                    timingPoint.append(
-                        {
-                            Offset = values[1],
-                            MillisecondsPerBeat = msecPerBeat,
-                            Signature = values[3] == 0
-                        }
-                    )
-
-            elseif section == "[Difficulty]" then
-                if line:find(":") then
-                    -- line substring
-                    local key = line:sub(1, line:find(":") - 1)
-                    local value = line.split(line, ":"):gsub("^%s*(.-)%s*$", "%1")
-
-                    if line:find("HPDrainRate") then
-                        hpDrainRate = value
-                    elseif line:find("CircleSize") then
-                        circleSize = value
-                    elseif line:find("OverallDifficulty") then
-                        overallDifficulty = value
-                    elseif line:find("ApproachRate") then
-                        approachRate = value
-                    elseif line:find("SliderMultiplier") then
-                        sliderMultiplier = value
-                    elseif line:find("SliderTickRate") then
-                        sliderTickRate = value
-                    end
-                end
-            elseif section == "[HitObjects]" then
-                if line:find(",") then
-                   values = line.split(line, ",")
-                    osuHitObject.append(
-                        {
-                            x = values[1],
-                            y = values[2],
-                            StartTime = values[3],
-                            Type = values[4],
-                            Additions = "0:0:0:0:"
-                        }
-                    )
-                end
+                -- TODO!!!!!!
+                -- add hold notes
             end
         end
     end
-
-    -- now we convert the osuHitObject to a normal hit object so Rit can read it 
-
-
-    
+    audioFile:play()
+    musicTimeDo = true
 end
 
 return osuLoader

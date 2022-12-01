@@ -57,6 +57,7 @@ function love.load()
     receptors = {}
     game = require "game"
     quaverLoader = require "modules.quaverLoader"
+    osuLoader = require "modules.osuLoader"
     stepmaniaLoader = require "modules.stepmaniaLoader"
     fnfLoader = require "modules.fnfLoader"
 
@@ -326,6 +327,33 @@ function chooseSongDifficulty()
             love.filesystem.unmount("songs/quaver/"..v)
         end
     end
+    for i, v in ipairs(love.filesystem.getDirectoryItems("songs/osu")) do 
+        if love.filesystem.getInfo("songs/osu/" .. v).type == "file" then
+            love.filesystem.mount("songs/osu/" .. v, "song")
+            -- get all .qua files in the .qp file
+            for k, j in ipairs(love.filesystem.getDirectoryItems("song")) do
+                --print(j)
+                --print(love.filesystem.getInfo("song/" .. j).type == "file")
+                if love.filesystem.getInfo("song/" .. j).type == "file" then
+                    --print("ok so")
+                    if j:sub(-4) == ".osu" then
+                        --print(j)
+                        --print(love.filesystem.getInfo("song/" .. j).type == "file")
+                        local title = love.filesystem.read("song/" .. j):match("Title:(.-)\r?\n")
+                        local difficultyName = love.filesystem.read("song/" .. j):match("Version:(.-)\r?\n")
+                        songList[#songList + 1] = {
+                            filename = v,
+                            title = title,
+                            difficultyName = difficultyName,
+                            path = "song/" .. j,
+                            type = "osu!"
+                        }
+                    end
+                end
+            end
+            love.filesystem.unmount("songs/osu/"..v)
+        end
+    end
     for i, v in ipairs(love.filesystem.getDirectoryItems("songs/fnf")) do
         if love.filesystem.getInfo("songs/fnf/" .. v).type == "directory" then
             local songDir = "songs/fnf/" .. v
@@ -362,6 +390,14 @@ function selectSongDifficulty(song, chartVer)
         songDifficultyName = song.difficultyName
         BackgroundFile = love.graphics.newImage("song/" .. song.BackgroundFile)
         quaverLoader.load(songPath)
+        choosingSong = false
+    elseif chartVer == "osu!" then 
+        song = songList[curSongSelected]
+        filename = song.filename
+        love.filesystem.mount("songs/osu/"..filename, "song")
+        songPath = song.path
+        songTitle = song.title
+        osuLoader.load(songPath)
         choosingSong = false
     elseif chartVer == "FNF" then
         fnfChartMoment = true
