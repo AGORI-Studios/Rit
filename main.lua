@@ -378,6 +378,28 @@ function chooseSongDifficulty()
             end
         end
     end
+    for i, v in ipairs(love.filesystem.getDirectoryItems("songs/stepmania")) do 
+        -- stepmania songs are in folders
+        if love.filesystem.getInfo("songs/stepmania/" .. v).type == "directory" then
+            local songDir = "songs/stepmania/" .. v
+            for k, j in ipairs(love.filesystem.getDirectoryItems(songDir)) do
+                if love.filesystem.getInfo(songDir .. "/" .. j).type == "file" then
+                    if j:sub(-3) == ".sm" then
+                        local title = love.filesystem.read(songDir .. "/" .. j):match("#TITLE:(.-);")
+                        local difficultyName = love.filesystem.read(songDir .. "/" .. j):match("#CREDIT:(.-);")
+                        songList[#songList + 1] = {
+                            filename = v,
+                            title = title,
+                            difficultyName = difficultyName,
+                            BackgroundFile = "None",
+                            path = songDir .. "/" .. j,
+                            type = "Stepmania"
+                        }
+                    end
+                end
+            end
+        end
+    end
 end
 
 function selectSongDifficulty(song, chartVer)
@@ -403,6 +425,13 @@ function selectSongDifficulty(song, chartVer)
         fnfChartMoment = true
         choosingSong = false
         print("fnfChartMoment")
+    elseif chartVer == "Stepmania" then
+        song = songList[curSongSelected]
+        filename = song.filename
+        songPath = song.path
+        songTitle = song.title
+        stepmaniaLoader.load(songPath, filename)
+        choosingSong = false
     end
 end
 
