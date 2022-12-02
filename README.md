@@ -25,7 +25,7 @@
 - GuglioIsStupid - Programming
 
 ### Notes
-- This game is still in development, so expect bugs and glitches
+- This game is still in development, so ***expect*** bugs and glitches
 - If you wish for your assets to be removed, please contact me via email at [guglioisbusiness@gmail.com](mailto:guglioisbusiness@gmail.com) or via discord at GuglioIsStupid#8008
 
 ### License
@@ -39,4 +39,4 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 - Ulysse Ramage - [push.lua](/love/lib/push.lua) - The resolution handling library used
 - Mattias Richard - [timer.lua](/love/lib/timer.lua) - The tweening library used (Apart of HUMP)
 
-#### This project is not affiliated with Quaver, osu!, or any other rhythm game.
+#### This project is not affiliated with [Quaver](https://quavergame.com), [osu!](https://osu.ppy.sh/home), or any other rhythm game.
