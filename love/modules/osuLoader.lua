@@ -42,8 +42,8 @@ function osuLoader.load(chart)
             readChart = true
         end
         if line:find(",") then 
-            local x, y, startTime, type, idk, endtime = line:match("([^,]+),([^,]+),([^,]+),([^,]+),([^,]+)")
-            x = tonumber(x)
+            local x, y, startTime, type, idk, endtime = line:match("([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+)")
+            x = tonumber(x) or 128
             if x < 500 then
                 curLine = line
                 lane = x / 128
@@ -51,7 +51,6 @@ function osuLoader.load(chart)
                 startTime = tonumber(startTime)
                 type = tonumber(type)
                 hitSound = hitSound
-
                 if lane > 4 then
                     print("This is not a 4k chart!\nSupport for 5k+ charts will be added in the future.")
                     choosingSong = true
@@ -63,7 +62,10 @@ function osuLoader.load(chart)
                 end
                 charthits[lane + 1][#charthits[lane+1] + 1] = {startTime, 0, 1, false}
                 if endtime then 
-                    length = startTime - endtime
+                    -- get the first number from 0:0:0:0 from the endtime
+                    endtime = endtime:match("([^:]+)")
+                    endtime = tonumber(endtime)
+                    length = endtime - startTime
                     if length ~= startTime then 
                         for i = 1, length, 95/2/speed do 
                             if i + 95/2/speed < length then 
@@ -74,8 +76,6 @@ function osuLoader.load(chart)
                         end
                     end
                 end
-                -- TODO!!!!!!
-                -- add hold notes
             end
         end
     end
