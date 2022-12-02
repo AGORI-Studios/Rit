@@ -544,6 +544,16 @@ function doFnfMoment(fnfMoment)
     fnfChartMoment = false
 end
 
+function love.keypressed(key)
+    if key == "escape" then
+        love.event.quit()
+    end
+
+    if key == "k" and choosingSong or choosingSkin then
+        love.system.openURL("https://ko-fi.com/A0A8GRXMX")
+    end
+end
+
 function love.draw()
     push.start()
         if not choosingSkin and not choosingSong and not fnfChartMoment then
@@ -575,6 +585,11 @@ function love.draw()
             end
         elseif fnfChartMoment then
             love.graphics.print("Play as player? " .. tostring(fnfMomentShiz[fnfMomentSelected]), 0, 0, 0, 2, 2)
+        end
+
+        if choosingSong or choosingSkin then
+            -- set x and y to bottom left corner of screen
+            love.graphics.print("Press K to open my Ko-fi page!", 1545, 1040, 0, 2, 2)
         end
     push.finish()
 end

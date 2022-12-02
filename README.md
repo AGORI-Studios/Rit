@@ -39,4 +39,7 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 - Ulysse Ramage - [push.lua](/love/lib/push.lua) - The resolution handling library used
 - Mattias Richard - [timer.lua](/love/lib/timer.lua) - The tweening library used (Apart of HUMP)
 
+### Support the project!
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/A0A8GRXMX)
+
 #### This project is not affiliated with [Quaver](https://quavergame.com), [osu!](https://osu.ppy.sh/home), or any other rhythm game.
