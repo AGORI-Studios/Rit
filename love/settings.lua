@@ -27,6 +27,8 @@ downscroll = True
 scrollspeed = 1.0
 ; Currently WIP, while it works, it's not recommended to use it
 Scroll Velocities = False
+; Start time is for the amount of time to wait before the song starts (In milliseconds)
+startTime = 700
 
 [Graphics]
 width = 1280
@@ -38,7 +40,7 @@ vsync = False
 volume = 1.0
 
 [System]
-version = 0.0.1-beta
+version = 0.0.2-beta
 ]]
 
 function settingsIni.loadSettings()
@@ -48,12 +50,13 @@ function settingsIni.loadSettings()
     end
     inifile = ini.load("settings.ini")
     settings.version = inifile["System"]["version"] or "Unknown"
-    if settings.version ~= "0.0.1-beta" then
+    if settings.version ~= "0.0.2-beta" then
         love.filesystem.write("settings.ini", settingsStr)
     end
     settings.downscroll = inifile["Game"]["downscroll"]
     settings.scrollspeed = inifile["Game"]["scrollspeed"]
     settings.scrollvelocities = inifile["Game"]["Scroll Velocities"]
+    settings.startTime = inifile["Game"]["startTime"]
 
     settings.width = inifile["Graphics"]["width"]
     settings.height = inifile["Graphics"]["height"]
@@ -65,6 +68,7 @@ function settingsIni.loadSettings()
     settings.downscroll = settings.downscroll == "True"
     settings.scrollspeed = tonumber(settings.scrollspeed)
     settings.scrollvelocities = settings.scrollvelocities == "True"
+    settings.startTime = tonumber(settings.startTime)
     
     settings.width = tonumber(settings.width)
     settings.height = tonumber(settings.height)

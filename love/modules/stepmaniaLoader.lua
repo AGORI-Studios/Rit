@@ -72,7 +72,6 @@ function stepLoader.load(chart, foldername)
         end
     end
 
-    audioFile:play()
     musicTimeDo = true
 end
 

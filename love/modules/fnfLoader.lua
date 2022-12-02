@@ -122,11 +122,6 @@ function fnfLoader.load(chart, isPlayer)
             table.sort(charthits[i], function(a, b) return a[1] < b[1] end)
         end
     end
-
-    if voices then
-        voices:play()
-    end
-    audioFile:play()
     musicTimeDo = true
 end                    
 

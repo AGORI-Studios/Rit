@@ -121,7 +121,6 @@ function quaverLoader.load(chart)
         end
     end
     --audioFile:setPitch(songRate)
-    audioFile:play()
     musicTimeDo = true
 end
 

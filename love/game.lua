@@ -85,7 +85,7 @@ end
 
 return {
     enter = function(self)
-        musicTime = 0
+        musicTime = -settings.startTime 
         speed = settings.scrollspeed or 1
         PRESSEDMOMENTS = {
             [1] = 1,
@@ -131,6 +131,16 @@ return {
             musicPos = ((musicTime) * (speed)+100)
         end
         absMusicTime = math.abs(musicTime)
+        if (musicTime > 0) and not audioFile:isPlaying() then
+            audioFile:play()
+            if voices then -- support for fnf voices
+                voices:play()
+            end
+            print(":3")
+        elseif musicTime > audioFile:getDuration() * 1000 then
+            print("end")
+            love.event.quit("restart")
+        end
         for i = 1, #charthits do
             for j = 1, #charthits[i] do
                 if charthits[i][j] then
@@ -298,7 +308,7 @@ return {
                                         if charthits[i][j][4] then
                                             love.graphics.draw(noteImgs[i][2], -45 + 200 * (i - 1) - 275/2, (charthits[i][j][1]*speed+200) * sv[1], 0, notesize, notesize)
                                         else 
-                                            love.graphics.draw(noteImgs[i][1], -45 + 200 * (i - 1) - 275/2, (charthits[i][j][1]*speed+200-24.5) * sv[1], 0, notesize, notesize)
+                                            love.graphics.draw(noteImgs[i][1], -45 + 200 * (i - 1) - 275/2, (charthits[i][j][1]*speed+200-98) * sv[1], 0, notesize, notesize)
                                         end
                                     else
                                         love.graphics.draw(noteImgs[i][3], -45 + 200 * (i - 1) - 275/2, (charthits[i][j][1]*speed+200+95+24.5) * sv[1], 0, notesize, -notesize)
@@ -346,7 +356,7 @@ return {
                         comboImages[3][math.floor(combo / 100 % 10)]:getHeight() / 2
                     )
                 end
-                love.graphics.translate(push.getWidth() / 2, 0)
+                love.graphics.translate(push.getWidth() / 2, 50)
                 love.graphics.rectangle("fill", -1000, 0, health * 8+10, 20, 10, 10)
 
                 love.graphics.setFont(scoreFont)

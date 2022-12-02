@@ -79,7 +79,6 @@ function osuLoader.load(chart)
             end
         end
     end
-    audioFile:play()
     musicTimeDo = true
 end
 
