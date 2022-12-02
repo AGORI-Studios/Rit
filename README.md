@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="https://github.com/GuglioIsStupid/Rit/blob/main/LICENSE"><img src="https://img.shields.io/github/license/GuglioIsStupid/Rit?style=flat-square">
+    <a href="https://github.com/GuglioIsStupid/Rit/blob/master/LICENSE"><img src="https://img.shields.io/github/license/GuglioIsStupid/Rit?style=flat-square">
     <a href="https://discord.gg/ehY5gMMPW8"><img src="https://img.shields.io/discord/933976593137803276?style=flat-square">
     <a href="https://github.com/GuglioIsStupid/Rit/issues"><img src="https://img.shields.io/github/issues/GuglioIsStupid/Rit?style=flat-square" alt="Issues">
     <a href="#"> <!--To fix our click title to relocate thing-->
