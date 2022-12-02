@@ -9,7 +9,7 @@
 ## A free and open sourced rhythm game made with LÖVE.
 
 ### How to play
-- Download the source code from https://github.com/GuglioIsStupid/Rit
+- Download the source code from [https://github.com/GuglioIsStupid/Rit](https://github.com/GuglioIsStupid/Rit/archive/refs/heads/master.zip)
 - Extract the zip file
 - Run the game via dragging and dropping the folder onto the love.exe file
 - Add songs to the songs folder in their respective folders. (Quaver in quaver, osu in osu, etc.)
