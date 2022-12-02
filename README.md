@@ -26,7 +26,7 @@
 
 ### Notes
 - This game is still in development, so expect bugs and glitches
-- If you wish for your assets to be removed, please contact me via email at [guglioisbusiness@gmail.com](mailto:guglioisbusiness@gmail.com) or via discord at [GuglioIsStupid#8008](https://discord.gg/kpXwCDPd) (Note: Pressing this WILL add you as a friend on discord right away, so be careful)
+- If you wish for your assets to be removed, please contact me via email at [guglioisbusiness@gmail.com](mailto:guglioisbusiness@gmail.com) or via discord at GuglioIsStupid#8008
 
 ### License
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](/LICENSE) file for details
