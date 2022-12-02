@@ -219,7 +219,7 @@ return {
                             health = health + 2
                             additionalScore = additionalScore + 350
                             additionalAccuracy = additionalAccuracy + 66.66
-                        elseif pos < 90 then
+                        elseif pos < 120 then
                             judgement = "Good"
                             health = health + 2
                             additionalScore = additionalScore + 200
@@ -356,7 +356,7 @@ return {
                         comboImages[3][math.floor(combo / 100 % 10)]:getHeight() / 2
                     )
                 end
-                love.graphics.translate(push.getWidth() / 2, 50)
+                love.graphics.translate(push.getWidth() / 2, 0)
                 love.graphics.rectangle("fill", -1000, 0, health * 8+10, 20, 10, 10)
 
                 love.graphics.setFont(scoreFont)
@@ -367,8 +367,8 @@ return {
                     accuracyFormat = string.format("%.2f%%", scoring.accuracy)
                 end
                 love.graphics.setFont(accuracyFont)
-                love.graphics.printf(scoreFormat, 0, 0, 1280, "right")
-                love.graphics.printf(accuracyFormat, 0, 45, 1280, "right")
+                love.graphics.printf(scoreFormat, 0, 0, 960, "right")
+                love.graphics.printf(accuracyFormat, 0, 45, 960, "right")
                 love.graphics.setFont(font)
             love.graphics.pop()
         end
