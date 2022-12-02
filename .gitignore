@@ -6,3 +6,4 @@
 *.qp
 *.osz
 /test/
+/build/
