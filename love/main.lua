@@ -52,6 +52,21 @@ function love.load()
     flipY = 1 -- for downscroll
 
     ini = require "lib.ini"
+    --discordRPC = require "lib.discordRPC"
+    if discordRPC then 
+        discordRPC.initialize("785717724906913843", true) 
+        function discordRPC.ready(userId, username, discriminator, avatar)
+            print(string.format("Discord: ready (%s, %s, %s, %s)", userId, username, discriminator, avatar))
+        end
+    
+        function discordRPC.disconnected(errorCode, message)
+            print(string.format("Discord: disconnected (%d: %s)", errorCode, message))
+        end
+    
+        function discordRPC.errored(errorCode, message)
+            print(string.format("Discord: error (%d: %s)", errorCode, message))
+        end
+    end
     settingsIni = require "settings"
     settingsIni.loadSettings()
 
@@ -458,6 +473,13 @@ end
 
 function love.update(dt)
     Timer.update(dt)
+    if discordRPC then 
+        if nextPresenceUpdate < love.timer.getTime() then
+            discordRPC.updatePresence(presence)
+            nextPresenceUpdate = love.timer.getTime() + 2.0
+        end
+        discordRPC.runCallbacks()
+    end
     if not choosingSkin and not choosingSong and not fnfChartMoment then
         game:update(dt)
     elseif choosingSkin then
@@ -555,6 +577,12 @@ function love.draw()
             love.graphics.print("Play as player? " .. tostring(fnfMomentShiz[fnfMomentSelected]), 0, 0, 0, 2, 2)
         end
     push.finish()
+end
+
+function love.quit()
+    if discordRPC then 
+        discordRPC.shutdown()
+    end
 end
 
 -- test push

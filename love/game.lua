@@ -136,9 +136,7 @@ return {
             if voices then -- support for fnf voices
                 voices:play()
             end
-            print(":3")
         elseif musicTime > audioFile:getDuration() * 1000 then
-            print("end")
             love.event.quit("restart")
         end
         for i = 1, #charthits do
