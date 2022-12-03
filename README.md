@@ -22,7 +22,7 @@
 - Wait for it to be merged!
 
 ### TODO
-- [ ] Add a game over screen (High priority)
+- [x] Add a game over screen (High priority)
 - [ ] Add a pause screen (High priority)
 - [ ] Add a settings screen (Low priority)
 - [ ] Save high scores (Low priority)
@@ -32,6 +32,7 @@
 - [ ] Visualizer (Low priority) for when in the menu and when the song is playing in the background
 - [ ] More noteskins (Low priority)
 - [ ] Better song selection (Low priority) (Goes with Better UI)
+- [ ] Downscroll support (Medium priority)
 
 ### Credits
 - GuglioIsStupid - Programming
