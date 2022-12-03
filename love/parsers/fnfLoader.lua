@@ -122,7 +122,11 @@ function fnfLoader.load(chart, isPlayer)
             table.sort(charthits[i], function(a, b) return a[1] < b[1] end)
         end
     end
-    musicTimeDo = true
+    Timer.after(2,
+        function()
+            musicTimeDo = true
+        end
+    )
 end                    
 
 return fnfLoader

@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ------------------------------------------------------------------------------]]
+
 function resize(img, width, height)
     local scaleX = width / img:getWidth()
     local scaleY = height / img:getHeight()
@@ -25,13 +26,15 @@ function resize(img, width, height)
     return scaleX, scaleY
 end
 
-
+local died
 inputList = {
     "one4",
     "two4",
     "three4",
     "four4"
 }
+musicPosValue = {1000}
+musicPitch = {1}
 function addJudgement(judgement)
     scoring[judgement] = scoring[judgement] + 1
     if judgement ~= "Miss" then
@@ -109,6 +112,8 @@ return {
         additionalAccuracy = 0
         noteCounter = 0
 
+        died = false
+
         ratingsize = {
             x = 1,
             y = 1
@@ -134,7 +139,7 @@ return {
 
     update = function(self, dt)
         if musicTimeDo then
-            musicTime = musicTime + 1000 * dt
+            musicTime = musicTime + musicPosValue[1] * dt
             musicPos = ((musicTime) * (speed)+100)
         end
         absMusicTime = math.abs(musicTime)
@@ -284,6 +289,25 @@ return {
         end
         -- print graphics memory usage
         --print(tostring(math.floor(love.graphics.getStats().texturememory / 1048576)) .. "MB")
+
+        if health <= 0 and not died then
+            died = true
+            Timer.tween(3, musicPosValue, {0}, "out-quad")
+            Timer.tween(3, musicPitch, {0.005}, "out-quad", function()
+                audioFile:stop()
+                Timer.after(1, function()
+                    love.event.quit("restart")
+                end)
+            end)
+        elseif died then
+            if musicPitch[1] < 0 then 
+                musicPitch[1] = 0
+            end
+            audioFile:setPitch(musicPitch[1])
+            if voices then
+                voices:setPitch(musicPitch[1])
+            end
+        end
     end,
 
     draw = function(self)

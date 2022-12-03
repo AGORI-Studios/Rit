@@ -79,7 +79,11 @@ function osuLoader.load(chart)
             end
         end
     end
-    musicTimeDo = true
+    Timer.after(2,
+        function()
+            musicTimeDo = true
+        end
+    )
 end
 
 return osuLoader

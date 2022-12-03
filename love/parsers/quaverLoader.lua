@@ -36,7 +36,6 @@ function quaverLoader.load(chart)
             audioPath = "song/" .. audioPath
             audioFile = love.audio.newSource(audioPath, "stream")
             -- if file extension is .mp3
-            print(audioPath)
         end
         if line:find("Mode: ") then
             modeLine = line
@@ -66,7 +65,6 @@ function quaverLoader.load(chart)
             -- trim the bpm of anything that isn't a number
             bpm = bpm:gsub("%D", "")
             bpm = tonumber(bpm) or 120
-            print(bpm)
         end
 
         if not line:find("SliderVelocities:") then
@@ -121,7 +119,12 @@ function quaverLoader.load(chart)
         end
     end
     --audioFile:setPitch(songRate)
-    musicTimeDo = true
+    Timer.after(2,
+        function()
+            musicTimeDo = true
+        end
+    )
+    
 end
 
 return quaverLoader

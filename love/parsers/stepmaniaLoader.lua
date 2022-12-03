@@ -76,7 +76,11 @@ function stepLoader.load(chart, foldername)
         end
     end
 
-    musicTimeDo = true
+    Timer.after(2,
+        function()
+            musicTimeDo = true
+        end
+    )
 end
 
 return stepLoader

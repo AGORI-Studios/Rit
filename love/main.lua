@@ -396,8 +396,6 @@ function chooseSongDifficulty()
         if love.filesystem.getInfo("songs/fnf/" .. v).type == "directory" then
             local songDir = "songs/fnf/" .. v
             for k, j in ipairs(love.filesystem.getDirectoryItems(songDir)) do
-                print("3")
-                print(songDir .. "/" .. j)
                 if love.filesystem.getInfo(songDir .. "/" .. j).type == "file" then
                     if j:sub(-4) == "json" then
                         gsubbedFile = j:gsub(".json", "")
@@ -461,7 +459,6 @@ function selectSongDifficulty(song, chartVer)
     elseif chartVer == "FNF" then
         fnfChartMoment = true
         choosingSong = false
-        print("fnfChartMoment")
     elseif chartVer == "Stepmania" then
         song = songList[curSongSelected]
         filename = song.filename
