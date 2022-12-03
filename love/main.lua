@@ -23,6 +23,7 @@ local desktopWidth, desktopHeight = love.window.getDesktopDimensions()
 fnfMomentShiz = {
     true, false
 }
+songSelectScrollOffset = 0
 function love.load()
     __VERSION__ = love.filesystem.read("version.txt")
     require "modules.loveFuncs"
@@ -504,10 +505,34 @@ function love.update(dt)
             if curSongSelected < 1 then
                 curSongSelected = #songList
             end
+            if curSongSelected < 29 then 
+                songSelectScrollOffset = songSelectScrollOffset + 30
+            end
+            if songSelectScrollOffset > 0 then
+                songSelectScrollOffset = 0
+            end
+            if curSongSelected == #songList then
+                songSelectScrollOffset = -(#songList - 29) * 30
+                if songSelectScrollOffset < -(#songList - 29) * 30 then
+                    songSelectScrollOffset = -(#songList - 29) * 30
+                end
+            end
         elseif input:pressed("down") then
             curSongSelected = curSongSelected + 1
             if curSongSelected > #songList then
                 curSongSelected = 1
+            end
+            if curSongSelected > 29 then 
+                songSelectScrollOffset = songSelectScrollOffset - 30
+                if songSelectScrollOffset < -(#songList - 29) * 30 then
+                    songSelectScrollOffset = -(#songList - 29) * 30
+                end
+            end
+            if songSelectScrollOffset < 29 and songSelectScrollOffset > 0 then
+                songSelectScrollOffset = 0
+            end
+            if curSongSelected == 1 then
+                songSelectScrollOffset = 0
             end
         end
         if input:pressed("confirm") then
@@ -575,15 +600,18 @@ function love.draw()
                 love.graphics.setColor(1,1,1)
             end
         elseif choosingSong then
-            for i, v in ipairs(songList) do
-                if i == curSongSelected then
-                    love.graphics.setColor(1, 1, 1)
-                else
-                    love.graphics.setColor(0.5, 0.5, 0.5)
+            love.graphics.push()
+                love.graphics.translate(0, songSelectScrollOffset)
+                for i, v in ipairs(songList) do
+                    if i == curSongSelected then
+                        love.graphics.setColor(1, 1, 1)
+                    else
+                        love.graphics.setColor(0.5, 0.5, 0.5)
+                    end
+                    love.graphics.print(v.title .. " - " .. v.difficultyName, 0, i * 35, 0, 2, 2)
+                    love.graphics.setColor(1,1,1)
                 end
-                love.graphics.print(v.title .. " - " .. v.difficultyName, 0, i * 35, 0, 2, 2)
-                love.graphics.setColor(1,1,1)
-            end
+            love.graphics.pop()
         elseif fnfChartMoment then
             love.graphics.print("Play as player? " .. tostring(fnfMomentShiz[fnfMomentSelected]), 0, 0, 0, 2, 2)
         end
