@@ -42,14 +42,13 @@ function osuLoader.load(chart)
             readChart = true
         end
         if line:find(",") then 
-            local x, y, startTime, type, idk, endtime = line:match("([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+)")
+            local x, _, startTime, _, _, endtime = line:match("([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+)") -- _ is used to ignore the values we don't need
             x = tonumber(x) or 128
             if x < 500 then
                 curLine = line
                 lane = x / 128
                 lane = math.floor(lane)
                 startTime = tonumber(startTime)
-                type = tonumber(type)
                 hitSound = hitSound
                 if lane > 4 then
                     print("This is not a 4k chart!\nSupport for 5k+ charts will be added in the future.")
