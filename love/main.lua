@@ -401,12 +401,11 @@ function chooseSongDifficulty()
                 if love.filesystem.getInfo(songDir .. "/" .. j).type == "file" then
                     if j:sub(-4) == "json" then
                         gsubbedFile = j:gsub(".json", "")
-                        -- split from the second - (of first if there is one)
                         local difficultyName = gsubbedFile:match("-(.*)")
                         songList[#songList + 1] = {
                             filename = j,
                             title = json.decode(love.filesystem.read(songDir .. "/" .. j)).song.song,
-                            difficultyName = difficultyName or "???",
+                            difficultyName = difficultyName or "normal",
                             BackgroundFile = "None",
                             path = songDir .. "/" .. j,
                             type = "FNF"
