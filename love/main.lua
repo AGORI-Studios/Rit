@@ -24,6 +24,10 @@ fnfMomentShiz = {
     true, false
 }
 songSelectScrollOffset = 0
+if love.filesystem.isFused() and love.system.getOS() == "Windows" or love.system.getOS() == "OS X" then
+    discordRPC = require "lib.discordRPC"
+    nextPresenceUpdate = 0
+end
 function love.load()
     __VERSION__ = love.filesystem.read("version.txt")
     require "modules.loveFuncs"
@@ -53,7 +57,6 @@ function love.load()
     flipY = 1 -- for downscroll
 
     ini = require "lib.ini"
-    --discordRPC = require "lib.discordRPC"
     if discordRPC then 
         discordRPC.initialize("785717724906913843", true) 
         function discordRPC.ready(userId, username, discriminator, avatar)
@@ -315,6 +318,8 @@ function selectSkin(skin)
     --quaverLoader.load("chart.qua")
     chooseSongDifficulty()
     dt = 0
+
+    now = os.time()
 end
 
 function chooseSongDifficulty()
@@ -472,8 +477,10 @@ end
 function love.update(dt)
     Timer.update(dt)
     if discordRPC then 
-        if nextPresenceUpdate < love.timer.getTime() then
-            discordRPC.updatePresence(presence)
+        if nextPresenceUpdate < love.timer.getTime() or 0 then
+            if presence then 
+                discordRPC.updatePresence(presence)
+            end
             nextPresenceUpdate = love.timer.getTime() + 2.0
         end
         discordRPC.runCallbacks()

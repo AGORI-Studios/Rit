@@ -182,6 +182,14 @@ return {
             end
         end
 
+        presence = {
+            details = "Playing "..songTitle,
+            state = "Playing "..songDifficultyName,
+            largeImageKey = "totallyreallogo",
+            largeImageText = "Playing "..songTitle,
+            startTimestamp = now
+        }
+
         if chartEvents[1] then
             if chartEvents[1][1] <= absMusicTime then
                 if settings.scrollvelocities then sv[1] = chartEvents[1][2] end

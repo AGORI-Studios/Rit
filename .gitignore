@@ -7,3 +7,12 @@
 *.osz
 /test/
 /build/
+resources/*
+
+!resources/win32/download.txt
+!resources/win64/download.txt
+!resources/osx/download.txt
+
+!resources/win32/discord-rpc.dll
+!resources/win64/discord-rpc.dll
+!resources/osx/discord-rpc.dylib

@@ -1,5 +1,5 @@
 local ffi = require "ffi"
-local discordRPClib
+local discordRPClib = ffi.load("discord-rpc")
 
 ffi.cdef[[
 typedef struct DiscordRichPresence {
