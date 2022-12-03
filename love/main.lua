@@ -92,10 +92,11 @@ function love.load()
 
     receptors = {}
     game = require "game"
-    quaverLoader = require "modules.quaverLoader"
-    osuLoader = require "modules.osuLoader"
-    stepmaniaLoader = require "modules.stepmaniaLoader"
-    fnfLoader = require "modules.fnfLoader"
+
+    quaverLoader = require "parsers.quaverLoader"
+    osuLoader = require "parsers.osuLoader"
+    stepmaniaLoader = require "parsers.stepmaniaLoader"
+    fnfLoader = require "parsers.fnfLoader"
 
     push = require "lib.push"
     Timer = require "lib.timer"
@@ -352,7 +353,7 @@ function chooseSongDifficulty()
                         songList[#songList + 1] = {
                             filename = v,
                             title = title,
-                            difficultyName = difficultyName,
+                            difficultyName = difficultyName or "???",
                             BackgroundFile = BackgroundFile:sub(2),
                             path = "song/" .. j,
                             type = "Quaver"
@@ -380,7 +381,7 @@ function chooseSongDifficulty()
                         songList[#songList + 1] = {
                             filename = v,
                             title = title,
-                            difficultyName = difficultyName,
+                            difficultyName = difficultyName or "???",
                             path = "song/" .. j,
                             type = "osu!"
                         }
@@ -404,7 +405,7 @@ function chooseSongDifficulty()
                         songList[#songList + 1] = {
                             filename = j,
                             title = json.decode(love.filesystem.read(songDir .. "/" .. j)).song.song,
-                            difficultyName = difficultyName,
+                            difficultyName = difficultyName or "???",
                             BackgroundFile = "None",
                             path = songDir .. "/" .. j,
                             type = "FNF"
@@ -426,7 +427,7 @@ function chooseSongDifficulty()
                         songList[#songList + 1] = {
                             filename = v,
                             title = title,
-                            difficultyName = difficultyName,
+                            difficultyName = difficultyName or "???",
                             BackgroundFile = "None",
                             path = songDir .. "/" .. j,
                             type = "Stepmania"

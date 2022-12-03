@@ -287,7 +287,7 @@ return {
     end,
 
     draw = function(self)
-        if audioFile and audioFile:isPlaying() then
+        if musicTimeDo then
             love.graphics.push()
                 love.graphics.push()
                     love.graphics.translate(push.getWidth() / 2 - 175, 50)
