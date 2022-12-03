@@ -549,7 +549,7 @@ function love.keypressed(key)
         love.event.quit()
     end
 
-    if key == "k" and choosingSong or choosingSkin then
+    if key == "k" and (choosingSong or choosingSkin) then
         love.system.openURL("https://ko-fi.com/A0A8GRXMX")
     end
 end

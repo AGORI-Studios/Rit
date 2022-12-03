@@ -309,14 +309,17 @@ return {
                         for j = #charthits[i], 1, -1 do
                             --if (charthits[i][j][1] * sv[1])/speed - (musicPos * sv[1]) <= 800 then
                                 if mode == "Keys4" then
-                                    if not charthits[i][j][5] then
-                                        if charthits[i][j][4] then
-                                            love.graphics.draw(noteImgs[i][2], -45 + 200 * (i - 1) - 275/2, (charthits[i][j][1]*speed+200) * sv[1], 0, notesize, notesize)
-                                        else 
-                                            love.graphics.draw(noteImgs[i][1], -45 + 200 * (i - 1) - 275/2, (charthits[i][j][1]*speed+200-98) * sv[1], 0, notesize, notesize)
+                                    if charthits[i][j][1] * sv[1] - musicPos * sv[1] <= 800 then
+                                        -- if the note is actually on screen (even with scroll velocity modifiers)
+                                        if not charthits[i][j][5] then
+                                            if charthits[i][j][4] then
+                                                love.graphics.draw(noteImgs[i][2], -45 + 200 * (i - 1) - 275/2, (charthits[i][j][1]*speed+200) * sv[1], 0, notesize, notesize)
+                                            else 
+                                                love.graphics.draw(noteImgs[i][1], -45 + 200 * (i - 1) - 275/2, (charthits[i][j][1]*speed+200-98) * sv[1], 0, notesize, notesize)
+                                            end
+                                        else
+                                            love.graphics.draw(noteImgs[i][3], -45 + 200 * (i - 1) - 275/2, (charthits[i][j][1]*speed+200+95+24.5) * sv[1], 0, notesize, -notesize)
                                         end
-                                    else
-                                        love.graphics.draw(noteImgs[i][3], -45 + 200 * (i - 1) - 275/2, (charthits[i][j][1]*speed+200+95+24.5) * sv[1], 0, notesize, -notesize)
                                     end
                                 else
                                     love.graphics.draw(charthits[i][j][3], -375 + 200 * (i - 1) - 275/2, (charthits[i][j][1]*speed+200) * sv[1], 0, notesize, notesize)
