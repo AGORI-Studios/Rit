@@ -41,7 +41,8 @@ function stepLoader.load(chart, foldername)
             curLine = line
             bpm = curLine:gsub("#BPMS:0.000=", "")
             bpm = bpm:gsub(";", "")
-            bpm = tonumber(bpm)
+            bpm = tonumber(bpm) or curLine:gsub("#BPMS:", "")
+            bpm = tonumber(bpm) or 222
         end
         if line:find("#NOTES:") then 
             readChart = true
@@ -52,7 +53,10 @@ function stepLoader.load(chart, foldername)
         
         if readChart then 
             if not line:find(";") and not line:find(",") and not line:find("//") and not line:find("#") then 
-                lineCount = lineCount + 1
+                -- if the first character is a not a number
+                if line:sub(1, 1):match("%d") then 
+                    lineCount = lineCount + 1
+                end
             end
             for i = 1, #line do 
                 local char = line:sub(i, i)
