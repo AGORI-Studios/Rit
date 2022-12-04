@@ -218,66 +218,71 @@ return {
                 if notes[1] then
                     --print(notes[1][1] - musicPos)
                     noteCounter = noteCounter + 1
-                    if notes[1][1] - musicTime >= -80 and notes[1][1] - musicTime <= 180 then
-                        --print("Hit!")
-                        --print(notes[1][1] - musicTime .. "ms")
-                        pos = math.abs(notes[1][1] - musicTime)
-                        if pos < 45 then
-                            judgement = "Marvellous"
-                            health = health + 2
-                            additionalScore = additionalScore + 650
-                            additionalAccuracy = additionalAccuracy + 100
-                        elseif pos < 60 then
-                            judgement = "Perfect"
-                            health = health + 2
-                            additionalScore = additionalScore + 500
-                            additionalAccuracy = additionalAccuracy + 75.55
-                        elseif pos < 75 then
-                            judgement = "Great"
-                            health = health + 2
-                            additionalScore = additionalScore + 350
-                            additionalAccuracy = additionalAccuracy + 66.66
-                        elseif pos < 120 then
-                            judgement = "Good"
-                            health = health + 2
-                            additionalScore = additionalScore + 200
-                            additionalAccuracy = additionalAccuracy + 33.33
-                        else
-                            judgement = "Miss"
-                            health = health - 2
-                            additionalScore = additionalScore + 1.11
-                        end
-
-                        addJudgement(judgement)
-
-                        if health > 100 then
-                            health = 100
-                        end
-                        if scoringTimer then 
-                            Timer.cancel(scoringTimer)
-                        end
-                        if accuracyTimer then
-                            Timer.cancel(accuracyTimer)
-                        end
-                        scoringTimer = Timer.tween(
-                            0.35,
-                            scoring,
-                            {score = additionalScore},
-                            "out-quad",
-                            function()
-                                scoringTimer = nil
+                    if not notes[1][4] and not notes[1][5] then
+                        if notes[1][1] - musicTime >= -80 and notes[1][1] - musicTime <= 180 or (notes[2] and notes[1][5] and notes[2][1] - musicTime >= -80 and notes[2][1] - musicTime <= 180) then
+                            --print("Hit!")
+                            --print(notes[1][1] - musicTime .. "ms")
+                            pos = math.abs(notes[1][1] - musicTime)
+                            if notes[2] and notes[1][5] and notes[2][1] - musicTime >= -80 and notes[2][1] - musicTime <= 180 then
+                                pos = math.abs(notes[2][1] - musicTime)
                             end
-                        )
-                        accuracyTimer = Timer.tween(
-                            0.35,
-                            scoring,
-                            {accuracy = additionalAccuracy / noteCounter},
-                            "out-quad",
-                            function()
-                                accuracyTimer = nil
+                            if pos < 45 then
+                                judgement = "Marvellous"
+                                health = health + 2
+                                additionalScore = additionalScore + 650
+                                additionalAccuracy = additionalAccuracy + 100
+                            elseif pos < 60 then
+                                judgement = "Perfect"
+                                health = health + 2
+                                additionalScore = additionalScore + 500
+                                additionalAccuracy = additionalAccuracy + 75.55
+                            elseif pos < 75 then
+                                judgement = "Great"
+                                health = health + 2
+                                additionalScore = additionalScore + 350
+                                additionalAccuracy = additionalAccuracy + 66.66
+                            elseif pos < 120 then
+                                judgement = "Good"
+                                health = health + 2
+                                additionalScore = additionalScore + 200
+                                additionalAccuracy = additionalAccuracy + 33.33
+                            else
+                                judgement = "Miss"
+                                health = health - 2
+                                additionalScore = additionalScore + 1.11
                             end
-                        )
-                        table.remove(notes, 1)
+
+                            addJudgement(judgement)
+
+                            if health > 100 then
+                                health = 100
+                            end
+                            if scoringTimer then 
+                                Timer.cancel(scoringTimer)
+                            end
+                            if accuracyTimer then
+                                Timer.cancel(accuracyTimer)
+                            end
+                            scoringTimer = Timer.tween(
+                                0.35,
+                                scoring,
+                                {score = additionalScore},
+                                "out-quad",
+                                function()
+                                    scoringTimer = nil
+                                end
+                            )
+                            accuracyTimer = Timer.tween(
+                                0.35,
+                                scoring,
+                                {accuracy = additionalAccuracy / noteCounter},
+                                "out-quad",
+                                function()
+                                    accuracyTimer = nil
+                                end
+                            )
+                            table.remove(notes, 1)
+                        end
                     end
                 end 
             end
