@@ -45,9 +45,9 @@ function fnfLoader.load(chart, isPlayer)
     local needsVoices = chart.needsVoices
 
     if needsVoices then
-        voices = love.audio.newSource("songs/fnf/" .. songName .. "/Voices.ogg", "stream")
+        voices = love.audio.newSource(folderPath .. "/Voices.ogg", "stream")
     end
-    audioFile = love.audio.newSource("songs/fnf/" .. songName .. "/Inst.ogg", "stream")
+    audioFile = love.audio.newSource(folderPath .. "/Inst.ogg", "stream")
 
     for i = 1, #chart.notes do 
         eventBpm = chart.notes[i].bpm

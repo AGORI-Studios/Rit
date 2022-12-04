@@ -24,7 +24,7 @@ fnfMomentShiz = {
     true, false
 }
 songSelectScrollOffset = 0
-if love.filesystem.isFused() and love.system.getOS() == "Windows" or love.system.getOS() == "OS X" then
+if love.filesystem.isFused() and (love.system.getOS() == "Windows" or love.system.getOS() == "OS X") then
     discordRPC = require "lib.discordRPC"
     nextPresenceUpdate = 0
 end
@@ -411,6 +411,7 @@ function chooseSongDifficulty()
                             difficultyName = difficultyName or "normal",
                             BackgroundFile = "None",
                             path = songDir .. "/" .. j,
+                            folderPath = songDir,
                             type = "FNF"
                         }
                     end
@@ -433,6 +434,7 @@ function chooseSongDifficulty()
                             difficultyName = difficultyName or "???",
                             BackgroundFile = "None",
                             path = songDir .. "/" .. j,
+                            folderPath = songDir,
                             type = "Stepmania"
                         }
                     end
@@ -567,6 +569,7 @@ function doFnfMoment(fnfMoment)
     songPath = song.path
     songTitle = song.title
     songDifficultyName = song.difficultyName
+    folderPath = song.folderPath
     --BackgroundFile = love.graphics.newImage("song/" .. song.BackgroundFile)
     fnfLoader.load(songPath, fnfMomentShiz[fnfMomentSelected])
     choosingSong = false

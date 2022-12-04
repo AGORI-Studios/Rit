@@ -350,7 +350,7 @@ return {
                                                 love.graphics.draw(noteImgs[i][1], -45 + 200 * (i - 1) - 275/2, (charthits[i][j][1]*speed+200-98) * sv[1], 0, notesize, notesize)
                                             end
                                         else
-                                            love.graphics.draw(noteImgs[i][3], -45 + 200 * (i - 1) - 275/2, (charthits[i][j][1]*speed+200+95+24.5) * sv[1], 0, notesize, -notesize)
+                                            love.graphics.draw(noteImgs[i][3], -45 + 200 * (i - 1) - 275/2, (charthits[i][j][1]*speed+200+95+18) * sv[1], 0, notesize, -notesize)
                                         end
                                     end
                                 else
