@@ -516,7 +516,7 @@ function love.update(dt)
             if songSelectScrollOffset > 0 then
                 songSelectScrollOffset = 0
             end
-            if curSongSelected == #songList then
+            if curSongSelected == #songList and #songList >= 29 then
                 songSelectScrollOffset = -(#songList - 29) * 30
                 if songSelectScrollOffset < -(#songList - 29) * 30 then
                     songSelectScrollOffset = -(#songList - 29) * 30
