@@ -1,0 +1,1 @@
+All assets in this folder will be used for the README.md file in the root of the repository.

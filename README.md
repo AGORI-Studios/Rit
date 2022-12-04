@@ -1,4 +1,5 @@
 <p align="center">
+    <img src ="docs/logo.png" height=300><br>
     <a href="https://github.com/GuglioIsStupid/Rit/blob/master/LICENSE"><img src="https://img.shields.io/github/license/GuglioIsStupid/Rit?style=flat-square">
     <a href="https://discord.gg/ehY5gMMPW8"><img src="https://img.shields.io/discord/933976593137803276?style=flat-square">
     <a href="https://github.com/GuglioIsStupid/Rit/issues"><img src="https://img.shields.io/github/issues/GuglioIsStupid/Rit?style=flat-square" alt="Issues">
@@ -14,7 +15,7 @@
 - Run the game via dragging and dropping the folder onto the love.exe file
 - Add songs to the songs folder in their respective folders. (Quaver in quaver, osu in osu, etc.)
 - Play the game!
-
+- 
 ### How to contribute
 - Fork the repository
 - Make your changes
@@ -36,6 +37,7 @@
 
 ### Credits
 - GuglioIsStupid - Programming
+- Getsaa - Logo
 
 ### Notes
 - This game is still in development, so ***expect*** bugs and glitches
