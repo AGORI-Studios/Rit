@@ -15,7 +15,7 @@
 - Run the game via dragging and dropping the folder onto the love.exe file
 - Add songs to the songs folder in their respective folders. (Quaver in quaver, osu in osu, etc.)
 - Play the game!
-- 
+  
 ### How to contribute
 - Fork the repository
 - Make your changes
@@ -56,5 +56,16 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 
 ### Support the project!
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/A0A8GRXMX)
+
+### Questions?
+Join the [Discord](https://discord.gg/ehY5gMMPW8)!
+
+### Made with
+<img src="https://www.libretro.com/wp-content/uploads/2017/12/love2dlogo.png" height=50 alt="Love2D">
+
+### Useful links
+- [Quaver](https://quavergame.com/)
+- [osu!](https://osu.ppy.sh/home)
+
 
 #### This project is not affiliated with [Quaver](https://quavergame.com), [osu!](https://osu.ppy.sh/home), or any other rhythm game.
