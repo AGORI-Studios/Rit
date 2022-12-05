@@ -22,6 +22,9 @@
 - Make a pull request
 - Wait for it to be merged!
 
+### Gameplay
+[![Gameplay](docs/playing.gif)]
+
 ### TODO
 - [x] Add a game over screen (High priority)
 - [ ] Add a pause screen (High priority)
