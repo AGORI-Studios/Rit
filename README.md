@@ -23,7 +23,7 @@
 - Wait for it to be merged!
 
 ### Gameplay
-[![Gameplay](docs/playing.gif)]
+![Gameplay](docs/playing.gif)
 
 ### TODO
 - [x] Add a game over screen (High priority)
