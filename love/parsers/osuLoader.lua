@@ -59,18 +59,27 @@ function osuLoader.load(chart)
                 if startTime == nil then 
                     startTime = 0
                 end
-                charthits[lane + 1][#charthits[lane+1] + 1] = {startTime, 0, 1, false}
-                if endtime then 
-                    -- get the first number from 0:0:0:0 from the endtime
-                    endtime = endtime:match("([^:]+)")
-                    endtime = tonumber(endtime)
-                    length = endtime - startTime
-                    if length ~= startTime then 
-                        for i = 1, length, 95/2/speed do 
-                            if i + 95/2/speed < length then 
-                                charthits[lane+1][#charthits[lane+1] + 1] = {startTime+i, 0, 1, true}
-                            else
-                                charthits[lane+1][#charthits[lane+1] + 1] = {startTime+i, 0, 1, true, true}
+                if startTime ~= 0 then
+                    charthits[lane + 1][#charthits[lane+1] + 1] = {startTime, 0, 1, false}
+                    -- check if the previous note has the same start time
+                    if charthits[lane + 1][#charthits[lane+1] - 1] ~= nil then 
+                        if charthits[lane + 1][#charthits[lane+1] - 1][1] == startTime then 
+                            -- remove the previous note
+                            charthits[lane + 1][#charthits[lane+1] - 1] = nil
+                        end
+                    end
+                    if endtime then 
+                        -- get the first number from 0:0:0:0 from the endtime
+                        endtime = endtime:match("([^:]+)")
+                        endtime = tonumber(endtime) or 0
+                        length = endtime - startTime
+                        if length ~= startTime then 
+                            for i = 1, length, 95/2/speed do 
+                                if i + 95/2/speed < length then 
+                                    charthits[lane+1][#charthits[lane+1] + 1] = {startTime+i, 0, 1, true}
+                                else
+                                    charthits[lane+1][#charthits[lane+1] + 1] = {startTime+i, 0, 1, true, true}
+                                end
                             end
                         end
                     end

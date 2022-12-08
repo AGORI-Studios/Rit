@@ -183,7 +183,7 @@ return {
         end
 
         presence = {
-            details = "Playing "..songTitle,
+            details = "Playing "..songTitle, 
             state = "Playing "..songDifficultyName,
             largeImageKey = "totallyreallogo",
             largeImageText = "Playing "..songTitle,

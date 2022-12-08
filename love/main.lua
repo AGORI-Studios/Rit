@@ -461,6 +461,7 @@ function selectSongDifficulty(song, chartVer)
         love.filesystem.mount("songs/osu/"..filename, "song")
         songPath = song.path
         songTitle = song.title
+        songDifficultyName = song.difficultyName
         osuLoader.load(songPath)
         choosingSong = false
     elseif chartVer == "FNF" then
@@ -471,6 +472,7 @@ function selectSongDifficulty(song, chartVer)
         filename = song.filename
         songPath = song.path
         songTitle = song.title
+        songDifficultyName = song.difficultyName
         stepmaniaLoader.load(songPath, filename)
         choosingSong = false
     end
