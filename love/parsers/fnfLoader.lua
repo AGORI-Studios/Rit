@@ -126,6 +126,7 @@ function fnfLoader.load(chart, isPlayer)
     end
     Timer.after(2,
         function()
+            state.switch(game)
             musicTimeDo = true
         end
     )

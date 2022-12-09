@@ -95,8 +95,24 @@ end
 
 return {
     enter = function(self)
+        scoring = {
+            score = 0,
+            accuracy = 0,
+            ["Marvellous"] = 0,
+            ["Perfect"] = 0,
+            ["Great"] = 0,
+            ["Good"] = 0,
+            ["Miss"] = 0
+        }
+    
+        songRate = 1
+    
+        game = require "states.game"
+        skinSelect = require "states.skinSelect"
+        songSelect = require "states.songSelect"
+    
         musicTime = -settings.startTime 
-        speed = settings.scrollspeed or 1
+    
         PRESSEDMOMENTS = {
             [1] = 1,
             [2] = 1,
@@ -111,9 +127,9 @@ return {
         additionalScore = 0
         additionalAccuracy = 0
         noteCounter = 0
-
+    
         died = false
-
+    
         ratingsize = {
             x = 1,
             y = 1
@@ -122,18 +138,18 @@ return {
             x = 2,
             y = 2
         }
-
+    
         scoring["Marvellous"] = 0
         scoring["Perfect"] = 0
         scoring["Great"] = 0
         scoring["Good"] = 0
         scoring["Miss"] = 0
         combo = 0
-
+    
         sv = {1} -- Scroll Velocity
-
+    
         chartEvents = {}
-
+    
         curJudgement = "none"
     end,
 
@@ -309,7 +325,7 @@ return {
             Timer.tween(3, musicPitch, {0.005}, "out-quad", function()
                 audioFile:stop()
                 Timer.after(1, function()
-                    love.event.quit("restart")
+                    state.switch(songSelect)
                 end)
             end)
         elseif died then
@@ -324,6 +340,7 @@ return {
     end,
 
     draw = function(self)
+        
         if musicTimeDo then
             love.graphics.push()
                 love.graphics.push()
@@ -418,4 +435,13 @@ return {
             love.graphics.pop()
         end
     end,
+
+    leave = function(self)
+        audioFile:stop()
+        if voices then
+            voices:stop()
+        end
+
+        Timer.clear()
+    end
 }

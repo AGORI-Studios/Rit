@@ -23,12 +23,10 @@ local state = {}
 local current, to, pre = nil, nil, nil
 
 function state.switch(to, ...)
-    assert(to, "Missing argument: state to switch to")
     pre = current
-    if pre then pre:leave(to) end
     current = to
-    to:init(pre, ...)
-    to:enter(pre, ...)
+    if current then current:enter(pre, ...) end
+    if pre then if pre.exit then pre:exit(current) end end
 end
 
 function state.update(dt)

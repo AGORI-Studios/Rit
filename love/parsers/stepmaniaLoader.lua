@@ -78,6 +78,7 @@ function stepLoader.load(chart, foldername)
 
     Timer.after(2,
         function()
+            state.switch(game)
             musicTimeDo = true
         end
     )

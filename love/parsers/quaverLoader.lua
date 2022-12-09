@@ -121,6 +121,7 @@ function quaverLoader.load(chart)
     --audioFile:setPitch(songRate)
     Timer.after(2,
         function()
+            state.switch(game)
             musicTimeDo = true
         end
     )
