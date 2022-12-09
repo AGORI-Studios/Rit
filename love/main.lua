@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ------------------------------------------------------------------------------]]
-
+-- TODO: seperate all game shiz into seperate states (menu, song select, gameplay, etc)
 local desktopWidth, desktopHeight = love.window.getDesktopDimensions()
 fnfMomentShiz = {
     true, false
@@ -188,7 +188,7 @@ function chooseSkin()
     end
 end
 
-function selectSkin(skin)
+function selectSkin(skin) -- TODO: optimize skin loading
     skin = skin or 1
     skin = skins[skin]
     skinIni = skin.ini
@@ -199,10 +199,10 @@ function selectSkin(skin)
     
     hitsound = love.audio.newSource(skinFolder .. "/" .. skinIni["skin"]["hitsound"]:gsub('"', ""), "static")
     hitsound:setVolume(tonumber(skinIni["skin"]["hitsoundVolume"]))
-    hitsoundCache = {
+    hitsoundCache = { -- allows for multiple hitsounds to be played at once
         hitsound:clone()
     }
-    -- set isMultiple to a boolean
+
     recepterUNPRESSED1 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["receptor1UNPRESSED"]:gsub('"', ""))
     recepterPRESSED1 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["receptor1PRESSED"]:gsub('"', ""))
 
@@ -243,13 +243,14 @@ function selectSkin(skin)
         {love.graphics.newImage(note4NORMAL), love.graphics.newImage(note4HOLD), love.graphics.newImage(note4END)}
     }
 
-    judgementImages = {
+    judgementImages = { -- images for the judgement text
         ["Miss"] = love.graphics.newImage(skinFolder .. "/" .. skinIni["skin"]["MISS"]:gsub('"', "")),
         ["Good"] = love.graphics.newImage(skinFolder .. "/" .. skinIni["skin"]["GOOD"]:gsub('"', "")),
         ["Great"] = love.graphics.newImage(skinFolder .. "/" .. skinIni["skin"]["GREAT"]:gsub('"', "")),
         ["Perfect"] = love.graphics.newImage(skinFolder .. "/" .. skinIni["skin"]["PERFECT"]:gsub('"', "")),
         ["Marvellous"] = love.graphics.newImage(skinFolder .. "/" .. skinIni["skin"]["MARVELLOUS"]:gsub('"', "")),
     }
+    -- combo images
     combo0 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO0"]:gsub('"', ""))
     combo1 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO1"]:gsub('"', ""))
     combo2 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO2"]:gsub('"', ""))
@@ -261,7 +262,7 @@ function selectSkin(skin)
     combo8 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO8"]:gsub('"', ""))
     combo9 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO9"]:gsub('"', ""))
 
-    comboImages = {
+    comboImages = { -- need to optimize this too lmfaoooo
         [1] = {
             [0] = love.graphics.newImage(combo0),
             [1] = love.graphics.newImage(combo1),
