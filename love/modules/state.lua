@@ -19,11 +19,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ------------------------------------------------------------------------------]]
 
-local Gamestate = {}
+local state = {}
 local current, to, pre = nil, nil, nil
 
-function Gamestate.switch(to, ...)
-    assert(to, "Missing argument: Gamestate to switch to")
+function state.switch(to, ...)
+    assert(to, "Missing argument: state to switch to")
     pre = current
     if pre then pre:leave(to) end
     current = to
@@ -31,48 +31,48 @@ function Gamestate.switch(to, ...)
     to:enter(pre, ...)
 end
 
-function Gamestate.update(dt)
+function state.update(dt)
     if current then current:update(dt) end
 end
 
-function Gamestate.draw()
+function state.draw()
     if current then current:draw() end
 end
 
-function Gamestate.keypressed(key, unicode)
-    if current then current:keypressed(key, unicode) end
+function state.keypressed(key, unicode)
+    if current.keypressed then current:keypressed(key, unicode) end
 end
 
-function Gamestate.keyreleased(key)
-    if current then current:keyreleased(key) end
+function state.keyreleased(key)
+    if current.keyreleased then current:keyreleased(key) end
 end
 
-function Gamestate.textinput(text)
-    if current then current:textinput(text) end
+function state.textinput(text)
+    if current.textinput then current:textinput(text) end
 end
 
-function Gamestate.mousepressed(x, y, button)
-    if current then current:mousepressed(x, y, button) end
+function state.mousepressed(x, y, button)
+    if current.mousepressed then current:mousepressed(x, y, button) end
 end
 
-function Gamestate.mousereleased(x, y, button)
-    if current then current:mousereleased(x, y, button) end
+function state.mousereleased(x, y, button)
+    if current.mousereleased then current:mousereleased(x, y, button) end
 end
 
-function Gamestate.joystickpressed(joystick, button)
-    if current then current:joystickpressed(joystick, button) end
+function state.joystickpressed(joystick, button)
+    if current.joystickpressed then current:joystickpressed(joystick, button) end
 end
 
-function Gamestate.joystickreleased(joystick, button)
-    if current then current:joystickreleased(joystick, button) end
+function state.joystickreleased(joystick, button)
+    if current.joystickreleased then current:joystickreleased(joystick, button) end
 end
 
-function Gamestate.focus(f)
-    if current then current:focus(f) end
+function state.focus(f)
+    if current.focus then current:focus(f) end
 end
 
-function Gamestate.quit()
-    if current then current:quit() end
+function state.quit()
+    if current.quit then current:quit() end
 end
 
-return Gamestate
+return state

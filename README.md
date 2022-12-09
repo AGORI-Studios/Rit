@@ -54,7 +54,7 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 - rxi - [json.lua](/love/lib/json.lua) - The JSON library used
 - Andrew Minnich - [baton.lua](/love/lib/baton.lua) - The input library used
 - Fivos Moutavelis - [ini.lua](/love/lib/ini.lua) - The ini library used
-- Ulysse Ramage - [push.lua](/love/lib/push.lua) - The resolution handling library used
+- Ulysse Ramage - [push.lua](/love/lib/push.lua) - The push handling library used
 - Mattias Richard - [timer.lua](/love/lib/timer.lua) - The tweening library used (Apart of HUMP)
 
 ### Support the project!

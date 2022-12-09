@@ -287,7 +287,7 @@ return {
                 end 
             end
 
-            if input:down(curInput) then
+            if input:isDown(curInput) then
                 PRESSEDMOMENTS[i] = 2
                 if notes[1] then
                     if notes[1][4] then
@@ -346,7 +346,7 @@ return {
                         for j = #charthits[i], 1, -1 do
                             --if (charthits[i][j][1] * sv[1])/speed - (musicPos * sv[1]) <= 800 then
                                 if mode == "Keys4" then
-                                    if charthits[i][j][1]*speed * sv[1] - musicPos * sv[1] <= 900 then
+                                    if charthits[i][j][1]*speed * sv[1] - musicPos * sv[1] <= push.getHeight() + 200 then
                                         -- if the note is actually on screen (even with scroll velocity modifiers)
                                         if not charthits[i][j][5] then
                                             if charthits[i][j][4] then

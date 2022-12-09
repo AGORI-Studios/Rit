@@ -31,29 +31,25 @@ end
 function love.load()
     __VERSION__ = love.filesystem.read("version.txt")
     require "modules.loveFuncs"
-    input = (require "lib.baton").new({ -- Load the input for it to work properly
-        controls = {
-            one4 = {'key:d', 'axis:leftx-', 'button:dpleft'},
-            two4 = {'key:f', 'axis:leftx+', 'button:dpright'},
-            three4 = {'key:j', 'axis:lefty-', 'button:dpup'},
-            four4 = {'key:k', 'axis:lefty+', 'button:dpdown'},
-
-            one7 = {'key:s', 'axis:leftx-', 'button:dpleft'},
-            two7 = {'key:d', 'axis:leftx+', 'button:dpright'},
-            three7 = {'key:f', 'axis:lefty-', 'button:dpup'},
-            four7 = {'key:space'},
-            five7 = {'key:j', 'axis:lefty+', 'button:dpdown'},
-            six7 = {'key:k'},
-            seven7 = {'key:l'},
-
-            up = {'key:up', 'axis:lefty-', 'button:dpup'},
-            down = {'key:down', 'axis:lefty+', 'button:dpdown'},
-            left = {'key:left', 'axis:leftx-', 'button:dpleft'},
-            right = {'key:right', 'axis:leftx+', 'button:dpright'},
-            confirm = {'key:return'},
-        },
-        joystick = love.joystick.getJoysticks()[1]
-    })
+    inputMod = require "modules.input"
+    input = inputMod:_load_config(
+        {
+            ["one4"] = {"key:d"},
+            ["two4"] = {"key:f"},
+            ["three4"] = {"key:j"},
+            ["four4"] = {"key:k"},
+            
+            ["up"] = {"key:up"},
+            ["down"] = {"key:down"},
+            ["left"] = {"key:left"},
+            ["right"] = {"key:right"},
+            ["confirm"] = {"key:return"},
+            
+            ["pause"] = {"key:p"},
+            ["restart"] = {"key:r"},
+            ["quit"] = {"key:escape"}
+        }
+    )
     flipY = 1 -- for downscroll
 
     ini = require "lib.ini"
@@ -102,6 +98,7 @@ function love.load()
     stepmaniaLoader = require "parsers.stepmaniaLoader"
     fnfLoader = require "parsers.fnfLoader"
 
+    --push = require "modules.push"
     push = require "lib.push"
     Timer = require "lib.timer"
     charthits = {}
@@ -135,6 +132,7 @@ function love.load()
     game:enter()
 
     love.window.setMode(settings.width, settings.height, {resizable = true, vsync = settings.vsync, fullscreen = settings.fullscreen})
+    --resolution.setup(settings.width, settings.height, 1920, 1080, {_type = "normal"})
     push.setupScreen(1920, 1080, {upscale = "normal"})
 
     choosingSkin = true
@@ -145,6 +143,7 @@ function love.load()
 end
 
 function love.resize(w, h)
+    --resolution.resize(w, h, 1920, 1080, {_type = "normal"})
     push.resize(w, h)
 end
 
