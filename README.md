@@ -49,7 +49,7 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 ### Acknowledgments
 - [LÖVE](https://love2d.org/) - The game framework used
 - rxi - [json.lua](/love/lib/json.lua) - The JSON library used
-\- Fivos Moutavelis - [ini.lua](/love/lib/ini.lua) - The ini library used
+- Fivos Moutavelis - [ini.lua](/love/lib/ini.lua) - The ini library used
 - Ulysse Ramage - [push.lua](/love/lib/push.lua) - The push handling library used
 - Mattias Richard - [timer.lua](/love/lib/timer.lua) - The tweening library used (Apart of HUMP)
 
