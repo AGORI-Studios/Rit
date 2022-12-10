@@ -26,14 +26,11 @@
 ![Gameplay](docs/playing.gif)
 
 ### TODO
-- [x] Add a game over screen (High priority)
-- [ ] Add a pause screen (High priority)
+- [ ] Add a pause screen (High priority) (1/2)
 - [ ] Add a settings screen (Low priority)
 - [ ] Save high scores (Low priority)
 - [ ] Controller support (Low priority)
 - [ ] 5k+ support (Low priority)
-- [ ] Better UI (Idk priority) (I suck at UI design) (Help wanted)
-- [ ] Visualizer (Low priority) for when in the menu and when the song is playing in the background
 - [ ] More noteskins (Low priority)
 - [ ] Better song selection (Low priority) (Goes with Better UI)
 - [ ] Downscroll support (Medium priority)
@@ -50,10 +47,9 @@
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](/LICENSE) file for details
 
 ### Acknowledgments
-- [LÖVE](https://love2d.org/) - The game engine used
+- [LÖVE](https://love2d.org/) - The game framework used
 - rxi - [json.lua](/love/lib/json.lua) - The JSON library used
-- Andrew Minnich - [baton.lua](/love/lib/baton.lua) - The input library used
-- Fivos Moutavelis - [ini.lua](/love/lib/ini.lua) - The ini library used
+\- Fivos Moutavelis - [ini.lua](/love/lib/ini.lua) - The ini library used
 - Ulysse Ramage - [push.lua](/love/lib/push.lua) - The push handling library used
 - Mattias Richard - [timer.lua](/love/lib/timer.lua) - The tweening library used (Apart of HUMP)
 
