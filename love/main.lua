@@ -45,7 +45,7 @@ function love.load()
             ["right"] = {"key:right"},
             ["confirm"] = {"key:return"},
             
-            ["pause"] = {"key:p"},
+            ["pause"] = {"key:return"},
             ["restart"] = {"key:r"},
             ["quit"] = {"key:escape"}
         }
@@ -171,6 +171,10 @@ function love.draw()
             love.graphics.print("Press K to open my Ko-fi page!", 1545, 1040, 0, 2, 2)
         end
     push.finish()
+end
+
+function love.focus(f)
+    state.focus(f)
 end
 
 function love.quit()

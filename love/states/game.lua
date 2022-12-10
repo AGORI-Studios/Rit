@@ -26,6 +26,14 @@ function resize(img, width, height)
     return scaleX, scaleY
 end
 
+local function pause()
+    musicTimeDo = false 
+    love.audio.pause(audioFile)
+    if voices then
+        love.audio.pause(voices)
+    end
+end
+
 local died
 inputList = {
     "one4",
@@ -160,9 +168,11 @@ return {
         end
         absMusicTime = math.abs(musicTime)
         if (musicTime > 0) and not audioFile:isPlaying() then
-            audioFile:play()
-            if voices then -- support for fnf voices
-                voices:play()
+            if musicTimeDo then
+                audioFile:play()
+                if voices then -- support for fnf voices
+                    voices:play()
+                end
             end
         elseif musicTime > audioFile:getDuration() * 1000 then
             love.event.quit("restart")
@@ -211,6 +221,18 @@ return {
                 if settings.scrollvelocities then sv[1] = chartEvents[1][2] end
                 --print(sv[1])
                 table.remove(chartEvents, 1)
+            end
+        end
+
+        if input:pressed("pause") then 
+            if musicTimeDo then 
+                pause()
+            else
+                musicTimeDo = true
+                audioFile:play()
+                if voices then -- support for fnf voices
+                    voices:play()
+                end
             end
         end
 
@@ -436,7 +458,14 @@ return {
         end
     end,
 
-    leave = function(self)
+    focus = function(_, f)
+        print("focus: " .. tostring(f))
+        if not f then
+            pause()
+        end
+    end,
+
+    leave = function()
         audioFile:stop()
         if voices then
             voices:stop()

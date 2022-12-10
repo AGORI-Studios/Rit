@@ -168,11 +168,11 @@ local function doFnfMoment(fnfMoment)
 end
 
 return {
-    enter = function()
+    enter = function(self)
         chooseSongDifficulty()
     end,
 
-    update = function(dt)
+    update = function(self, dt)
         if choosingSong then
             if input:pressed("up") then
                 curSongSelected = curSongSelected - 1
@@ -231,7 +231,7 @@ return {
         end
     end,
 
-    draw = function()
+    draw = function(self)
         if choosingSong then
             love.graphics.push()
                 love.graphics.translate(0, songSelectScrollOffset)

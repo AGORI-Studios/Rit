@@ -174,14 +174,13 @@ local function selectSkin(skin) -- TODO: optimize skin loading
 end
 
 return {
-    enter = function()
-        print("entering skin select")
+    enter = function(self)
         choosingSkin = true
         curSkinSelected = 1
         chooseSkin()
     end,
 
-    update = function(dt)
+    update = function(self, dt)
         if input:pressed("up") then
             curSkinSelected = curSkinSelected - 1
             if curSkinSelected < 1 then
@@ -198,10 +197,8 @@ return {
         end
     end,
 
-    draw = function()
-        print("cc")
+    draw = function(self)
         for i, v in ipairs(skins) do
-            print(":hi")
             if i == curSkinSelected then
                 love.graphics.setColor(1, 1, 1)
             else
