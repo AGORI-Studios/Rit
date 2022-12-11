@@ -109,8 +109,8 @@ function fnfLoader.load(chart, isPlayer)
 
                         table.insert(charthits[noteType+1], {noteTime, 0, 1, false, false})
 
-                        for i = 1, noteLength, 95/2/speed do
-                            if i + 95/2/speed < noteLength then
+                        for i = 1, noteLength, note1HOLD:getHeight()/2/speed do
+                            if i + note1HOLD:getHeight()/2/speed < noteLength then
                                 charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, 1, true}
                             else
                                 charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, 1, true, true}

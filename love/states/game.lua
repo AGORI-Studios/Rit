@@ -273,17 +273,17 @@ return {
                                 judgement = "Perfect"
                                 health = health + 2
                                 additionalScore = additionalScore + 500
-                                additionalAccuracy = additionalAccuracy + 75.55
+                                additionalAccuracy = additionalAccuracy + 100
                             elseif pos < 75 then
                                 judgement = "Great"
                                 health = health + 2
                                 additionalScore = additionalScore + 350
-                                additionalAccuracy = additionalAccuracy + 66.66
+                                additionalAccuracy = additionalAccuracy + 75.55
                             elseif pos < 120 then
                                 judgement = "Good"
                                 health = health + 2
                                 additionalScore = additionalScore + 200
-                                additionalAccuracy = additionalAccuracy + 33.33
+                                additionalAccuracy = additionalAccuracy + 66.66
                             else
                                 judgement = "Miss"
                                 health = health - 2

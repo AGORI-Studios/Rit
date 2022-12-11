@@ -74,8 +74,8 @@ function osuLoader.load(chart)
                         endtime = tonumber(endtime) or 0
                         length = endtime - startTime
                         if length ~= startTime then 
-                            for i = 1, length, 95/2/speed do 
-                                if i + 95/2/speed < length then 
+                            for i = 1, length, note1HOLD:getHeight()/2/speed do 
+                                if i + note1HOLD:getHeight()/2/speed < length then 
                                     charthits[lane+1][#charthits[lane+1] + 1] = {startTime+i, 0, 1, true}
                                 else
                                     charthits[lane+1][#charthits[lane+1] + 1] = {startTime+i, 0, 1, true, true}
