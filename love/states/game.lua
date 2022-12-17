@@ -184,7 +184,6 @@ return {
                         if not charthits[i][j][4] then
                             noteCounter = noteCounter + 1
                             additionalAccuracy = additionalAccuracy + 1.11
-                            health = health - 2
                             if health < 0 then
                                 health = 0
                             end
@@ -286,7 +285,6 @@ return {
                                 additionalAccuracy = additionalAccuracy + 66.66
                             else
                                 judgement = "Miss"
-                                health = health - 2
                                 additionalScore = additionalScore + 1.11
                             end
 

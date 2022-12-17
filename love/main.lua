@@ -34,10 +34,10 @@ function love.load()
     inputMod = require "modules.input"
     input = inputMod:_load_config(
         {
-            ["one4"] = {"key:d"},
-            ["two4"] = {"key:f"},
-            ["three4"] = {"key:j"},
-            ["four4"] = {"key:k"},
+            ["one4"] = {"key:d", "button:dpleft", "axis:leftx-"},
+            ["two4"] = {"key:f", "button:dpdown", "axis:lefty-"},
+            ["three4"] = {"key:j", "button:dpup", "axis:lefty+"},
+            ["four4"] = {"key:k", "button:dpright", "axis:leftx+"},
             
             ["up"] = {"key:up"},
             ["down"] = {"key:down"},
@@ -47,7 +47,8 @@ function love.load()
             
             ["pause"] = {"key:return"},
             ["restart"] = {"key:r"},
-            ["quit"] = {"key:escape"}
+            ["quit"] = {"key:escape"},
+            ["joystick"] = love.joystick.getJoysticks()[1]
         }
     )
     flipY = 1 -- for downscroll

@@ -45,7 +45,11 @@ function input:_load_config(config)
     local config = config or {}
     
     for k, v in pairs(config) do
-        input[k] = Player:new(v)
+        if k ~= "joystick" then
+            input[k] = Player:new(v)
+        else
+            input["Joystick"] = v
+        end
     end
 
     return input
@@ -87,21 +91,21 @@ function Player:update()
                 self.down = false
             end
         elseif key == "button" then
-            if love.joystick.isDown(1, value) then
+            if input["Joystick"]:isGamepadDown(value) then 
                 self.down = true
             else
                 self.down = false
             end
         elseif key == "axis" then
-            local axis, direction = value:match("(.+)(%+)")
+            local axis, direction = value:match("(.+)(.+)")
             if direction == "+" then
-                if love.joystick.getAxis(1, axis) > 0.5 then
+                if input["Joystick"]:getGamepadAxis(axis) > 0.5 then
                     self.down = true
                 else
                     self.down = false
                 end
             else
-                if love.joystick.getAxis(1, axis) < -0.5 then
+                if input["Joystick"]:getGamepadAxis(axis) < -0.5 then
                     self.down = true
                 else
                     self.down = false
@@ -122,7 +126,9 @@ end
 function input:update()
     for k, v in pairs(self) do
         if type(v) == "table" then
-            v:update()
+            if k ~= "Joystick" then
+                v:update()
+            end
         end
     end
 end
