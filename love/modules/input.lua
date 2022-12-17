@@ -133,6 +133,10 @@ function input:update()
     end
 end
 
+function input:updateKey(key, newValue)
+    self[key] = Player:new(newValue)
+end
+
 function input:pressed(key)
     return self[key].pressed
 end
