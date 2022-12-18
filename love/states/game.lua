@@ -173,7 +173,7 @@ return {
                 end
             end
         elseif musicTime > audioFile:getDuration() * 1000 then
-            love.event.quit("restart")
+            state.switch(songSelect)
         end
         for i = 1, #charthits do
             for j = 1, #charthits[i] do
@@ -197,9 +197,10 @@ return {
                                     accuracyTimer = nil
                                 end
                             )
+                            health = health - 2
+                            addJudgement("Miss")
                         end
                         table.remove(charthits[i], 1)
-                        addJudgement("Miss")
                     end
                 end
             end
@@ -283,6 +284,7 @@ return {
                                 additionalAccuracy = additionalAccuracy + 66.66
                             else
                                 judgement = "Miss"
+                                health = health - 2
                                 additionalScore = additionalScore + 1.11
                             end
 
