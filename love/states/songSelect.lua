@@ -169,6 +169,7 @@ end
 
 return {
     enter = function(self)
+        chartEvents = {}
         chooseSongDifficulty()
     end,
 

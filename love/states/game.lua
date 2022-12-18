@@ -156,8 +156,6 @@ return {
     
         sv = {1} -- Scroll Velocity
     
-        chartEvents = {}
-    
         curJudgement = "none"
     end,
 
