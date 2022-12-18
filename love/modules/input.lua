@@ -52,7 +52,61 @@ function input:_load_config(config)
         end
     end
 
+    input._activeDevice = 'none'
+
     return input
+end
+
+function Player:update()
+    -- update the pressed, down, and released values
+    self.pressed = false
+    self.released = false
+
+    for k, v in pairs(self.keys) do
+        local key, value = v:match("(.+):(.+)")
+        if input._activeDevice == "kbm" then
+            if key == "key" then
+                if love.keyboard.isDown(value) then
+                    self.down = true
+                else
+                    self.down = false
+                end
+            end
+        elseif input._activeDevice == "joyButton" then
+            if key == "button" then
+                if input["Joystick"]:isGamepadDown(value) then 
+                    self.down = true
+                else
+                    self.down = false
+                end
+            end
+        elseif input._activeDevice == "joyStick" then
+            if key == "axis" then
+                local axis, direction = value:match("(.+)(.+)")
+                if direction == "+" then
+                    if input["Joystick"]:getGamepadAxis(axis) > 0.5 then
+                        self.down = true
+                    else
+                        self.down = false
+                    end
+                else
+                    if input["Joystick"]:getGamepadAxis(axis) < -0.5 then
+                        self.down = true
+                    else
+                        self.down = false
+                    end
+                end
+            end
+        end
+    end
+
+    if self.down and not self.wasDown then
+        self.pressed = true
+    elseif not self.down and self.wasDown then
+        self.released = true
+    end
+
+    self.wasDown = self.down
 end
 
 function Player:new(keys)
@@ -77,52 +131,6 @@ function Player:new(keys)
     return self
 end
 
-function Player:update()
-    -- update the pressed, down, and released values
-    self.pressed = false
-    self.released = false
-
-    for k, v in pairs(self.keys) do
-        local key, value = v:match("(.+):(.+)")
-        if key == "key" then
-            if love.keyboard.isDown(value) then
-                self.down = true
-            else
-                self.down = false
-            end
-        elseif key == "button" then
-            if input["Joystick"]:isGamepadDown(value) then 
-                self.down = true
-            else
-                self.down = false
-            end
-        elseif key == "axis" then
-            local axis, direction = value:match("(.+)(.+)")
-            if direction == "+" then
-                if input["Joystick"]:getGamepadAxis(axis) > 0.5 then
-                    self.down = true
-                else
-                    self.down = false
-                end
-            else
-                if input["Joystick"]:getGamepadAxis(axis) < -0.5 then
-                    self.down = true
-                else
-                    self.down = false
-                end
-            end
-        end
-    end
-
-    if self.down and not self.wasDown then
-        self.pressed = true
-    elseif not self.down and self.wasDown then
-        self.released = true
-    end
-
-    self.wasDown = self.down
-end
-
 function input:update()
     for k, v in pairs(self) do
         if type(v) == "table" then
@@ -131,6 +139,27 @@ function input:update()
             end
         end
     end
+end
+
+-- lazy ways to set current device
+function input:keypressed()
+    input._activeDevice = 'kbm'
+end
+
+function input:mousepressed()
+    input._activeDevice = 'kbm'
+end
+
+function input:gamepadpressed()
+    input._activeDevice = 'joyButton'
+end
+
+function input:gamepadaxis()
+    input._activeDevice = 'joyStick'
+end
+
+function input:getActiveDevice()
+    return input._activeDevice
 end
 
 function input:updateKey(key, newValue)
