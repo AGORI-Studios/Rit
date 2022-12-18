@@ -64,7 +64,7 @@ function Player:update()
 
     for k, v in pairs(self.keys) do
         local key, value = v:match("(.+):(.+)")
-        if input._activeDevice == "kbm" then
+        if input._activeDevice == "kbm" or input._activeDevice == "none" then
             if key == "key" then
                 if love.keyboard.isDown(value) then
                     self.down = true
