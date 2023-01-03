@@ -170,6 +170,7 @@ end
 return {
     enter = function(self)
         chartEvents = {}
+        bpmEvents = {}
         chooseSongDifficulty()
     end,
 

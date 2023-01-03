@@ -84,6 +84,23 @@ function quaverLoader.load(chart)
             end
         end
 
+        if not line:find("TimingPoints:") then 
+            if line:find("- StartTime: ") then -- if the line has "- StartTime: " in it, then it's the line with the note's start time
+                curLine = line
+                startTime = curLine
+                startTime = startTime:gsub("- StartTime: ", "")
+                startTime = tonumber(startTime)
+            end
+            if line:find("Bpm:") then 
+                curLine = line
+                bpm = curLine
+                bpm = bpm:gsub("Bpm: ", "")
+                bpm = tonumber(bpm)
+
+                table.insert(bpmEvents, {startTime, bpm})
+            end
+        end
+
         if not line:find("HitObjects:") and not line:find("HitObjects: []") then
             if line:find("- StartTime: ") then
                 curLine = line
@@ -123,6 +140,7 @@ function quaverLoader.load(chart)
         function()
             state.switch(game)
             musicTimeDo = true
+            print(#chartEvents, #bpmEvents)
         end
     )
     

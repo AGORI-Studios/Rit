@@ -221,6 +221,13 @@ return {
                 table.remove(chartEvents, 1)
             end
         end
+        if bpmEvents[1] then
+            if bpmEvents[1][1] <= absMusicTime then
+                beatHandler.setBPM(bpmEvents[1][2])
+                table.remove(bpmEvents, 1)
+            end
+        end
+        beatHandler.update(dt)
 
         if input:pressed("pause") then 
             if musicTimeDo then 

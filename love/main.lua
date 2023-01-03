@@ -89,6 +89,7 @@ function love.load()
     receptors = {}
 
     state = require "modules.state"
+    beatHandler = require "modules.beatHandler"
 
     game = require "states.game"
     songSelect = require "states.songSelect"
