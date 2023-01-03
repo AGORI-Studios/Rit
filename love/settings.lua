@@ -75,6 +75,6 @@ function settingsIni.loadSettings()
     settings.vsync = settings.vsync == "True"
     settings.fullscreen = settings.fullscreen == "True"
 
-    settings.volume = tonumber(settings.volume)
+    love.audio.setVolume(settings.volume)
 end
 return settingsIni

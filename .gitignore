@@ -1,3 +1,4 @@
+# Rhythm game charts
 *.qua
 *.mp3
 *.ogg
@@ -5,10 +6,14 @@
 *.osu
 *.qp
 *.osz
+*.zip
+
+# Compiled files
 /test/
 /build/
 resources/*
 
+# Important files to keep in the repository
 !resources/win32/download.txt
 !resources/win64/download.txt
 !resources/osx/download.txt
