@@ -367,21 +367,29 @@ return {
     end,
 
     draw = function(self)
-        
+
         if musicTimeDo then
             love.graphics.push()
                 love.graphics.push()
+                    if settings.downscroll then 
+                        love.graphics.translate(0, push.getHeight() - 175)
+                        love.graphics.scale(1, -1)
+                    end
                     love.graphics.translate(push.getWidth() / 2 - 175, 50)
                     for i = 1, #receptors do
                         if mode == "Keys4" then
-                            love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], -45 + 200 * (i - 1) - 275/2, 0, 0, notesize, notesize)
+                            love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], -45 + 200 * (i - 1) - 275/2, 0, 0, notesize, notesize * (settings.downscroll and -1 or 1))
                         else
-                            love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], -375 + 200 * (i - 1) - 275/2, 0, 0, notesize, notesize)
+                            love.graphics.draw(receptors[i][PRESSEDMOMENTS[i]], -375 + 200 * (i - 1) - 275/2, 0, 0, notesize, notesize * (settings.downscroll and -1 or 1))
                         end
                     end 
                 love.graphics.pop()
 
                 love.graphics.push()
+                    if settings.downscroll then 
+                        love.graphics.translate(0, push.getHeight() - 175)
+                        love.graphics.scale(1, -1)
+                    end
                     love.graphics.translate(push.getWidth() / 2 - 175, 50)
                     
                     love.graphics.translate(0, -musicPos * sv[1])
@@ -394,16 +402,16 @@ return {
                                         -- if the note is actually on screen (even with scroll velocity modifiers)
                                         if not charthits[i][j][5] then
                                             if charthits[i][j][4] then
-                                                love.graphics.draw(noteImgs[i][2], -45 + 200 * (i - 1) - 275/2, (charthits[i][j][1]*speed+200) * sv[1], 0, notesize, notesize)
+                                                love.graphics.draw(noteImgs[i][2], -45 + 200 * (i - 1) - 275/2, (charthits[i][j][1]*speed+200)+(not settings.downscroll and 0 or -75) * sv[1], 0, notesize, notesize * (settings.downscroll and -1 or 1))
                                             else
-                                                love.graphics.draw(noteImgs[i][1], -45 + 200 * (i - 1) - 275/2, (charthits[i][j][1]*speed+200-98) * sv[1], 0, notesize, notesize)
+                                                love.graphics.draw(noteImgs[i][1], -45 + 200 * (i - 1) - 275/2, (charthits[i][j][1]*speed+200-98) * sv[1], 0, notesize, notesize * (settings.downscroll and -1 or 1))
                                             end
                                         else
-                                            love.graphics.draw(noteImgs[i][3], -45 + 200 * (i - 1) - 275/2, (charthits[i][j][1]*speed+200+95+18) * sv[1], 0, notesize, -notesize)
+                                            love.graphics.draw(noteImgs[i][3], -45 + 200 * (i - 1) - 275/2, (charthits[i][j][1]*speed+200+(not settings.downscroll and 113 or -50)) * sv[1], 0, notesize, -notesize)
                                         end
                                     end
                                 else
-                                    love.graphics.draw(charthits[i][j][3], -375 + 200 * (i - 1) - 275/2, (charthits[i][j][1]*speed+200) * sv[1], 0, notesize, notesize)
+                                    love.graphics.draw(charthits[i][j][3], -375 + 200 * (i - 1) - 275/2, (charthits[i][j][1]*speed+200) * sv[1], 0, notesize, notesize * (settings.downscroll and -1 or 1))
                                 end
                             --end
                         end

@@ -51,7 +51,6 @@ function love.load()
             ["joystick"] = love.joystick.getJoysticks()[1]
         }
     )
-    flipY = 1 -- for downscroll
 
     ini = require "lib.ini"
     if discordRPC then 
@@ -70,10 +69,6 @@ function love.load()
     end
     settingsIni = require "settings"
     settingsIni.loadSettings()
-
-    if settings.downscroll then
-        flipY = 1
-    end
 
     function round(num)
         return math.floor(num + 0.5)
