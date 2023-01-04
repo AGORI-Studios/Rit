@@ -46,6 +46,13 @@ local function selectSkin(skin) -- TODO: optimize skin loading
     skinName = skin.name
     notesize = skinIni["skin"]["notesize"]
     notesize = tonumber(notesize)
+    antiAliasing = skinIni["skin"]["antiAliasing"]
+
+    if antiAliasing then 
+        love.graphics.setDefaultFilter("nearest", "nearest")
+    else
+        love.graphics.setDefaultFilter("linear", "linear")
+    end
     
     hitsound = love.audio.newSource(skinFolder .. "/" .. skinIni["skin"]["hitsound"]:gsub('"', ""), "static")
     hitsound:setVolume(tonumber(skinIni["skin"]["hitsoundVolume"]))
@@ -162,6 +169,8 @@ local function selectSkin(skin) -- TODO: optimize skin loading
             [9] = love.graphics.newImage(combo9)
         }
     }
+
+    love.graphics.setDefaultFilter("linear", "linear")
     choosingSkin = false
     choosingSong = true
 
