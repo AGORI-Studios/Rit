@@ -467,6 +467,10 @@ return {
                 love.graphics.printf(scoreFormat, 0, 0, 960, "right")
                 love.graphics.printf(accuracyFormat, 0, 45, 960, "right")
                 love.graphics.setFont(font)
+
+                -- Time remaining bar 
+                -- will be a rounded rectangle that is 25px tall and push.getWidth() wide
+                love.graphics.rectangle("fill", -push.getWidth()/2, push.getHeight() - 10, push.getWidth() * (1 - (musicTime/1000 / audioFile:getDuration())), 10, 10, 10)
             love.graphics.pop()
         end
     end,
