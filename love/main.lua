@@ -29,7 +29,6 @@ if love.filesystem.isFused() and (love.system.getOS() == "Windows" or love.syste
     nextPresenceUpdate = 0
 end
 function love.load()
-    __VERSION__ = love.filesystem.read("version.txt")
     require "modules.loveFuncs"
     inputMod = require "modules.input"
     input = inputMod:_load_config(
