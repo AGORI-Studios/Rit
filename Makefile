@@ -34,9 +34,6 @@ win32: lovefile
 	cp -r build/lovefile/Rit.love build/win32/game.love
 	cp -r resources/win32/* build/win32
 	cp -r resources/win32/discord-rpc.dll build/win32
-	cat resources/win32/love.exe build/win32/game.love > build/win32/love.exe
-
-	rm build/win32/game.love
 
 win64: lovefile
 	rm -rf build/win64
@@ -45,9 +42,6 @@ win64: lovefile
 	cp -r build/lovefile/Rit.love build/win64/game.love
 	cp -r resources/win64/* build/win64
 	cp -r resources/win64/discord-rpc.dll build/win64
-	cat resources/win64/love.exe build/win64/game.love > build/win64/love.exe
-
-	rm build/win64/game.love
 
 macos: lovefile
 	rm -rf build/macos

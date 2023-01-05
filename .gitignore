@@ -11,7 +11,9 @@
 # Compiled files
 /test/
 /build/
-resources/*
+resources/win64/*
+resources/win32/*
+resources/macos/*
 
 # Important files to keep in the repository
 !resources/win32/download.txt
