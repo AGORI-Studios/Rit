@@ -77,7 +77,7 @@ function love.load()
 
     quaverLoader = require "parsers.quaverLoader"
     osuLoader = require "parsers.osuLoader"
-    stepmaniaLoader = require "parsers.stepmaniaLoader"
+    stepmaniaLoader = require "parsers.smLoader"
     fnfLoader = require "parsers.fnfLoader"
 
     receptors = {}

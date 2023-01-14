@@ -7,15 +7,15 @@ local function chooseSkin()
     for i, v in ipairs(love.filesystem.getDirectoryItems("defaultskins")) do
         if love.filesystem.getInfo("defaultskins/" .. v).type == "directory" then
             local folderPath = "defaultskins/" .. v
-            -- get the skin.ini
-            local skinIni = ini.load(folderPath .. "/skin.ini")
+            -- get the skin.json
+            local skinJson = json.decode(love.filesystem.read(folderPath .. "/skin.json"))
             -- get the skin name
-            local skinName = skinIni["skin"]["name"]
+            local skinName = skinJson["skin"]["name"]
             -- add it to the table
             curSkin = {
                 name = skinName,
                 folder = folderPath,
-                ini = skinIni
+                json = skinJson
             }
             table.insert(skins, curSkin)
         end
@@ -24,14 +24,14 @@ local function chooseSkin()
         if love.filesystem.getInfo("skins/" .. v).type == "directory" then
             local folderPath = "skins/" .. v
             -- get the skin.ini
-            local skinIni = ini.load(folderPath .. "/skin.ini")
+            local skinJson = json.decode(love.filesystem.read(folderPath .. "/skin.json"))
             -- get the skin name
-            local skinName = skinIni["skin"]["name"]
+            local skinName = skinJson["skin"]["name"]
             -- add it to the table
             curSkin = {
                 name = skinName,
                 folder = folderPath,
-                ini = skinIni
+                json = skinJson
             }
             table.insert(skins, curSkin)
         end
@@ -41,12 +41,12 @@ end
 local function selectSkin(skin) -- TODO: optimize skin loading
     skin = skin or 1
     skin = skins[skin]
-    skinIni = skin.ini
+    skinJson = skin.json
     skinFolder = skin.folder
     skinName = skin.name
-    notesize = skinIni["skin"]["notesize"]
+    notesize = skinJson["skin"]["4k"]["note size"]
     notesize = tonumber(notesize)
-    antiAliasing = skinIni["skin"]["antiAliasing"]
+    antiAliasing = skinJson["skin"]["4k"]["antialiasing"]
 
     if antiAliasing then 
         love.graphics.setDefaultFilter("nearest", "nearest")
@@ -54,39 +54,39 @@ local function selectSkin(skin) -- TODO: optimize skin loading
         love.graphics.setDefaultFilter("linear", "linear")
     end
     
-    hitsound = love.audio.newSource(skinFolder .. "/" .. skinIni["skin"]["hitsound"]:gsub('"', ""), "static")
-    hitsound:setVolume(tonumber(skinIni["skin"]["hitsoundVolume"]))
+    hitsound = love.audio.newSource(skinFolder .. "/" .. skinJson["skin"]["4k"]["hitsound"]:gsub('"', ""), "static")
+    hitsound:setVolume(tonumber(skinJson["skin"]["4k"]["hitsound volume"]))
     hitsoundCache = { -- allows for multiple hitsounds to be played at once
         hitsound:clone()
     }
 
-    recepterUNPRESSED1 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["receptor1UNPRESSED"]:gsub('"', ""))
-    recepterPRESSED1 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["receptor1PRESSED"]:gsub('"', ""))
+    recepterUNPRESSED1 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["left receptor unpressed"]:gsub('"', ""))
+    recepterPRESSED1 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["left receptor pressed"]:gsub('"', ""))
 
-    recepterUNPRESSED2 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["receptor2UNPRESSED"]:gsub('"', ""))
-    recepterPRESSED2 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["receptor2PRESSED"]:gsub('"', ""))
+    recepterUNPRESSED2 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["down receptor unpressed"]:gsub('"', ""))
+    recepterPRESSED2 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["down receptor pressed"]:gsub('"', ""))
 
-    recepterUNPRESSED3 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["receptor3UNPRESSED"]:gsub('"', ""))
-    recepterPRESSED3 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["receptor3PRESSED"]:gsub('"', ""))
+    recepterUNPRESSED3 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["up receptor unpressed"]:gsub('"', ""))
+    recepterPRESSED3 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["up receptor pressed"]:gsub('"', ""))
 
-    recepterUNPRESSED4 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["receptor4UNPRESSED"]:gsub('"', ""))
-    recepterPRESSED4 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["receptor4PRESSED"]:gsub('"', ""))
+    recepterUNPRESSED4 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["right receptor unpressed"]:gsub('"', ""))
+    recepterPRESSED4 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["right receptor pressed"]:gsub('"', ""))
 
-    note1NORMAL = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["note1NORMAL"]:gsub('"', ""))
-    note1HOLD = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["note1HOLD"]:gsub('"', ""))
-    note1END = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["note1END"]:gsub('"', ""))
+    note1NORMAL = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["left note"]:gsub('"', ""))
+    note1HOLD = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["left note hold"]:gsub('"', ""))
+    note1END = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["left note hold end"]:gsub('"', ""))
     
-    note2NORMAL = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["note2NORMAL"]:gsub('"', ""))
-    note2HOLD = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["note2HOLD"]:gsub('"', ""))
-    note2END = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["note2END"]:gsub('"', ""))
+    note2NORMAL = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["down note"]:gsub('"', ""))
+    note2HOLD = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["down note hold"]:gsub('"', ""))
+    note2END = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["down note hold end"]:gsub('"', ""))
 
-    note3NORMAL = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["note3NORMAL"]:gsub('"', ""))
-    note3HOLD = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["note3HOLD"]:gsub('"', ""))
-    note3END = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["note3END"]:gsub('"', ""))
+    note3NORMAL = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["up note"]:gsub('"', ""))
+    note3HOLD = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["up note hold"]:gsub('"', ""))
+    note3END = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["up note hold end"]:gsub('"', ""))
 
-    note4NORMAL = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["note4NORMAL"]:gsub('"', ""))
-    note4HOLD = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["note4HOLD"]:gsub('"', ""))
-    note4END = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["note4END"]:gsub('"', ""))
+    note4NORMAL = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["right note"]:gsub('"', ""))
+    note4HOLD = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["right note hold"]:gsub('"', ""))
+    note4END = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["right note hold end"]:gsub('"', ""))
 
     receptors[1] = {love.graphics.newImage(recepterUNPRESSED1), love.graphics.newImage(recepterPRESSED1), 0}
     receptors[2] = {love.graphics.newImage(recepterUNPRESSED2), love.graphics.newImage(recepterPRESSED2), 0}
@@ -101,23 +101,23 @@ local function selectSkin(skin) -- TODO: optimize skin loading
     }
 
     judgementImages = { -- images for the judgement text
-        ["Miss"] = love.graphics.newImage(skinFolder .. "/" .. skinIni["skin"]["MISS"]:gsub('"', "")),
-        ["Good"] = love.graphics.newImage(skinFolder .. "/" .. skinIni["skin"]["GOOD"]:gsub('"', "")),
-        ["Great"] = love.graphics.newImage(skinFolder .. "/" .. skinIni["skin"]["GREAT"]:gsub('"', "")),
-        ["Perfect"] = love.graphics.newImage(skinFolder .. "/" .. skinIni["skin"]["PERFECT"]:gsub('"', "")),
-        ["Marvellous"] = love.graphics.newImage(skinFolder .. "/" .. skinIni["skin"]["MARVELLOUS"]:gsub('"', "")),
+        ["Miss"] = love.graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"]["MISS"]:gsub('"', "")),
+        ["Good"] = love.graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"]["GOOD"]:gsub('"', "")),
+        ["Great"] = love.graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"]["GREAT"]:gsub('"', "")),
+        ["Perfect"] = love.graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"]["PERFECT"]:gsub('"', "")),
+        ["Marvellous"] = love.graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"]["MARVELLOUS"]:gsub('"', "")),
     }
     -- combo images
-    combo0 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO0"]:gsub('"', ""))
-    combo1 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO1"]:gsub('"', ""))
-    combo2 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO2"]:gsub('"', ""))
-    combo3 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO3"]:gsub('"', ""))
-    combo4 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO4"]:gsub('"', ""))
-    combo5 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO5"]:gsub('"', ""))
-    combo6 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO6"]:gsub('"', ""))
-    combo7 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO7"]:gsub('"', ""))
-    combo8 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO8"]:gsub('"', ""))
-    combo9 = love.image.newImageData(skinFolder .. "/" .. skinIni["skin"]["COMBO9"]:gsub('"', ""))
+    combo0 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO0"]:gsub('"', ""))
+    combo1 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO1"]:gsub('"', ""))
+    combo2 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO2"]:gsub('"', ""))
+    combo3 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO3"]:gsub('"', ""))
+    combo4 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO4"]:gsub('"', ""))
+    combo5 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO5"]:gsub('"', ""))
+    combo6 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO6"]:gsub('"', ""))
+    combo7 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO7"]:gsub('"', ""))
+    combo8 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO8"]:gsub('"', ""))
+    combo9 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO9"]:gsub('"', ""))
 
     comboImages = { -- need to optimize this too lmfaoooo
         [1] = {
@@ -185,6 +185,8 @@ end
 return {
     enter = function(self)
         choosingSkin = true
+        choosingSong = false
+        musicTimeDo = false
         curSkinSelected = 1
         chooseSkin()
     end,

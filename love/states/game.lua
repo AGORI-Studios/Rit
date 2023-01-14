@@ -292,7 +292,7 @@ return {
                             else
                                 judgement = "Miss"
                                 health = health - 2
-                                additionalScore = additionalScore + 1.11
+                                additionalAccuracy = additionalAccuracy + 1.11
                             end
 
                             addJudgement(judgement)

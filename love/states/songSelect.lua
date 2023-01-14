@@ -148,6 +148,7 @@ local function selectSongDifficulty(song, chartVer)
         filename = song.filename
         songPath = song.path
         songTitle = song.title
+        folderPath = song.folderPath
         songDifficultyName = song.difficultyName
         stepmaniaLoader.load(songPath, filename)
         choosingSong = false
