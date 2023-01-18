@@ -23,3 +23,5 @@ resources/macos/*
 !resources/win32/discord-rpc.dll
 !resources/win64/discord-rpc.dll
 !resources/osx/discord-rpc.dylib
+
+love/defaultskins/AnimationTest/*
