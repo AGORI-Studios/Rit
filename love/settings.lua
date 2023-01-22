@@ -23,24 +23,38 @@ local settingsIni = {}
 settings = {}
 settingsStr = [[
 [Game]
+; Makes the notes scroll down instead of up
 downscroll = True
+
+; scroll speed is the scroll speed ever
 scrollspeed = 1.0
+
 ; Currently WIP, while it works, it's not recommended to use it
 Scroll Velocities = False
+
 ; Start time is for the amount of time to wait before the song starts (In milliseconds)
 startTime = 700
 
+; Note spacing is the amount of space between each note (in pixels) ((its broken as fuck))
+noteSpacing = 200
+
 [Graphics]
+; Screen width/height
 width = 1280
 height = 720
+
+; Fullscreen mode
 fullscreen = False
+
+; Vertical sync
 vsync = False
 
 [Audio]
+; Master volume
 volume = 1.0
 
 [System]
-version = 0.0.2-beta
+version = 0.0.3-beta
 ]]
 
 function settingsIni.loadSettings()
@@ -50,13 +64,14 @@ function settingsIni.loadSettings()
     end
     inifile = ini.load("settings.ini")
     settings.version = inifile["System"]["version"] or "Unknown"
-    if settings.version ~= "0.0.2-beta" then
+    if settings.version ~= "0.0.3-beta" then
         love.filesystem.write("settings.ini", settingsStr)
     end
     settings.downscroll = inifile["Game"]["downscroll"]
     settings.scrollspeed = inifile["Game"]["scrollspeed"]
     settings.scrollvelocities = inifile["Game"]["Scroll Velocities"]
     settings.startTime = inifile["Game"]["startTime"]
+    settings.noteSpacing = inifile["Game"]["noteSpacing"]
 
     settings.width = inifile["Graphics"]["width"]
     settings.height = inifile["Graphics"]["height"]
