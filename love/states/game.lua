@@ -266,9 +266,9 @@ return {
                     end
                     if notes[1] then
                         --print(notes[1][1] - musicPos)
-                        noteCounter = noteCounter + 1
                         if not notes[1][4] and not notes[1][5] then
                             if notes[1][1] - musicTime >= -80 and notes[1][1] - musicTime <= 180 or (notes[2] and notes[1][5] and notes[2][1] - musicTime >= -80 and notes[2][1] - musicTime <= 180) then
+                                noteCounter = noteCounter + 1
                                 --print("Hit!")
                                 --print(notes[1][1] - musicTime .. "ms")
                                 pos = math.abs(notes[1][1] - musicTime)
@@ -352,6 +352,7 @@ return {
                 if notes[1] then
                     if notes[1][1] - musicTime >= -80 and notes[1][1] - musicTime <= 5 then
                         if not notes[1][4] then 
+                            noteCounter = noteCounter + 1
                             if hitsoundCache[#hitsoundCache]:isPlaying() then
                                 hitsoundCache[#hitsoundCache] = hitsoundCache[#hitsoundCache]:clone()
                                 hitsoundCache[#hitsoundCache]:play()
@@ -509,6 +510,9 @@ return {
                 end
                 love.graphics.setFont(accuracyFont)
                 love.graphics.printf(scoreFormat, 0, 0, 960, "right")
+                if accuracyFormat == "nan%" then 
+                    accuracyFormat = "0.00%"
+                end
                 love.graphics.printf(accuracyFormat, 0, 45, 960, "right")
                 love.graphics.setFont(font)
 
