@@ -120,7 +120,7 @@ function love.load()
         {255, 255, 255}
     }
     musicTimeDo = false
-    health = 100
+    health = 1
 
     love.window.setMode(settings.width, settings.height, {resizable = true, vsync = settings.vsync, fullscreen = settings.fullscreen})
     --resolution.setup(settings.width, settings.height, 1920, 1080, {_type = "normal"})

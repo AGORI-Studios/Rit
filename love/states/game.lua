@@ -197,7 +197,7 @@ return {
                                     accuracyTimer = nil
                                 end
                             )
-                            health = health - 2
+                            health = health - 0.270
                             addJudgement("Miss")
                         end
                         table.remove(charthits[i], 1)
@@ -277,34 +277,34 @@ return {
                                 end
                                 if pos < 45 then
                                     judgement = "Marvellous"
-                                    health = health + 2
+                                    health = health + 0.135
                                     additionalScore = additionalScore + 650
                                     additionalAccuracy = additionalAccuracy + 100
                                 elseif pos < 60 then
                                     judgement = "Perfect"
-                                    health = health + 2
+                                    health = health + 0.135
                                     additionalScore = additionalScore + 500
                                     additionalAccuracy = additionalAccuracy + 100
                                 elseif pos < 75 then
                                     judgement = "Great"
-                                    health = health + 2
+                                    health = health + 0.135
                                     additionalScore = additionalScore + 350
                                     additionalAccuracy = additionalAccuracy + 75.55
                                 elseif pos < 120 then
                                     judgement = "Good"
-                                    health = health + 2
+                                    health = health + 0.135
                                     additionalScore = additionalScore + 200
                                     additionalAccuracy = additionalAccuracy + 66.66
                                 else
                                     judgement = "Miss"
-                                    health = health - 2
+                                    health = health - 0.270
                                     additionalAccuracy = additionalAccuracy + 1.11
                                 end
 
                                 addJudgement(judgement)
 
-                                if health > 100 then
-                                    health = 100
+                                if health > 2 then
+                                    health = 2
                                 end
                                 if scoringTimer then 
                                     Timer.cancel(scoringTimer)
@@ -365,13 +365,13 @@ return {
                             end
                             pos = math.abs(notes[1][1] - musicTime)
                             judgement = "Marvellous"
-                            health = health + 2
+                            health = health + 0.135
                             additionalScore = additionalScore + 650
                             additionalAccuracy = additionalAccuracy + 100
                             addJudgement(judgement)
 
                             if health > 100 then
-                                health = 100
+                                health = 1
                             end
                             if scoringTimer then 
                                 Timer.cancel(scoringTimer)
@@ -461,7 +461,7 @@ return {
                                         -- if the note is actually on screen (even with scroll velocity modifiers)
                                         if not charthits[i][j][5] then
                                             if charthits[i][j][4] then
-                                                noteImgs[i][2]:draw(45 + settings.noteSpacing * (i - 1) - 275/2, -100+(charthits[i][j][1]*speed+200)+(not settings.downscroll and 0 or -75) * sv, notesize, notesize * (settings.downscroll and -1 or 1))
+                                                noteImgs[i][2]:draw(45 + settings.noteSpacing * (i - 1) - 275/2, -100+(charthits[i][j][1]*speed+200)+(not settings.downscroll and 0 or -75) * sv, notesize, noteImgs[i][2].scaleY * notesize * (settings.downscroll and -1 or 1))
                                             else
                                                 noteImgs[i][1]:draw(45 + settings.noteSpacing * (i - 1) - 275/2, -100+(charthits[i][j][1]*speed+200-98) * sv, notesize, notesize * (settings.downscroll and -1 or 1))
                                             end
@@ -498,7 +498,7 @@ return {
                     end
                 end
                 love.graphics.translate(push.getWidth() / 2, 0)
-                love.graphics.rectangle("fill", -1000, 0, health * 8+10, 20, 10, 10)
+                love.graphics.rectangle("fill", -1000, 0, health * 400+10, 20, 10, 10)
 
                 love.graphics.setFont(scoreFont)
                 scoreFormat = string.format("%07d", round(scoring.score))
