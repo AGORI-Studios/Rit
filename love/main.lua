@@ -18,7 +18,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ------------------------------------------------------------------------------]]
--- TODO: seperate all game shiz into seperate states (menu, song select, gameplay, etc)
 local desktopWidth, desktopHeight = love.window.getDesktopDimensions()
 fnfMomentShiz = {
     true, false
