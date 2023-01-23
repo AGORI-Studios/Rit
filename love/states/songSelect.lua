@@ -170,6 +170,8 @@ end
 
 return {
     enter = function(self)
+        choosingSong = true
+        fnfChartMoment = false
         chartEvents = {}
         bpmEvents = {}
         chooseSongDifficulty()
@@ -231,6 +233,12 @@ return {
             if input:pressed("confirm") then
                 doFnfMoment(fnfMomentShiz[fnfMomentSelected])
             end
+        end
+    end,
+
+    keypressed = function(self, key)
+        if key == "b" then 
+            autoplay = not autoplay
         end
     end,
 

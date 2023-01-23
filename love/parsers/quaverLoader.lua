@@ -2,7 +2,7 @@
 
 This file is apart of Rit; a free and open sourced rhythm game made with LÖVE.
 
-Copyright (C) 2022 GuglioIsStupid
+Copyright (C) 2023 GuglioIsStupid
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -41,21 +41,9 @@ function quaverLoader.load(chart)
             modeLine = line
             mode = modeLine:gsub("Mode: ", "")
             if mode == "Keys7" then
-                for i = 1, 7 do
-                    charthits[i] = {}
-                end
-                for i = 1, 7 do
-                    receptors[i] = {love.graphics.newImage(receptor), love.graphics.newImage(receptorDown)}
-                end
-                inputList = {
-                    "one7",
-                    "two7",
-                    "three7",
-                    "four7",
-                    "five7",
-                    "six7",
-                    "seven7"
-                }
+                print("7k+ charts are not supported yet.")
+                state.switch(songSelect)
+                break
             end
         end
         -- if the line has "- Bpm: " in it, then it's the line with the BPM
@@ -125,8 +113,8 @@ function quaverLoader.load(chart)
                 local length = tonumber(endTime) - startTime
                 endTime = tonumber(endTime)
                     
-                for i = 1, length, note1HOLD:getHeight()/2/speed do
-                    if i + note1HOLD:getHeight()/2/speed < length then
+                for i = 1, length, noteImgs[lane][2]:getHeight()/2/speed do
+                    if i + noteImgs[lane][2]:getHeight()/2/speed < length then
                         charthits[lane][#charthits[lane] + 1] = {startTime+i, 0, 1, true}
                     else
                         charthits[lane][#charthits[lane] + 1] = {startTime+i, 0, 1, true, true}
@@ -140,7 +128,6 @@ function quaverLoader.load(chart)
         function()
             state.switch(game)
             musicTimeDo = true
-            print(#chartEvents, #bpmEvents)
         end
     )
     

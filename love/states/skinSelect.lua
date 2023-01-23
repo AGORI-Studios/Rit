@@ -60,115 +60,86 @@ local function selectSkin(skin) -- TODO: optimize skin loading
         hitsound:clone()
     }
 
-    recepterUNPRESSED1 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["left receptor unpressed"]:gsub('"', ""))
-    recepterPRESSED1 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["left receptor pressed"]:gsub('"', ""))
-
-    recepterUNPRESSED2 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["down receptor unpressed"]:gsub('"', ""))
-    recepterPRESSED2 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["down receptor pressed"]:gsub('"', ""))
-
-    recepterUNPRESSED3 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["up receptor unpressed"]:gsub('"', ""))
-    recepterPRESSED3 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["up receptor pressed"]:gsub('"', ""))
-
-    recepterUNPRESSED4 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["right receptor unpressed"]:gsub('"', ""))
-    recepterPRESSED4 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["right receptor pressed"]:gsub('"', ""))
-
-    note1NORMAL = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["left note"]:gsub('"', ""))
-    note1HOLD = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["left note hold"]:gsub('"', ""))
-    note1END = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["left note hold end"]:gsub('"', ""))
-    
-    note2NORMAL = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["down note"]:gsub('"', ""))
-    note2HOLD = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["down note hold"]:gsub('"', ""))
-    note2END = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["down note hold end"]:gsub('"', ""))
-
-    note3NORMAL = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["up note"]:gsub('"', ""))
-    note3HOLD = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["up note hold"]:gsub('"', ""))
-    note3END = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["up note hold end"]:gsub('"', ""))
-
-    note4NORMAL = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["right note"]:gsub('"', ""))
-    note4HOLD = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["right note hold"]:gsub('"', ""))
-    note4END = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["right note hold end"]:gsub('"', ""))
-
-    receptors[1] = {love.graphics.newImage(recepterUNPRESSED1), love.graphics.newImage(recepterPRESSED1), 0}
-    receptors[2] = {love.graphics.newImage(recepterUNPRESSED2), love.graphics.newImage(recepterPRESSED2), 0}
-    receptors[3] = {love.graphics.newImage(recepterUNPRESSED3), love.graphics.newImage(recepterPRESSED3), 0}
-    receptors[4] = {love.graphics.newImage(recepterUNPRESSED4), love.graphics.newImage(recepterPRESSED4), 0}
+    receptors[1] = {graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["left receptor unpressed"]:gsub('"', "")), graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["left receptor pressed"]:gsub('"', "")), 0}
+    receptors[2] = {graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["down receptor unpressed"]:gsub('"', "")), graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["down receptor pressed"]:gsub('"', "")), 0}
+    receptors[3] = {graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["up receptor unpressed"]:gsub('"', "")), graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["up receptor pressed"]:gsub('"', "")), 0}
+    receptors[4] = {graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["right receptor unpressed"]:gsub('"', "")), graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["right receptor pressed"]:gsub('"', "")), 0}
 
     noteImgs = {
-        {love.graphics.newImage(note1NORMAL), love.graphics.newImage(note1HOLD), love.graphics.newImage(note1END)},
-        {love.graphics.newImage(note2NORMAL), love.graphics.newImage(note2HOLD), love.graphics.newImage(note2END)},
-        {love.graphics.newImage(note3NORMAL), love.graphics.newImage(note3HOLD), love.graphics.newImage(note3END)},
-        {love.graphics.newImage(note4NORMAL), love.graphics.newImage(note4HOLD), love.graphics.newImage(note4END)}
+        {graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["left note"]:gsub('"', "")), graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["left note hold"]:gsub('"', "")), graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["left note hold end"]:gsub('"', ""))},
+        {graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["down note"]:gsub('"', "")), graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["down note hold"]:gsub('"', "")), graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["down note hold end"]:gsub('"', ""))},
+        {graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["up note"]:gsub('"', "")), graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["up note hold"]:gsub('"', "")), graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["up note hold end"]:gsub('"', ""))},
+        {graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["right note"]:gsub('"', "")), graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["right note hold"]:gsub('"', "")), graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["right note hold end"]:gsub('"', ""))}
     }
 
     judgementImages = { -- images for the judgement text
-        ["Miss"] = love.graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"]["MISS"]:gsub('"', "")),
-        ["Good"] = love.graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"]["GOOD"]:gsub('"', "")),
-        ["Great"] = love.graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"]["GREAT"]:gsub('"', "")),
-        ["Perfect"] = love.graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"]["PERFECT"]:gsub('"', "")),
-        ["Marvellous"] = love.graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"]["MARVELLOUS"]:gsub('"', "")),
+        ["Miss"] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"]["MISS"]:gsub('"', "")),
+        ["Good"] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"]["GOOD"]:gsub('"', "")),
+        ["Great"] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"]["GREAT"]:gsub('"', "")),
+        ["Perfect"] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"]["PERFECT"]:gsub('"', "")),
+        ["Marvellous"] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"]["MARVELLOUS"]:gsub('"', "")),
     }
-    -- combo images
-    combo0 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO0"]:gsub('"', ""))
-    combo1 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO1"]:gsub('"', ""))
-    combo2 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO2"]:gsub('"', ""))
-    combo3 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO3"]:gsub('"', ""))
-    combo4 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO4"]:gsub('"', ""))
-    combo5 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO5"]:gsub('"', ""))
-    combo6 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO6"]:gsub('"', ""))
-    combo7 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO7"]:gsub('"', ""))
-    combo8 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO8"]:gsub('"', ""))
-    combo9 = love.image.newImageData(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO9"]:gsub('"', ""))
 
+    comboImages = {}
+
+    --[[
     comboImages = { -- need to optimize this too lmfaoooo
         [1] = {
-            [0] = love.graphics.newImage(combo0),
-            [1] = love.graphics.newImage(combo1),
-            [2] = love.graphics.newImage(combo2),
-            [3] = love.graphics.newImage(combo3),
-            [4] = love.graphics.newImage(combo4),
-            [5] = love.graphics.newImage(combo5),
-            [6] = love.graphics.newImage(combo6),
-            [7] = love.graphics.newImage(combo7),
-            [8] = love.graphics.newImage(combo8),
-            [9] = love.graphics.newImage(combo9)
+            [0] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO0"]:gsub('"', "")),
+            [1] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO1"]:gsub('"', "")),
+            [2] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO2"]:gsub('"', "")),
+            [3] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO3"]:gsub('"', "")),
+            [4] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO4"]:gsub('"', "")),
+            [5] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO5"]:gsub('"', "")),
+            [6] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO6"]:gsub('"', "")),
+            [7] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO7"]:gsub('"', "")),
+            [8] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO8"]:gsub('"', "")),
+            [9] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO9"]:gsub('"', ""))
         },
         [2] = {
-            [0] = love.graphics.newImage(combo0),
-            [1] = love.graphics.newImage(combo1),
-            [2] = love.graphics.newImage(combo2),
-            [3] = love.graphics.newImage(combo3),
-            [4] = love.graphics.newImage(combo4),
-            [5] = love.graphics.newImage(combo5),
-            [6] = love.graphics.newImage(combo6),
-            [7] = love.graphics.newImage(combo7),
-            [8] = love.graphics.newImage(combo8),
-            [9] = love.graphics.newImage(combo9)
+            [0] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO0"]:gsub('"', "")),
+            [1] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO1"]:gsub('"', "")),
+            [2] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO2"]:gsub('"', "")),
+            [3] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO3"]:gsub('"', "")),
+            [4] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO4"]:gsub('"', "")),
+            [5] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO5"]:gsub('"', "")),
+            [6] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO6"]:gsub('"', "")),
+            [7] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO7"]:gsub('"', "")),
+            [8] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO8"]:gsub('"', "")),
+            [9] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO9"]:gsub('"', ""))
         },
         [3] = {
-            [0] = love.graphics.newImage(combo0),
-            [1] = love.graphics.newImage(combo1),
-            [2] = love.graphics.newImage(combo2),
-            [3] = love.graphics.newImage(combo3),
-            [4] = love.graphics.newImage(combo4),
-            [5] = love.graphics.newImage(combo5),
-            [6] = love.graphics.newImage(combo6),
-            [7] = love.graphics.newImage(combo7),
-            [8] = love.graphics.newImage(combo8),
-            [9] = love.graphics.newImage(combo9)
+            [0] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO0"]:gsub('"', "")),
+            [1] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO1"]:gsub('"', "")),
+            [2] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO2"]:gsub('"', "")),
+            [3] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO3"]:gsub('"', "")),
+            [4] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO4"]:gsub('"', "")),
+            [5] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO5"]:gsub('"', "")),
+            [6] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO6"]:gsub('"', "")),
+            [7] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO7"]:gsub('"', "")),
+            [8] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO8"]:gsub('"', "")),
+            [9] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO9"]:gsub('"', ""))
         },
         [4] = {
-            [0] = love.graphics.newImage(combo0),
-            [1] = love.graphics.newImage(combo1),
-            [2] = love.graphics.newImage(combo2),
-            [3] = love.graphics.newImage(combo3),
-            [4] = love.graphics.newImage(combo4),
-            [5] = love.graphics.newImage(combo5),
-            [6] = love.graphics.newImage(combo6),
-            [7] = love.graphics.newImage(combo7),
-            [8] = love.graphics.newImage(combo8),
-            [9] = love.graphics.newImage(combo9)
+            [0] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO0"]:gsub('"', "")),
+            [1] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO1"]:gsub('"', "")),
+            [2] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO2"]:gsub('"', "")),
+            [3] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO3"]:gsub('"', "")),
+            [4] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO4"]:gsub('"', "")),
+            [5] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO5"]:gsub('"', "")),
+            [6] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO6"]:gsub('"', "")),
+            [7] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO7"]:gsub('"', "")),
+            [8] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO8"]:gsub('"', "")),
+            [9] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO9"]:gsub('"', ""))
         }
-    }
+    --]]
+
+    for i = 1, 6 do
+        comboImages[i] = {}
+        for j = 0, 9 do
+            comboImages[i][j] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO" .. j]:gsub('"', ""))
+        end
+    end
 
     love.graphics.setDefaultFilter("linear", "linear")
     choosingSkin = false

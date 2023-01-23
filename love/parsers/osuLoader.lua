@@ -2,7 +2,7 @@
 
 This file is apart of Rit; a free and open sourced rhythm game made with LÖVE.
 
-Copyright (C) 2022 GuglioIsStupid
+Copyright (C) 2023 GuglioIsStupid
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -52,7 +52,6 @@ function osuLoader.load(chart)
                 hitSound = hitSound
                 if lane > 4 then
                     print("This is not a 4k chart!\nSupport for 5k+ charts will be added in the future.")
-                    choosingSong = true
                     break
                 end
                 
@@ -74,8 +73,8 @@ function osuLoader.load(chart)
                         endtime = tonumber(endtime) or 0
                         length = endtime - startTime
                         if length ~= startTime then 
-                            for i = 1, length, note1HOLD:getHeight()/2/speed do 
-                                if i + note1HOLD:getHeight()/2/speed < length then 
+                            for i = 1, length, noteImgs[lane+1][2]:getHeight()/2/speed do 
+                                if i + noteImgs[lane+1][2]:getHeight()/2/speed < length then 
                                     charthits[lane+1][#charthits[lane+1] + 1] = {startTime+i, 0, 1, true}
                                 else
                                     charthits[lane+1][#charthits[lane+1] + 1] = {startTime+i, 0, 1, true, true}

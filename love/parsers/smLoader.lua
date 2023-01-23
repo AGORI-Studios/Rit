@@ -9,8 +9,6 @@ local diffIndex = 0
 local beat = 0
 local measureIndex = 0
 
-
-
 function stepLoader.load(chart)
     bpm = 120
     mode = "Keys4"

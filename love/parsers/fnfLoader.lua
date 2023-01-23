@@ -2,7 +2,7 @@
 
 This file is apart of Rit; a free and open sourced rhythm game made with LÖVE.
 
-Copyright (C) 2022 GuglioIsStupid
+Copyright (C)  GuglioIsStupid
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -94,8 +94,8 @@ function fnfLoader.load(chart, isPlayer)
 
                         table.insert(charthits[noteType-3], {noteTime, 0, 1, false, false})
 
-                        for i = 1, noteLength, 95/2/speed do
-                            if i + 95/2/speed < noteLength then
+                        for i = 1, noteLength, noteImgs[noteType-3][2]:getHeight()/2/speed do
+                            if i + noteImgs[noteType-3][2]:getHeight()/2/speed < noteLength then
                                 charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, 1, true}
                             else
                                 charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, 1, true, true}
@@ -109,8 +109,8 @@ function fnfLoader.load(chart, isPlayer)
 
                         table.insert(charthits[noteType+1], {noteTime, 0, 1, false, false})
 
-                        for i = 1, noteLength, note1HOLD:getHeight()/2/speed do
-                            if i + note1HOLD:getHeight()/2/speed < noteLength then
+                        for i = 1, noteLength, noteImgs[noteType+1][2]:getHeight()/2/speed do
+                            if i + noteImgs[noteType+1][2]:getHeight()/2/speed < noteLength then
                                 charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, 1, true}
                             else
                                 charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, 1, true, true}

@@ -2,7 +2,7 @@
 
 This file is apart of Rit; a free and open sourced rhythm game made with LÖVE.
 
-Copyright (C) 2022 GuglioIsStupid
+Copyright (C) 2023 GuglioIsStupid
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -50,6 +50,7 @@ function love.load()
             ["joystick"] = love.joystick.getJoysticks()[1]
         }
     )
+    graphics = require "modules.graphics"
 
     ini = require "lib.ini"
     if discordRPC then 
@@ -74,10 +75,11 @@ function love.load()
     end
 
     speed = settings.scrollspeed or 1
+    autoplay = false
 
     quaverLoader = require "parsers.quaverLoader"
     osuLoader = require "parsers.osuLoader"
-    stepmaniaLoader = require "parsers.smLoader"
+    stepmaniaLoader = require "parsers.stepmaniaLoader"
     fnfLoader = require "parsers.fnfLoader"
 
     receptors = {}
@@ -154,6 +156,9 @@ function love.keypressed(key)
     if key == "escape" then
         love.event.quit()
     end
+    if state.keypressed then
+        state.keypressed(key)
+    end
     if key == "k" and (choosingSong or choosingSkin) then
         love.system.openURL("https://ko-fi.com/A0A8GRXMX")
     end
@@ -167,6 +172,10 @@ function love.draw()
             love.graphics.print("Press K to open my Ko-fi page!", 1545, 1040, 0, 2, 2)
         end
     push.finish()
+
+    love.graphics.print("Memory usage: " .. round(collectgarbage("count")) .. "KB", 0, 0)
+    love.graphics.print("FPS: " .. love.timer.getFPS(), 0, 20)
+    love.graphics.print("Graphics memory usage: " .. round(love.graphics.getStats().texturememory / 1024) .. "KB", 0, 40)
 end
 
 function love.focus(f)
