@@ -33,7 +33,7 @@
 - [ ] 5k+ support (Low priority)
 - [ ] More noteskins (Low priority)
 - [ ] Better song selection (Low priority) (Goes with Better UI)
-- [ ] Downscroll support (Medium priority)
+- [x] Downscroll support (Medium priority)
 
 ### Credits
 - GuglioIsStupid - Programming
