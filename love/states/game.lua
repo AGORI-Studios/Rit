@@ -222,15 +222,18 @@ return {
                         noteImgs[i][2].scaleY = 1 * sv
                     end
                 end
-                --print(sv)
+                --print(sv)j
                 table.remove(chartEvents, 1)
             end
         end
         if bpmEvents[1] then
-            if bpmEvents[1][1] <= absMusicTime then
-                beatHandler.setBPM(bpmEvents[1][2])
-                table.remove(bpmEvents, 1)
+            if bpmEvents[1][1] then
+                if bpmEvents[1][1] <= absMusicTime then
+                    beatHandler.setBPM(bpmEvents[1][2])
+                    table.remove(bpmEvents, 1)
+                end
             end
+            
         end
         beatHandler.update(dt)
 
