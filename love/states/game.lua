@@ -346,7 +346,7 @@ return {
                     end 
                 end
 
-                if input:isDown(curInput) then
+                if input:down(curInput) then
                     PRESSEDMOMENTS[i] = 2
                     if notes[1] then
                         if notes[1][4] then

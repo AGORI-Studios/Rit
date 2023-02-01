@@ -151,26 +151,26 @@ if love.filesystem.isFused() and (love.system.getOS() == "Windows" or love.syste
 end
 function love.load()
     require "modules.loveFuncs"
-    inputMod = require "modules.input"
-    input = inputMod:_load_config(
-        {
-            ["one4"] = {"key:d", "button:dpleft", "axis:leftx-"},
-            ["two4"] = {"key:f", "button:dpdown", "axis:lefty-"},
-            ["three4"] = {"key:j", "button:dpup", "axis:lefty+"},
-            ["four4"] = {"key:k", "button:dpright", "axis:leftx+"},
-            
-            ["up"] = {"key:up"},
-            ["down"] = {"key:down"},
-            ["left"] = {"key:left"},
-            ["right"] = {"key:right"},
-            ["confirm"] = {"key:return"},
-            
-            ["pause"] = {"key:return"},
-            ["restart"] = {"key:r"},
-            ["quit"] = {"key:escape"},
-            ["joystick"] = love.joystick.getJoysticks()[1]
-        }
-    )
+    input = (require "lib.baton").new({
+        controls = {
+            one4 = {"key:d", "button:dpleft", "axis:leftx-"},
+            two4 = {"key:f", "button:dpdown", "axis:lefty-"},
+            three4 = {"key:j", "button:dpup", "axis:lefty+"},
+            four4 = {"key:k", "button:dpright", "axis:leftx+"},
+    
+            up = {"key:up", "button:dpup", "axis:lefty-"},
+            down = {"key:down", "button:dpdown", "axis:lefty+"},
+            left = {"key:left", "button:dpleft", "axis:leftx-"},
+            right = {"key:right", "button:dpright", "axis:leftx+"},
+           
+    
+            confirm = {"key:return", "button:a"},
+            pause = {"key:return", "button:start"},
+            restart = {"key:r", "button:b"},
+            quit = {"key:escape", "button:back"}
+        },
+        joystick = love.joystick.getJoysticks()[1]
+    })
     graphics = require "modules.graphics"
 
     ini = require "lib.ini"
