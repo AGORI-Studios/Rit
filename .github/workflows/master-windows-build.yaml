@@ -1,10 +1,9 @@
 name: Rit - Windows Master branch build
 on:
   push:
-    branches: [ beta ]
+    branches: [ master ]
   pull_request:
-    branches: [ beta ]
-
+    branches: [ master ]
   workflow_dispatch:
 
 jobs:
