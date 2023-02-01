@@ -29,7 +29,8 @@ function Build-Lovefile {
   New-Item -ItemType Directory -Force -Path build/lovefile
 
   Set-Location -Path love # this is so psycho wtf
-  Compress-Archive -Path ./* -DestinationPath ../build/lovefile/Rit.love -CompressionLevel Optimal
+  Compress-Archive -Path ./* -DestinationPath ../build/lovefile/Rit.zip -CompressionLevel Optimal
+  Rename-Item -Path ../build/lovefile/Rit.zip -NewName Rit.love
   Set-Location -Path ..
 }
 
