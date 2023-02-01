@@ -103,6 +103,7 @@ end
 
 return {
     enter = function(self)
+        now = os.time()
         scoring = {
             score = 0,
             accuracy = 0,
@@ -210,7 +211,7 @@ return {
             details = "Playing "..songTitle, 
             state = "Playing "..songDifficultyName,
             largeImageKey = "totallyreallogo",
-            largeImageText = "Playing "..songTitle,
+            largeImageText = "Rit",
             startTimestamp = now
         }
 
