@@ -1,0 +1,31 @@
+name: Rit - Windows Master branch build
+on:
+  push:
+    branches: [ beta ]
+  pull_request:
+    branches: [ beta ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build x32
+        run: |
+          powershell .\Makefile.ps1 -Architecture win32
+
+      - name: Build x64
+        run: |
+          powershell .\Makefile.ps1 -Architecture win64
+
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: rit
+          path: |
+            build/win32/
+            build/win64/
