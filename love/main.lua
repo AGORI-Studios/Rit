@@ -298,6 +298,7 @@ function love.draw()
     love.graphics.print("Memory usage: " .. round(collectgarbage("count")) .. "KB", 0, 0)
     love.graphics.print("FPS: " .. love.timer.getFPS(), 0, 20)
     love.graphics.print("Graphics memory usage: " .. round(love.graphics.getStats().texturememory / 1024) .. "KB", 0, 40)
+    love.graphics.print("Music Time: " .. (musicTime or 0), 0, 60)
 end
 
 function love.focus(f)
