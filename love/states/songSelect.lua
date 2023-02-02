@@ -1,123 +1,4 @@
 local function chooseSongDifficulty()
-    -- get all .qp files in songs/
-    if not love.filesystem.getInfo("songs") then
-        love.filesystem.createDirectory("songs")
-        love.window.showMessageBox("Songs folder created!", "songs folder has been created at " .. love.filesystem.getSaveDirectory() .. "/songs", "info")
-    end
-    if not love.filesystem.getInfo("songs/quaver") then
-        love.filesystem.createDirectory("songs/quaver")
-    end
-    if not love.filesystem.getInfo("songs/osu") then
-        love.filesystem.createDirectory("songs/osu")
-    end
-    if not love.filesystem.getInfo("songs/stepmania") then
-        love.filesystem.createDirectory("songs/stepmania")
-    end
-    if not love.filesystem.getInfo("songs/fnf") then
-        love.filesystem.createDirectory("songs/fnf")
-    end
-    songList = {}
-    for i, v in ipairs(love.filesystem.getDirectoryItems("songs/quaver")) do
-        if love.filesystem.getInfo("songs/quaver/" .. v).type == "file" then
-            love.filesystem.mount("songs/quaver/" .. v, "song")
-            -- get all .qua files in the .qp file
-            for k, j in ipairs(love.filesystem.getDirectoryItems("song")) do
-                --print(j)
-                --print(love.filesystem.getInfo("song/" .. j).type == "file")
-                if love.filesystem.getInfo("song/" .. j).type == "file" then
-                    --print("ok so")
-                    if j:sub(-4) == ".qua" then
-                        --print(j)
-                        --print(love.filesystem.getInfo("song/" .. j).type == "file")
-                        local title = love.filesystem.read("song/" .. j):match("Title:(.-)\r?\n")
-                        local difficultyName = love.filesystem.read("song/" .. j):match("DifficultyName:(.-)\r?\n")
-                        local BackgroundFile = love.filesystem.read("song/" .. j):match("BackgroundFile:(.-)\r?\n")
-                        songList[#songList + 1] = {
-                            filename = v,
-                            title = title,
-                            difficultyName = difficultyName or "???",
-                            BackgroundFile = BackgroundFile:sub(2),
-                            path = "song/" .. j,
-                            type = "Quaver"
-                        }
-                    end
-                end
-            end
-            love.filesystem.unmount("songs/quaver/"..v)
-        end
-    end
-    for i, v in ipairs(love.filesystem.getDirectoryItems("songs/osu")) do 
-        if love.filesystem.getInfo("songs/osu/" .. v).type == "file" then
-            love.filesystem.mount("songs/osu/" .. v, "song")
-            -- get all .qua files in the .qp file
-            for k, j in ipairs(love.filesystem.getDirectoryItems("song")) do
-                --print(j)
-                --print(love.filesystem.getInfo("song/" .. j).type == "file")
-                if love.filesystem.getInfo("song/" .. j).type == "file" then
-                    --print("ok so")
-                    if j:sub(-4) == ".osu" then
-                        --print(j)
-                        --print(love.filesystem.getInfo("song/" .. j).type == "file")
-                        local title = love.filesystem.read("song/" .. j):match("Title:(.-)\r?\n")
-                        local difficultyName = love.filesystem.read("song/" .. j):match("Version:(.-)\r?\n")
-                        songList[#songList + 1] = {
-                            filename = v,
-                            title = title,
-                            difficultyName = difficultyName or "???",
-                            path = "song/" .. j,
-                            type = "osu!"
-                        }
-                    end
-                end
-            end
-            love.filesystem.unmount("songs/osu/"..v)
-        end
-    end
-    for i, v in ipairs(love.filesystem.getDirectoryItems("songs/fnf")) do
-        if love.filesystem.getInfo("songs/fnf/" .. v).type == "directory" then
-            local songDir = "songs/fnf/" .. v
-            for k, j in ipairs(love.filesystem.getDirectoryItems(songDir)) do
-                if love.filesystem.getInfo(songDir .. "/" .. j).type == "file" then
-                    if j:sub(-4) == "json" then
-                        gsubbedFile = j:gsub(".json", "")
-                        local difficultyName = gsubbedFile:match("-(.*)")
-                        songList[#songList + 1] = {
-                            filename = j,
-                            title = json.decode(love.filesystem.read(songDir .. "/" .. j)).song.song,
-                            difficultyName = difficultyName or "normal",
-                            BackgroundFile = "None",
-                            path = songDir .. "/" .. j,
-                            folderPath = songDir,
-                            type = "FNF"
-                        }
-                    end
-                end
-            end
-        end
-    end
-    for i, v in ipairs(love.filesystem.getDirectoryItems("songs/stepmania")) do 
-        -- stepmania songs are in folders
-        if love.filesystem.getInfo("songs/stepmania/" .. v).type == "directory" then
-            local songDir = "songs/stepmania/" .. v
-            for k, j in ipairs(love.filesystem.getDirectoryItems(songDir)) do
-                if love.filesystem.getInfo(songDir .. "/" .. j).type == "file" then
-                    if j:sub(-3) == ".sm" then
-                        local title = love.filesystem.read(songDir .. "/" .. j):match("#TITLE:(.-);")
-                        local difficultyName = love.filesystem.read(songDir .. "/" .. j):match("#CREDIT:(.-);")
-                        songList[#songList + 1] = {
-                            filename = v,
-                            title = title,
-                            difficultyName = difficultyName or "???",
-                            BackgroundFile = "None",
-                            path = songDir .. "/" .. j,
-                            folderPath = songDir,
-                            type = "Stepmania"
-                        }
-                    end
-                end
-            end
-        end
-    end
 end
 
 local function selectSongDifficulty(song, chartVer)
@@ -174,11 +55,19 @@ return {
         fnfChartMoment = false
         chartEvents = {}
         bpmEvents = {}
+        now = os.time()
         chooseSongDifficulty()
     end,
 
     update = function(self, dt)
         if choosingSong then
+            presence = {
+                details = nil, 
+                state = "Picking a song to play",
+                largeImageKey = "totallyreallogo",
+                largeImageText = "Rit",
+                startTimestamp = now
+            }
             if input:pressed("up") then
                 curSongSelected = curSongSelected - 1
                 if curSongSelected < 1 then

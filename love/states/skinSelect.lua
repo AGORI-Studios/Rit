@@ -149,8 +149,6 @@ local function selectSkin(skin) -- TODO: optimize skin loading
     --quaverLoader.load("chart.qua")
     state.switch(songSelect)
     dt = 0
-
-    now = os.time()
 end
 
 return {
@@ -159,10 +157,18 @@ return {
         choosingSong = false
         musicTimeDo = false
         curSkinSelected = 1
+        now = os.time()
         chooseSkin()
     end,
 
     update = function(self, dt)
+        presence = {
+            details = nil, 
+            state = "Picking a skin to use",
+            largeImageKey = "totallyreallogo",
+            largeImageText = "Rit",
+            startTimestamp = now
+        }
         if input:pressed("up") then
             curSkinSelected = curSkinSelected - 1
             if curSkinSelected < 1 then

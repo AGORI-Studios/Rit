@@ -26,7 +26,8 @@ function state.switch(to, ...)
     pre = current
     current = to
     if current then current:enter(pre, ...) end
-    if pre then if pre.exit then pre:exit(current) end end
+    if pre then if pre.leave then pre:leave(current) end end
+    collectgarbage()
 end
 
 function state.update(dt)

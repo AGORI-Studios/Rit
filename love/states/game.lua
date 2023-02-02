@@ -103,6 +103,7 @@ end
 
 return {
     enter = function(self)
+        now = os.time()
         scoring = {
             score = 0,
             accuracy = 0,
@@ -157,6 +158,11 @@ return {
         sv = 1 -- Scroll Velocity
     
         curJudgement = "none"
+
+        health = 1
+        died = false
+        musicPosValue = {1000}
+        musicPitch = {1}
     end,
 
     update = function(self, dt)
@@ -173,12 +179,13 @@ return {
             previousFrameTime = love.timer.getTime() * 1000
         end
         absMusicTime = math.abs(musicTime)
-        if (musicTime > 0) and not audioFile:isPlaying() then
+        if (musicTime > 0) and not audioFile:isPlaying() and not died then
             if musicTimeDo then
                 audioFile:play()
                 if voices then -- support for fnf voices
                     voices:play()
                 end
+                print("Playing audio file")
             end
         elseif musicTime > audioFile:getDuration() * 1000 then
             state.switch(songSelect)
@@ -218,7 +225,7 @@ return {
             details = "Playing "..songTitle, 
             state = "Playing "..songDifficultyName,
             largeImageKey = "totallyreallogo",
-            largeImageText = "Playing "..songTitle,
+            largeImageText = "Rit",
             startTimestamp = now
         }
 
@@ -349,7 +356,7 @@ return {
                     end 
                 end
 
-                if input:isDown(curInput) then
+                if input:down(curInput) then
                     PRESSEDMOMENTS[i] = 2
                     if notes[1] then
                         if notes[1][4] then
@@ -548,6 +555,11 @@ return {
         audioFile:stop()
         if voices then
             voices:stop()
+        end
+
+        for i = 1, #charthits do
+            charthits[i] = {}
+            print("Hit table " .. i .. " cleared")
         end
 
         Timer.clear()
