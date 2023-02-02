@@ -10,6 +10,14 @@
 ## A free and open sourced rhythm game made with LÖVE.
 
 ### How to play
+Windows:
+- Go to [here](https://nightly.link/GuglioIsStupid/Rit/workflows/windows-build.yaml/master) and grab archive file for your architecture (32 or 64 bits, no ARM yet)
+- Extract it somewhere, like D:\Games. ***DON'T USE*** Extract Here, as it will ruin current folder.
+- Launch Rit.exe
+- ???
+- PROFIT
+
+Other systems:
 - Download the source code from [https://github.com/GuglioIsStupid/Rit](https://github.com/GuglioIsStupid/Rit/archive/refs/heads/master.zip)
 - Extract the zip file
 - Run the game via dragging and dropping the folder onto the love.exe file
