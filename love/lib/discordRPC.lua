@@ -1,5 +1,11 @@
 local ffi = require "ffi"
-local discordRPClib = ffi.load("discord-rpc")
+local discordRPClib = (function()
+    if love.system.getOS() == "OS X" then
+        return ffi.load("discord-rpc.dylib")
+    else
+        return ffi.load("discord-rpc")
+    end
+end)()
 
 ffi.cdef[[
 typedef struct DiscordRichPresence {

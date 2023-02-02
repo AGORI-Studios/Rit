@@ -4,10 +4,13 @@
 Param(
   [string] $Architecture = "win64"
 )
+$ValidArchitectures = "win64","win32","macos" # TODO: add linux
+$ArchitectureIsWindows = ("win64","win32").Contains($Architecture)
+$ArchitectureIsMac = $Architecture -eq "macos"
 
-
-if ($Architecture -ne "win64" -and $Architecture -ne "win32") {
-  Write-Error "dude do you expect this script to be the most advanced shit ever? stop, get some help, and use normal Makefile for builds other than win32 and win64"
+if (-not($ValidArchitectures.Contains($Architecture))) {
+  Write-Error "Architecture $Architecture is not supported. Please contact your local programmer about this issue."
+  Write-Host "Protip: you can compile Rit with this script to these architectures: ${$ValidArchitectures -join ", "}"
   exit
 }
 Write-Host "Arch: $Architecture"
@@ -19,8 +22,10 @@ function Download-Love {
   Write-Host "Downloading Love..."
   Invoke-WebRequest -Uri "https://github.com/love2d/love/releases/download/11.4/love-11.4-$Architecture.zip" -OutFile resources/$Architecture/love-$Architecture.zip
   Expand-Archive -DestinationPath ./resources/$Architecture/ -Path ./resources/$Architecture/love-$Architecture.zip -Force
-  Move-Item -Path ./resources/$Architecture/love-11.4-$Architecture/* -Destination ./resources/$Architecture -Force
-  Remove-Item -Recurse -Path  ./resources/$Architecture/love-11.4-$Architecture -Force
+  if(-not $ArchitectureIsMac) {
+    Move-Item -Path ./resources/$Architecture/love-11.4-$Architecture/* -Destination ./resources/$Architecture -Force
+    Remove-Item -Recurse -Path  ./resources/$Architecture/love-11.4-$Architecture -Force
+  }
   Remove-Item -Path ./resources/$Architecture/love-$Architecture.zip -Force
 }
 
@@ -40,20 +45,14 @@ function Collect-Bundle {
       
   Copy-Item -Recurse -Path build/lovefile/Rit.love -Destination build/$Architecture/game.love
   Copy-Item -Recurse -Path resources/$Architecture/* -Destination build/$Architecture
-  Copy-Item -Recurse -Path resources/$Architecture/discord-rpc.dll -Destination build/$Architecture
+  # Copy-Item -Recurse -Path resources/$Architecture/discord-rpc.dll -Destination build/$Architecture
 
-  # Shortcut
-  # $shell = New-Object -ComObject WScript.Shell
-  # $shortcut = $shell.CreateShortcut("build/$Architecture/Launch Rit.lnk")
-  # $shortcut.TargetPath = "C:\Windows\System32\cmd.exe"
-  # $shortcut.WorkingDirectory = "."
-  # $shortcut.Arguments = "/c love.exe game.love"
-  # $shortcut.Save()
-
-  # love.exe + Rit.love joined into Rit.exe
-  Set-Location build/$Architecture
-  cmd /c "copy /b love.exe+game.love Rit.exe"
-  Set-Location ../..
+  if ($IsWindows -and $ArchitectureIsWindows) {
+    # love.exe + Rit.love joined into Rit.ex
+    Set-Location build/$Architecture
+    cmd /c "copy /b love.exe+game.love Rit.exe"
+    Set-Location ../..
+  }
 }
 
 Download-Love
