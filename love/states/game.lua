@@ -171,8 +171,8 @@ return {
 
             --musicTime = musicTime + musicPosValue[1] * dt
 
-            musicTime = musicTime + (time * 1000) - previousFrameTime
-            previousFrameTime = time * 1000
+            musicTime = musicTime + (time * musicPosValue[1]) - previousFrameTime
+            previousFrameTime = time * musicPosValue[1]
 
             musicPos = ((musicTime) * (speed)+100)
         else

@@ -44,7 +44,7 @@ function osuLoader.load(chart)
         if line:find(",") then 
             local x, _, startTime, _, _, endtime = line:match("([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+)") -- _ is used to ignore the values we don't need
             x = tonumber(x) or 128
-            if x < 500 then
+            if x < 512 then
                 curLine = line
                 lane = x / 128
                 lane = math.floor(lane)
@@ -80,6 +80,27 @@ function osuLoader.load(chart)
                                     charthits[lane+1][#charthits[lane+1] + 1] = {startTime+i, 0, 1, true, true}
                                 end
                             end
+                        end
+                    end
+                end
+            end
+        end
+
+        -- go through chartHits and remove all overlapping notes
+        for i = 1, 4 do 
+            table.sort(charthits[i], function(a, b) return a[1] < b[1] end)
+
+            local offset = 0
+
+            for j = 2, #charthits[i] do 
+                local index = j - offset
+
+                if charthits[i][index] ~= nil and charthits[i][index+1] ~= nil then
+                    if (not charthits[i][index][4] and not charthits[i][index+1][4]) then
+                        if charthits[i][index+1][1] - charthits[i][index][1] < 0.1 then
+                            print("Removed overlapping note")
+                            table.remove(charthits[i], index)
+                            offset = offset + 1
                         end
                     end
                 end
