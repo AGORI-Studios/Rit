@@ -54,7 +54,7 @@ vsync = False
 volume = 1.0
 
 [System]
-version = 0.0.3-beta
+version = 0.0.4-beta
 ]]
 
 function settingsIni.loadSettings()
@@ -64,7 +64,7 @@ function settingsIni.loadSettings()
     end
     inifile = ini.load("settings.ini")
     settings.version = inifile["System"]["version"] or "Unknown"
-    if settings.version ~= "0.0.3-beta" then
+    if settings.version ~= "0.0.4-beta" then
         love.filesystem.write("settings.ini", settingsStr)
     end
     settings.downscroll = inifile["Game"]["downscroll"]
