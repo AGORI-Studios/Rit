@@ -131,7 +131,7 @@ return {
             [7] = 1
         }
         lastReportedPlaytime = 0
-        previousFrameTime = 0
+        previousFrameTime = love.timer.getTime() * 1000
         additionalScore = 0
         additionalAccuracy = 0
         noteCounter = 0
@@ -161,8 +161,16 @@ return {
 
     update = function(self, dt)
         if musicTimeDo then
-            musicTime = musicTime + musicPosValue[1] * dt
+            local time = love.timer.getTime()
+
+            --musicTime = musicTime + musicPosValue[1] * dt
+
+            musicTime = musicTime + (time * 1000) - previousFrameTime
+            previousFrameTime = time * 1000
+
             musicPos = ((musicTime) * (speed)+100)
+        else
+            previousFrameTime = love.timer.getTime() * 1000
         end
         absMusicTime = math.abs(musicTime)
         if (musicTime > 0) and not audioFile:isPlaying() then
@@ -242,9 +250,11 @@ return {
                 pause()
             else
                 musicTimeDo = true
-                audioFile:play()
-                if voices then -- support for fnf voices
-                    voices:play()
+                if musicTime >= 0 then
+                    audioFile:play()
+                    if voices then -- support for fnf voices
+                        voices:play()
+                    end
                 end
             end
         end
