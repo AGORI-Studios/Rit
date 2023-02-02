@@ -196,7 +196,7 @@ function love.load()
     end
 
     speed = settings.scrollspeed or 1
-    autoplay = false
+    autoplay = settings.autoplay or false
 
     quaverLoader = require "parsers.quaverLoader"
     osuLoader = require "parsers.osuLoader"

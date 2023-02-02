@@ -38,6 +38,9 @@ startTime = 700
 ; Note spacing is the amount of space between each note (in pixels) ((its broken as fuck))
 noteSpacing = 200
 
+; Autoplay - automatically play songs without user input
+autoplay = False
+
 [Graphics]
 ; Screen width/height
 width = 1280
@@ -89,6 +92,8 @@ function settingsIni.loadSettings()
     settings.height = tonumber(settings.height)
     settings.vsync = settings.vsync == "True"
     settings.fullscreen = settings.fullscreen == "True"
+    
+    settings.autoplay = inifile["Game"]["autoplay"] == "True"
 
     love.audio.setVolume(settings.volume)
 end
