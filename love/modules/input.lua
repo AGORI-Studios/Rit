@@ -170,7 +170,7 @@ function input:pressed(key)
     return self[key].pressed
 end
 
-function input:isDown(key)
+function input:down(key)
     return self[key].down
 end
 
