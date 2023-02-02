@@ -51,7 +51,7 @@ function osuLoader.load(chart)
                 startTime = tonumber(startTime)
                 hitSound = hitSound
                 if lane > 4 then
-                    print("This is not a 4k chart!\nSupport for 5k+ charts will be added in the future.")
+                    debug.print("This is not a 4k chart!\nSupport for 5k+ charts will be added in the future.")
                     break
                 end
                 
@@ -98,7 +98,7 @@ function osuLoader.load(chart)
                 if charthits[i][index] ~= nil and charthits[i][index+1] ~= nil then
                     if (not charthits[i][index][4] and not charthits[i][index+1][4]) then
                         if charthits[i][index+1][1] - charthits[i][index][1] < 0.1 then
-                            print("Removed overlapping note")
+                            debug.print("Removed overlapping note")
                             table.remove(charthits[i], index)
                             offset = offset + 1
                         end

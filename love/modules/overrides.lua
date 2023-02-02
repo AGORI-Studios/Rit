@@ -19,6 +19,144 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ------------------------------------------------------------------------------]]
 
+-- Math Funcs
+
+function math.lerp(a, b, t)
+    return a + (b - a) * t
+end
+
+function math.clamp(x, min, max)
+    return x < min and min or (x > max and max or x)
+end
+
+function math.round(x)
+    return x >= 0 and math.floor(x + 0.5) or math.ceil(x - 0.5)
+end
+
+function math.sign(x)
+    return x > 0 and 1 or (x < 0 and -1 or 0)
+end
+
+function math.distance(x1, y1, x2, y2)
+    return math.sqrt((x2 - x1) ^ 2 + (y2 - y1) ^ 2)
+end
+
+function math.angle(x1, y1, x2, y2)
+    return math.atan2(y2 - y1, x2 - x1)
+end
+
+-- String Funcs
+
+function string.startsWith(str, start)
+    return str:sub(1, #start) == start
+end
+
+function string.endsWith(str, ending)
+    return ending == "" or str:sub(-#ending) == ending
+end
+
+function string.split(str, sep)
+    local sep, fields = sep or ":", {}
+    local pattern = string.format("([^%s]+)", sep)
+    str:gsub(pattern, function(c) fields[#fields + 1] = c end)
+    return fields
+end
+
+function string.trim(s)
+    return s:match("^%s*(.-)%s*$")
+end
+
+function string.trimLeft(s)
+    return s:match("^%s*(.*)")
+end
+
+function string.trimRight(s)
+    return s:match("(.-)%s*$")
+end
+
+function string.splitAt(str, index)
+    return str:sub(1, index), str:sub(index + 1)
+end
+
+function string.splitAtLast(str, index)
+    return str:sub(1, index), str:sub(index)
+end
+
+function string.splitAtFirst(str, index)
+    return str:sub(1, index), str:sub(index + 1)
+end
+
+-- Table Funcs
+
+function table.contains(table, element)
+    for _, value in pairs(table) do
+        if value == element then
+            return true
+        end
+    end
+    return false
+end
+
+function table.find(table, element)
+    for i, value in pairs(table) do
+        if value == element then
+            return i
+        end
+    end
+    return nil
+end
+
+function table.removeValue(table, element)
+    for i, value in pairs(table) do
+        if value == element then
+            table.remove(table, i)
+            return true
+        end
+    end
+    return false
+end
+
+function table.copy(t)
+    local t2 = {}
+    for k, v in pairs(t) do
+        if type(v) == "table" then
+            t2[k] = table.copy(v)
+        else
+            t2[k] = v
+        end
+    end
+    return t2
+end
+
+function table.merge(t1, t2)
+    for k, v in pairs(t2) do
+        if type(v) == "table" then
+            if type(t1[k] or false) == "table" then
+                table.merge(t1[k] or {}, t2[k] or {})
+            else
+                t1[k] = v
+            end
+        else
+            t1[k] = v
+        end
+    end
+    return t1
+end
+
+function table.print(t, indent)
+    indent = indent or 0
+    for k, v in pairs(t) do
+        if type(v) == "table" then
+            print(string.rep(" ", indent) .. k .. ":")
+            table.print(v, indent + 2)
+        else
+            print(string.rep(" ", indent) .. k .. ": " .. tostring(v))
+        end
+    end
+end
+
+-- Love2d Funcs
+
 if love.system.getOS() ~= "NX" then -- show message box doesn't work on Switch, so use the default error handler
 	-- modified a slight bit from https://github.com/OverHypedDudes/love2dTemplate/blob/main/modules/errHandler.lua
 	function love.errhand(error_message)
@@ -62,12 +200,8 @@ Edition: %s
 			local url = string.format("https://github.com/GuglioIsStupid/Rit/issues/new?title=%s&body=%s", subject, issuebody)
 			love.system.openURL(url)
 		end
-        -- save error to crash.log
-        
 	end
-
 else
-
     function love.window.showMessageBox(title, message, buttons, type)
         local buttonString = buttons
         -- make a wannabe messagebox
@@ -110,5 +244,4 @@ else
             end
         end
     end
-
 end

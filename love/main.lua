@@ -19,9 +19,20 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ------------------------------------------------------------------------------]]
 
+if not love.filesystem.isFused() then 
+    __DEBUG__ = true
+else
+    __DEBUG__ = false
+    function print() return end -- disable print
+    -- set console to false
+    love.conf = function(t)
+        t.console = false
+    end
+end
+
 function loadSongs()
      -- get all .qp files in songs/
-     if not love.filesystem.getInfo("songs") then
+    if not love.filesystem.getInfo("songs") then
         love.filesystem.createDirectory("songs")
         love.window.showMessageBox("Songs folder created!", "songs folder has been created at " .. love.filesystem.getSaveDirectory() .. "/songs", "info")
     end
@@ -150,7 +161,8 @@ if love.filesystem.isFused() and (love.system.getOS() == "Windows" or love.syste
     nextPresenceUpdate = 0
 end
 function love.load()
-    require "modules.loveFuncs"
+    require "modules.overrides"
+    debug = require "modules.debug"
     input = (require "lib.baton").new({
         controls = {
             one4 = {"key:d", "button:dpleft", "axis:leftx-"},
@@ -295,10 +307,11 @@ function love.draw()
         end
     push.finish()
 
-    love.graphics.print("Memory usage: " .. round(collectgarbage("count")) .. "KB", 0, 0)
-    love.graphics.print("FPS: " .. love.timer.getFPS(), 0, 20)
-    love.graphics.print("Graphics memory usage: " .. round(love.graphics.getStats().texturememory / 1024) .. "KB", 0, 40)
-    love.graphics.print("Music Time: " .. (musicTime or 0), 0, 60)
+    if __DEBUG__ then 
+        debug.drawdebug()
+        debug.drawConsole()
+    end
+    
 end
 
 function love.focus(f)

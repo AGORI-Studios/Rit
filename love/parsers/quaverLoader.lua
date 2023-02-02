@@ -41,7 +41,7 @@ function quaverLoader.load(chart)
             modeLine = line
             mode = modeLine:gsub("Mode: ", "")
             if mode == "Keys7" then
-                print("7k+ charts are not supported yet.")
+                debug.print("7k+ charts are not supported yet.")
                 state.switch(songSelect)
                 break
             end
@@ -136,7 +136,6 @@ function quaverLoader.load(chart)
             if charthits[i][index] ~= nil and charthits[i][index+1] ~= nil then
                 if (not charthits[i][index][4] and not charthits[i][index+1][4]) then
                     if charthits[i][index+1][1] - charthits[i][index][1] < 0.1 then
-                        print("Removed overlapping note")
                         table.remove(charthits[i], index)
                         offset = offset + 1
                     end
@@ -144,7 +143,7 @@ function quaverLoader.load(chart)
             end
         end
     end
-    
+
     --audioFile:setPitch(songRate)
     Timer.after(2,
         function()

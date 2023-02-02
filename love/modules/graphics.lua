@@ -72,4 +72,14 @@ function graphics.clearItemFromCache(path)
     graphics.cache[path] = nil
 end
 
+function graphics.getWidth()
+    return push:getWidth()
+end
+
+function graphics.getHeight()
+    return push:getHeight()
+end
+
+
+
 return graphics

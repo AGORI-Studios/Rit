@@ -144,7 +144,7 @@ function stepLoader.load(chart)
         function()
             state.switch(game)
             musicTimeDo = true
-            print(#chartEvents, #bpmEvents)
+            debug.print(#chartEvents, #bpmEvents)
         end
     )
 end

@@ -188,7 +188,7 @@ return {
                 if voices then -- support for fnf voices
                     voices:play()
                 end
-                print("Playing audio file")
+                debug.print("Playing audio file")
             end
         elseif musicTime > audioFile:getDuration() * 1000 then
             state.switch(songSelect)
@@ -547,7 +547,7 @@ return {
     end,
 
     focus = function(_, f)
-        print("focus: " .. tostring(f))
+        debug.print("focus: " .. tostring(f))
         if not f then
             pause()
         end
@@ -562,7 +562,7 @@ return {
 
         for i = 1, #charthits do
             charthits[i] = {}
-            print("Hit table " .. i .. " cleared")
+
         end
 
         Timer.clear()
