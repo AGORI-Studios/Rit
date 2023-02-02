@@ -166,7 +166,7 @@ return {
     end,
 
     update = function(self, dt)
-        if musicTimeDo then
+        if musicTimeDo and not died then
             local time = love.timer.getTime()
 
             --musicTime = musicTime + musicPosValue[1] * dt
@@ -175,8 +175,11 @@ return {
             previousFrameTime = time * musicPosValue[1]
 
             musicPos = ((musicTime) * (speed)+100)
-        else
+        elseif not musicTimeDo then
             previousFrameTime = love.timer.getTime() * 1000
+        elseif musicTimeDo and died then
+            musicTime = musicTime + musicPosValue[1] * dt
+            musicPos = ((musicTime) * (speed)+100)
         end
         absMusicTime = math.abs(musicTime)
         if (musicTime > 0) and not audioFile:isPlaying() and not died then
@@ -433,7 +436,7 @@ return {
             Timer.tween(3, musicPosValue, {0}, "out-quad")
             Timer.tween(3, musicPitch, {0.005}, "out-quad", function()
                 audioFile:stop()
-                Timer.after(1, function()
+                Timer.after(0.6, function()
                     state.switch(songSelect)
                 end)
             end)
