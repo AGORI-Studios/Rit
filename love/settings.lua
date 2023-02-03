@@ -38,7 +38,7 @@ startTime = 700
 ; Note spacing is the amount of space between each note (in pixels) ((its broken as fuck))
 noteSpacing = 200
 
-; Autoplay - automatically play songs without user input
+; Autoplay - automatically play songs without user input. Can also be toggled with B in song select.
 autoplay = False
 
 [Graphics]

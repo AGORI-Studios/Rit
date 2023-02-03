@@ -232,10 +232,10 @@ return {
         -- end)()
         
         presence = {
-            details = "Playing "..songTitle.." - "..songDifficultyName..(not musicTimeDo and " - Paused" or ""), 
+            details = (autoplay and "Autoplaying " or "Playing ")..songTitle.." - "..songDifficultyName..(not musicTimeDo and " - Paused" or ""), 
             state = "Score: "..string.format("%07d", round(scoring.score)).." - "..string.format("%.2f%%", scoring.accuracy).." - "..combo.." combo",
             largeImageKey = "totallyreallogo",
-            largeImageText = "Rit",
+            largeImageText = "Rit"..(__DEBUG__ and " DEBUG MODE" or ""),
             startTimestamp = now
         }
         

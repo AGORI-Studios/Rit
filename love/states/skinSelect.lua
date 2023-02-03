@@ -162,7 +162,7 @@ return {
             details = nil, 
             state = "Picking a skin to use",
             largeImageKey = "totallyreallogo",
-            largeImageText = "Rit",
+            largeImageText = "Rit"..(__DEBUG__ and " DEBUG MODE" or ""),
             startTimestamp = now
         }
         chooseSkin()
