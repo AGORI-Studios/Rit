@@ -223,15 +223,22 @@ return {
                 end
             end
         end
-
+        -- accuracy = (function()
+        --     if noteCounter < 1 then
+        --         return 100.0
+        --     else
+        --         return additionalAccuracy/noteCounter
+        --     end
+        -- end)()
+        
         presence = {
-            details = "Playing "..songTitle, 
-            state = "Playing "..songDifficultyName,
+            details = "Playing "..songTitle.." - "..songDifficultyName..(not musicTimeDo and " - Paused" or ""), 
+            state = "Score: "..string.format("%07d", round(scoring.score)).." - "..string.format("%.2f%%", scoring.accuracy).." - "..combo.." combo",
             largeImageKey = "totallyreallogo",
             largeImageText = "Rit",
             startTimestamp = now
         }
-
+        
         if chartEvents[1] then
             if chartEvents[1][1] <= absMusicTime then
                 if settings.scrollvelocities then 
@@ -566,5 +573,6 @@ return {
         end
 
         Timer.clear()
+        presence = {}
     end
 }

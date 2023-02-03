@@ -158,10 +158,6 @@ return {
         musicTimeDo = false
         curSkinSelected = 1
         now = os.time()
-        chooseSkin()
-    end,
-
-    update = function(self, dt)
         presence = {
             details = nil, 
             state = "Picking a skin to use",
@@ -169,6 +165,10 @@ return {
             largeImageText = "Rit",
             startTimestamp = now
         }
+        chooseSkin()
+    end,
+
+    update = function(self, dt)
         if input:pressed("up") then
             curSkinSelected = curSkinSelected - 1
             if curSkinSelected < 1 then

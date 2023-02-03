@@ -51,23 +51,24 @@ end
 
 return {
     enter = function(self)
+        debug.print("Entering song select")
         choosingSong = true
         fnfChartMoment = false
         chartEvents = {}
         bpmEvents = {}
         now = os.time()
         chooseSongDifficulty()
+        presence = {
+            details = nil, 
+            state = "Picking a song to play",
+            largeImageKey = "totallyreallogo",
+            largeImageText = "Rit",
+            startTimestamp = now
+        }
     end,
 
     update = function(self, dt)
         if choosingSong then
-            presence = {
-                details = nil, 
-                state = "Picking a song to play",
-                largeImageKey = "totallyreallogo",
-                largeImageText = "Rit",
-                startTimestamp = now
-            }
             if input:pressed("up") then
                 curSongSelected = curSongSelected - 1
                 if curSongSelected < 1 then

@@ -19,7 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ------------------------------------------------------------------------------]]
 
-if not love.filesystem.isFused() then 
+if not love.filesystem.isFused() then
     __DEBUG__ = true
 else
     __DEBUG__ = false
@@ -156,7 +156,8 @@ fnfMomentShiz = {
     true, false
 }
 songSelectScrollOffset = 0
-if love.filesystem.isFused() and (love.system.getOS() == "Windows" or love.system.getOS() == "OS X") then
+-- love.filesystem.isFused() and
+if  (love.system.getOS() == "Windows" or love.system.getOS() == "OS X") then
     discordRPC = require "lib.discordRPC"
     nextPresenceUpdate = 0
 end
