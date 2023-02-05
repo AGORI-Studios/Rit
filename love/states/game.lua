@@ -191,7 +191,7 @@ return {
                 debug.print("Playing audio file")
             end
         elseif musicTime > audioFile:getDuration() * 1000 then
-            state.switch(songSelect)
+            state.switch(resultsScreen, scoring, {songTitle, songDifficultyName}, false)
         end
         for i = 1, #charthits do
             for j = 1, #charthits[i] do
@@ -444,7 +444,7 @@ return {
             Timer.tween(3, musicPitch, {0.005}, "out-quad", function()
                 audioFile:stop()
                 Timer.after(0.6, function()
-                    state.switch(songSelect)
+                    state.switch(resultsScreen, scoring, {songTitle, songDifficultyName}, true)
                 end)
             end)
         elseif died then

@@ -226,6 +226,7 @@ function love.load()
     game = require "states.game"
     songSelect = require "states.songSelect"
     skinSelect = require "states.skinSelect"
+    resultsScreen = require "states.resultsScreen"
 
     push = require "lib.push"
     Timer = require "lib.timer"
