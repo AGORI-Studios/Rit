@@ -53,6 +53,11 @@ Add songs to the %appdata%\rit\songs folder in their respective folders. (Quaver
 - GuglioIsStupid - Programming
 - Getsaa - Logo
 
+### Contributors
+<a href="https://github.com/GuglioIsStupid/Rit/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=GuglioIsStupid/Rit" />
+</a>
+
 ### Notes
 - This game is still in development, so ***expect*** bugs and glitches
 - If you wish for your assets to be removed, please contact me via email at [guglioisbusiness@gmail.com](mailto:guglioisbusiness@gmail.com) or via discord at GuglioIsStupid#8008
