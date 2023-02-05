@@ -57,17 +57,17 @@ return {
         chartEvents = {}
         bpmEvents = {}
         now = os.time()
-        presence = {
-            state = "Picking a song to play",
-            largeImageKey = "totallyreallogo",
-            largeImageText = "Rit"..(__DEBUG__ and " DEBUG MODE" or ""),
-            startTimestamp = now
-        }
         chooseSongDifficulty()
     end,
 
     update = function(self, dt)
         if choosingSong then
+            presence = {
+                state = "Picking a song to play",
+                largeImageKey = "totallyreallogo",
+                largeImageText = "Rit"..(__DEBUG__ and " DEBUG MODE" or ""),
+                startTimestamp = now
+            }
             if input:pressed("up") then
                 curSongSelected = curSongSelected - 1
                 if curSongSelected < 1 then
