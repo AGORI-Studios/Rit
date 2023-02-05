@@ -182,7 +182,7 @@ return {
             musicPos = ((musicTime) * (speed)+100)
         end
         absMusicTime = math.abs(musicTime)
-        if (musicTime > 0) and not audioFile:isPlaying() and not died then
+        if (musicTime > 0 - settings.audioOffset) and not audioFile:isPlaying() and not died then
             if musicTimeDo then
                 audioFile:play()
                 if voices then -- support for fnf voices

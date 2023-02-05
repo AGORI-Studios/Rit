@@ -227,6 +227,7 @@ function love.load()
     songSelect = require "states.songSelect"
     skinSelect = require "states.skinSelect"
     resultsScreen = require "states.resultsScreen"
+    audioOffsetter = require "states.audioOffset"
 
     push = require "lib.push"
     Timer = require "lib.timer"
@@ -313,6 +314,10 @@ function love.keypressed(key)
     end
     if key == "k" and (choosingSong or choosingSkin) then
         love.system.openURL("https://ko-fi.com/A0A8GRXMX")
+    end
+
+    if key == "o" then 
+        state.switch(audioOffsetter)
     end
 end
 
