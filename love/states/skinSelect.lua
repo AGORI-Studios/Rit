@@ -159,7 +159,6 @@ return {
         curSkinSelected = 1
         now = os.time()
         presence = {
-            details = nil, 
             state = "Picking a skin to use",
             largeImageKey = "totallyreallogo",
             largeImageText = "Rit"..(__DEBUG__ and " DEBUG MODE" or ""),

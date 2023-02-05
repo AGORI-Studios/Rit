@@ -57,14 +57,13 @@ return {
         chartEvents = {}
         bpmEvents = {}
         now = os.time()
-        chooseSongDifficulty()
         presence = {
-            details = nil, 
             state = "Picking a song to play",
             largeImageKey = "totallyreallogo",
             largeImageText = "Rit"..(__DEBUG__ and " DEBUG MODE" or ""),
             startTimestamp = now
         }
+        chooseSongDifficulty()
     end,
 
     update = function(self, dt)
@@ -147,7 +146,7 @@ return {
                 end
             love.graphics.pop()
         elseif fnfChartMoment then
-            love.graphics.print("Play as player? " .. tostring(fnfMomentShiz[fnfMomentSelected]), 0, 0, 0, 2, 2)
+            love.graphics.print("Play as [</>]: " .. (fnfMomentShiz[fnfMomentSelected] and "Player" or "Enemy"), 0, 0, 0, 2, 2)
         end
     end,
 }

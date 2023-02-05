@@ -233,7 +233,7 @@ return {
         
         presence = {
             details = (autoplay and "Autoplaying " or "Playing ")..songTitle.." - "..songDifficultyName..(not musicTimeDo and " - Paused" or ""), 
-            state = "Score: "..string.format("%07d", round(scoring.score)).." - "..string.format("%.2f%%", scoring.accuracy).." - "..combo.." combo",
+            state = "Score: "..string.format("%07d", round(scoring.score)).." - "..string.format("%.2f%%", scoring.accuracy).." - "..combo..(combo == noteCounter and " FC" or " combo"),
             largeImageKey = "totallyreallogo",
             largeImageText = "Rit"..(__DEBUG__ and " DEBUG MODE" or ""),
             startTimestamp = now

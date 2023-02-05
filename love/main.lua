@@ -190,15 +190,15 @@ function love.load()
     if discordRPC then 
         discordRPC.initialize("785717724906913843", true) 
         function discordRPC.ready(userId, username, discriminator, avatar)
-            print(string.format("Discord: ready (%s, %s, %s, %s)", userId, username, discriminator, avatar))
+            debug.print(string.format("Discord: ready (%s, %s, %s, %s)", userId, username, discriminator, avatar))
         end
     
         function discordRPC.disconnected(errorCode, message)
-            print(string.format("Discord: disconnected (%d: %s)", errorCode, message))
+            debug.print(string.format("Discord: disconnected (%d: %s)", errorCode, message))
         end
     
         function discordRPC.errored(errorCode, message)
-            print(string.format("Discord: error (%d: %s)", errorCode, message))
+            debug.print(string.format("Discord: error (%d: %s)", errorCode, message))
         end
     end
     settingsIni = require "settings"
@@ -275,9 +275,11 @@ function love.update(dt)
     Timer.update(dt)
     state.update(dt)
     if discordRPC then 
-        if nextPresenceUpdate < love.timer.getTime() or 0 then
-            if presence then 
+        if love.timer.getTime() or 0 > nextPresenceUpdate then
+            if presence then
                 discordRPC.updatePresence(presence)
+                debug.print("Next presence update: "..nextPresenceUpdate)
+                debug.print("Current time is "..love.timer.getTime())
             end
             nextPresenceUpdate = love.timer.getTime() + 2.0
         end
