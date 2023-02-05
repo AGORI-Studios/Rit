@@ -38,7 +38,7 @@ startTime = 700
 ; Note spacing is the amount of space between each note (in pixels) ((its broken as fuck))
 noteSpacing = 200
 
-; Autoplay - automatically play songs without user input
+; Autoplay - automatically play songs without user input. Can also be toggled with B in song select.
 autoplay = False
 
 [Graphics]
@@ -70,30 +70,30 @@ function settingsIni.loadSettings()
     if settings.version ~= "0.0.4-beta" then
         love.filesystem.write("settings.ini", settingsStr)
     end
-    settings.downscroll = inifile["Game"]["downscroll"]
-    settings.scrollspeed = inifile["Game"]["scrollspeed"]
-    settings.scrollvelocities = inifile["Game"]["Scroll Velocities"]
-    settings.startTime = inifile["Game"]["startTime"]
-    settings.noteSpacing = inifile["Game"]["noteSpacing"]
+    settings.downscroll = inifile["Game"]["downscroll"] == "True"
+    settings.scrollspeed = tonumber(inifile["Game"]["scrollspeed"])
+    settings.scrollvelocities = inifile["Game"]["Scroll Velocities"] == "True"
+    settings.startTime = tonumber(inifile["Game"]["startTime"])
+    settings.noteSpacing = tonumber(inifile["Game"]["noteSpacing"])
+    settings.autoplay = inifile["Game"]["autoplay"] == "True"
 
-    settings.width = inifile["Graphics"]["width"]
-    settings.height = inifile["Graphics"]["height"]
-    settings.fullscreen = inifile["Graphics"]["fullscreen"]
-    settings.vsync = inifile["Graphics"]["vsync"]
+    settings.width = tonumber(inifile["Graphics"]["width"])
+    settings.height = tonumber(inifile["Graphics"]["height"])
+    settings.fullscreen = inifile["Graphics"]["fullscreen"] == "True"
+    settings.vsync = inifile["Graphics"]["vsync"] == "True"
 
     settings.volume = inifile["Audio"]["volume"]
 
-    settings.downscroll = settings.downscroll == "True"
-    settings.scrollspeed = tonumber(settings.scrollspeed)
-    settings.scrollvelocities = settings.scrollvelocities == "True"
-    settings.startTime = tonumber(settings.startTime)
+    -- settings.downscroll = settings.downscroll == "True"
+    -- settings.scrollspeed = tonumber(settings.scrollspeed)
+    -- settings.scrollvelocities = settings.scrollvelocities == "True"
+    -- settings.startTime = tonumber(settings.startTime)
     
-    settings.width = tonumber(settings.width)
-    settings.height = tonumber(settings.height)
-    settings.vsync = settings.vsync == "True"
-    settings.fullscreen = settings.fullscreen == "True"
+    -- settings.width = tonumber(settings.width)
+    -- settings.height = tonumber(settings.height)
+    -- settings.vsync = settings.vsync == "True"
+    -- settings.fullscreen = settings.fullscreen == "True"
     
-    settings.autoplay = inifile["Game"]["autoplay"] == "True"
 
     love.audio.setVolume(settings.volume)
 end

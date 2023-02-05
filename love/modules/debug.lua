@@ -9,6 +9,7 @@ function debug.print(...)
     for i = 1, #args do
         str = str .. tostring(args[i])
     end
+    print(str)
     debug.consolelines[#debug.consolelines + 1] = str
 end
 

@@ -41,7 +41,7 @@ local function doFnfMoment(fnfMoment)
     filename = song.filename
     songPath = song.path
     songTitle = song.title
-    songDifficultyName = song.difficultyName
+    songDifficultyName = song.difficultyName..(fnfMomentShiz[fnfMomentSelected] and " - Player" or " - Enemy")
     folderPath = song.folderPath
     --BackgroundFile = love.graphics.newImage("song/" .. song.BackgroundFile)
     fnfLoader.load(songPath, fnfMomentShiz[fnfMomentSelected])
@@ -51,6 +51,7 @@ end
 
 return {
     enter = function(self)
+        debug.print("Entering song select")
         choosingSong = true
         fnfChartMoment = false
         chartEvents = {}
@@ -62,10 +63,9 @@ return {
     update = function(self, dt)
         if choosingSong then
             presence = {
-                details = nil, 
                 state = "Picking a song to play",
                 largeImageKey = "totallyreallogo",
-                largeImageText = "Rit",
+                largeImageText = "Rit"..(__DEBUG__ and " DEBUG MODE" or ""),
                 startTimestamp = now
             }
             if input:pressed("up") then
@@ -146,7 +146,7 @@ return {
                 end
             love.graphics.pop()
         elseif fnfChartMoment then
-            love.graphics.print("Play as player? " .. tostring(fnfMomentShiz[fnfMomentSelected]), 0, 0, 0, 2, 2)
+            love.graphics.print("Play as [</>]: " .. (fnfMomentShiz[fnfMomentSelected] and "Player" or "Enemy"), 0, 0, 0, 2, 2)
         end
     end,
 }
