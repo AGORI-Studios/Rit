@@ -41,7 +41,7 @@ local function doFnfMoment(fnfMoment)
     filename = song.filename
     songPath = song.path
     songTitle = song.title
-    songDifficultyName = song.difficultyName
+    songDifficultyName = song.difficultyName..(fnfMomentShiz[fnfMomentSelected] and " - Player" or " - Enemy")
     folderPath = song.folderPath
     --BackgroundFile = love.graphics.newImage("song/" .. song.BackgroundFile)
     fnfLoader.load(songPath, fnfMomentShiz[fnfMomentSelected])
