@@ -55,7 +55,7 @@ function addJudgement(judgement)
             0.1,
             comboSize,
             {
-                y = 2.4
+                y = 1.85
             },
             "in-out-quad",
             function()
@@ -63,7 +63,7 @@ function addJudgement(judgement)
                     0.1,
                     comboSize,
                     {
-                        y = 2
+                        y = 1.6
                     },
                     "in-out-quad"
                 )
@@ -83,8 +83,8 @@ function addJudgement(judgement)
         0.1,
         ratingsize,
         {
-            x = 1.4,
-            y = 1.4
+            x = 1.15,
+            y = 1.15
         },
         "in-out-quad",
         function()
@@ -92,8 +92,8 @@ function addJudgement(judgement)
                 0.1,
                 ratingsize,
                 {
-                    x = 1,
-                    y = 1
+                    x = 0.85,
+                    y = 0.85
                 },
                 "in-out-quad"
             )
@@ -144,8 +144,8 @@ return {
             y = 1
         }
         comboSize = {
-            x = 2,
-            y = 2
+            x = 1.6,
+            y = 1.6
         }
     
         scoring["Marvellous"] = 0
@@ -354,7 +354,7 @@ return {
                                 accuracyTimer = Timer.tween(
                                     0.35,
                                     scoring,
-                                    {accuracy = additionalAccuracy / noteCounter},
+                                    {accuracy = additionalAccuracy / (noteCounter + (scoring["Miss"] or 0))},
                                     "out-quad",
                                     function()
                                         accuracyTimer = nil
@@ -422,7 +422,7 @@ return {
                             accuracyTimer = Timer.tween(
                                 0.35,
                                 scoring,
-                                {accuracy = additionalAccuracy / noteCounter},
+                                {accuracy = additionalAccuracy / (noteCounter + (scoring["Miss"] or 0))},
                                 "out-quad",
                                 function()
                                     accuracyTimer = nil
@@ -508,24 +508,37 @@ return {
                 love.graphics.pop()
 
                 if curJudgement ~= "none" then
-                    judgementImages[curJudgement]:draw(push.getWidth() / 2+325-275, push.getHeight() / 2, ratingsize.x, ratingsize.y)
+                    judgementImages[curJudgement]:draw(nil, nil, ratingsize.x, ratingsize.y)
                 end
                 if combo > 0 then
-                    comboImages[1][combo % 10]:draw(push.getWidth() / 2+360 - 275, push.getHeight() / 2+100, comboSize.x, comboSize.y)
+                    -- determine the offsetX of the combo of how many digits it is
+                    local offsetX = 0
+                    if combo >= 10000 then
+                        offsetX = 0
+                    elseif combo >= 1000 then
+                        offsetX = -5
+                    elseif combo >= 100 then
+                        offsetX = -10
+                    elseif combo >= 10 then
+                        offsetX = -15
+                    else
+                        offsetX = -20
+                    end
+                    comboImages[1][combo % 10]:draw(comboImages[1][combo % 10].x + offsetX, comboImages[1][combo % 10].y, comboSize.x, comboSize.y)
                     if math.floor(combo / 10 % 10) ~= 0 or combo >= 100 then
-                        comboImages[2][math.floor(combo / 10 % 10)]:draw(push.getWidth() / 2+330 - 275, push.getHeight() / 2+100, comboSize.x, comboSize.y)
+                        comboImages[2][math.floor(combo / 10 % 10)]:draw(comboImages[2][math.floor(combo / 10 % 10)].x + offsetX, comboImages[2][math.floor(combo / 10 % 10)].y, comboSize.x, comboSize.y)
                     end
                     if math.floor(combo / 100 % 10) ~= 0 or combo >= 1000 then
-                        comboImages[3][math.floor(combo / 100 % 10)]:draw(push.getWidth() / 2+300 - 275, push.getHeight() / 2+100, comboSize.x, comboSize.y)
+                        comboImages[3][math.floor(combo / 100 % 10)]:draw(comboImages[3][math.floor(combo / 100 % 10)].x + offsetX, comboImages[3][math.floor(combo / 100 % 10)].y, comboSize.x, comboSize.y)
                     end
                     if math.floor(combo / 1000 % 10) ~= 0 or combo >= 10000 then
-                        comboImages[4][math.floor(combo / 1000 % 10)]:draw(push.getWidth() / 2+270 - 275, push.getHeight() / 2+100, comboSize.x, comboSize.y)
+                        comboImages[4][math.floor(combo / 1000 % 10)]:draw(comboImages[4][math.floor(combo / 1000 % 10)].x + offsetX, comboImages[4][math.floor(combo / 1000 % 10)].y, comboSize.x, comboSize.y)
                     end
                     if math.floor(combo / 10000 % 10) ~= 0 or combo >= 100000 then
-                        comboImages[5][math.floor(combo / 10000 % 10)]:draw(push.getWidth() / 2+240 - 275, push.getHeight() / 2+100, comboSize.x, comboSize.y)
+                        comboImages[5][math.floor(combo / 10000 % 10)]:draw(comboImages[5][math.floor(combo / 10000 % 10)].x + offsetX, comboImages[5][math.floor(combo / 10000 % 10)].y, comboSize.x, comboSize.y)
                     end
                     if math.floor(combo / 100000 % 10) ~= 0 or combo >= 100000 then
-                        comboImages[6][math.floor(combo / 100000 % 10)]:draw(push.getWidth() / 2+210 - 275, push.getHeight() / 2+100, comboSize.x, comboSize.y)
+                        comboImages[6][math.floor(combo / 100000 % 10)]:draw(comboImages[6][math.floor(combo / 100000 % 10)].x + offsetX, comboImages[6][math.floor(combo / 100000 % 10)].y, comboSize.x, comboSize.y)
                     end
                 end
                 love.graphics.translate(push.getWidth() / 2, 0)
@@ -565,11 +578,12 @@ return {
         audioFile:stop()
         if voices then
             voices:stop()
+            voices = nil
         end
+        audioFile = nil
 
         for i = 1, #charthits do
             charthits[i] = {}
-
         end
 
         Timer.clear()

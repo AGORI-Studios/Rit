@@ -48,7 +48,12 @@
 			"hitsound": "hitsound.wav",
 			"hitsound volume": 0.25,
 			"note size": 0.85,
-			"antialiasing": true
+			"antialiasing": true,
+
+			"rating position": {
+				"x": 0,
+				"y": 0
+			}
 		}
 	},
 	"Creator": "Getsaa"

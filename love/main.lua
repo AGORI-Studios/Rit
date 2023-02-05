@@ -255,13 +255,24 @@ function love.load()
         {0, 255, 255},
         {255, 255, 255}
     }
+
+    DEFAULT_SPACING = 200
+    DEFAULT_KEYS = 4 -- default keys and spacing for making them center with special spacings and what-not
+
     musicTimeDo = false
     health = 1
 
     love.window.setMode(settings.width, settings.height, {resizable = true, vsync = settings.vsync, fullscreen = settings.fullscreen})
     --resolution.setup(settings.width, settings.height, 1920, 1080, {_type = "normal"})
     push.setupScreen(1920, 1080, {upscale = "normal"})
-
+    -- now we do some math (ew) to reposition the keys to be centered if they have a special spacing
+    --[[
+    KEYS_posX = {}
+    for i = 1, DEFAULT_KEYS do
+        KEYS_posX[i] = DEFAULT_SPACING * (i - 1) - (DEFAULT_SPACING * (DEFAULT_KEYS - 1) / 2)
+        print(KEYS_posX[i])
+    end
+    --]] -- oh my god i fucking god i hate math
     fnfMomentSelected = 1
     
     loadSongs()
