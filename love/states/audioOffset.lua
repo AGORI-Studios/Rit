@@ -2,7 +2,7 @@ return {
     enter = function()
         -- offset is in milliseconds
         audioOffset = settings.audioOffset
-        offsetTimer = math.abs(audioOffset)
+        offsetTimer = 0
         -- the bpm is 1 tick every tenth of a second
         beatHandler.setBPM(60)
 
@@ -15,11 +15,10 @@ return {
     end,
 
     update = function(self, dt)
-        offsetTimer = offsetTimer + dt * 1000
+        offsetTimer = offsetTimer + 1000 * dt
         if not audio:isPlaying() then
             if offsetTimer >= math.abs(audioOffset) then
                 audio:play()
-                offsetTimer = 0
             end
         end
         beatHandler.update(dt)
