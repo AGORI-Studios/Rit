@@ -189,6 +189,7 @@ function love.load()
     ini = require "lib.ini"
     if discordRPC then 
         discordRPC.initialize("785717724906913843", true) 
+        --[[
         function discordRPC.ready(userId, username, discriminator, avatar)
             debug.print(string.format("Discord: ready (%s, %s, %s, %s)", userId, username, discriminator, avatar))
         end
@@ -200,6 +201,7 @@ function love.load()
         function discordRPC.errored(errorCode, message)
             debug.print(string.format("Discord: error (%d: %s)", errorCode, message))
         end
+        --]]
     end
     settingsIni = require "settings"
     settingsIni.loadSettings()
@@ -274,12 +276,13 @@ end
 function love.update(dt)
     Timer.update(dt)
     state.update(dt)
+    if __DEBUG__ then debug.update(dt) end
     if discordRPC then 
         if love.timer.getTime() or 0 > nextPresenceUpdate then
             if presence then
                 discordRPC.updatePresence(presence)
-                debug.print("Next presence update: "..nextPresenceUpdate)
-                debug.print("Current time is "..love.timer.getTime())
+                --debug.print("Next presence update: "..nextPresenceUpdate)
+                --debug.print("Current time is "..love.timer.getTime())
             end
             nextPresenceUpdate = love.timer.getTime() + 2.0
         end
@@ -310,11 +313,7 @@ function love.draw()
         end
     push.finish()
 
-    if __DEBUG__ then 
-        debug.drawdebug()
-        debug.drawConsole()
-    end
-    
+    if __DEBUG__ then debug.draw() end
 end
 
 function love.focus(f)
