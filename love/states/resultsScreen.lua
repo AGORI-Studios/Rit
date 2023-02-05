@@ -1,6 +1,7 @@
 local args, scorings, ratings, songData, died, scoreTXT, score, acc, curRating
 return {
     enter = function(self, _, ...)
+        now = os.time()
         if not love.filesystem.getInfo("results") then
             love.filesystem.createDirectory("results")
         end
@@ -67,6 +68,14 @@ Rating: %s
             love.filesystem.remove("results/" .. songData[1] .. "-" .. songData[2] .. ".txt")
         end
         love.filesystem.write("results/" .. songData[1] .. "-" .. songData[2] .. ".txt", string.format(scoreTXT, scoreS, accS, curRating))
+
+        presence = {
+            details = (autoplay and "Autoplaying " or "Playing ")..songTitle.." - "..songDifficultyName.. " - Results", 
+            state = "Score: "..string.format("%07d", round(scoring.score)).." - "..string.format("%.2f%%", scoring.accuracy).." - "..combo..(combo == noteCounter and " FC" or " combo"),
+            largeImageKey = "totallyreallogo",
+            largeImageText = "Rit"..(__DEBUG__ and " DEBUG MODE" or ""),
+            startTimestamp = now
+        }
     end,
 
     update = function(self, dt)

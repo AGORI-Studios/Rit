@@ -1,5 +1,6 @@
 return {
     enter = function()
+        now = os.time()
         -- offset is in milliseconds
         audioOffset = settings.audioOffset
         offsetTimer = 0
@@ -12,6 +13,13 @@ return {
         beatHandler.forceBeat()
 
         circSize = {50}
+
+        presence = {
+            state = "Setting their audio offset",
+            largeImageKey = "totallyreallogo",
+            largeImageText = "Rit"..(__DEBUG__ and " DEBUG MODE" or ""),
+            startTimestamp = now
+        }
     end,
 
     update = function(self, dt)
