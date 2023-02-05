@@ -1,9 +1,14 @@
 <p align="center">
     <img src ="docs/logo.png" height=300><br>
-    <a href="https://github.com/GuglioIsStupid/Rit/blob/master/LICENSE"><img src="https://img.shields.io/github/license/GuglioIsStupid/Rit?style=flat-square">
-    <a href="https://discord.gg/ehY5gMMPW8"><img src="https://img.shields.io/discord/933976593137803276?style=flat-square">
-    <a href="https://github.com/GuglioIsStupid/Rit/issues"><img src="https://img.shields.io/github/issues/GuglioIsStupid/Rit?style=flat-square" alt="Issues">
+    <a href="https://github.com/GuglioIsStupid/Rit/blob/master/LICENSE"><img src="https://img.shields.io/github/license/GuglioIsStupid/Rit?style=flat-square" height=25>
+    <a href="https://discord.gg/ehY5gMMPW8"><img src="https://img.shields.io/discord/933976593137803276?style=flat-square" height=25>
+    <a href="https://github.com/GuglioIsStupid/Rit/issues"><img src="https://img.shields.io/github/issues/GuglioIsStupid/Rit?style=flat-square" alt="Issues" height=25>
     <a href="#"> <!--To fix our click title to relocate thing-->
+    <img src="https://forthebadge.com/images/badges/made-with-crayons.svg" height=25>
+    <img src="https://forthebadge.com/images/badges/0-percent-optimized.svg" height=25>
+</p>
+<p align="center">
+    <img src="https://forthebadge.com/images/badges/works-on-my-machine.svg" height=30>
 </p>
 
 # Rit
