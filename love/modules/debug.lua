@@ -19,7 +19,7 @@ function debug.drawConsole()
     love.graphics.rectangle("fill", love.graphics.getWidth() - 300, 0, 300, 260)
     love.graphics.setColor(1, 1, 1, 1)
     for i = 1, #debug.consolelines do
-        love.graphics.print(debug.consolelines[i], love.graphics.getWidth() - 300, 20 * i-1)
+        love.graphics.print(debug.consolelines[i], love.graphics.getWidth() - 300, 20 * i - 20)
     end
 
     if #debug.consolelines > 10 then
@@ -37,6 +37,18 @@ function debug.drawdebug()
     love.graphics.print("FPS: " .. love.timer.getFPS(), 0, 40)
     love.graphics.print("Graphics memory usage: " .. round(love.graphics.getStats().texturememory / 1024) .. "KB", 0, 60)
     love.graphics.print("Music Time: " .. (musicTime or 0), 0, 80)
+end
+
+function debug.draw()
+    debug.drawConsole()
+    debug.drawdebug()
+end
+
+function debug.update(dt)
+    -- update fake console
+    if love.keyboard.isDown("lctrl") and love.keyboard.isDown("lshift") and love.keyboard.isDown("c") then
+        debug.clearConsole()
+    end
 end
 
 return debug
