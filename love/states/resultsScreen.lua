@@ -70,8 +70,8 @@ Rating: %s
         love.filesystem.write("results/" .. songData[1] .. "-" .. songData[2] .. ".txt", string.format(scoreTXT, scoreS, accS, curRating))
 
         presence = {
-            details = (autoplay and "Autoplaying " or "Playing ")..songTitle.." - "..songDifficultyName.. " - Results", 
-            state = "Score: "..string.format("%07d", round(scoring.score)).." - "..string.format("%.2f%%", scoring.accuracy).." - "..combo..(combo == noteCounter and " FC" or " combo"),
+            details = (autoplay and "Autoplaying " or "Playing ")..songData[1].." - "..songData[2].. " - Results", 
+            state = "Score: "..scoreS.." - "..accS.."% - "..combo..(combo == noteCounter and " FC" or " combo"),
             largeImageKey = "totallyreallogo",
             largeImageText = "Rit"..(__DEBUG__ and " DEBUG MODE" or ""),
             startTimestamp = now
@@ -82,6 +82,14 @@ Rating: %s
         if input:pressed("confirm") then
             state.switch(songSelect)
         end
+
+        presence = {
+            details = (autoplay and "Autoplaying " or "Playing ")..songData[1].." - "..songData[2].. " - Results", 
+            state = "Score: "..scoreS.." - "..accS.."% - "..combo..(combo == noteCounter and " FC" or " combo"),
+            largeImageKey = "totallyreallogo",
+            largeImageText = "Rit"..(__DEBUG__ and " DEBUG MODE" or ""),
+            startTimestamp = now
+        }
     end,
 
     draw = function(self)
