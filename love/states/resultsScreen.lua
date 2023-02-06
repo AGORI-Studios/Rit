@@ -43,6 +43,9 @@ Rating: %s
             curRating = "F"
         end
 
+        scoreS = score
+        accS = acc
+
         -- check if score is higher than the current highscore
         if love.filesystem.getInfo("results/" .. songData[1] .. "-" .. songData[2] .. ".txt") then
             local file = love.filesystem.read("results/" .. songData[1] .. "-" .. songData[2] .. ".txt")

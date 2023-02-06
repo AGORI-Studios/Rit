@@ -159,12 +159,15 @@ end
 
 if love.system.getOS() ~= "NX" then -- show message box doesn't work on Switch, so use the default error handler
 	-- modified a slight bit from https://github.com/OverHypedDudes/love2dTemplate/blob/main/modules/errHandler.lua
+    -- Gotta fix this shitz!!
+    --[[
 	function love.errhand(error_message)
 		local dialog_message = [[
 Rit crashed with the following error:	
 %s
 ]]
-
+--]]
+        --[[
 		local full_error = debug.traceback(error_message or "")
 		local message = string.format(dialog_message, full_error)
 		local buttons = {"Report Error", "No thanks"}
@@ -177,7 +180,9 @@ Rit crashed with the following error:
 			text = string.gsub(text, "#", "%%23")
 			return text
 		end
+        --]]
 
+        --[[
 		local issuebody = [[
 Rit has crashed with the following error:
 	
@@ -189,6 +194,8 @@ Rit has crashed with the following error:
 Affects: %s
 Edition: %s
 ]]
+--]]
+--[[
         love.filesystem.write("crash.log", full_error)
 		if selected == 1 then
 			-- Surround traceback in ``` to get a Markdown code block
@@ -201,6 +208,8 @@ Edition: %s
 			love.system.openURL(url)
 		end
 	end
+    --]]
+    --]]
 else
     function love.window.showMessageBox(title, message, buttons, type)
         local buttonString = buttons
