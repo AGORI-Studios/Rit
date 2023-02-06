@@ -86,15 +86,15 @@ local function selectSkin(skin) -- TODO: optimize skin loading
         comboImages[i] = {}
         for j = 0, 9 do
             comboImages[i][j] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO" .. j]:gsub('"', ""))
-            comboImages[i][j].x = push.getWidth() / 2+325-275 + skinJson["skin"]["4k"]["rating position"]["x"]
+            comboImages[i][j].x = push.getWidth() / 2+325-275 + skinJson["skin"]["rating position"]["x"]
             comboImages[i][j].x = comboImages[i][j].x - (i - 1) * (comboImages[i][j]:getWidth() - 5) + 25
-            comboImages[i][j].y = push.getHeight() / 2 + skinJson["skin"]["4k"]["rating position"]["y"] + 50
+            comboImages[i][j].y = push.getHeight() / 2 + skinJson["skin"]["rating position"]["y"] + 50
         end
     end
 
     for k, v in pairs(judgementImages) do
-        v.x = push.getWidth() / 2+325-275 + skinJson["skin"]["4k"]["rating position"]["x"]
-        v.y = push.getHeight() / 2 + skinJson["skin"]["4k"]["rating position"]["y"]
+        v.x = push.getWidth() / 2+325-275 + skinJson["skin"]["rating position"]["x"]
+        v.y = push.getHeight() / 2 + skinJson["skin"]["rating position"]["y"]
     end
 
     love.graphics.setDefaultFilter("linear", "linear")
