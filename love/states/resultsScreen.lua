@@ -19,6 +19,8 @@ Rating: %s
         score = scorings.score
         acc = scorings.accuracy
 
+        debug.print("Score: "..score.." - "..acc.."%")
+
         ratings = {
             {name = "SS", acc = 100},
             {name = "S", acc = 90},
@@ -29,18 +31,26 @@ Rating: %s
             {name = "F", acc = 0}
         }
 
-        curRating = "SS"
+        curRating = "F"
 
         -- the accuracy is scorings.accuracy
         -- the score is scorings.score
-        for i = 1, #ratings do
-            if scorings.accuracy < ratings[i].acc then
-                curRating = ratings[i].name
-                break
+        debug.print("checking for death")
+        if not died then
+            debug.print("not dead, looping")
+            debug.print(tostring(#ratings))
+            for i = #ratings, 1, -1 do
+                debug.print("loop iter: "..i)
+                debug.print(tostring(acc >= ratings[i].acc)..tostring(scorings.accuracy >= ratings[i].acc))
+                if scorings.accuracy >= ratings[i].acc then
+                    curRating = ratings[i].name
+                    debug.print("Acc >= "..ratings[i].acc.." - "..ratings[i].name)
+                    -- break
+                end
             end
         end
         if died then
-            curRating = "F"
+            debug.print("Failed, rating F")
         end
 
         scoreS = score

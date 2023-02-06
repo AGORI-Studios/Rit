@@ -1,60 +1,59 @@
 {
-	"skin": {
-		"name": "Circle Default",
-		"4k": {
-			"left receptor unpressed": "receptor-unpressed.png",
-			"left receptor pressed": "receptor-pressed.png",
-			"left note": "note.png",
-			"left note hold": "note-hold.png",
-			"left note hold end": "note-end.png",
+  "skin": {
+    "name": "Circle Default",
+    "4k": {
+      "left receptor unpressed": "receptor-unpressed.png",
+      "left receptor pressed": "receptor-pressed.png",
+      "left note": "note.png",
+      "left note hold": "note-hold.png",
+      "left note hold end": "note-end.png",
 
-			"down receptor unpressed": "receptor-unpressed.png",
-			"down receptor pressed": "receptor-pressed.png",
-			"down note": "note.png",
-			"down note hold": "note-hold.png",
-			"down note hold end": "note-end.png",
+      "down receptor unpressed": "receptor-unpressed.png",
+      "down receptor pressed": "receptor-pressed.png",
+      "down note": "note.png",
+      "down note hold": "note-hold.png",
+      "down note hold end": "note-end.png",
 
-			"up receptor unpressed": "receptor-unpressed.png",
-			"up receptor pressed": "receptor-pressed.png",
-			"up note": "note.png",
-			"up note hold": "note-hold.png",
-			"up note hold end": "note-end.png",
+      "up receptor unpressed": "receptor-unpressed.png",
+      "up receptor pressed": "receptor-pressed.png",
+      "up note": "note.png",
+      "up note hold": "note-hold.png",
+      "up note hold end": "note-end.png",
 
-			"right receptor unpressed": "receptor-unpressed.png",
-			"right receptor pressed": "receptor-pressed.png",
-			"right note": "note.png",
-			"right note hold": "note-hold.png",
-			"right note hold end": "note-end.png",
+      "right receptor unpressed": "receptor-unpressed.png",
+      "right receptor pressed": "receptor-pressed.png",
+      "right note": "note.png",
+      "right note hold": "note-hold.png",
+      "right note hold end": "note-end.png",
 
-			"judgements": {
-				"MISS": "judgements/MISS.png",
-				"GOOD": "judgements/GOOD.png",
-				"GREAT": "judgements/GREAT.png",
-				"PERFECT": "judgements/PERFECT.png",
-				"MARVELLOUS": "judgements/MARVELLOUS.png"
-			},
-			"combo": {
-				"COMBO0": "combo/COMBO0.png",
-				"COMBO1": "combo/COMBO1.png",
-				"COMBO2": "combo/COMBO2.png",
-				"COMBO3": "combo/COMBO3.png",
-				"COMBO4": "combo/COMBO4.png",
-				"COMBO5": "combo/COMBO5.png",
-				"COMBO6": "combo/COMBO6.png",
-				"COMBO7": "combo/COMBO7.png",
-				"COMBO8": "combo/COMBO8.png",
-				"COMBO9": "combo/COMBO9.png"
-			},
-			"hitsound": "hitsound.wav",
-			"hitsound volume": 0.25,
-			"note size": 0.85,
-			"antialiasing": true,
-
-			"rating position": {
-				"x": 0,
-				"y": 0
-			}
-		}
-	},
-	"Creator": "Getsaa"
+      "judgements": {
+        "MISS": "judgements/MISS.png",
+        "GOOD": "judgements/GOOD.png",
+        "GREAT": "judgements/GREAT.png",
+        "PERFECT": "judgements/PERFECT.png",
+        "MARVELLOUS": "judgements/MARVELLOUS.png"
+      },
+      "combo": {
+        "COMBO0": "combo/COMBO0.png",
+        "COMBO1": "combo/COMBO1.png",
+        "COMBO2": "combo/COMBO2.png",
+        "COMBO3": "combo/COMBO3.png",
+        "COMBO4": "combo/COMBO4.png",
+        "COMBO5": "combo/COMBO5.png",
+        "COMBO6": "combo/COMBO6.png",
+        "COMBO7": "combo/COMBO7.png",
+        "COMBO8": "combo/COMBO8.png",
+        "COMBO9": "combo/COMBO9.png"
+      },
+      "hitsound": "hitsound.wav",
+      "hitsound volume": 0.25,
+      "note size": 0.85,
+      "antialiasing": true
+    },
+    "rating position": {
+      "x": 0,
+      "y": 0
+    },
+    "Creator": "Getsaa"
+  }
 }

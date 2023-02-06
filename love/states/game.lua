@@ -319,16 +319,16 @@ return {
                                     judgement = "Great"
                                     health = health + 0.135
                                     additionalScore = additionalScore + 350
-                                    additionalAccuracy = additionalAccuracy + 75.55
+                                    additionalAccuracy = additionalAccuracy + 75
                                 elseif pos < 120 then
                                     judgement = "Good"
                                     health = health + 0.135
                                     additionalScore = additionalScore + 200
-                                    additionalAccuracy = additionalAccuracy + 66.66
+                                    additionalAccuracy = additionalAccuracy + 50
                                 else
                                     judgement = "Miss"
                                     health = health - 0.270
-                                    additionalAccuracy = additionalAccuracy + 1.11
+                                    additionalAccuracy = additionalAccuracy
                                 end
 
                                 addJudgement(judgement)
