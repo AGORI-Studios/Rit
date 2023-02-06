@@ -317,7 +317,9 @@ function love.keypressed(key)
     end
 
     if key == "o" then 
-        state.switch(audioOffsetter)
+        if choosingSkin and choosingSong then
+            state.switch(audioOffsetter)
+        end
     end
 end
 
