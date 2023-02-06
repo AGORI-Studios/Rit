@@ -41,6 +41,9 @@ noteSpacing = 200
 ; Autoplay - automatically play songs without user input. Can also be toggled with B in song select.
 autoplay = False
 
+; Audio Offset - the amount of time to offset the audio by (in milliseconds)
+audioOffset = 0
+
 [Graphics]
 ; Screen width/height
 width = 1280
@@ -57,7 +60,7 @@ vsync = False
 volume = 1.0
 
 [System]
-version = 0.0.4-beta
+version = settingsVer1/0.0.3-beta
 ]]
 
 function settingsIni.loadSettings()
@@ -67,34 +70,25 @@ function settingsIni.loadSettings()
     end
     inifile = ini.load("settings.ini")
     settings.version = inifile["System"]["version"] or "Unknown"
-    if settings.version ~= "0.0.4-beta" then
+    if settings.version ~= "settingsVer1/0.0.3-beta" then
         love.filesystem.write("settings.ini", settingsStr)
     end
-    settings.downscroll = inifile["Game"]["downscroll"] == "True"
-    settings.scrollspeed = tonumber(inifile["Game"]["scrollspeed"])
+    settings.downscroll = inifile["Game"]["downscroll"] == "True" or false
+    settings.scrollspeed = tonumber(inifile["Game"]["scrollspeed"]) or 1.0
     settings.scrollvelocities = inifile["Game"]["Scroll Velocities"] == "True"
-    settings.startTime = tonumber(inifile["Game"]["startTime"])
-    settings.noteSpacing = tonumber(inifile["Game"]["noteSpacing"])
-    settings.autoplay = inifile["Game"]["autoplay"] == "True"
+    settings.startTime = tonumber(inifile["Game"]["startTime"]) or 700
+    settings.noteSpacing = tonumber(inifile["Game"]["noteSpacing"]) or 200
+    settings.autoplay = inifile["Game"]["autoplay"] == "True" or false
+    settings.audioOffset = tonumber(inifile["Game"]["audioOffset"]) or 0
 
-    settings.width = tonumber(inifile["Graphics"]["width"])
-    settings.height = tonumber(inifile["Graphics"]["height"])
-    settings.fullscreen = inifile["Graphics"]["fullscreen"] == "True"
-    settings.vsync = inifile["Graphics"]["vsync"] == "True"
+    settings.width = tonumber(inifile["Graphics"]["width"]) or 1280
+    settings.height = tonumber(inifile["Graphics"]["height"]) or 720
+    settings.fullscreen = inifile["Graphics"]["fullscreen"] == "True" or false
+    settings.vsync = inifile["Graphics"]["vsync"] == "True" or false
 
-    settings.volume = inifile["Audio"]["volume"]
-
-    -- settings.downscroll = settings.downscroll == "True"
-    -- settings.scrollspeed = tonumber(settings.scrollspeed)
-    -- settings.scrollvelocities = settings.scrollvelocities == "True"
-    -- settings.startTime = tonumber(settings.startTime)
-    
-    -- settings.width = tonumber(settings.width)
-    -- settings.height = tonumber(settings.height)
-    -- settings.vsync = settings.vsync == "True"
-    -- settings.fullscreen = settings.fullscreen == "True"
-    
+    settings.volume = inifile["Audio"]["volume"] or 1.0
 
     love.audio.setVolume(settings.volume)
 end
+
 return settingsIni

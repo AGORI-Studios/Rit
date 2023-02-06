@@ -82,63 +82,19 @@ local function selectSkin(skin) -- TODO: optimize skin loading
 
     comboImages = {}
 
-    --[[
-    comboImages = { -- need to optimize this too lmfaoooo
-        [1] = {
-            [0] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO0"]:gsub('"', "")),
-            [1] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO1"]:gsub('"', "")),
-            [2] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO2"]:gsub('"', "")),
-            [3] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO3"]:gsub('"', "")),
-            [4] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO4"]:gsub('"', "")),
-            [5] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO5"]:gsub('"', "")),
-            [6] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO6"]:gsub('"', "")),
-            [7] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO7"]:gsub('"', "")),
-            [8] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO8"]:gsub('"', "")),
-            [9] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO9"]:gsub('"', ""))
-        },
-        [2] = {
-            [0] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO0"]:gsub('"', "")),
-            [1] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO1"]:gsub('"', "")),
-            [2] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO2"]:gsub('"', "")),
-            [3] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO3"]:gsub('"', "")),
-            [4] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO4"]:gsub('"', "")),
-            [5] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO5"]:gsub('"', "")),
-            [6] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO6"]:gsub('"', "")),
-            [7] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO7"]:gsub('"', "")),
-            [8] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO8"]:gsub('"', "")),
-            [9] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO9"]:gsub('"', ""))
-        },
-        [3] = {
-            [0] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO0"]:gsub('"', "")),
-            [1] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO1"]:gsub('"', "")),
-            [2] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO2"]:gsub('"', "")),
-            [3] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO3"]:gsub('"', "")),
-            [4] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO4"]:gsub('"', "")),
-            [5] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO5"]:gsub('"', "")),
-            [6] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO6"]:gsub('"', "")),
-            [7] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO7"]:gsub('"', "")),
-            [8] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO8"]:gsub('"', "")),
-            [9] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO9"]:gsub('"', ""))
-        },
-        [4] = {
-            [0] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO0"]:gsub('"', "")),
-            [1] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO1"]:gsub('"', "")),
-            [2] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO2"]:gsub('"', "")),
-            [3] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO3"]:gsub('"', "")),
-            [4] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO4"]:gsub('"', "")),
-            [5] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO5"]:gsub('"', "")),
-            [6] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO6"]:gsub('"', "")),
-            [7] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO7"]:gsub('"', "")),
-            [8] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO8"]:gsub('"', "")),
-            [9] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO9"]:gsub('"', ""))
-        }
-    --]]
-
     for i = 1, 6 do
         comboImages[i] = {}
         for j = 0, 9 do
             comboImages[i][j] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO" .. j]:gsub('"', ""))
+            comboImages[i][j].x = push.getWidth() / 2+325-275 + skinJson["skin"]["4k"]["rating position"]["x"]
+            comboImages[i][j].x = comboImages[i][j].x - (i - 1) * (comboImages[i][j]:getWidth() - 5) + 25
+            comboImages[i][j].y = push.getHeight() / 2 + skinJson["skin"]["4k"]["rating position"]["y"] + 50
         end
+    end
+
+    for k, v in pairs(judgementImages) do
+        v.x = push.getWidth() / 2+325-275 + skinJson["skin"]["4k"]["rating position"]["x"]
+        v.y = push.getHeight() / 2 + skinJson["skin"]["4k"]["rating position"]["y"]
     end
 
     love.graphics.setDefaultFilter("linear", "linear")

@@ -48,6 +48,10 @@ function graphics.newImage(path)
         end,
 
         draw = function(self, x, y, sx, sy)
+            if x == nil then x = self.x end
+            if y == nil then y = self.y end
+            if sx == nil then sx = self.scaleX end
+            if sy == nil then sy = self.scaleY end            
             love.graphics.draw(
                 self.img, 
                 x or self.x, 

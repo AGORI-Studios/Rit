@@ -25,3 +25,5 @@ resources/macos/*
 !resources/osx/discord-rpc.dylib
 
 love/defaultskins/AnimationTest/*
+
+!love/audio/*

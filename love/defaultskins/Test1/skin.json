@@ -49,6 +49,13 @@
 			"hitsound volume": 0.25,
 			"note size": 0.35,
 			"antialiasing": true
-		}
+		},
+
+		"rating position": {
+			"x": 0,
+			"y": 0
+		},
+
+		"Creator": "c l o t h i n g h a n g e r"
 	}
 }

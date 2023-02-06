@@ -28,6 +28,7 @@ function state.switch(to, ...)
     current = to
     if current then current:enter(pre, ...) end
     if pre then if pre.leave then pre:leave(current) end end
+    pre = nil -- unload previous state
     collectgarbage()
 end
 
@@ -73,6 +74,10 @@ end
 
 function state.quit()
     if current.quit then current:quit() end
+end
+
+function state.getCurrent()
+    return current
 end
 
 return state
