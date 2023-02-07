@@ -114,7 +114,7 @@
       },
       "hitsound": "hitsound.wav",
       "hitsound volume": 0.25,
-      "note size": 0.85,
+      "note size": 0.75,
       "antialiasing": true
     },
     "rating position": {
