@@ -164,6 +164,11 @@ function Player:_initControls()
 	end
 end
 
+function Player:rebindControl(name, control)
+	self.config.controls[name] = control
+	self:_initControls()
+end
+
 -- initializes an axis pair object for each axis pair defined in the config
 function Player:_initPairs()
 	self._pairs = {}

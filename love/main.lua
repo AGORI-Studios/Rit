@@ -24,10 +24,6 @@ if not love.filesystem.isFused() then
 else
     __DEBUG__ = false
     function print() return end -- disable print
-    -- set console to false
-    love.conf = function(t)
-        t.console = false
-    end
 end
 
 function loadSongs()
@@ -54,13 +50,8 @@ function loadSongs()
             love.filesystem.mount("songs/quaver/" .. v, "song")
             -- get all .qua files in the .qp file
             for k, j in ipairs(love.filesystem.getDirectoryItems("song")) do
-                --print(j)
-                --print(love.filesystem.getInfo("song/" .. j).type == "file")
                 if love.filesystem.getInfo("song/" .. j).type == "file" then
-                    --print("ok so")
                     if j:sub(-4) == ".qua" then
-                        --print(j)
-                        --print(love.filesystem.getInfo("song/" .. j).type == "file")
                         local title = love.filesystem.read("song/" .. j):match("Title:(.-)\r?\n")
                         local difficultyName = love.filesystem.read("song/" .. j):match("DifficultyName:(.-)\r?\n")
                         local BackgroundFile = love.filesystem.read("song/" .. j):match("BackgroundFile:(.-)\r?\n")
@@ -81,7 +72,7 @@ function loadSongs()
     for i, v in ipairs(love.filesystem.getDirectoryItems("songs/osu")) do 
         if love.filesystem.getInfo("songs/osu/" .. v).type == "file" then
             love.filesystem.mount("songs/osu/" .. v, "song")
-            -- get all .qua files in the .qp file
+            -- get all .osu files in the .osz file
             for k, j in ipairs(love.filesystem.getDirectoryItems("song")) do
                 --print(j)
                 --print(love.filesystem.getInfo("song/" .. j).type == "file")
@@ -127,6 +118,7 @@ function loadSongs()
             end
         end
     end
+    --[[ -- Stepmania is currently not finished
     for i, v in ipairs(love.filesystem.getDirectoryItems("songs/stepmania")) do 
         -- stepmania songs are in folders
         if love.filesystem.getInfo("songs/stepmania/" .. v).type == "directory" then
@@ -150,6 +142,7 @@ function loadSongs()
             end
         end
     end
+    --]]
 end
 local desktopWidth, desktopHeight = love.window.getDesktopDimensions()
 fnfMomentShiz = {
@@ -200,19 +193,6 @@ function love.load()
     ini = require "lib.ini"
     if discordRPC then 
         discordRPC.initialize("785717724906913843", true) 
-        --[[
-        function discordRPC.ready(userId, username, discriminator, avatar)
-            debug.print(string.format("Discord: ready (%s, %s, %s, %s)", userId, username, discriminator, avatar))
-        end
-    
-        function discordRPC.disconnected(errorCode, message)
-            debug.print(string.format("Discord: disconnected (%d: %s)", errorCode, message))
-        end
-    
-        function discordRPC.errored(errorCode, message)
-            debug.print(string.format("Discord: error (%d: %s)", errorCode, message))
-        end
-        --]]
     end
     settingsIni = require "settings"
     settingsIni.loadSettings()
@@ -253,39 +233,12 @@ function love.load()
     love.graphics.setFont(font)
     love.graphics.setDefaultFilter("nearest", "nearest")
 
-    fourkColours = {
-        {255, 0, 0},
-        {0, 255, 0},
-        {0, 0, 255},
-        {255, 255, 0}
-    }
-    sevenkColours = {
-        {255, 0, 0},
-        {0, 255, 0},
-        {0, 0, 255},
-        {255, 255, 0},
-        {255, 0, 255},
-        {0, 255, 255},
-        {255, 255, 255}
-    }
-
-    DEFAULT_SPACING = 200
-    DEFAULT_KEYS = 4 -- default keys and spacing for making them center with special spacings and what-not
-
     musicTimeDo = false
     health = 1
 
     love.window.setMode(settings.width, settings.height, {resizable = true, vsync = settings.vsync, fullscreen = settings.fullscreen})
-    --resolution.setup(settings.width, settings.height, 1920, 1080, {_type = "normal"})
     push.setupScreen(1920, 1080, {upscale = "normal"})
-    -- now we do some math (ew) to reposition the keys to be centered if they have a special spacing
-    --[[
-    KEYS_posX = {}
-    for i = 1, DEFAULT_KEYS do
-        KEYS_posX[i] = DEFAULT_SPACING * (i - 1) - (DEFAULT_SPACING * (DEFAULT_KEYS - 1) / 2)
-        print(KEYS_posX[i])
-    end
-    --]] -- oh my god i fucking god i hate math
+
     fnfMomentSelected = 1
     
     loadSongs()
@@ -293,7 +246,6 @@ function love.load()
 end
 
 function love.resize(w, h)
-    --resolution.resize(w, h, 1920, 1080, {_type = "normal"})
     push.resize(w, h)
 end
 
@@ -305,8 +257,6 @@ function love.update(dt)
         if love.timer.getTime() or 0 > nextPresenceUpdate then
             if presence then
                 discordRPC.updatePresence(presence)
-                --debug.print("Next presence update: "..nextPresenceUpdate)
-                --debug.print("Current time is "..love.timer.getTime())
             end
             nextPresenceUpdate = love.timer.getTime() + 2.0
         end

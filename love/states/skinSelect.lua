@@ -38,7 +38,7 @@ local function chooseSkin()
     end
 end
 
-local function selectSkin(skin) -- TODO: optimize skin loading
+local function selectSkin(skin) -- TODO: seperate functions for different skin amounts
     skin = skin or 1
     skin = skins[skin]
     skinJson = skin.json
@@ -104,7 +104,6 @@ local function selectSkin(skin) -- TODO: optimize skin loading
     choosingSong = true
 
     musicPos = 0
-    --quaverLoader.load("chart.qua")
     state.switch(songSelect)
     dt = 0
 end

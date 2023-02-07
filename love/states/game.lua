@@ -189,8 +189,6 @@ return {
         if musicTimeDo and not died then
             local time = love.timer.getTime()
 
-            --musicTime = musicTime + musicPosValue[1] * dt
-
             musicTime = musicTime + (time * musicPosValue[1]) - previousFrameTime
             previousFrameTime = time * musicPosValue[1]
 
@@ -243,13 +241,6 @@ return {
                 end
             end
         end
-        -- accuracy = (function()
-        --     if noteCounter < 1 then
-        --         return 100.0
-        --     else
-        --         return additionalAccuracy/noteCounter
-        --     end
-        -- end)()
         
         presence = {
             details = (autoplay and "Autoplaying " or "Playing ")..songTitle.." - "..songDifficultyName..(not musicTimeDo and " - Paused" or ""), 
@@ -267,7 +258,6 @@ return {
                         noteImgs[i][2].scaleY = 1 * sv
                     end
                 end
-                --print(sv)j
                 table.remove(chartEvents, 1)
             end
         end
@@ -301,8 +291,6 @@ return {
             notes = charthits[i]
             if not autoplay then
                 if input:pressed(curInput) then
-                -- print("Pressed " .. curInput .. " at " .. musicPos .. "ms")
-                    --print("Pressed " .. curInput)
                     if hitsoundCache[#hitsoundCache]:isPlaying() then
                         hitsoundCache[#hitsoundCache] = hitsoundCache[#hitsoundCache]:clone()
                         hitsoundCache[#hitsoundCache]:play()
@@ -315,12 +303,9 @@ return {
                         end --                             maybe, idk how love2d works lmfao
                     end
                     if notes[1] then
-                        --print(notes[1][1] - musicPos)
                         if not notes[1][4] and not notes[1][5] then
                             if notes[1][1] - musicTime >= -80 and notes[1][1] - musicTime <= 180 or (notes[2] and notes[1][5] and notes[2][1] - musicTime >= -80 and notes[2][1] - musicTime <= 180) then
                                 noteCounter = noteCounter + 1
-                                --print("Hit!")
-                                --print(notes[1][1] - musicTime .. "ms")
                                 pos = math.abs(notes[1][1] - musicTime)
                                 if notes[2] and notes[1][5] and notes[2][1] - musicTime >= -80 and notes[2][1] - musicTime <= 180 then
                                     pos = math.abs(notes[2][1] - musicTime)
@@ -455,8 +440,6 @@ return {
                 end
             end
         end
-        -- print graphics memory usage
-        --print(tostring(math.floor(love.graphics.getStats().texturememory / 1048576)) .. "MB")
 
         if health <= 0 and not died then
             died = true
@@ -573,7 +556,6 @@ return {
                 love.graphics.setFont(font)
 
                 -- Time remaining bar 
-                -- will be a rounded rectangle that is 25px tall and push.getWidth() wide
                 love.graphics.rectangle("fill", -push.getWidth()/2, push.getHeight() - 10, push.getWidth() * (1 - (musicTime/1000 / audioFile:getDuration())), 10, 10, 10)
             love.graphics.pop()
         end

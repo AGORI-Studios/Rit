@@ -28,14 +28,12 @@ function quaverLoader.load(chart)
 
     for line in love.filesystem.lines(chart) do
         lineCount = lineCount + 1
-        --if line:find("AudioFile: ") then
         if line:find("AudioFile:") then
             curLine = line
             local audioPath = curLine
             audioPath = audioPath:gsub("AudioFile: ", "")
             audioPath = "song/" .. audioPath
             audioFile = love.audio.newSource(audioPath, "stream")
-            -- if file extension is .mp3
         end
         if line:find("Mode: ") then
             modeLine = line
@@ -152,7 +150,6 @@ function quaverLoader.load(chart)
                 startTime = curLine
                 startTime = startTime:gsub("- StartTime: ", "")
                 startTime = tonumber(startTime)
-                --print("mf")
                 -- get our next line
             end
             if line:find("  Lane: ") then
@@ -201,7 +198,6 @@ function quaverLoader.load(chart)
         end
     end
 
-    --audioFile:setPitch(songRate)
     Timer.after(2,
         function()
             state.switch(game)
