@@ -93,7 +93,12 @@ Rating: %s
 
     update = function(self, dt)
         if input:pressed("confirm") then
-            state.switch(songSelect)
+            -- if it isn't 4k, the skin is all fucked up so go back to skin select
+            if #receptors == 4 then
+                state.switch(songSelect)
+            else
+                state.switch(skinSelect)
+            end
         end
 
         presence = {

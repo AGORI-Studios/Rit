@@ -163,6 +163,26 @@ return {
         died = false
         musicPosValue = {1000}
         musicPitch = {1}
+
+        if #receptors ~= 4 then 
+            inputList = {
+                "one7",
+                "two7",
+                "three7",
+                "four7",
+                "five7",
+                "six7",
+                "seven7"
+            }
+        else
+            -- 4k
+            inputList = {
+                "one4",
+                "two4",
+                "three4",
+                "four4"
+            }
+        end
     end,
 
     update = function(self, dt)
@@ -469,9 +489,7 @@ return {
                     end
                     love.graphics.translate(push.getWidth() / 2 - 175, 50)
                     for i = 1, #receptors do
-                        if mode == "Keys4" then
-                            receptors[i][PRESSEDMOMENTS[i]]:draw(45 + settings.noteSpacing * (i - 1) - 275/2, -100, notesize, notesize * (settings.downscroll and -1 or 1))
-                        end
+                        receptors[i][PRESSEDMOMENTS[i]]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), -100, notesize, notesize * (settings.downscroll and -1 or 1))
                     end 
                 love.graphics.pop()
 
@@ -486,23 +504,18 @@ return {
                     
                     for i = 1, #charthits do
                         for j = #charthits[i], 1, -1 do
-                            --if (charthits[i][j][1] * sv)/speed - (musicPos * sv) <= 800 then
-                                if mode == "Keys4" then
-                                    if charthits[i][j][1]*speed * sv - musicPos * sv <= push.getHeight() + 200 then
-                                        -- if the note is actually on screen (even with scroll velocity modifiers)
-                                        if not charthits[i][j][5] then
-                                            if charthits[i][j][4] then
-                                                noteImgs[i][2]:draw(45 + settings.noteSpacing * (i - 1) - 275/2, -100+(charthits[i][j][1]*speed+200)+(not settings.downscroll and 0 or -75) * sv, notesize, noteImgs[i][2].scaleY * notesize * (settings.downscroll and -1 or 1))
-                                            else
-                                                noteImgs[i][1]:draw(45 + settings.noteSpacing * (i - 1) - 275/2, -100+(charthits[i][j][1]*speed+200-98) * sv, notesize, notesize * (settings.downscroll and -1 or 1))
-                                            end
-                                        else
-                                            noteImgs[i][3]:draw(45 + settings.noteSpacing * (i - 1) - 275/2, -100+(charthits[i][j][1]*speed+200+(not settings.downscroll and 113 or -50)) * sv, notesize, -notesize)
-                                        end
+                            if charthits[i][j][1]*speed * sv - musicPos * sv <= push.getHeight() + 200 then
+                                -- if the note is actually on screen (even with scroll velocity modifiers)
+                                if not charthits[i][j][5] then
+                                    if charthits[i][j][4] then
+                                        noteImgs[i][2]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), -100+(charthits[i][j][1]*speed+200)+(not settings.downscroll and 0 or -75) * sv, notesize, noteImgs[i][2].scaleY * notesize * (settings.downscroll and -1 or 1))
+                                    else
+                                        noteImgs[i][1]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), -100+(charthits[i][j][1]*speed+200-98) * sv, notesize, notesize * (settings.downscroll and -1 or 1))
                                     end
                                 else
+                                    noteImgs[i][3]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), -100+(charthits[i][j][1]*speed+200+(not settings.downscroll and 113 or -50)) * sv, notesize, -notesize)
                                 end
-                            --end
+                            end
                         end
                     end
                 love.graphics.pop()
@@ -582,7 +595,8 @@ return {
         end
         audioFile = nil
 
-        for i = 1, #charthits do
+        charthits = {}
+        for i = 1, 4 do
             charthits[i] = {}
         end
 

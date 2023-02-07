@@ -166,10 +166,21 @@ function love.load()
     debug = require "modules.debug"
     input = (require "lib.baton").new({
         controls = {
+            -- 4K inputs
             one4 = {"key:d", "button:dpleft", "axis:leftx-"},
             two4 = {"key:f", "button:dpdown", "axis:lefty-"},
             three4 = {"key:j", "button:dpup", "axis:lefty+"},
             four4 = {"key:k", "button:dpright", "axis:leftx+"},
+
+            -- 7K inputs
+
+            one7 = {"key:s"},
+            two7 = {"key:d"},
+            three7 = {"key:f"},
+            four7 = {"key:space"},
+            five7 = {"key:j"},
+            six7 = {"key:k"},
+            seven7 = {"key:l"},
     
             up = {"key:up", "button:dpup", "axis:lefty-"},
             down = {"key:down", "button:dpdown", "axis:lefty+"},

@@ -60,6 +60,8 @@ local function selectSkin(skin) -- TODO: optimize skin loading
         hitsound:clone()
     }
 
+    receptors = {}
+
     receptors[1] = {graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["left receptor unpressed"]:gsub('"', "")), graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["left receptor pressed"]:gsub('"', "")), 0}
     receptors[2] = {graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["down receptor unpressed"]:gsub('"', "")), graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["down receptor pressed"]:gsub('"', "")), 0}
     receptors[3] = {graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["up receptor unpressed"]:gsub('"', "")), graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["up receptor pressed"]:gsub('"', "")), 0}
