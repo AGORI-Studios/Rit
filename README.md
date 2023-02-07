@@ -28,6 +28,8 @@ Other systems:
 - Run the game via dragging and dropping the folder onto the love.exe file
 - Play the game!
 
+- If you get a crash, add [discord-rpc.(dll/dylib)](https://github.com/discord/discord-rpc/releases/tag/v3.4.0) to your love installation folder.
+
 Add songs to the %appdata%\rit\songs folder in their respective folders. (Quaver in quaver, osu in osu, etc.)
   
 ### How to contribute
