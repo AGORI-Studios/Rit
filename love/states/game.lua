@@ -582,6 +582,8 @@ return {
             charthits[i] = {}
         end
 
+        graphics.clearCache()
+
         Timer.clear()
         presence = {}
     end

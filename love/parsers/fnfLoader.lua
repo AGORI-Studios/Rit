@@ -32,6 +32,7 @@ function fnfLoader.load(chart, isPlayer)
     songName = string.lower(songName)
 
     mode = "Keys4"
+    loadSkin("4k")
 
     for i = 1, #chart.notes do
         bpm = chart.notes[i].bpm
@@ -122,6 +123,22 @@ function fnfLoader.load(chart, isPlayer)
         end
         for i = 1, 4 do 
             table.sort(charthits[i], function(a, b) return a[1] < b[1] end)
+
+            local offset = 0
+
+            for j = 2, #charthits[i] do 
+                local index = j - offset
+
+                if charthits[i][index] ~= nil and charthits[i][index+1] ~= nil then
+                    if (not charthits[i][index][4] and not charthits[i][index+1][4]) then
+                        if charthits[i][index+1][1] - charthits[i][index][1] < 0.1 then
+                            debug.print("Removed overlapping note")
+                            table.remove(charthits[i], index)
+                            offset = offset + 1
+                        end
+                    end
+                end
+            end
         end
     end
     Timer.after(2,

@@ -28,6 +28,8 @@ function osuLoader.load(chart)
     lines = love.filesystem.lines(chart)
     local readChart = false
 
+    loadSkin("4k")
+
     for line in lines do 
         lineCount = lineCount + 1
         if line:find("AudioFilename: ") then 

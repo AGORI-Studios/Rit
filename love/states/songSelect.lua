@@ -73,15 +73,15 @@ return {
                     curSongSelected = #songList
                 end
                 if curSongSelected < 29 then 
-                    songSelectScrollOffset = songSelectScrollOffset + 30
+                    songSelectScrollOffset = songSelectScrollOffset + (font:getHeight() * 1.5)
                 end
                 if songSelectScrollOffset > 0 then
                     songSelectScrollOffset = 0
                 end
                 if curSongSelected == #songList and #songList >= 29 then
-                    songSelectScrollOffset = -(#songList - 29) * 30
-                    if songSelectScrollOffset < -(#songList - 29) * 30 then
-                        songSelectScrollOffset = -(#songList - 29) * 30
+                    songSelectScrollOffset = -(#songList - 29) * (font:getHeight() * 1.5)
+                    if songSelectScrollOffset < -(#songList - 29) * (font:getHeight() * 1.5) then
+                        songSelectScrollOffset = -(#songList - 29) * (font:getHeight() * 1.5)
                     end
                 end
             elseif input:pressed("down") then
@@ -90,7 +90,7 @@ return {
                     curSongSelected = 1
                 end
                 if curSongSelected > 29 then 
-                    songSelectScrollOffset = songSelectScrollOffset - 30
+                    songSelectScrollOffset = songSelectScrollOffset - (font:getHeight() * 1.5)
                     if songSelectScrollOffset < -(#songList - 29) * 30 then
                         songSelectScrollOffset = -(#songList - 29) * 30
                     end
@@ -140,7 +140,7 @@ return {
                     else
                         love.graphics.setColor(0.5, 0.5, 0.5)
                     end
-                    love.graphics.print(v.title .. " - " .. v.difficultyName, 0, i * 35, 0, 2, 2)
+                    love.graphics.print(v.title .. " - " .. v.difficultyName, 0, i * (font:getHeight() *1.5), 0, 2, 2)
                     love.graphics.setColor(1,1,1)
                 end
             love.graphics.pop()
