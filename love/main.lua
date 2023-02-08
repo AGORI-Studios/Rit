@@ -148,10 +148,10 @@ function loadSongs()
     for i, v in ipairs(songList) do
         if v.title:sub(1, 1) == " " then
             v.title = v.title:sub(2)
-            -- if first letter is lowercase, then make it uppercase
-            if v.title:sub(1, 1):lower() == v.title:sub(1, 1) then
-                v.title = v.title:sub(1, 1):upper() .. v.title:sub(2)
-            end
+        end
+        -- if first letter is lowercase, then make it uppercase
+        if v.title:sub(1, 1):lower() == v.title:sub(1, 1) then
+            v.title = v.title:sub(1, 1):upper() .. v.title:sub(2)
         end
     end
     -- sort the song list by title a-z
