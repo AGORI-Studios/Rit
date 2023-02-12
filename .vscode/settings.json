@@ -1,0 +1,8 @@
+{
+    "Lua.runtime.version": "LuaJIT",
+    "Lua.runtime.special": [],
+    "Lua.workspace.library": [
+        "E:\\APIs\\lovr-docs\\api",
+        "${3rd}/love2d/library"
+    ]
+}
