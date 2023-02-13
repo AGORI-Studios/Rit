@@ -19,7 +19,7 @@
 #
 #########################################################################################
 
-all: win32 win64 macos
+all: win32 win64 macos nx release
 
 lovefile:
 	rm -rf build/lovefile
@@ -49,3 +49,28 @@ macos: lovefile
 
 	cp -r resources/macos/love.app/. build/macos/Rit.app
 	cp -r build/lovefile/Rit.love build/macos/Rit.app/Contents/Resources/game.love
+
+nx: lovefile
+	rm -rf build/nx
+	mkdir -p build/nx
+
+	nacptool --create "Rit" "GuglioIsStupid" "0.0.3-beta" build/nx/Rit.nacp
+
+	mkdir -p build/nx/romfs
+	cp -r build/lovefile/Rit.love build/nx/romfs/game.love
+
+	elf2nro resources/nx/love.elf build/nx/Rit.nro --icon=resources/nx/icon.jpg --nacp=build/nx/Rit.nacp
+
+	rm -r build/nx/romfs
+	rm build/nx/Rit.nacp 
+
+release:
+	# zip all build/* folders and put to build/release
+	
+	cd build; zip -r -9 win32.zip win32
+	cd build; zip -r -9 win64.zip win64
+	cd build; zip -r -9 macos.zip macos
+	cd build; zip -r -9 nx.zip nx
+
+clean:
+	rm -r build
