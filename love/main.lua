@@ -259,10 +259,15 @@ function love.load()
     
     loadSongs()
     state.switch(skinSelect)
+
+    -- scissorScale is meant for 720p
+    scissorScale = 1
 end
 
 function love.resize(w, h)
     push.resize(w, h)
+
+    scissorScale = h / 720
 end
 
 function love.update(dt)
