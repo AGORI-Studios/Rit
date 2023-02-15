@@ -51,7 +51,7 @@ macos: lovefile
 	cp -r build/lovefile/Rit.love build/macos/Rit.app/Contents/Resources/game.love
 
 nx: lovefile
-	rm -rf build/nx
+	rm -rf build/nx 
 	mkdir -p build/nx
 
 	nacptool --create "Rit" "GuglioIsStupid" "0.0.3-beta" build/nx/Rit.nacp
@@ -59,7 +59,7 @@ nx: lovefile
 	mkdir -p build/nx/romfs
 	cp -r build/lovefile/Rit.love build/nx/romfs/game.love
 
-	elf2nro resources/nx/love.elf build/nx/Rit.nro --icon=resources/nx/icon.jpg --nacp=build/nx/Rit.nacp
+	elf2nro resources/nx/love.elf build/nx/Rit.nro --icon=resources/nx/icon.jpg --nacp=build/nx/Rit.nacp --romfsdir=build/switch/romfs
 
 	rm -r build/nx/romfs
 	rm build/nx/Rit.nacp 
