@@ -59,7 +59,7 @@ nx: lovefile
 	mkdir -p build/nx/romfs
 	cp -r build/lovefile/Rit.love build/nx/romfs/game.love
 
-	elf2nro resources/nx/love.elf build/nx/Rit.nro --icon=resources/nx/icon.jpg --nacp=build/nx/Rit.nacp --romfsdir=build/switch/romfs
+	elf2nro resources/nx/love.elf build/nx/Rit.nro --icon=resources/nx/icon.jpg --nacp=build/nx/Rit.nacp --romfsdir=build/nx/romfs
 
 	rm -r build/nx/romfs
 	rm build/nx/Rit.nacp 
