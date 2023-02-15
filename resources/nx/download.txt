@@ -1,0 +1,1 @@
+Download love.elf from https://github.com/retronx-team/love-nx/releases/tag/11.4-nx1 and put it here.
