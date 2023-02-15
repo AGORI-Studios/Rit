@@ -36,7 +36,7 @@ Scroll Velocities = False
 ; Start time is for the amount of time to wait before the song starts (In milliseconds)
 startTime = 700
 
-; Note spacing is the amount of space between each note (in pixels) ((its broken as fuck))
+; Note spacing is the amount of space between each note (in pixels) ((its broken a bit tho))
 noteSpacing = 200
 
 ; Autoplay - automatically play songs without user input. Can also be toggled with B in song select.
