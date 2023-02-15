@@ -472,6 +472,8 @@ return {
                     if settings.downscroll then 
                         love.graphics.translate(0, push.getHeight() - 175)
                         love.graphics.scale(1, -1)
+                    else
+                        love.graphics.translate(0, 175)
                     end
                     love.graphics.translate(push.getWidth() / 2 - 175, 50)
                     for i = 1, #receptors do
@@ -483,6 +485,8 @@ return {
                     if settings.downscroll then 
                         love.graphics.translate(0, push.getHeight() - 175)
                         love.graphics.scale(1, -1)
+                    else
+                        love.graphics.translate(0, 175)
                     end
                     love.graphics.translate(push.getWidth() / 2 - 175, 50)
                     
@@ -496,17 +500,21 @@ return {
                                     
                                     if charthits[i][j][4] then
                                         if input:down(inputList[i]) then
-                                            love.graphics.setScissor(-400, 0, 3000, 632)
+                                            love.graphics.setScissor(-400, (not settings.downscroll and 125 or 0), 3000, 632)
                                         else
                                             love.graphics.setScissor()
                                         end
                                         noteImgs[i][2]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), -100+(charthits[i][j][1]*speed+200)+(not settings.downscroll and 0 or -75) * sv, notesize, noteImgs[i][2].scaleY * notesize * (settings.downscroll and -1 or 1))
                                         love.graphics.setScissor()
                                     else
-                                        noteImgs[i][1]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), -100+(charthits[i][j][1]*speed+200-98) * sv, notesize, notesize * (settings.downscroll and -1 or 1))
+                                        noteImgs[i][1]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), -100+(charthits[i][j][1]*speed+200-98)+(not settings.downscroll and 0 or 0) * sv, notesize, notesize * (settings.downscroll and -1 or 1))
                                     end
                                 else
-                                    love.graphics.setScissor(-400, 0, 3000, 632)
+                                    if input:down(inputList[i]) then
+                                        love.graphics.setScissor(-400, (not settings.downscroll and 125 or 0), 3000, 632)
+                                    else
+                                        love.graphics.setScissor()
+                                    end
                                     noteImgs[i][3]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), -100+(charthits[i][j][1]*speed+200+(not settings.downscroll and 113 or -50)) * sv, notesize, -notesize)
                                     love.graphics.setScissor()
                                 end
