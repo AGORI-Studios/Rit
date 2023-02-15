@@ -176,10 +176,10 @@ function love.load()
     input = (require "lib.baton").new({
         controls = {
             -- 4K inputs
-            one4 = {"key:d", "button:dpleft", "axis:leftx-"},
-            two4 = {"key:f", "button:dpdown", "axis:lefty-"},
-            three4 = {"key:j", "button:dpup", "axis:lefty+"},
-            four4 = {"key:k", "button:dpright", "axis:leftx+"},
+            one4 = {"axis:triggerleft+", "axis:leftx-", "axis:rightx-", "button:dpleft", "button:x", "key:d"},
+            two4 = {"axis:lefty+", "axis:righty+", "button:leftshoulder", "button:dpdown", "button:a", "key:f"},
+            three4 = {"axis:lefty-", "axis:righty-", "button:rightshoulder", "button:dpup", "button:y", "key:j"},
+            four4 = {"axis:triggerright+", "axis:leftx+", "axis:rightx+", "button:dpright", "button:b", "key:k"},
 
             -- 7K inputs
 
