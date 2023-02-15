@@ -107,6 +107,8 @@ return {
         scoring = {
             score = 0,
             accuracy = 0,
+            health = 1,
+            healthTween = 1,
             ["Marvellous"] = 0,
             ["Perfect"] = 0,
             ["Great"] = 0,
@@ -159,7 +161,6 @@ return {
     
         curJudgement = "none"
 
-        health = 1
         died = false
         musicPosValue = {1000}
         musicPitch = {1}
@@ -214,12 +215,12 @@ return {
         for i = 1, #charthits do
             for j = 1, #charthits[i] do
                 if charthits[i][j] then
-                    if charthits[i][j][1] - musicTime <= -100 then 
-                        if not charthits[i][j][4] then
+                    if charthits[i][1][1] - musicTime <= -100 then 
+                        if not charthits[i][1][4] then
                             noteCounter = noteCounter + 1
                             additionalAccuracy = additionalAccuracy + 1.11
-                            if health < 0 then
-                                health = 0
+                            if scoring.health < 0 then
+                                scoring.health = 0
                             end
                             if accuracyTimer then
                                 Timer.cancel(accuracyTimer)
@@ -233,7 +234,7 @@ return {
                                     accuracyTimer = nil
                                 end
                             )
-                            health = health - 0.270
+                            scoring.health = scoring.health - 0.270
                             addJudgement("Miss")
                         end
                         table.remove(charthits[i], 1)
@@ -241,6 +242,8 @@ return {
                 end
             end
         end
+
+        scoring.healthTween = math.lerp(scoring.healthTween, scoring.health, 0.05)
         
         presence = {
             details = (autoplay and "Autoplaying " or "Playing ")..songTitle.." - "..songDifficultyName..(not musicTimeDo and " - Paused" or ""), 
@@ -312,34 +315,34 @@ return {
                                 end
                                 if pos < 45 then
                                     judgement = "Marvellous"
-                                    health = health + 0.135
+                                    scoring.health = scoring.health + 0.135
                                     additionalScore = additionalScore + 650
                                     additionalAccuracy = additionalAccuracy + 100
                                 elseif pos < 60 then
                                     judgement = "Perfect"
-                                    health = health + 0.135
+                                    scoring.health = scoring.health + 0.135
                                     additionalScore = additionalScore + 500
                                     additionalAccuracy = additionalAccuracy + 100
                                 elseif pos < 75 then
                                     judgement = "Great"
-                                    health = health + 0.135
+                                    scoring.health = scoring.health + 0.135
                                     additionalScore = additionalScore + 350
                                     additionalAccuracy = additionalAccuracy + 75
                                 elseif pos < 120 then
                                     judgement = "Good"
-                                    health = health + 0.135
+                                    scoring.health = scoring.health + 0.135
                                     additionalScore = additionalScore + 200
                                     additionalAccuracy = additionalAccuracy + 50
                                 else
                                     judgement = "Miss"
-                                    health = health - 0.270
+                                    scoring.health = scoring.health - 0.270
                                     additionalAccuracy = additionalAccuracy
                                 end
 
                                 addJudgement(judgement)
 
-                                if health > 2 then
-                                    health = 2
+                                if scoring.health > 2 then
+                                    scoring.health = 2
                                 end
                                 if scoringTimer then 
                                     Timer.cancel(scoringTimer)
@@ -401,13 +404,13 @@ return {
                             end
                             pos = math.abs(notes[1][1] - musicTime)
                             judgement = "Marvellous"
-                            health = health + 0.135
+                            scoring.health = scoring.health + 0.135
                             additionalScore = additionalScore + 650
                             additionalAccuracy = additionalAccuracy + 100
                             addJudgement(judgement)
 
-                            if health > 100 then
-                                health = 1
+                            if scoring.health > 100 then
+                                scoring.health = 1
                             end
                             if scoringTimer then 
                                 Timer.cancel(scoringTimer)
@@ -441,7 +444,7 @@ return {
             end
         end
 
-        if health <= 0 and not died then
+        if scoring.health <= 0 and not died then
             died = true
             Timer.tween(3, musicPosValue, {0}, "out-quad")
             Timer.tween(3, musicPitch, {0.005}, "out-quad", function()
@@ -547,7 +550,7 @@ return {
                     end
                 end
                 love.graphics.translate(push.getWidth() / 2, 0)
-                love.graphics.rectangle("fill", -1000, 0, health * 400+10, 20, 10, 10)
+                love.graphics.rectangle("fill", -1000, 0, scoring.healthTween * 400+10, 20, 10, 10)
 
                 love.graphics.setFont(scoreFont)
                 scoreFormat = string.format("%07d", round(scoring.score))
