@@ -250,6 +250,16 @@ else
                     drawMessageBox = false
                     return 1
                 end
+                -- check for joystick input
+                for i = 1, love.joystick.getJoystickCount() do
+                    local joystick = love.joystick.getJoysticks()[i]
+                    for i = 1, joystick:getButtonCount() do
+                        if joystick:isDown(i) then
+                            drawMessageBox = false
+                            return 1
+                        end
+                    end
+                end
             end
         end
     end
