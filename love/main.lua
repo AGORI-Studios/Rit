@@ -27,7 +27,7 @@ else
 end
 
 function loadSongs()
-     -- get all .qp files in songs/
+    -- get all .qp files in songs/
     if not love.filesystem.getInfo("songs") then
         love.filesystem.createDirectory("songs")
         love.window.showMessageBox("Songs folder created!", "songs folder has been created at " .. love.filesystem.getSaveDirectory() .. "/songs", "info")
@@ -159,6 +159,7 @@ function loadSongs()
         return a.title < b.title
     end)
 end
+
 local desktopWidth, desktopHeight = love.window.getDesktopDimensions()
 fnfMomentShiz = {
     true, false
