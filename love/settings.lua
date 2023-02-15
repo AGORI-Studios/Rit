@@ -24,6 +24,7 @@ settings = {}
 settingsStr = [[
 [Game]
 ; Makes the notes scroll down instead of up
+; UPSCROLL IS NOT AS STABLE AS DOWNSCROLL, USE AT YOUR OWN RISK! MAY BREAK VISUALS!
 downscroll = True
 
 ; scroll speed is the scroll speed ever
