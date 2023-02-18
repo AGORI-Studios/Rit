@@ -19,7 +19,7 @@
 #
 #########################################################################################
 
-all: win32 win64 macos nx release
+all: clean win32 win64 macos nx release
 
 lovefile:
 	rm -rf build/lovefile
