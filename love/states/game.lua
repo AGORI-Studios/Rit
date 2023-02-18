@@ -313,22 +313,22 @@ return {
                                 if notes[2] and notes[1][5] and notes[2][1] - musicTime >= -80 and notes[2][1] - musicTime <= 180 then
                                     pos = math.abs(notes[2][1] - musicTime)
                                 end
-                                if pos < 45 then
+                                if pos < 28 then
                                     judgement = "Marvellous"
                                     scoring.health = scoring.health + 0.135
                                     additionalScore = additionalScore + 650
                                     additionalAccuracy = additionalAccuracy + 100
-                                elseif pos < 60 then
+                                elseif pos < 43 then
                                     judgement = "Perfect"
                                     scoring.health = scoring.health + 0.135
                                     additionalScore = additionalScore + 500
                                     additionalAccuracy = additionalAccuracy + 100
-                                elseif pos < 75 then
+                                elseif pos < 102 then
                                     judgement = "Great"
                                     scoring.health = scoring.health + 0.135
                                     additionalScore = additionalScore + 350
                                     additionalAccuracy = additionalAccuracy + 75
-                                elseif pos < 120 then
+                                elseif pos < 135 then
                                     judgement = "Good"
                                     scoring.health = scoring.health + 0.135
                                     additionalScore = additionalScore + 200
