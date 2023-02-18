@@ -29,6 +29,7 @@ Other systems:
 - Play the game!
 
 - If you get a crash, add [discord-rpc.(dll/dylib)](https://github.com/discord/discord-rpc/releases/tag/v3.4.0) to your love installation folder.
+- - Can also be found in the [resources](/resources) folder for your desired architecture.
 
 Add songs to the %appdata%\rit\songs folder in their respective folders. (Quaver in quaver, osu in osu, etc.)
   
@@ -44,16 +45,16 @@ Add songs to the %appdata%\rit\songs folder in their respective folders. (Quaver
 ### TODO
 - [ ] Add a pause screen (High priority) (1/2)
 - [ ] Add a settings screen (Low priority)
-- [ ] Save high scores (Low priority)
-- [ ] Controller support (Low priority)
-- [ ] 5k+ support (Low priority)
+- [x] Save high scores (Low priority)
+- [x] Controller support (Low priority)
+- [ ] 5k+ support (Low priority) (1/2 (Only available for Quaver))
 - [ ] More noteskins (Low priority)
 - [ ] Better song selection (Low priority) (Goes with Better UI)
 - [x] Downscroll support (Medium priority)
 
 ### Credits
 - GuglioIsStupid - Programming
-- Getsaa - Logo
+- Getsaa - Logo/Skins
 
 ### Contributors
 <a href="https://github.com/GuglioIsStupid/Rit/graphs/contributors">
@@ -71,8 +72,9 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 - [LÖVE](https://love2d.org/) - The game framework used
 - rxi - [json.lua](/love/lib/json.lua) - The JSON library used
 - Fivos Moutavelis - [ini.lua](/love/lib/ini.lua) - The ini library used
-- Ulysse Ramage - [push.lua](/love/lib/push.lua) - The push handling library used
+- Ulysse Ramage - [push.lua](/love/lib/push.lua) - The resolution handling library used
 - Mattias Richard - [timer.lua](/love/lib/timer.lua) - The tweening library used (Apart of HUMP)
+- Tesselode - [baton.lua](/love/lib/baton.lua) - The input library used
 
 ### Support the project!
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/A0A8GRXMX)
