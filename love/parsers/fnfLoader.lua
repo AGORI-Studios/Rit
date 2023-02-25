@@ -60,14 +60,17 @@ function fnfLoader.load(chart, isPlayer)
                     if noteType <= 3 and noteType >= 0 then
                         noteTime = chart.notes[i].sectionNotes[j][1]
                         noteLength = chart.notes[i].sectionNotes[j][3]
+                        noteVer = chart.notes[i].sectionNotes[j][4] or ""
 
-                        table.insert(charthits[noteType+1], {noteTime, 0, 1, false, false})
+                        if not table.find(fnfBlacklist, noteVer) then
+                            table.insert(charthits[noteType+1], {noteTime, 0, 1, false, false})
 
-                        for i = 1, noteLength, 95/2/speed do
-                            if i + 95/2/speed < noteLength then
-                                charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, 1, true}
-                            else
-                                charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, 1, true, true}
+                            for i = 1, noteLength, 95/2/speed do
+                                if i + 95/2/speed < noteLength then
+                                    charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, 1, true}
+                                else
+                                    charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, 1, true, true}
+                                end
                             end
                         end
                     end
@@ -75,14 +78,17 @@ function fnfLoader.load(chart, isPlayer)
                     if noteType >= 4 and noteType <= 7 then 
                         noteTime = chart.notes[i].sectionNotes[j][1]
                         noteLength = chart.notes[i].sectionNotes[j][3]
+                        noteVer = chart.notes[i].sectionNotes[j][4] or ""
 
-                        table.insert(charthits[noteType-3], {noteTime, 0, 1, false, false})
+                        if not table.find(fnfBlacklist, noteVer) then
+                            table.insert(charthits[noteType-3], {noteTime, 0, 1, false, false})
 
-                        for i = 1, noteLength, 95/2/speed do
-                            if i + 95/2/speed < noteLength then
-                                charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, 1, true}
-                            else
-                                charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, 1, true, true}
+                            for i = 1, noteLength, 95/2/speed do
+                                if i + 95/2/speed < noteLength then
+                                    charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, 1, true}
+                                else
+                                    charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, 1, true, true}
+                                end
                             end
                         end
                     end
@@ -92,14 +98,17 @@ function fnfLoader.load(chart, isPlayer)
                     if noteType >= 4 and noteType <= 7 then 
                         noteTime = chart.notes[i].sectionNotes[j][1]
                         noteLength = chart.notes[i].sectionNotes[j][3]
+                        noteVer = chart.notes[i].sectionNotes[j][4] or ""
 
-                        table.insert(charthits[noteType-3], {noteTime, 0, 1, false, false})
+                        if not table.find(fnfBlacklist, noteVer) then
+                            table.insert(charthits[noteType-3], {noteTime, 0, 1, false, false})
 
-                        for i = 1, noteLength, noteImgs[noteType-3][2]:getHeight()/2/speed do
-                            if i + noteImgs[noteType-3][2]:getHeight()/2/speed < noteLength then
-                                charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, 1, true}
-                            else
-                                charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, 1, true, true}
+                            for i = 1, noteLength, noteImgs[noteType-3][2]:getHeight()/2/speed do
+                                if i + noteImgs[noteType-3][2]:getHeight()/2/speed < noteLength then
+                                    charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, 1, true}
+                                else
+                                    charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, 1, true, true}
+                                end
                             end
                         end
                     end
@@ -107,14 +116,17 @@ function fnfLoader.load(chart, isPlayer)
                     if noteType <= 3 and noteType >= 0 then
                         noteTime = chart.notes[i].sectionNotes[j][1]
                         noteLength = chart.notes[i].sectionNotes[j][3]
+                        noteVer = chart.notes[i].sectionNotes[j][4] or ""
 
-                        table.insert(charthits[noteType+1], {noteTime, 0, 1, false, false})
+                        if not table.find(fnfBlacklist, noteVer) then
+                            table.insert(charthits[noteType+1], {noteTime, 0, 1, false, false})
 
-                        for i = 1, noteLength, noteImgs[noteType+1][2]:getHeight()/2/speed do
-                            if i + noteImgs[noteType+1][2]:getHeight()/2/speed < noteLength then
-                                charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, 1, true}
-                            else
-                                charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, 1, true, true}
+                            for i = 1, noteLength, noteImgs[noteType+1][2]:getHeight()/2/speed do
+                                if i + noteImgs[noteType+1][2]:getHeight()/2/speed < noteLength then
+                                    charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, 1, true}
+                                else
+                                    charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, 1, true, true}
+                                end
                             end
                         end
                     end

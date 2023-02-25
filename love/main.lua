@@ -256,6 +256,17 @@ function love.load()
     push.setupScreen(1920, 1080, {upscale = "normal"})
 
     fnfMomentSelected = 1
+
+    if not love.filesystem.getInfo("fnf-note.blacklist") then 
+        love.filesystem.write("fnf-note.blacklist", "# Add the note types you want to chart generator to ignore.\n")
+    end
+
+    fnfBlacklist = {}
+    for line in love.filesystem.lines("fnf-note.blacklist") do
+        if line:sub(1, 1) ~= "#" then
+            table.insert(fnfBlacklist, line)
+        end
+    end
     
     loadSongs()
     state.switch(skinSelect)
