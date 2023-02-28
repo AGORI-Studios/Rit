@@ -15,6 +15,7 @@ resources/win64/*
 resources/win32/*
 resources/macos/*
 resources/nx/*
+resources/appimage/*
 
 # Important files to keep in the repository
 !resources/win32/download.txt
@@ -22,6 +23,7 @@ resources/nx/*
 !resources/macos/download.txt
 !resources/nx/download.txt
 !resources/nx/icon.jpg
+!resources/appimage/download.txt
 
 !resources/win32/discord-rpc.dll
 !resources/win64/discord-rpc.dll
