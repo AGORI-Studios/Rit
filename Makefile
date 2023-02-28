@@ -19,7 +19,10 @@
 #
 #########################################################################################
 
-all: clean win32 win64 macos nx release
+release: clean win32 win64 macos nx bundle appimage
+desktop: clean win32 win64 macos appimage
+console: clean nx
+quick: clean lovefile
 
 lovefile:
 	rm -rf build/lovefile
@@ -64,7 +67,18 @@ nx: lovefile
 	rm -r build/nx/romfs
 	rm build/nx/Rit.nacp 
 
-release:
+appimage: lovefile
+	# check if user is on linux, if they aren't then ignore this step
+	if [ "$(shell uname)" = "Linux" ]; then \
+		# run .AppImage with --appimage-extract to extract the contents
+		./resources/appimage/love.AppImage --appimage-extract
+		cat ./resources/appimage/squashfs-root/bin/love ./build/lovefile/Rit.love > ./build/appimage/squashfs-root/bin/Rit
+		chmod +x ./build/appimage/squashfs-root/bin/Rit
+		# rebuild the .AppImage
+		# finish this when on linux lolol
+	fi
+
+bundle:
 	# zip all build/* folders and put to build/release
 	
 	cd build; zip -r -9 win32.zip win32
