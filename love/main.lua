@@ -18,13 +18,16 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ------------------------------------------------------------------------------]]
-
+--[[
 if not love.filesystem.isFused() then
     __DEBUG__ = true
 else
     __DEBUG__ = false
     function print() return end -- disable print
 end
+--]]
+__DEBUG__ = not love.filesystem.isFused()
+print = not __DEBUG__ and function() end or print -- Disable print if not fused
 
 function loadSongs()
      -- get all .qp files in songs/
@@ -146,7 +149,7 @@ function loadSongs()
 
     -- go through all songs, if it starts with " " then remove it
     for i, v in ipairs(songList) do
-        if v.title:sub(1, 1) == " " then
+        while v.title:sub(1, 1) == " " do 
             v.title = v.title:sub(2)
         end
         -- if first letter is lowercase, then make it uppercase
