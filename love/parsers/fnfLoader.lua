@@ -23,10 +23,13 @@ json = require "lib.json"
 
 local fnfLoader = {}
 
+local SortByShit = function(a, b) 
+    return a.time < b.time 
+end
+
 function fnfLoader.load(chart, isPlayer)
     curChart = "FNF"
-    chart = json.decode(love.filesystem.read(chart))
-    chart = chart["song"]
+    chart = json.decode(love.filesystem.read(chart)).song
 
     songName = chart["song"]:gsub(" ", "-")
     songName = string.lower(songName)
@@ -50,101 +53,76 @@ function fnfLoader.load(chart, isPlayer)
     end
     audioFile = love.audio.newSource(folderPath .. "/Inst.ogg", "stream")
 
-    for i = 1, #chart.notes do 
-        eventBpm = chart.notes[i].bpm
+    noteData = chart.notes
 
-        for j = 1, #chart.notes[i].sectionNotes do
-            noteType = chart.notes[i].sectionNotes[j][2]
-            if isPlayer then 
-                if chart.notes[i].mustHitSection then
-                    if noteType <= 3 and noteType >= 0 then
-                        noteTime = chart.notes[i].sectionNotes[j][1]
-                        noteLength = chart.notes[i].sectionNotes[j][3]
+    for _, section in ipairs(noteData) do 
+        for _, songNotes in ipairs(section.sectionNotes) do 
+            local daStrumTime = songNotes[1]
+            local daNoteData = songNotes[2]
+            local gottaHitNote = section.mustHitSection
 
-                        table.insert(charthits[noteType+1], {noteTime, 0, 1, false, false})
+            if (not gottaHitNote and daNoteData >= 4) or (gottaHitNote and daNoteData <= 3) then
+                daNoteData = daNoteData % 4 + 1
 
-                        for i = 1, noteLength, 95/2/speed do
-                            if i + 95/2/speed < noteLength then
-                                charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, 1, true}
-                            else
-                                charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, 1, true, true}
-                            end
-                        end
-                    end
-                else
-                    if noteType >= 4 and noteType <= 7 then 
-                        noteTime = chart.notes[i].sectionNotes[j][1]
-                        noteLength = chart.notes[i].sectionNotes[j][3]
-
-                        table.insert(charthits[noteType-3], {noteTime, 0, 1, false, false})
-
-                        for i = 1, noteLength, 95/2/speed do
-                            if i + 95/2/speed < noteLength then
-                                charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, 1, true}
-                            else
-                                charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, 1, true, true}
-                            end
-                        end
-                    end
+                local oldNote = nil 
+                if #charthits[daNoteData] > 0 then 
+                    oldNote = charthits[daNoteData][#charthits[daNoteData]]
                 end
-            else
-                if chart.notes[i].mustHitSection then
-                    if noteType >= 4 and noteType <= 7 then 
-                        noteTime = chart.notes[i].sectionNotes[j][1]
-                        noteLength = chart.notes[i].sectionNotes[j][3]
 
-                        table.insert(charthits[noteType-3], {noteTime, 0, 1, false, false})
+                local hitObj = hitObject(daStrumTime, daNoteData, oldNote)
+                hitObj.sustainLength = tonumber(songNotes[3]) or 0
 
-                        for i = 1, noteLength, noteImgs[noteType-3][2]:getHeight()/2/speed do
-                            if i + noteImgs[noteType-3][2]:getHeight()/2/speed < noteLength then
-                                charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, 1, true}
-                            else
-                                charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, 1, true, true}
-                            end
-                        end
-                    end
-                else
-                    if noteType <= 3 and noteType >= 0 then
-                        noteTime = chart.notes[i].sectionNotes[j][1]
-                        noteLength = chart.notes[i].sectionNotes[j][3]
+                local susLength = hitObj.sustainLength / beatHandler.stepCrochet
+                local floorSus = math.floor(susLength)
 
-                        table.insert(charthits[noteType+1], {noteTime, 0, 1, false, false})
+                table.insert(charthits[daNoteData], hitObj)
 
-                        for i = 1, noteLength, noteImgs[noteType+1][2]:getHeight()/2/speed do
-                            if i + noteImgs[noteType+1][2]:getHeight()/2/speed < noteLength then
-                                charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, 1, true}
-                            else
-                                charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, 1, true, true}
-                            end
-                        end
-                    end
-                end
-            end
-        end
-        for i = 1, 4 do 
-            table.sort(charthits[i], function(a, b) return a[1] < b[1] end)
+                if floorSus > 0 then 
+                    for susNote = 0, floorSus+1 do 
+                        local oldNote = charthits[daNoteData][#charthits[daNoteData]]
 
-            local offset = 0
-
-            for j = 2, #charthits[i] do 
-                local index = j - offset
-
-                if charthits[i][index] ~= nil and charthits[i][index+1] ~= nil then
-                    if (not charthits[i][index][4] and not charthits[i][index+1][4]) then
-                        if charthits[i][index+1][1] - charthits[i][index][1] < 0.1 then
-                            debug.print("Removed overlapping note")
-                            table.remove(charthits[i], index)
-                            offset = offset + 1
-                        end
+                        --local holdObj = hitObject(daStrumTime + (beatHandler.getStepCrochet() * susNote + 1) + (beatHandler.getStepCrochet() / math.roundDecimal(speed, 2)), daNoteData, oldNote, true)
+                        local holdObj = hitObject(
+                            daStrumTime + (beatHandler.stepCrochet * (susNote + 1)) + (beatHandler.stepCrochet / math.roundDecimal(speed, 2)),
+                            daNoteData,
+                            oldNote,
+                            true
+                        )
+                        table.insert(charthits[daNoteData], holdObj)
                     end
                 end
             end
         end
     end
+
+    for i = 1, 4 do 
+        table.sort(charthits[i], SortByShit)
+
+        local offset = 0
+
+        for j = 2, #charthits[i] do 
+            local index = j - offset
+
+            if charthits[i][index].time == charthits[i][index-1].time then 
+                table.remove(charthits[i], index)
+                offset = offset + 1
+            end
+        end
+
+        for j = #charthits[i], 1, -1 do 
+            graphics.addNotes(i, charthits[i][j])
+        end
+    end
+
     Timer.after(2,
         function()
             state.switch(game)
             musicTimeDo = true
+
+            if needsVoices then
+                voices:play()
+            end
+            audioFile:play()
         end
     )
 end                    

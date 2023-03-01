@@ -45,6 +45,11 @@ function math.angle(x1, y1, x2, y2)
     return math.atan2(y2 - y1, x2 - x1)
 end
 
+function math.roundDecimal(num, idp)
+    local mult = 10 ^ (idp or 0)
+    return math.floor(num * mult + 0.5) / mult
+end
+
 -- String Funcs
 
 function string.startsWith(str, start)
@@ -153,6 +158,15 @@ function table.print(t, indent)
             print(string.rep(" ", indent) .. k .. ": " .. tostring(v))
         end
     end
+end
+
+function table.reverse(t)
+    local reversedTable = {}
+    local itemCount = #t
+    for k, v in ipairs(t) do
+        reversedTable[itemCount + 1 - k] = v
+    end
+    return reversedTable
 end
 
 -- Love2d Funcs

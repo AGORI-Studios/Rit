@@ -27,10 +27,10 @@ else
 end
 --]]
 __DEBUG__ = not love.filesystem.isFused()
-print = not __DEBUG__ and function() end or print -- Disable print if not fused
+print = not __DEBUG__ and function() return end or print -- Disable print if not fused
 
 function loadSongs()
-     -- get all .qp files in songs/
+    -- get all .qp files in songs/
     if not love.filesystem.getInfo("songs") then
         love.filesystem.createDirectory("songs")
         love.window.showMessageBox("Songs folder created!", "songs folder has been created at " .. love.filesystem.getSaveDirectory() .. "/songs", "info")
@@ -206,7 +206,10 @@ function love.load()
         },
         joystick = love.joystick.getJoysticks()[1]
     })
+    Object = require "lib.classic"
+
     graphics = require "modules.graphics"
+    hitObject = require "modules.hitObject"
 
     ini = require "lib.ini"
     if discordRPC then 
