@@ -48,11 +48,11 @@ function osuLoader.load(chart)
             x = tonumber(x) or 128
             if x < 512 then
                 curLine = line
-                lane = x / 128
+                lane = x / 128 + 1
                 lane = math.floor(lane)
                 startTime = tonumber(startTime)
                 hitSound = hitSound
-                if lane > 4 then
+                if lane > 5 then
                     debug.print("This is not a 4k chart!\nSupport for 5k+ charts will be added in the future.")
                     break
                 end
@@ -61,26 +61,32 @@ function osuLoader.load(chart)
                     startTime = 0
                 end
                 if startTime ~= 0 then
-                    charthits[lane + 1][#charthits[lane+1] + 1] = {startTime, 0, 1, false}
-                    -- check if the previous note has the same start time
-                    if charthits[lane + 1][#charthits[lane+1] - 1] ~= nil then 
-                        if charthits[lane + 1][#charthits[lane+1] - 1][1] == startTime then 
-                            -- remove the previous note
-                            charthits[lane + 1][#charthits[lane+1] - 1] = nil
-                        end
+                    local oldNote = nil
+                    if #charthits[lane] > 0 then 
+                        oldNote = charthits[lane][#charthits[lane]]
                     end
+                    local hitObj = hitObject(startTime, lane, oldNote)
+                    table.insert(charthits[lane], hitObj)
+                    
                     if endtime then 
                         -- get the first number from 0:0:0:0 from the endtime
                         endtime = endtime:match("([^:]+)")
                         endtime = tonumber(endtime) or 0
-                        length = endtime - startTime
-                        if length ~= startTime then 
-                            for i = 1, length, noteImgs[lane+1][2]:getHeight()/2/speed do 
-                                if i + noteImgs[lane+1][2]:getHeight()/2/speed < length then 
-                                    charthits[lane+1][#charthits[lane+1] + 1] = {startTime+i, 0, 1, true}
-                                else
-                                    charthits[lane+1][#charthits[lane+1] + 1] = {startTime+i, 0, 1, true, true}
-                                end
+                        local susLength = (endtime - startTime)
+                        hitObj.sustainLength = susLength
+                        susLength = hitObj.sustainLength / beatHandler.stepCrochet
+                        local floorSus = math.floor(susLength)
+                        if floorSus > 0 then 
+                            for susNote = 0, floorSus+1 do 
+                                local oldNote = charthits[lane][#charthits[lane]]
+
+                                local holdObj = hitObject(
+                                    startTime + (beatHandler.stepCrochet * (susNote + 1)) + (beatHandler.stepCrochet / math.roundDecimal(speed, 2)),
+                                    lane,
+                                    oldNote,
+                                    true
+                                )
+                                table.insert(charthits[lane], holdObj)
                             end
                         end
                     end
@@ -88,23 +94,17 @@ function osuLoader.load(chart)
             end
         end
 
-        -- go through chartHits and remove all overlapping notes
         for i = 1, 4 do 
-            table.sort(charthits[i], function(a, b) return a[1] < b[1] end)
-
+            table.sort(charthits[i], function(a, b) return a.time < b.time end)
+    
             local offset = 0
-
+    
             for j = 2, #charthits[i] do 
                 local index = j - offset
-
-                if charthits[i][index] ~= nil and charthits[i][index+1] ~= nil then
-                    if (not charthits[i][index][4] and not charthits[i][index+1][4]) then
-                        if charthits[i][index+1][1] - charthits[i][index][1] < 0.1 then
-                            debug.print("Removed overlapping note")
-                            table.remove(charthits[i], index)
-                            offset = offset + 1
-                        end
-                    end
+    
+                if charthits[i][index].time == charthits[i][index-1].time then 
+                    table.remove(charthits[i], index)
+                    offset = offset + 1
                 end
             end
         end
@@ -113,6 +113,7 @@ function osuLoader.load(chart)
         function()
             state.switch(game)
             musicTimeDo = true
+            audioFile:play()
         end
     )
 end

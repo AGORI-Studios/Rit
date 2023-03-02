@@ -141,12 +141,15 @@ end
 
 function graphics.drawNotes()
     for i = 1, 4 do
-        for j = 1, #graphics.drawTable[100].notes[i] do
-            if graphics.drawTable[100].notes[i][j].isSustainNote then 
+        for j = #charthits[i], 1, -1 do
+            if charthits[i][j].isSustainNote then 
                 love.graphics.setScissor(-400, 100, 3000, 632) -- lazy way out of ugly stuff at top if missed
+            else
+                love.graphics.setScissor()
             end
-            graphics.drawTable[100].notes[i][j]:draw()
-            
+            if charthits[i][j].y < 1380 + charthits[i][j].spr:getHeight() * charthits[i][j].scale.y then 
+                charthits[i][j]:draw()
+            end
             love.graphics.setScissor()
         end
     end

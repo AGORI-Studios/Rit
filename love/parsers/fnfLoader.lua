@@ -23,10 +23,6 @@ json = require "lib.json"
 
 local fnfLoader = {}
 
-local SortByShit = function(a, b) 
-    return a.time < b.time 
-end
-
 function fnfLoader.load(chart, isPlayer)
     curChart = "FNF"
     chart = json.decode(love.filesystem.read(chart)).song
@@ -96,7 +92,7 @@ function fnfLoader.load(chart, isPlayer)
     end
 
     for i = 1, 4 do 
-        table.sort(charthits[i], SortByShit)
+        table.sort(charthits[i], function(a, b) return a.time < b.time end)
 
         local offset = 0
 
@@ -108,10 +104,6 @@ function fnfLoader.load(chart, isPlayer)
                 offset = offset + 1
             end
         end
-
-        for j = #charthits[i], 1, -1 do 
-            graphics.addNotes(i, charthits[i][j])
-        end
     end
 
     Timer.after(2,
@@ -119,6 +111,7 @@ function fnfLoader.load(chart, isPlayer)
             state.switch(game)
             musicTimeDo = true
 
+            collectgarbage()
             if needsVoices then
                 voices:play()
             end

@@ -40,6 +40,8 @@ return {
                 receptors[i][t].x = 650 + (i * 225)
                 receptors[i][t].y = strumLineY
             end
+
+            print(#charthits[i])
         end
     end,
 
@@ -125,7 +127,6 @@ return {
                         )
 
                         table.remove(notes, _)
-                        graphics.removeNote(hitObject.type, hitObject)
                     end
                 end
             end
@@ -142,14 +143,10 @@ return {
                     scoring["Miss"] = scoring["Miss"] + 1
                     scoring.accuracy = scoring.accuracy - 0.05
                     table.remove(charthits, _)
-                    print("Miss")
-                    graphics.removeNote(hitObject.type, hitObject)
-                    
+                    print("Miss")                    
 
                     if not hitObject.isSustainNote then
                         table.remove(charthits, _)
-                        graphics.removeNote(hitObject.type, hitObject)
-
                     else
                         local center = strumLineY + hitObject.spr:getHeight() / 2
                         local vert = center - hitObject.y
@@ -171,7 +168,6 @@ return {
                         noteCounter = noteCounter + 1
                     end
                     table.remove(charthits, _)
-                    graphics.removeNote(hitObject.type, hitObject)
                 end
             end
         end
