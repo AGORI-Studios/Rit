@@ -41,7 +41,7 @@ return {
                 receptors[i][t].y = strumLineY
             end
 
-            print(#charthits[i])
+            --print(#charthits[i])
         end
     end,
 

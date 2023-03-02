@@ -210,6 +210,7 @@ function love.load()
 
     graphics = require "modules.graphics"
     hitObject = require "modules.hitObject"
+    modifiers = require "modules.modifiers"
 
     ini = require "lib.ini"
     if discordRPC then 
