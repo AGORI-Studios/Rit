@@ -84,6 +84,7 @@ function quaverLoader.load(chart)
                 bpm = tonumber(bpm)
 
                 table.insert(bpmEvents, {startTime, bpm})
+                beatHandler.setBPM(tonumber(bpm) or 120)
             end
         end
 
@@ -101,7 +102,12 @@ function quaverLoader.load(chart)
                 lane = curLine
                 lane = lane:gsub("  Lane: ", "")
                 lane = tonumber(lane)
-                charthits[lane][#charthits[lane] + 1] = {startTime, 0, 1, false}
+                local oldNote
+                if #charthits[lane] > 0 then
+                    oldNote = charthits[lane][#charthits[lane]]
+                end
+                local hitObj = hitObject(startTime, lane, oldNote)
+                table.insert(charthits[lane], hitObj)
             end
             if line:find("  EndTime: ") then
                 curLine = line
@@ -109,34 +115,37 @@ function quaverLoader.load(chart)
                 endTime = endTime:gsub("  EndTime: ", "")
                 local length = tonumber(endTime) - startTime
                 endTime = tonumber(endTime)
-                    
-                for i = 1, length, noteImgs[lane][2]:getHeight()/2/speed do
-                    if i + noteImgs[lane][2]:getHeight()/2/speed < length then
-                        charthits[lane][#charthits[lane] + 1] = {startTime+i, 0, 1, true}
-                    else
-                        charthits[lane][#charthits[lane] + 1] = {startTime+i, 0, 1, true, true}
+
+                local susLength = length / beatHandler.stepCrochet
+                local floorSus = math.floor(susLength)
+                if floorSus > 0 then 
+                    for susNote = 0, floorSus+1 do 
+                        local oldNote = charthits[lane][#charthits[lane]]
+
+                        local holdObj = hitObject(
+                            startTime + (beatHandler.stepCrochet * (susNote + 1)) + (beatHandler.stepCrochet / math.roundDecimal(speed, 2)),
+                            lane,
+                            oldNote,
+                            true
+                        )
+                        table.insert(charthits[lane], holdObj)
                     end
                 end
             end
         end
     end
 
-    -- go through chartHits and remove all overlapping notes
     for i = 1, 4 do 
-        table.sort(charthits[i], function(a, b) return a[1] < b[1] end)
+        table.sort(charthits[i], function(a, b) return a.time < b.time end)
 
         local offset = 0
 
         for j = 2, #charthits[i] do 
             local index = j - offset
 
-            if charthits[i][index] ~= nil and charthits[i][index+1] ~= nil then
-                if (not charthits[i][index][4] and not charthits[i][index+1][4]) then
-                    if charthits[i][index+1][1] - charthits[i][index][1] < 0.1 then
-                        table.remove(charthits[i], index)
-                        offset = offset + 1
-                    end
-                end
+            if charthits[i][index].time == charthits[i][index-1].time then 
+                table.remove(charthits[i], index)
+                offset = offset + 1
             end
         end
     end
@@ -145,6 +154,7 @@ function quaverLoader.load(chart)
         function()
             state.switch(game)
             musicTimeDo = true
+            audioFile:play()
         end
     )
     

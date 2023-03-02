@@ -42,6 +42,8 @@ function fnfLoader.load(chart, isPlayer)
         bpm = 100
     end
 
+    beatHandler.setBPM(bpm)
+
     local needsVoices = chart.needsVoices
 
     if needsVoices then
