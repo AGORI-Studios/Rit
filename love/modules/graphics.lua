@@ -74,7 +74,6 @@ function graphics.newImage(path)
                     love.graphics.translate(rect.x + rect.w / 2, rect.y + rect.h / 2)
                     love.graphics.translate(-rect.w / 2, -rect.h / 2)
                     love.graphics.rectangle("fill", 0, 0, rect.w, rect.h)
-                    print(rect.w, rect.h)
                     love.graphics.pop()
                 end
                 love.graphics.stencil(stencil, "replace", 1)
@@ -147,7 +146,8 @@ function graphics.drawNotes()
             else
                 love.graphics.setScissor()
             end
-            if charthits[i][j].y < 1380 + charthits[i][j].spr:getHeight() * charthits[i][j].scale.y then 
+            --if charthits[i][j].y < 1380 + charthits[i][j].spr:getHeight() * charthits[i][j].scale.y then 
+            if charthits[i][j].y < 1380 + noteImgs[charthits[i][j].type][charthits[i][j].noteVer]:getHeight() * charthits[i][j].scale.y then
                 charthits[i][j]:draw()
             end
             love.graphics.setScissor()
@@ -172,6 +172,5 @@ function graphics.removeNote(lane, note)
         end
     end
 end
-
 
 return graphics

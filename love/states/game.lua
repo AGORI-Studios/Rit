@@ -133,7 +133,6 @@ return {
         end
         for _, charthits in ipairs(charthits) do
             for _, hitObject in ipairs(charthits) do 
-                hitObject:update(dt)
                 hitObject.y = (strumLineY + ( 1 * -((musicTime - hitObject.time) * 0.45 * speed))) - 50
 
                 -- if the note is above the strum line, it's a miss
@@ -162,7 +161,8 @@ return {
                 end
                 --]]
 
-                if hitObject.y <= 0 - hitObject.spr:getHeight() * hitObject.scale.y then 
+                --if hitObject.y <= 0 - hitObject.spr:getHeight() * hitObject.scale.y then 
+                if hitObject.y <= 0 - noteImgs[hitObject.type][hitObject.noteVer]:getHeight() * hitObject.scale.y then
                     if not hitObject.isSustainNote then
                         scoring["Miss"] = scoring["Miss"] + 1
                         noteCounter = noteCounter + 1
