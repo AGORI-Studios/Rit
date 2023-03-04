@@ -23,11 +23,11 @@ json = require "lib.json"
 
 local fnfLoader = {}
 
-function fnfLoader.load(chart, isPlayer)
+function fnfLoader.load(chart, isPlayer, folderPath)
     curChart = "FNF"
     chart = json.decode(love.filesystem.read(chart))
     chart = chart["song"]
-
+    modscript.loadScript(folderPath)
     songName = chart["song"]:gsub(" ", "-")
     songName = string.lower(songName)
 

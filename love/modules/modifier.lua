@@ -5,7 +5,8 @@ local modifiers = {}
 
 modifiers.modList = {
     -- Notig mods
-    "drunk"
+    "drunk",
+    "tipsy"
 }
 modifiers.enabledList = {}
 modifiers.curEnabled = {}
@@ -40,6 +41,19 @@ function modifiers:update(dt, curBeat)
         -- update the mod
         modifiers[v[1]]:update(dt, curBeat, v[2])
     end
+end
+
+function modifiers:removeMod(mod, beat)
+    for i, v in pairs(modifiers.enabledList) do
+        if v.mod == mod and v.beat == beat then
+            table.remove(modifiers.enabledList, i)
+        end
+    end
+end
+
+function modifiers:clear()
+    modifiers.enabledList = {}
+    modifiers.curEnabled = {}
 end
 
 return modifiers

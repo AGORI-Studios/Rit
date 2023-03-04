@@ -229,7 +229,11 @@ function love.load()
 
     state = require "modules.state"
     beatHandler = require "modules.beatHandler"
-    --modifiers = require "modules.modifier" -- still wip, will be used for modcharts
+
+    -- Modchart handlers
+    modifiers = require "modules.modifier" 
+    modscript = require "modules.modscriptAPI" -- for some reason doesn't run any of the moddifiers:applyMod (gotta investigate)
+    
 
     game = require "states.game"
     songSelect = require "states.songSelect"

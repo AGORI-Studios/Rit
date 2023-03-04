@@ -7,15 +7,6 @@ function drunk:apply(amount)
 
 end
 
-local function lerp(a, b, t)
-    return a + (b - a) * t
-end
-
-local function outQuad(t, b, c, d)
-    t = t / d
-    return -c * t * (t - 2) + b
-end
-
 local drunkTweens = {}
 
 function drunk:update(dt, beat, amount)
@@ -26,15 +17,16 @@ function drunk:update(dt, beat, amount)
             local speed = 0.5
             local period = 1 / speed
             local offset = (time / period) * math.pi * 2
-            local timeForTween = 1000 / (beatHandler.bpm / 60)
 
             local angle = time * (1+speed) + i*( (offset*0.2) + 0.2)
             receptors[i][1].newoffsetX = amount * (math.cos(angle) * receptors[i][1]:getWidth()/2)
-            receptors[i][2].newoffsetX = amount * (math.cos(angle) * receptors[i][2]:getWidth()/2)
 
-            -- lerp offsetX to newoffsetX
-            receptors[i][1].offsetX = lerp(receptors[i][1].offsetX, receptors[i][1].newoffsetX, 0.1)
-            receptors[i][2].offsetX = lerp(receptors[i][2].offsetX, receptors[i][2].newoffsetX, 0.1)
+            if drunkTweens[i] then 
+                Timer.cancel(drunkTweens[i])
+            end
+
+            drunkTweens[i] = Timer.tween((60/beatHandler.bpm), receptors[i][1], {offsetX = receptors[i][1].newoffsetX}, "out-quad")
+            receptors[i][2].offsetX = receptors[i][1].offsetX
             for j = 1, #charthits[i] do 
                 noteImgs[i][1].offsetX = receptors[i][1].offsetX
                 noteImgs[i][2].offsetX = receptors[i][1].offsetX

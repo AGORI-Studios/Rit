@@ -37,6 +37,7 @@ function debug.drawdebug()
     love.graphics.print("FPS: " .. love.timer.getFPS(), 0, 40)
     love.graphics.print("Graphics memory usage: " .. round(love.graphics.getStats().texturememory / 1024) .. "KB", 0, 60)
     love.graphics.print("Music Time: " .. (musicTime or 0), 0, 80)
+    love.graphics.print("Beat: " .. (math.floor(((musicTime or 0) / 1000) * (beatHandler.bpm/60)) or 0), 0, 100)
 end
 
 function debug.draw()

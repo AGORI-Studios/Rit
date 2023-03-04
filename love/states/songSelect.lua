@@ -43,7 +43,7 @@ local function doFnfMoment(fnfMoment)
     songTitle = song.title
     songDifficultyName = song.difficultyName..(fnfMomentShiz[fnfMomentSelected] and " - Player" or " - Enemy")
     folderPath = song.folderPath
-    fnfLoader.load(songPath, fnfMomentShiz[fnfMomentSelected])
+    fnfLoader.load(songPath, fnfMomentShiz[fnfMomentSelected], folderPath)
     choosingSong = false
     fnfChartMoment = false
 end

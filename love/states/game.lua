@@ -51,24 +51,9 @@ function addJudgement(judgement)
             Timer.cancel(comboTimer)
         end
         comboSize.y = 1
-        comboTimer = Timer.tween(
-            0.1,
-            comboSize,
-            {
-                y = 1.85
-            },
-            "in-out-quad",
-            function()
-                Timer.tween(
-                    0.1,
-                    comboSize,
-                    {
-                        y = 1.6
-                    },
-                    "in-out-quad"
-                )
-            end
-        )
+        comboTimer = Timer.tween(0.1, comboSize, {y = 1.85, x = 1.6}, "in-out-quad", function()
+            Timer.tween(0.1, comboSize, {y = 1.6,}, "in-out-quad")
+        end)
     else
         combo = 0
     end
@@ -79,26 +64,18 @@ function addJudgement(judgement)
     end
     ratingsize.x = 1
     ratingsize.y = 1
-    judgeTimer = Timer.tween(
-        0.1,
-        ratingsize,
-        {
-            x = 1.15,
-            y = 1.15
-        },
-        "in-out-quad",
-        function()
-            Timer.tween(
-                0.1,
-                ratingsize,
-                {
-                    x = 0.85,
-                    y = 0.85
-                },
-                "in-out-quad"
-            )
-        end
-    )
+    judgeTimer = Timer.tween(0.1, ratingsize, {x = 1.15, y = 1.15}, "in-out-quad", function()
+        Timer.tween(0.1, ratingsize, {x = 0.85, y = 0.85}, "in-out-quad")
+    end)
+
+    if waitTmr then 
+        Timer.cancel(waitTmr)
+    end
+
+    waitTmr = Timer.after(0.35, function()
+        Timer.tween(0.1, ratingsize, {x = 0, y = 0}, "in-out-quad")
+        Timer.tween(0.1, comboSize, {y = 0, x = 0}, "in-out-quad")
+    end)
 end
 
 return {
@@ -185,8 +162,17 @@ return {
             }
         end
 
-        --modifiers:load()
-        --modifiers:applyMod("drunk", 5, 5)
+        modifiers:load()
+        --modifiers:applyMod("tipsy", 1, 5)
+        --modifiers:applyMod("drunk", 1, 5)
+        applyMod = function(mod, beat, amount)
+            modifiers:applyMod(mod, beat, amount)
+        end
+        removeMod = function(mod, beat)
+            modifiers:removeMod(mod, beat)
+        end
+        if create then create() end
+        
     end,
 
     update = function(self, dt)
@@ -198,7 +184,7 @@ return {
 
             musicPos = ((musicTime) * (speed)+100)
 
-            --modifiers:update(dt, math.floor((musicTime / 1000) * (beatHandler.bpm/60)))
+            modifiers:update(dt, math.floor((musicTime / 1000) * (beatHandler.bpm/60)))
         elseif not musicTimeDo then
             previousFrameTime = love.timer.getTime() * 1000
         elseif musicTimeDo and died then
@@ -482,7 +468,7 @@ return {
                     end
                     love.graphics.translate(push.getWidth() / 2 - 175, 50)
                     for i = 1, #receptors do
-                        receptors[i][PRESSEDMOMENTS[i]]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), -100, notesize, notesize * (settings.downscroll and -1 or 1))
+                        receptors[i][PRESSEDMOMENTS[i]]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), -35, notesize, notesize * (settings.downscroll and -1 or 1))
                     end 
                 love.graphics.pop()
 
@@ -509,10 +495,10 @@ return {
                                         else
                                             love.graphics.setScissor()
                                         end
-                                        noteImgs[i][2]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), -100+(charthits[i][j][1]*speed+200)+(not settings.downscroll and 0 or -75) * sv, notesize, noteImgs[i][2].scaleY * notesize * (settings.downscroll and -1 or 1))
+                                        noteImgs[i][2]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), -100+(charthits[i][j][1]*speed+200)+(not settings.downscroll and 15 or -10) * sv, notesize, noteImgs[i][2].scaleY * notesize * (settings.downscroll and -1 or 1))
                                         love.graphics.setScissor()
                                     else
-                                        noteImgs[i][1]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), -100+(charthits[i][j][1]*speed+200-98)+(not settings.downscroll and 0 or 0) * sv, notesize, notesize * (settings.downscroll and -1 or 1))
+                                        noteImgs[i][1]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), -100+(charthits[i][j][1]*speed+200-98)+(not settings.downscroll and 15 or 65) * sv, notesize, notesize * (settings.downscroll and -1 or 1))
                                     end
                                 else
                                     if input:down(inputList[i]) then
@@ -520,7 +506,7 @@ return {
                                     else
                                         love.graphics.setScissor()
                                     end
-                                    noteImgs[i][3]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), -100+(charthits[i][j][1]*speed+200+(not settings.downscroll and 32 or -50)) * sv, notesize, -notesize)
+                                    noteImgs[i][3]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), -100+(charthits[i][j][1]*speed+200+(not settings.downscroll and 47 or 15)) * sv, notesize, -notesize)
                                     love.graphics.setScissor()
                                 end
                             end
@@ -611,5 +597,7 @@ return {
 
         Timer.clear()
         presence = {}
+
+        modifiers:clear()
     end
 }
