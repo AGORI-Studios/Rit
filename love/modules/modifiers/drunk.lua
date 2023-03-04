@@ -27,11 +27,10 @@ function drunk:update(dt, beat, amount)
 
             drunkTweens[i] = Timer.tween((60/beatHandler.bpm), receptors[i][1], {offsetX = receptors[i][1].newoffsetX}, "out-quad")
             receptors[i][2].offsetX = receptors[i][1].offsetX
-            for j = 1, #charthits[i] do 
-                noteImgs[i][1].offsetX = receptors[i][1].offsetX
-                noteImgs[i][2].offsetX = receptors[i][1].offsetX
-                noteImgs[i][3].offsetX = receptors[i][1].offsetX
-            end
+            
+            noteImgs[i][1].offsetX = receptors[i][1].offsetX
+            noteImgs[i][2].offsetX = receptors[i][1].offsetX
+            noteImgs[i][3].offsetX = receptors[i][1].offsetX
         end
     else
         -- disable the mod

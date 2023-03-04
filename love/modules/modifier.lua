@@ -6,10 +6,13 @@ local modifiers = {}
 modifiers.modList = {
     -- Notig mods
     "drunk",
-    "tipsy"
+    "tipsy",
+    "reverse"
 }
 modifiers.enabledList = {}
 modifiers.curEnabled = {}
+modifiers.reverse = 1 -- 1 means not flipped, -1 means flipped
+modifiers.tweens = {}
 
 function modifiers:load()
     for i, v in pairs(modifiers.modList) do
@@ -33,8 +36,8 @@ function modifiers:update(dt, curBeat)
             -- apply the mod
             modifiers[v.mod]:apply(v.amount)
             -- remove the mod from the list
-            table.remove(modifiers.enabledList, i)
             --debug.print("Applied mod " .. v.mod .. " at beat " .. v.beat .. " with amount " .. v.amount)
+            table.remove(modifiers.enabledList, i)
         end
     end
 
