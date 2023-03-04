@@ -34,6 +34,7 @@ function modifiers:update(dt, curBeat)
             modifiers[v.mod]:apply(v.amount)
             -- remove the mod from the list
             table.remove(modifiers.enabledList, i)
+            --debug.print("Applied mod " .. v.mod .. " at beat " .. v.beat .. " with amount " .. v.amount)
         end
     end
 

@@ -183,13 +183,13 @@ return {
             previousFrameTime = time * musicPosValue[1]
 
             musicPos = ((musicTime) * (speed)+100)
-
-            modifiers:update(dt, math.floor((musicTime / 1000) * (beatHandler.bpm/60)))
+            modifiers:update(dt, beatHandler.beat)
         elseif not musicTimeDo then
             previousFrameTime = love.timer.getTime() * 1000
         elseif musicTimeDo and died then
             musicTime = musicTime + musicPosValue[1] * dt
             musicPos = ((musicTime) * (speed)+100)
+            modifiers:update(dt, beatHandler.beat)
         end
         absMusicTime = math.abs(musicTime)
         if (musicTime > 0 - settings.audioOffset) and not audioFile:isPlaying() and not died then

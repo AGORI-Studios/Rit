@@ -5,12 +5,11 @@ local function selectSongDifficulty(song, chartVer)
     if chartVer == "Quaver" then
         song = songList[curSongSelected]
         filename = song.filename
-        love.filesystem.mount("songs/quaver/"..filename, "song")
+        if song.folderPath ~= "" then love.filesystem.mount("songs/quaver/"..filename, "song") end
         songPath = song.path
         songTitle = song.title
         songDifficultyName = song.difficultyName
-        BackgroundFile = love.graphics.newImage("song/" .. song.BackgroundFile)
-        quaverLoader.load(songPath)
+        quaverLoader.load(songPath, song.folderPath)
         choosingSong = false
     elseif chartVer == "osu!" then 
         song = songList[curSongSelected]
@@ -19,7 +18,7 @@ local function selectSongDifficulty(song, chartVer)
         songPath = song.path
         songTitle = song.title
         songDifficultyName = song.difficultyName
-        osuLoader.load(songPath)
+        osuLoader.load(songPath, song.folderPath)
         choosingSong = false
     elseif chartVer == "FNF" then
         fnfChartMoment = true

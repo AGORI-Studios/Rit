@@ -38,11 +38,26 @@ function loadSongs()
     if not love.filesystem.getInfo("songs/osu") then
         love.filesystem.createDirectory("songs/osu")
     end
+    --[[
     if not love.filesystem.getInfo("songs/stepmania") then
         love.filesystem.createDirectory("songs/stepmania")
     end
+    --]]
     if not love.filesystem.getInfo("songs/fnf") then
         love.filesystem.createDirectory("songs/fnf")
+    end
+    -- These folders are specifically for extracted songs to make it work with modscripts
+    if not love.filesystem.getInfo("songs/quaverExtracted") then
+        love.filesystem.createDirectory("songs/quaverExtracted")
+        if not love.filesystem.getInfo("songs/quaverExtracted/info.txt") then 
+            love.filesystem.write("songs/quaverExtracted/info.txt", "This folder is for extracted quaver songs to make it work with modscripts\nOne day it will work in the same folder")
+        end
+    end
+    if not love.filesystem.getInfo("songs/osuExtracted") then
+        love.filesystem.createDirectory("songs/osuExtracted")
+        if not love.filesystem.getInfo("songs/osuExtracted/info.txt") then 
+            love.filesystem.write("songs/osuExtracted/info.txt", "This folder is for extracted osu songs to make it work with modscripts\nOne day it will work in the same folder")
+        end
     end
     songList = {}
     for i, v in ipairs(love.filesystem.getDirectoryItems("songs/quaver")) do
@@ -61,6 +76,7 @@ function loadSongs()
                             difficultyName = difficultyName or "???",
                             BackgroundFile = BackgroundFile:sub(2),
                             path = "song/" .. j,
+                            folderPath = "",
                             type = "Quaver"
                         }
                     end
@@ -88,6 +104,7 @@ function loadSongs()
                             title = title,
                             difficultyName = difficultyName or "???",
                             path = "song/" .. j,
+                            folderPath = "",
                             type = "osu!"
                         }
                     end
@@ -112,6 +129,55 @@ function loadSongs()
                             path = songDir .. "/" .. j,
                             folderPath = songDir,
                             type = "FNF"
+                        }
+                    end
+                end
+            end
+        end
+    end
+
+    for i, v in ipairs(love.filesystem.getDirectoryItems("songs/quaverExtracted")) do
+        if love.filesystem.getInfo("songs/quaverExtracted/" .. v).type == "directory" then
+            -- all qua files in the folder
+            local songDir = "songs/quaverExtracted/" .. v
+            for k, j in ipairs(love.filesystem.getDirectoryItems(songDir)) do
+                if love.filesystem.getInfo(songDir .. "/" .. j).type == "file" then
+                    if j:sub(-4) == ".qua" then
+                        local title = love.filesystem.read(songDir .. "/" .. j):match("Title:(.-)\r?\n")
+                        local difficultyName = love.filesystem.read(songDir .. "/" .. j):match("DifficultyName:(.-)\r?\n")
+                        local BackgroundFile = love.filesystem.read(songDir .. "/" .. j):match("BackgroundFile:(.-)\r?\n")
+                        songList[#songList + 1] = {
+                            filename = v,
+                            title = title,
+                            difficultyName = difficultyName or "???",
+                            BackgroundFile = BackgroundFile:sub(2),
+                            path = songDir .. "/" .. j,
+                            folderPath = songDir,
+                            type = "Quaver",
+                        }
+                    end
+                end
+            end
+            
+        end
+    end
+
+    for i, v in ipairs(love.filesystem.getDirectoryItems("songs/osuExtracted")) do 
+        if love.filesystem.getInfo("songs/osuExtracted/" .. v).type == "directory" then
+            -- all osu files in the folder
+            local songDir = "songs/osuExtracted/" .. v
+            for k, j in ipairs(love.filesystem.getDirectoryItems(songDir)) do
+                if love.filesystem.getInfo(songDir .. "/" .. j).type == "file" then
+                    if j:sub(-4) == ".osu" then
+                        local title = love.filesystem.read(songDir .. "/" .. j):match("Title:(.-)\r?\n")
+                        local difficultyName = love.filesystem.read(songDir .. "/" .. j):match("Version:(.-)\r?\n")
+                        songList[#songList + 1] = {
+                            filename = v,
+                            title = title,
+                            difficultyName = difficultyName or "???",
+                            path = songDir .. "/" .. j,
+                            folderPath = songDir,
+                            type = "osu!"
                         }
                     end
                 end
@@ -233,7 +299,7 @@ function love.load()
     -- Modchart handlers
     modifiers = require "modules.modifier" 
     modscript = require "modules.modscriptAPI" -- for some reason doesn't run any of the moddifiers:applyMod (gotta investigate)
-    
+
 
     game = require "states.game"
     songSelect = require "states.songSelect"

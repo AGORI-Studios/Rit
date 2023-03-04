@@ -22,11 +22,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 local osuLoader = {}
 
 lineCount = 0
-function osuLoader.load(chart)
+function osuLoader.load(chart, folderPath)
     curChart = "osu!"
     local file = love.filesystem.read(chart)
     lines = love.filesystem.lines(chart)
     local readChart = false
+    modscript.loadScript(folderPath)
 
     loadSkin("4k")
 
@@ -35,7 +36,7 @@ function osuLoader.load(chart)
         if line:find("AudioFilename: ") then 
             curLine = line
             local audioPath = curLine:gsub("AudioFilename: ", "")
-            audioPath = "song/" .. audioPath
+            audioPath = (folderPath == "" and "song/" .. audioPath or folderPath .. "/" .. audioPath)
             audioFile = love.audio.newSource(audioPath, "stream")
         end
         mode = "Keys4"

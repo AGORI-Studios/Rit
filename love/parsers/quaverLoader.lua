@@ -21,10 +21,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 local quaverLoader = {}
 lineCount = 0
-function quaverLoader.load(chart)
+function quaverLoader.load(chart, folderPath)
     -- read the first line of the file
     curChart = "Quaver"
     local file = love.filesystem.read(chart)
+    modscript.loadScript(folderPath)
 
     for line in love.filesystem.lines(chart) do
         lineCount = lineCount + 1
@@ -32,7 +33,7 @@ function quaverLoader.load(chart)
             curLine = line
             local audioPath = curLine
             audioPath = audioPath:gsub("AudioFile: ", "")
-            audioPath = "song/" .. audioPath
+            audioPath = (folderPath == "" and "song/" .. audioPath or folderPath .. "/" .. audioPath)
             audioFile = love.audio.newSource(audioPath, "stream")
         end
         if line:find("Mode: ") then
