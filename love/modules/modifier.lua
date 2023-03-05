@@ -32,7 +32,7 @@ function modifiers:update(dt, curBeat)
     --print(curBeat)
     for i, v in pairs(modifiers.enabledList) do
         -- if current beat is the same as the beat the mod was applied
-        if v.beat == curBeat then
+        if v.beat >= curBeat then
             -- apply the mod
             modifiers[v.mod]:apply(v.amount)
             -- remove the mod from the list
