@@ -123,6 +123,44 @@ return {
         end
     end,
 
+    wheelmoved = function(self, x, y)
+        if y > 0  then 
+            curSongSelected = curSongSelected - 1
+            if curSongSelected < 1 then
+                curSongSelected = #songList
+            end
+            if curSongSelected < 29 then 
+                songSelectScrollOffset = songSelectScrollOffset + (font:getHeight() * 1.5)
+            end
+            if songSelectScrollOffset > 0 then
+                songSelectScrollOffset = 0
+            end
+            if curSongSelected == #songList and #songList >= 29 then
+                songSelectScrollOffset = -(#songList - 29) * (font:getHeight() * 1.5)
+                if songSelectScrollOffset < -(#songList - 29) * (font:getHeight() * 1.5) then
+                    songSelectScrollOffset = -(#songList - 29) * (font:getHeight() * 1.5)
+                end
+            end
+        elseif y < 0 then
+            curSongSelected = curSongSelected + 1
+            if curSongSelected > #songList then
+                curSongSelected = 1
+            end
+            if curSongSelected > 29 then 
+                songSelectScrollOffset = songSelectScrollOffset - (font:getHeight() * 1.5)
+                if songSelectScrollOffset < -(#songList - 29) * 30 then
+                    songSelectScrollOffset = -(#songList - 29) * 30
+                end
+            end
+            if songSelectScrollOffset < 29 and songSelectScrollOffset > 0 then
+                songSelectScrollOffset = 0
+            end
+            if curSongSelected == 1 then
+                songSelectScrollOffset = 0
+            end
+        end
+    end,
+
     keypressed = function(self, key)
         if key == "b" then 
             autoplay = not autoplay

@@ -397,8 +397,8 @@ function love.update(dt)
 end
 
 function love.wheelmoved(x, y)
-    if state.mousescrolled then
-        state.mousescrolled(x, y)
+    if state.wheelmoved then
+        state.wheelmoved(x, y)
     end
 
     if love.keyboard.isDown("lalt") then

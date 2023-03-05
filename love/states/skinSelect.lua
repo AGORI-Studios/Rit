@@ -210,6 +210,20 @@ return {
         end
     end,
 
+    wheelmoved = function(self, x, y)
+        if y > 0 then
+            curSkinSelected = curSkinSelected - 1
+            if curSkinSelected < 1 then
+                curSkinSelected = #skins
+            end
+        elseif y < 0 then
+            curSkinSelected = curSkinSelected + 1
+            if curSkinSelected > #skins then
+                curSkinSelected = 1
+            end
+        end
+    end,
+
     draw = function(self)
         for i, v in ipairs(skins) do
             if i == curSkinSelected then

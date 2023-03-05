@@ -76,6 +76,10 @@ function state.quit()
     if current.quit then current:quit() end
 end
 
+function state.wheelmoved(x, y)
+    if current.wheelmoved then current:wheelmoved(x, y) end
+end
+
 function state.getCurrent()
     return current
 end
