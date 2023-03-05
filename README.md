@@ -40,7 +40,7 @@ Add songs to the %appdata%\rit\songs folder in their respective folders. (Quaver
 - Wait for it to be merged!
 
 ### Gameplay
-![Gameplay](docs/playing.gif)
+![Rit V0.0.1-beta](docs/playing.gif)
 
 ### TODO
 - [ ] Add a pause screen (High priority) (1/2)
