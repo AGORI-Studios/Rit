@@ -266,6 +266,10 @@ function love.load()
             confirm = {"key:return", "button:a"},
             pause = {"key:return", "button:start"},
             restart = {"key:r", "button:b"},
+            volChanger = {"button:back"}, -- Switch users don't have a mouse so this is the best I can do
+            volUp = {"button:rightshoulder"},
+            volDown = {"button:leftshoulder"},
+
             quit = {"key:escape", "button:back"}
         },
         joystick = love.joystick.getJoysticks()[1]
@@ -297,9 +301,8 @@ function love.load()
     beatHandler = require "modules.beatHandler"
 
     -- Modchart handlers
-    modifiers = require "modules.modifier" 
-    modscript = require "modules.modscriptAPI" -- for some reason doesn't run any of the moddifiers:applyMod (gotta investigate)
-
+    modifiers = require "modules.modifier"
+    modscript = require "modules.modscriptAPI"
 
     game = require "states.game"
     songSelect = require "states.songSelect"
@@ -344,6 +347,10 @@ function love.load()
 
     -- scissorScale is meant for 720p
     scissorScale = 1
+
+    audioVol = 50
+    love.audio.setVolume(audioVol / 100)
+    volFade = 0
 end
 
 function love.resize(w, h)
@@ -366,7 +373,52 @@ function love.update(dt)
         discordRPC.runCallbacks()
     end
 
+    if input:getActiveDevice() == "joy" then 
+        if input:down("volChanger") then 
+            if input:pressed("volUp") then 
+                audioVol = audioVol + 5
+            elseif input:pressed("volDown") then
+                audioVol = audioVol - 5
+            end
+
+            -- apply volume
+            if audioVol > 100 then audioVol = 100 end
+            if audioVol < 0 then audioVol = 0 end
+            if audioVol == 0 then
+                love.audio.setVolume(0)
+            else
+                love.audio.setVolume(audioVol / 100)
+            end
+            volFade = 1
+        end
+    end
+
     input:update(dt)
+end
+
+function love.wheelmoved(x, y)
+    if state.mousescrolled then
+        state.mousescrolled(x, y)
+    end
+
+    if love.keyboard.isDown("lalt") then
+        if y > 0 then 
+            audioVol = audioVol + 5
+        elseif y < 0 then
+            audioVol = audioVol - 5
+        end
+
+        -- apply volume
+        if audioVol > 100 then audioVol = 100 end
+        if audioVol < 0 then audioVol = 0 end
+        if audioVol == 0 then
+            love.audio.setVolume(0)
+        else
+            love.audio.setVolume(audioVol / 100)
+        end
+
+        volFade = 1
+    end
 end
 
 function love.keypressed(key)
@@ -393,6 +445,23 @@ function love.draw()
         if choosingSong or choosingSkin then
             -- set x and y to bottom left corner of screen
             love.graphics.print("Press K to open my Ko-fi page!", 1545, 1040, 0, 2, 2)
+        end
+
+        if volFade > 0 then
+            volFade = volFade - 1 * love.timer.getDelta()
+            -- draw vol slider in bottom right
+            love.graphics.setColor(0, 0, 0, volFade-0.4)
+            love.graphics.rectangle("fill", 1800, 1020, 120, 60)
+            love.graphics.setColor(1, 1, 1, volFade)
+            -- set width based on audioVol
+            love.graphics.rectangle("fill", 1800, 1020, audioVol * 1.2, 60)
+            love.graphics.print(audioVol, 1820-2, 1030, 0, 2, 2)
+            love.graphics.print(audioVol, 1820+2, 1030, 0, 2, 2)
+            love.graphics.print(audioVol, 1820, 1030-2, 0, 2, 2)
+            love.graphics.print(audioVol, 1820, 1030+2, 0, 2, 2)
+            love.graphics.setColor(0, 0, 0, volFade)
+            love.graphics.print(audioVol, 1820, 1030, 0, 2, 2)
+            love.graphics.setColor(1, 1, 1, 1)
         end
     push.finish()
 
