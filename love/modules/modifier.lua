@@ -11,7 +11,7 @@ modifiers.modList = {
 }
 modifiers.enabledList = {}
 modifiers.curEnabled = {}
-modifiers.reverse = 1 -- 1 means not flipped, -1 means flipped
+modifiers.reverseScale = 1 -- 1 means not flipped, -1 means flipped
 modifiers.tweens = {}
 
 function modifiers:load()
@@ -32,7 +32,7 @@ function modifiers:update(dt, curBeat)
     --print(curBeat)
     for i, v in pairs(modifiers.enabledList) do
         -- if current beat is the same as the beat the mod was applied
-        if v.beat >= curBeat then
+        if v.beat <= curBeat and audioFile:isPlaying() then
             -- apply the mod
             modifiers[v.mod]:apply(v.amount)
             -- remove the mod from the list
