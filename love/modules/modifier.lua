@@ -9,12 +9,21 @@ modifiers.modList = {
     "tipsy",
     "reverse"
 }
+
 modifiers.enabledList = {}
 modifiers.curEnabled = {}
 modifiers.reverseScale = 1 -- 1 means not flipped, -1 means flipped
 modifiers.tweens = {}
 modifiers.funcs = {}
 modifiers.graphics = {}
+modifiers.shaders = {}
+
+function tryExcept(func, except)
+    local status, err = pcall(func)
+    if not status then
+        except(err)
+    end
+end
 
 function modifiers:load()
     for i, v in pairs(modifiers.modList) do
@@ -34,21 +43,67 @@ end
 
 function modifiers:createSprite(name, img)
     local spr = {}
-    spr.img = graphics.newImage(folderPath .. "/" .. img)
+    tryExcept(
+        function()
+            spr.img = graphics.newImage(folderPath .. "/" .. img)
+        end,
+        function(err)
+            debug.print("Error loading sprite " .. name)
+        end
+    )
 
     --debug.print("Created sprite " .. name .. " with image " .. img)
 
-    modifiers.graphics[name] = spr
+    if spr.img then
+        modifiers.graphics[name] = spr
+    end
 end
 
-function modifiers:changeProperty(name, prop, value)
-    modifiers.graphics[name].img[prop] = value
+function modifiers:changeSpriteProperty(name, prop, value)
+    tryExcept(
+        function()
+            modifiers.graphics[name].img[prop] = value
+        end,
+        function(err)
+            debug.print("Error changing property " .. prop .. " of sprite " .. name)
+        end
+    )
 end
 
-function modifiers:getProperty(name, prop)
-    return modifiers.graphics[name].img[prop]
+function modifiers:getSpriteProperty(name, prop)
+    tryExcept(
+        function()
+            return modifiers.graphics[name].img[prop]
+        end,
+        function(err)
+            debug.print("Error getting property " .. prop .. " of sprite " .. name)
+        end
+    )
 end
 
+function modifiers:newShader(name, file)
+    modifiers.shaders[name] = tryExcept(
+        function()
+            return love.graphics.newShader(folderPath .. "/" .. file)
+        end,
+        function(err)
+            debug.print("Error loading shader: " .. name)
+        end
+    )
+end
+
+function modifiers:changeShaderProperty(name, prop, value)
+    tryExcept(
+        function()
+            modifiers.shaders[name]:send(prop, value)
+        end,
+        function(err)
+            debug.print("Error setting property " .. prop .. " of shader " .. name)
+        end
+    )
+end
+
+-- Globals
 function doMod(func, beat)
     table.insert(modifiers.funcs, {func = func, beat = beat})
 end
@@ -64,14 +119,23 @@ function createSprite(name, img)
     modifiers:createSprite(name, img)
 end
 
-function changeProperty(name, prop, value)
-    modifiers:changeProperty(name, prop, value)
+function changeSpriteProperty(name, prop, value)
+    modifiers:changeSpriteProperty(name, prop, value)
     --debug.print("Changed property " .. prop .. " of sprite " .. name .. " to " .. value)
 end
 
-function getProperty(name, prop)
-    return modifiers:getProperty(name, prop)
+function getSpriteProperty(name, prop)
+    return modifiers:getSpriteProperty(name, prop)
 end
+
+function newShader(name, file)
+    modifiers:newShader(name, file)
+end
+
+function changeShaderProperty(name, prop, value)
+    modifiers:changeShaderProperty(name, prop, value)
+end
+-- End globals
 
 function modifiers:update(dt, curBeat)
     --print(curBeat)
