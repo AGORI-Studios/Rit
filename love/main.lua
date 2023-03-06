@@ -444,6 +444,10 @@ function love.keypressed(key)
             state.switch(audioOffsetter)
         end
     end
+
+    if key == "f11" then 
+        __DEBUG__ = not __DEBUG__
+    end
 end
 
 function love.draw()
