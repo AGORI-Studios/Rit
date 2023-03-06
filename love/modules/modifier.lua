@@ -17,6 +17,7 @@ modifiers.tweens = {}
 modifiers.funcs = {}
 modifiers.graphics = {}
 modifiers.shaders = {}
+modifiers.curShader = ""
 
 function tryExcept(func, except)
     local status, err = pcall(func)
@@ -66,6 +67,7 @@ function modifiers:changeSpriteProperty(name, prop, value)
         end,
         function(err)
             debug.print("Error changing property " .. prop .. " of sprite " .. name)
+            return 0
         end
     )
 end
@@ -77,30 +79,29 @@ function modifiers:getSpriteProperty(name, prop)
         end,
         function(err)
             debug.print("Error getting property " .. prop .. " of sprite " .. name)
+            return 0
         end
     )
 end
 
 function modifiers:newShader(name, file)
-    modifiers.shaders[name] = tryExcept(
+   tryExcept(
         function()
-            return love.graphics.newShader(folderPath .. "/" .. file)
+            modifiers.shaders[name] = love.graphics.newShader(folderPath .. "/" .. file)
         end,
         function(err)
-            debug.print("Error loading shader: " .. name)
+            debug.print("Error loading shader " .. name)
+            debug.print(err)
         end
     )
 end
 
 function modifiers:changeShaderProperty(name, prop, value)
-    tryExcept(
-        function()
-            modifiers.shaders[name]:send(prop, value)
-        end,
-        function(err)
-            debug.print("Error setting property " .. prop .. " of shader " .. name)
-        end
-    )
+    modifiers.shaders[name]:send(prop, value)
+end
+
+function modifiers:applyShader(name)
+    modifiers.curShader = name
 end
 
 -- Globals
@@ -134,6 +135,15 @@ end
 
 function changeShaderProperty(name, prop, value)
     modifiers:changeShaderProperty(name, prop, value)
+end
+
+function applyShader(name)
+    -- check if shader is in modifers.shaders
+    if modifiers.shaders[name] then
+        modifiers:applyShader(name)
+    else
+        debug.print("Shader " .. name .. " does not exist")
+    end
 end
 -- End globals
 
@@ -177,6 +187,9 @@ function modifiers:clear()
     modifiers.reverseScale = 1
     modifiers.tweens = {}
     modifiers.funcs = {}
+    modifiers.graphics = {}
+    modifiers.shaders = {}
+    modifiers.curShader = ""
 end
 
 return modifiers
