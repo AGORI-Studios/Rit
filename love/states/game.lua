@@ -170,6 +170,8 @@ return {
         
         strumlineY = {-35}
         whereNotesHit = {-35}
+
+        gameCanvas = love.graphics.newCanvas(love.graphics.getWidth(), love.graphics.getHeight())
     end,
 
     update = function(self, dt)
@@ -470,113 +472,124 @@ return {
 
     draw = function(self)
         if musicTimeDo then
-            love.graphics.push()
-
+            love.graphics.setCanvas(gameCanvas)
+                love.graphics.clear()
                 love.graphics.push()
-                    love.graphics.translate(push.getWidth() / 2, push.getHeight() / 2)
-                    for i,v in pairs(modifiers.graphics) do
-                        v.img:draw()
-                    end
-                love.graphics.pop()
+                    love.graphics.push()
+                        love.graphics.translate(push.getWidth() / 2, push.getHeight() / 2)
+                        for i,v in pairs(modifiers.graphics) do
+                            v.img:draw()
+                        end
+                    love.graphics.pop()
 
-                love.graphics.push()
-                    if settings.downscroll then 
-                        love.graphics.translate(0, push.getHeight() - 175)
-                        love.graphics.scale(1, -1)
-                    else
-                        love.graphics.translate(0, 175)
-                    end
-                    love.graphics.translate(push.getWidth() / 2 - 175, 50)
-                    for i = 1, #receptors do
-                        receptors[i][PRESSEDMOMENTS[i]]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), strumlineY[1], notesize, notesize * (settings.downscroll and -1 or 1))
-                    end 
-                love.graphics.pop()
+                    love.graphics.push()
+                        if settings.downscroll then 
+                            love.graphics.translate(0, push.getHeight() - 175)
+                            love.graphics.scale(1, -1)
+                        else
+                            love.graphics.translate(0, 175)
+                        end
+                        love.graphics.translate(push.getWidth() / 2 - 175, 50)
+                        for i = 1, #receptors do
+                            receptors[i][PRESSEDMOMENTS[i]]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), strumlineY[1], notesize, notesize * (settings.downscroll and -1 or 1))
+                        end 
+                    love.graphics.pop()
 
-                love.graphics.push()
-                    if settings.downscroll then 
-                        love.graphics.translate(0, push.getHeight() - 175)
-                        love.graphics.scale(1, -1)
-                    else
-                        love.graphics.translate(0, 175)
-                    end
-                    love.graphics.translate(push.getWidth() / 2 - 175, 50)
-                    
-                    --love.graphics.translate(0, -musicPos * sv)
-                    
-                    for i = 1, #charthits do
-                        for j = #charthits[i], 1, -1 do
-                            if math.abs(charthits[i][j][2]) <= 1100 then
-                                -- if the note is actually on screen (even with scroll velocity modifiers)
-                                if not charthits[i][j][5] then
-                                    
-                                    if charthits[i][j][4] then
-                                        noteImgs[i][2]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), charthits[i][j][2], notesize, noteImgs[i][2].scaleY * notesize * (settings.downscroll and -1 or 1))
+                    love.graphics.push()
+                        if settings.downscroll then 
+                            love.graphics.translate(0, push.getHeight() - 175)
+                            love.graphics.scale(1, -1)
+                        else
+                            love.graphics.translate(0, 175)
+                        end
+                        love.graphics.translate(push.getWidth() / 2 - 175, 50)
+                        
+                        --love.graphics.translate(0, -musicPos * sv)
+                        
+                        for i = 1, #charthits do
+                            for j = #charthits[i], 1, -1 do
+                                if math.abs(charthits[i][j][2]) <= 1100 then
+                                    -- if the note is actually on screen (even with scroll velocity modifiers)
+                                    if not charthits[i][j][5] then
+                                        
+                                        if charthits[i][j][4] then
+                                            noteImgs[i][2]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), charthits[i][j][2], notesize, noteImgs[i][2].scaleY * notesize * (settings.downscroll and -1 or 1))
+                                        else
+                                            noteImgs[i][1]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), charthits[i][j][2], notesize, notesize * (settings.downscroll and -1 or 1))
+                                        end
                                     else
-                                        noteImgs[i][1]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), charthits[i][j][2], notesize, notesize * (settings.downscroll and -1 or 1))
+                                        noteImgs[i][3]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), charthits[i][j][2], notesize, -notesize)
                                     end
-                                else
-                                    noteImgs[i][3]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), charthits[i][j][2], notesize, -notesize)
                                 end
                             end
                         end
-                    end
-                love.graphics.pop()
+                    love.graphics.pop()
 
-                if curJudgement ~= "none" then
-                    judgementImages[curJudgement]:draw(nil, nil, ratingsize.x, ratingsize.y)
-                end
-                if combo > 0 then
-                    -- determine the offsetX of the combo of how many digits it is
-                    local offsetX = 0
-                    if combo >= 10000 then
-                        offsetX = 0
-                    elseif combo >= 1000 then
-                        offsetX = -5
-                    elseif combo >= 100 then
-                        offsetX = -10
-                    elseif combo >= 10 then
-                        offsetX = -15
+                    if curJudgement ~= "none" then
+                        judgementImages[curJudgement]:draw(nil, nil, ratingsize.x, ratingsize.y)
+                    end
+                    if combo > 0 then
+                        -- determine the offsetX of the combo of how many digits it is
+                        local offsetX = 0
+                        if combo >= 10000 then
+                            offsetX = 0
+                        elseif combo >= 1000 then
+                            offsetX = -5
+                        elseif combo >= 100 then
+                            offsetX = -10
+                        elseif combo >= 10 then
+                            offsetX = -15
+                        else
+                            offsetX = -20
+                        end
+                        comboImages[1][combo % 10]:draw(comboImages[1][combo % 10].x + offsetX, comboImages[1][combo % 10].y, comboSize.x, comboSize.y)
+                        if math.floor(combo / 10 % 10) ~= 0 or combo >= 100 then
+                            comboImages[2][math.floor(combo / 10 % 10)]:draw(comboImages[2][math.floor(combo / 10 % 10)].x + offsetX, comboImages[2][math.floor(combo / 10 % 10)].y, comboSize.x, comboSize.y)
+                        end
+                        if math.floor(combo / 100 % 10) ~= 0 or combo >= 1000 then
+                            comboImages[3][math.floor(combo / 100 % 10)]:draw(comboImages[3][math.floor(combo / 100 % 10)].x + offsetX, comboImages[3][math.floor(combo / 100 % 10)].y, comboSize.x, comboSize.y)
+                        end
+                        if math.floor(combo / 1000 % 10) ~= 0 or combo >= 10000 then
+                            comboImages[4][math.floor(combo / 1000 % 10)]:draw(comboImages[4][math.floor(combo / 1000 % 10)].x + offsetX, comboImages[4][math.floor(combo / 1000 % 10)].y, comboSize.x, comboSize.y)
+                        end
+                        if math.floor(combo / 10000 % 10) ~= 0 or combo >= 100000 then
+                            comboImages[5][math.floor(combo / 10000 % 10)]:draw(comboImages[5][math.floor(combo / 10000 % 10)].x + offsetX, comboImages[5][math.floor(combo / 10000 % 10)].y, comboSize.x, comboSize.y)
+                        end
+                        if math.floor(combo / 100000 % 10) ~= 0 or combo >= 100000 then
+                            comboImages[6][math.floor(combo / 100000 % 10)]:draw(comboImages[6][math.floor(combo / 100000 % 10)].x + offsetX, comboImages[6][math.floor(combo / 100000 % 10)].y, comboSize.x, comboSize.y)
+                        end
+                    end
+                    love.graphics.translate(push.getWidth() / 2, 0)
+                    love.graphics.rectangle("fill", -1000, 0, scoring.healthTween * 400+10, 20, 10, 10)
+
+                    love.graphics.setFont(scoreFont)
+                    scoreFormat = string.format("%07d", round(scoring.score))
+                    if scoring.accuracy >= 100 then
+                        accuracyFormat = "100.00%"
                     else
-                        offsetX = -20
+                        accuracyFormat = string.format("%.2f%%", scoring.accuracy)
                     end
-                    comboImages[1][combo % 10]:draw(comboImages[1][combo % 10].x + offsetX, comboImages[1][combo % 10].y, comboSize.x, comboSize.y)
-                    if math.floor(combo / 10 % 10) ~= 0 or combo >= 100 then
-                        comboImages[2][math.floor(combo / 10 % 10)]:draw(comboImages[2][math.floor(combo / 10 % 10)].x + offsetX, comboImages[2][math.floor(combo / 10 % 10)].y, comboSize.x, comboSize.y)
+                    love.graphics.setFont(accuracyFont)
+                    love.graphics.printf(scoreFormat, 0, 0, 960, "right")
+                    if accuracyFormat == "nan%" then 
+                        accuracyFormat = "0.00%"
                     end
-                    if math.floor(combo / 100 % 10) ~= 0 or combo >= 1000 then
-                        comboImages[3][math.floor(combo / 100 % 10)]:draw(comboImages[3][math.floor(combo / 100 % 10)].x + offsetX, comboImages[3][math.floor(combo / 100 % 10)].y, comboSize.x, comboSize.y)
-                    end
-                    if math.floor(combo / 1000 % 10) ~= 0 or combo >= 10000 then
-                        comboImages[4][math.floor(combo / 1000 % 10)]:draw(comboImages[4][math.floor(combo / 1000 % 10)].x + offsetX, comboImages[4][math.floor(combo / 1000 % 10)].y, comboSize.x, comboSize.y)
-                    end
-                    if math.floor(combo / 10000 % 10) ~= 0 or combo >= 100000 then
-                        comboImages[5][math.floor(combo / 10000 % 10)]:draw(comboImages[5][math.floor(combo / 10000 % 10)].x + offsetX, comboImages[5][math.floor(combo / 10000 % 10)].y, comboSize.x, comboSize.y)
-                    end
-                    if math.floor(combo / 100000 % 10) ~= 0 or combo >= 100000 then
-                        comboImages[6][math.floor(combo / 100000 % 10)]:draw(comboImages[6][math.floor(combo / 100000 % 10)].x + offsetX, comboImages[6][math.floor(combo / 100000 % 10)].y, comboSize.x, comboSize.y)
-                    end
-                end
-                love.graphics.translate(push.getWidth() / 2, 0)
-                love.graphics.rectangle("fill", -1000, 0, scoring.healthTween * 400+10, 20, 10, 10)
+                    love.graphics.printf(accuracyFormat, 0, 45, 960, "right")
+                    love.graphics.setFont(font)
 
-                love.graphics.setFont(scoreFont)
-                scoreFormat = string.format("%07d", round(scoring.score))
-                if scoring.accuracy >= 100 then
-                    accuracyFormat = "100.00%"
-                else
-                    accuracyFormat = string.format("%.2f%%", scoring.accuracy)
-                end
-                love.graphics.setFont(accuracyFont)
-                love.graphics.printf(scoreFormat, 0, 0, 960, "right")
-                if accuracyFormat == "nan%" then 
-                    accuracyFormat = "0.00%"
-                end
-                love.graphics.printf(accuracyFormat, 0, 45, 960, "right")
-                love.graphics.setFont(font)
+                    -- Time remaining bar 
+                    love.graphics.rectangle("fill", -push.getWidth()/2, push.getHeight() - 10, push.getWidth() * (1 - (musicTime/1000 / audioFile:getDuration())), 10, 10, 10)
+                love.graphics.pop()
+            love.graphics.setCanvas()
 
-                -- Time remaining bar 
-                love.graphics.rectangle("fill", -push.getWidth()/2, push.getHeight() - 10, push.getWidth() * (1 - (musicTime/1000 / audioFile:getDuration())), 10, 10, 10)
-            love.graphics.pop()
+            love.graphics.setColor(1, 1, 1, 1)
+            love.graphics.setShader(modifiers.shaders[modifiers.curShader])
+            -- resize canvas to strech to screen
+            love.graphics.draw(gameCanvas, 0, 0, 0, push:getWidth() / gameCanvas:getWidth(), push:getHeight() / gameCanvas:getHeight())
+            love.graphics.setShader()
+
+
+            
         end
     end,
 
