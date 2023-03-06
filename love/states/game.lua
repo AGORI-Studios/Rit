@@ -165,12 +165,7 @@ return {
         modifiers:load()
         --modifiers:applyMod("tipsy", 1, 5)
         --modifiers:applyMod("drunk", 1, 5)
-        applyMod = function(mod, beat, amount)
-            modifiers:applyMod(mod, beat, amount)
-        end
-        removeMod = function(mod, beat)
-            modifiers:removeMod(mod, beat)
-        end
+
         if create then create() end
         
         strumlineY = {-35}
@@ -368,6 +363,8 @@ return {
                                     end
                                 )
                                 table.remove(notes, 1)
+
+                                if hit then hit(i, judgement) end
                             end
                         end
                     end 
@@ -461,12 +458,27 @@ return {
                 voices:setPitch(musicPitch[1])
             end
         end
+
+        if update then 
+            update(beatHandler.curBeat, musicTime, dt)
+        end
+    end,
+
+    keypressed = function(self, key)
+        if key_pressed then key_pressed(key) end
     end,
 
     draw = function(self)
-
         if musicTimeDo then
             love.graphics.push()
+
+                love.graphics.push()
+                    love.graphics.translate(push.getWidth() / 2, push.getHeight() / 2)
+                    for i,v in pairs(modifiers.graphics) do
+                        v.img:draw()
+                    end
+                love.graphics.pop()
+
                 love.graphics.push()
                     if settings.downscroll then 
                         love.graphics.translate(0, push.getHeight() - 175)

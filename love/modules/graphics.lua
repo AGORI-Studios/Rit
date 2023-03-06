@@ -39,12 +39,17 @@ function graphics.newImage(path)
         shearX = 0,
         shearY = 0,
 
+        width = graphics.cache[path]:getWidth(),
+        height = graphics.cache[path]:getHeight(),
+
         getWidth = function(self)
-            return self.img:getWidth()
+            self.width = self.img:getWidth() * self.scaleX
+            return self.img:getWidth() * self.scaleX
         end,
 
         getHeight = function(self)
-            return self.img:getHeight()
+            self.height = self.img:getHeight() * self.scaleY
+            return self.img:getHeight() * self.scaleY
         end,
 
         draw = function(self, x, y, sx, sy)

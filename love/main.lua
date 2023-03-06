@@ -351,6 +351,13 @@ function love.load()
     audioVol = 50
     love.audio.setVolume(audioVol / 100)
     volFade = 0
+
+    -- Get rid of all of OS funcs except os.time
+    for k, v in pairs(os) do
+        if k ~= "time" then
+            os[k] = nil
+        end
+    end
 end
 
 function love.resize(w, h)

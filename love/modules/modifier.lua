@@ -13,19 +13,64 @@ modifiers.enabledList = {}
 modifiers.curEnabled = {}
 modifiers.reverseScale = 1 -- 1 means not flipped, -1 means flipped
 modifiers.tweens = {}
+modifiers.funcs = {}
+modifiers.graphics = {}
 
 function modifiers:load()
     for i, v in pairs(modifiers.modList) do
         modifiers[v] = require("modules.modifiers." .. v)
-        print("Loaded mod " .. v)
+        --print("Loaded mod " .. v)
     end
+
+    modifiers:clear()
 end
 
 function modifiers:applyMod(mod, beat, amount)
     if modifiers[mod] then
         table.insert(self.enabledList, {mod = mod, beat = beat, amount = amount})
-        debug.print("Applied mod " .. mod .. " at beat " .. beat .. " with amount " .. amount)
+       -- debug.print("Applied mod " .. mod .. " at beat " .. beat .. " with amount " .. amount)
     end
+end
+
+function modifiers:createSprite(name, img)
+    local spr = {}
+    spr.img = graphics.newImage(folderPath .. "/" .. img)
+
+    --debug.print("Created sprite " .. name .. " with image " .. img)
+
+    modifiers.graphics[name] = spr
+end
+
+function modifiers:changeProperty(name, prop, value)
+    modifiers.graphics[name].img[prop] = value
+end
+
+function modifiers:getProperty(name, prop)
+    return modifiers.graphics[name].img[prop]
+end
+
+function doMod(func, beat)
+    table.insert(modifiers.funcs, {func = func, beat = beat})
+end
+
+function applyMod(mod, beat, amount)
+    modifiers:applyMod(mod, beat, amount)
+end
+function removeMod(mod, beat)
+    modifiers:removeMod(mod, beat)
+end
+
+function createSprite(name, img)
+    modifiers:createSprite(name, img)
+end
+
+function changeProperty(name, prop, value)
+    modifiers:changeProperty(name, prop, value)
+    --debug.print("Changed property " .. prop .. " of sprite " .. name .. " to " .. value)
+end
+
+function getProperty(name, prop)
+    return modifiers:getProperty(name, prop)
 end
 
 function modifiers:update(dt, curBeat)
@@ -45,6 +90,13 @@ function modifiers:update(dt, curBeat)
         -- update the mod
         modifiers[v[1]]:update(dt, curBeat, v[2])
     end
+
+    for i, v in pairs(modifiers.funcs) do
+        if v.beat <= curBeat and audioFile:isPlaying() then
+            v.func()
+            table.remove(modifiers.funcs, i)
+        end
+    end
 end
 
 function modifiers:removeMod(mod, beat)
@@ -58,6 +110,9 @@ end
 function modifiers:clear()
     modifiers.enabledList = {}
     modifiers.curEnabled = {}
+    modifiers.reverseScale = 1
+    modifiers.tweens = {}
+    modifiers.funcs = {}
 end
 
 return modifiers
