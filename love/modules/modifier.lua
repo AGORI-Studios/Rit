@@ -19,20 +19,15 @@ modifiers.graphics = {}
 modifiers.shaders = {}
 modifiers.curShader = ""
 
-function tryExcept(func, except)
-    local status, err = pcall(func)
-    if not status then
-        except(err)
-    end
-end
-
 function modifiers:load()
     for i, v in pairs(modifiers.modList) do
         modifiers[v] = require("modules.modifiers." .. v)
-        --print("Loaded mod " .. v)
     end
-
-    modifiers:clear()
+    
+    -- Reset the modifiers
+    modifiers:applyMod("drunk", 0, 0)
+    modifiers:applyMod("tipsy", 0, 0)
+    modifiers:applyMod("reverse", 0, 1) 
 end
 
 function modifiers:applyMod(mod, beat, amount)
@@ -198,6 +193,16 @@ function modifiers:clear()
     modifiers.graphics = {}
     modifiers.shaders = {}
     modifiers.curShader = ""
+
+    for i, v in pairs(modifiers.modList) do
+        modifiers[v] = nil
+    end
+
+    create = nil
+    update = nil
+    key_pressed = nil
+    update = nil
+    hit = nil
 end
 
 return modifiers

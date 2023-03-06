@@ -7,18 +7,21 @@ msa.file = false
 
 function msa.loadScript(path)
     msa.file = file
-    success = pcall(function() love.filesystem.load(path .. "/mod.lua")() end)
-    if not success then
-        debug.print("No modscript found at " .. path)
-        -- stop loading the modscript
-        return
-    end
-    debug.print("Loaded modscript at " .. path)
+    tryExcept(
+        function()
+            love.filesystem.load(path .. "/mod.lua")()
 
-    -- actually load the script
-    love.filesystem.load(path .. "/mod.lua")()
+            debug.print("Loaded modscript at " .. path)
 
-    msa.file = true
+            msa.file = true
+        end,
+        function(err)
+            debug.print("Error loading modscript at " .. path .. "/mod.lua")
+            debug.print(err)
+
+            msa.file = false
+        end
+    )
 end
 
 return msa

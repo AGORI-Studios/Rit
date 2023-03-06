@@ -18,6 +18,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ------------------------------------------------------------------------------]]
+function tryExcept(func, except)
+    local status, err = pcall(func)
+    if not status then
+        except(err)
+    end
+end
 
 if not love.filesystem.isFused() then
     __DEBUG__ = true
