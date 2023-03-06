@@ -97,7 +97,15 @@ function modifiers:newShader(name, file)
 end
 
 function modifiers:changeShaderProperty(name, prop, value)
-    modifiers.shaders[name]:send(prop, value)
+    tryExcept(
+        function()
+            modifiers.shaders[name]:send(prop, value)
+        end,
+        function(err)
+            debug.print("Error changing property " .. prop .. " of shader " .. name)
+            debug.print(err)
+        end
+    )
 end
 
 function modifiers:applyShader(name)

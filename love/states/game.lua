@@ -583,7 +583,9 @@ return {
             love.graphics.setCanvas()
 
             love.graphics.setColor(1, 1, 1, 1)
-            love.graphics.setShader(modifiers.shaders[modifiers.curShader])
+            if modifiers.curShader ~= "" then
+                love.graphics.setShader(modifiers.shaders[modifiers.curShader])
+            end
             -- resize canvas to strech to screen
             love.graphics.draw(gameCanvas, 0, 0, 0, push:getWidth() / gameCanvas:getWidth(), push:getHeight() / gameCanvas:getHeight())
             love.graphics.setShader()
@@ -593,7 +595,12 @@ return {
         end
     end,
 
-    focus = function(_, f)
+    resize = function(self,w, h)
+        -- resize canvas to strech to new screen size
+        gameCanvas = love.graphics.newCanvas(w, h)
+    end,
+
+    focus = function(self, f)
         debug.print("focus: " .. tostring(f))
         if not f then
             pause()

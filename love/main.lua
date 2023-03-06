@@ -363,6 +363,8 @@ end
 function love.resize(w, h)
     push.resize(w, h)
 
+    state.resize(w, h)
+
     scissorScale = h / 720
 end
 

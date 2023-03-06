@@ -72,6 +72,10 @@ function state.focus(f)
     if current.focus then current:focus(f) end
 end
 
+function state.resize(w, h)
+    if current.resize then current:resize(w, h) end
+end
+
 function state.quit()
     if current.quit then current:quit() end
 end
