@@ -42,7 +42,7 @@ function modifiers:createSprite(name, img)
     local spr = {}
     tryExcept(
         function()
-            spr.img = graphics.newImage(folderPath .. "/" .. img)
+            spr.img = graphics.newImage(folderPath .. "/mod/" .. img)
         end,
         function(err)
             debug.print("Error loading sprite " .. name)
@@ -80,7 +80,7 @@ end
 function modifiers:newShader(name, file)
    tryExcept(
         function()
-            modifiers.shaders[name] = love.graphics.newShader(folderPath .. "/" .. file)
+            modifiers.shaders[name] = love.graphics.newShader(folderPath .. "/mod/" .. file)
         end,
         function(err)
             debug.print("Error loading shader " .. name)

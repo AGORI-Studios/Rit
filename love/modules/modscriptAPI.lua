@@ -9,14 +9,14 @@ function msa.loadScript(path)
     msa.file = file
     tryExcept(
         function()
-            love.filesystem.load(path .. "/mod.lua")()
+            love.filesystem.load(path .. "/mod/mod.lua")()
 
             debug.print("Loaded modscript at " .. path)
 
             msa.file = true
         end,
         function(err)
-            debug.print("Error loading modscript at " .. path .. "/mod.lua")
+            debug.print("Error loading modscript at " .. path .. "/mod/mod.lua")
             debug.print(err)
 
             msa.file = false

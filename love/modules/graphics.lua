@@ -80,7 +80,7 @@ function graphics.newImage(path)
 
             -- parse xml
             --print(folderPath .. "/" .. self.sparrowSheet)
-            local data = xml(love.filesystem.read(folderPath .. "/" .. self.sparrowSheet))
+            local data = xml(love.filesystem.read(folderPath .. "/mod/" .. self.sparrowSheet))
 
             -- go inside TextureAtlas tag
             -- for all SubTextures, add it to the frames table with [i] index (number)
