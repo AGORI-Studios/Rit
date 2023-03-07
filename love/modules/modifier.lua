@@ -68,15 +68,7 @@ function modifiers:changeSpriteProperty(name, prop, value)
 end
 
 function modifiers:getSpriteProperty(name, prop)
-    tryExcept(
-        function()
-            return modifiers.graphics[name].img[prop]
-        end,
-        function(err)
-            debug.print("Error getting property " .. prop .. " of sprite " .. name)
-            return 0
-        end
-    )
+    return modifiers.graphics[name].img[prop]
 end
 
 function modifiers:newShader(name, file)
