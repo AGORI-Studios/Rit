@@ -16,6 +16,7 @@ modifiers.reverseScale = 1 -- 1 means not flipped, -1 means flipped
 modifiers.tweens = {}
 modifiers.funcs = {}
 modifiers.graphics = {}
+modifiers.draws = {}
 modifiers.shaders = {}
 modifiers.curShader = ""
 
@@ -52,6 +53,7 @@ function modifiers:createSprite(name, img)
 
     if spr.img then
         modifiers.graphics[name] = spr
+        modifiers.draws[#modifiers.draws + 1] = name
     end
 end
 
@@ -65,6 +67,10 @@ function modifiers:changeSpriteProperty(name, prop, value)
             return 0
         end
     )
+end
+
+function modifiers:animateSprite(name, anim)
+    modifiers.graphics[name].img:animate(anim)
 end
 
 function modifiers:getSpriteProperty(name, prop)
@@ -99,6 +105,23 @@ function modifiers:applyShader(name)
     modifiers.curShader = name
 end
 
+function modifiers:applySparrow(name, sparrow)
+    modifiers.graphics[name].img:setSparrowSheet(sparrow)
+end
+
+function modifiers:addAnim(name, animName, prefix, framerate, loop)
+    modifiers.graphics[name].img:addAnim(animName, prefix, framerate, loop)
+end 
+
+function modifiers:addAnimOffset(name, animName, ox, oy)
+    modifiers.graphics[name].img:addAnimOffset(animName, ox, oy)
+end
+
+function modifiers:changeAnimSpeed(name, speed)
+    modifiers.graphics[name].img:changeAnimSpeed(speed)
+end
+    
+
 -- Globals
 function doMod(func, beat)
     table.insert(modifiers.funcs, {func = func, beat = beat})
@@ -120,6 +143,10 @@ function changeSpriteProperty(name, prop, value)
     --debug.print("Changed property " .. prop .. " of sprite " .. name .. " to " .. value)
 end
 
+function animateSprite(name, anim)
+    modifiers:animateSprite(name, anim)
+end
+
 function getSpriteProperty(name, prop)
     return modifiers:getSpriteProperty(name, prop)
 end
@@ -139,6 +166,22 @@ function applyShader(name)
     else
         debug.print("Shader " .. name .. " does not exist")
     end
+end
+
+function applySparrow(name, sparrow)
+    modifiers:applySparrow(name, sparrow)
+end
+
+function addAnim(name, animName, prefix, framerate, loop)
+    modifiers:addAnim(name, animName, prefix, framerate, loop)
+end
+
+function addAnimOffset(name, animName, ox, oy)
+    modifiers:addAnimOffset(name, animName, ox, oy)
+end
+
+function changeAnimSpeed(name, speed)
+    modifiers:changeAnimSpeed(name, speed)
 end
 -- End globals
 
@@ -185,6 +228,7 @@ function modifiers:clear()
     modifiers.graphics = {}
     modifiers.shaders = {}
     modifiers.curShader = ""
+    modscript.file = false
 
     for i, v in pairs(modifiers.modList) do
         modifiers[v] = nil

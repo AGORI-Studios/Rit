@@ -165,8 +165,6 @@ return {
         modifiers:load()
         --modifiers:applyMod("tipsy", 1, 5)
         --modifiers:applyMod("drunk", 1, 5)
-
-        if create then create() end
         
         strumlineY = {-35}
         whereNotesHit = {-35}
@@ -464,6 +462,10 @@ return {
         if update then 
             update(beatHandler.curBeat, musicTime, dt)
         end
+
+        for i,v in pairs(modifiers.graphics) do
+            v.img:update(dt)
+        end
     end,
 
     keypressed = function(self, key)
@@ -477,8 +479,9 @@ return {
                 love.graphics.push()
                     love.graphics.push()
                         love.graphics.translate(push.getWidth() / 2, push.getHeight() / 2)
-                        for i,v in pairs(modifiers.graphics) do
-                            v.img:draw()
+                        -- draw in order of modifiers.graphics[name].img.drawLayer
+                        for i = 1, #modifiers.draws do 
+                            modifiers.graphics[modifiers.draws[i]].img:draw()
                         end
                     love.graphics.pop()
 

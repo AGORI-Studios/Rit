@@ -283,6 +283,7 @@ function love.load()
     graphics = require "modules.graphics"
 
     ini = require "lib.ini"
+    xml = require "lib.xml".parse
     if discordRPC then 
         discordRPC.initialize("785717724906913843", true) 
     end

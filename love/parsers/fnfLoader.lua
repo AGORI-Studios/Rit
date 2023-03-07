@@ -24,6 +24,7 @@ json = require "lib.json"
 local fnfLoader = {}
 
 function fnfLoader.load(chart, isPlayer, folderPath)
+    player = isPlayer and "boyfriend" or "enemy"
     curChart = "FNF"
     chart = json.decode(love.filesystem.read(chart))
     chart = chart["song"]
@@ -152,10 +153,13 @@ function fnfLoader.load(chart, isPlayer, folderPath)
             end
         end
     end
-    Timer.after(2,
+    if create then create() end
+
+    Timer.after((modscript.file and 5 or 2), -- let the modscript LOAD
         function()
             state.switch(game)
-            musicTimeDo = true
+
+            musicTimeDo = true 
         end
     )
 end                    
