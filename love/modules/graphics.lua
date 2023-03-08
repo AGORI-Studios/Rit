@@ -125,7 +125,6 @@ function graphics.newImage(path)
             end
 
             --print(self.xmlData[prefix])
-            print(prefix)
             for _, f in ipairs(self.xmlData[prefix]) do
                 add(f)
             end
