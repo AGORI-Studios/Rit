@@ -479,6 +479,8 @@ return {
                 love.graphics.push()
                     love.graphics.push()
                         love.graphics.translate(push.getWidth() / 2, push.getHeight() / 2)
+                        love.graphics.translate(modifiers.camera.x, modifiers.camera.y)
+                        love.graphics.scale(modifiers.camera.zoom, modifiers.camera.zoom)
                         -- draw in order of modifiers.graphics[name].img.drawLayer
                         for i = 1, #modifiers.draws do 
                             modifiers.graphics[modifiers.draws[i]].img:draw()
@@ -521,7 +523,7 @@ return {
                                             noteImgs[i][1]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), charthits[i][j][2], notesize, notesize * (settings.downscroll and -1 or 1))
                                         end
                                     else
-                                        noteImgs[i][3]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), charthits[i][j][2], notesize, -notesize)
+                                        noteImgs[i][3]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), charthits[i][j][2]+50, notesize, -notesize)
                                     end
                                 end
                             end
@@ -628,6 +630,7 @@ return {
 
         Timer.clear()
         presence = {}
+        camera = {x=0, y=0, zoom=1}
 
         modifiers:clear()
     end

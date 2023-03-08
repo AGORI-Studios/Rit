@@ -354,7 +354,7 @@ function love.load()
 
     -- scissorScale is meant for 720p
     scissorScale = 1
-
+    
     audioVol = 50
     love.audio.setVolume(audioVol / 100)
     volFade = 0
@@ -449,9 +449,11 @@ function love.keypressed(key)
     end
 
     if key == "o" then 
-        if choosingSkin and choosingSong then
+        --[[
+        if choosingSkin or choosingSong then -- currently unused
             state.switch(audioOffsetter)
         end
+        --]]
     end
 
     if key == "f11" then 

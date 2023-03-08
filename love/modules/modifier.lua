@@ -19,6 +19,7 @@ modifiers.graphics = {}
 modifiers.draws = {}
 modifiers.shaders = {}
 modifiers.curShader = ""
+modifiers.camera = {x=0,y=0,zoom=1}
 
 function modifiers:load()
     for i, v in pairs(modifiers.modList) do
@@ -120,7 +121,15 @@ end
 function modifiers:changeAnimSpeed(name, speed)
     modifiers.graphics[name].img:changeAnimSpeed(speed)
 end
-    
+
+function modifiers:setCameraZoom(zoom)
+    modifiers.camera.zoom = zoom
+end
+
+function modifiers:setCameraPos(x, y)
+    modifiers.camera.x = x
+    modifiers.camera.y = y
+end
 
 -- Globals
 function doMod(func, beat)
@@ -183,6 +192,15 @@ end
 function changeAnimSpeed(name, speed)
     modifiers:changeAnimSpeed(name, speed)
 end
+
+function setCameraZoom(zoom)
+    modifiers:setCameraZoom(zoom)
+end
+
+function setCameraPos(x, y)
+    modifiers:setCameraPos(x, y)
+end
+
 -- End globals
 
 function modifiers:update(dt, curBeat)
@@ -229,6 +247,7 @@ function modifiers:clear()
     modifiers.shaders = {}
     modifiers.curShader = ""
     modscript.file = false
+    modifiers.camera = {x = 0, y = 0, zoom = 1}
 
     for i, v in pairs(modifiers.modList) do
         modifiers[v] = nil
