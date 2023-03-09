@@ -19,8 +19,8 @@
 #
 #########################################################################################
 
-release: clean win32 win64 macos nx bundle appimage
-desktop: clean win32 win64 macos appimage
+release: clean win32 win64 macos nx bundle
+desktop: clean win32 win64 macos
 console: clean nx
 quick: clean lovefile
 
@@ -38,6 +38,12 @@ win32: lovefile
 	cp -r resources/win32/* build/win32
 	cp -r resources/win32/discord-rpc.dll build/win32
 
+	cat resources/win32/love.exe build/win32/game.love > build/win32/Rit.exe
+	cat resources/win32/lovec.exe build/win32/game.love > build/win32/Ritc.exe
+	rm build/win32/game.love
+	rm build/win32/love.exe
+	rm build/win32/lovec.exe
+
 win64: lovefile
 	rm -rf build/win64
 	mkdir -p build/win64
@@ -46,12 +52,20 @@ win64: lovefile
 	cp -r resources/win64/* build/win64
 	cp -r resources/win64/discord-rpc.dll build/win64
 
+	cat resources/win64/love.exe build/win64/game.love > build/win64/Rit.exe
+	cat resources/win64/lovec.exe build/win64/game.love > build/win64/Ritc.exe
+	rm build/win64/game.love
+	rm build/win64/love.exe
+	rm build/win64/lovec.exe
+
 macos: lovefile
 	rm -rf build/macos
 	mkdir -p build/macos/Rit.app 
 
 	cp -r resources/macos/love.app/. build/macos/Rit.app
 	cp -r build/lovefile/Rit.love build/macos/Rit.app/Contents/Resources/game.love
+	# add discord-rpc.dylib to macos in Frameworks
+	cp -r resources/macos/discord-rpc.dylib build/macos/Rit.app/Contents/Frameworks
 
 nx: lovefile
 	rm -rf build/nx 
@@ -67,17 +81,6 @@ nx: lovefile
 	rm -r build/nx/romfs
 	rm build/nx/Rit.nacp 
 
-appimage: lovefile
-	# check if user is on linux, if they aren't then ignore this step
-	if [ "$(shell uname)" = "Linux" ]; then \
-		# run .AppImage with --appimage-extract to extract the contents
-		./resources/appimage/love.AppImage --appimage-extract
-		cat ./resources/appimage/squashfs-root/bin/love ./build/lovefile/Rit.love > ./build/appimage/squashfs-root/bin/Rit
-		chmod +x ./build/appimage/squashfs-root/bin/Rit
-		# rebuild the .AppImage
-		# finish this when on linux lolol
-	fi
-
 bundle:
 	# zip all build/* folders and put to build/release
 	
@@ -87,4 +90,7 @@ bundle:
 	cd build; zip -r -9 nx.zip nx
 
 clean:
-	rm -r build
+# if build folder exists, delete it
+	if [ -d "build" ]; then \
+		rm -rf build; \
+	fi
