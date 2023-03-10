@@ -248,8 +248,10 @@ function modifiers:clear()
     modifiers.curShader = ""
     modscript.file = false
     modifiers.camera = {x = 0, y = 0, zoom = 1}
+    notesize = 1
+    modifiers.draws = {}
 
-    for i, v in pairs(modifiers.modList) do
+    for _, v in pairs(modifiers.modList) do
         modifiers[v] = nil
     end
 
