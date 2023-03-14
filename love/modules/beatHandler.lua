@@ -23,6 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 local beatHandler = {}
 
 beatHandler.beat = 0
+beatHandler.simulatedBeat = 0
 beatHandler.beatTime = 0
 
 beatHandler.bpm = 100
@@ -32,7 +33,10 @@ beatHandler.stepCrochet = beatHandler.crochet / 4
 
 beatHandler.lastBeat = 0
 beatHandler.curBeat = 0
+beatHandler.simulatedCurBeat = 0
+beatHandler.simulatedLastBeat = 0
 beatHandler.isBeatHit = false
+beatHandler.isSimulatedBeatHit = false
 
 function beatHandler.setBPM(bpm)
     bpm = bpm or 100
@@ -60,11 +64,18 @@ end
 function beatHandler.update(dt)
     beatHandler.isBeatHit = false
     beatHandler.curBeat = math.floor((musicTime / 1000) * (beatHandler.bpm / 60))
+    beatHandler.simulatedCurBeat = math.floor((simulatedMusicTime / 1000) * (beatHandler.bpm / 60))
 
     if math.abs(beatHandler.curBeat) > math.abs(beatHandler.lastBeat) then
         beatHandler.isBeatHit = true
         beatHandler.beat = beatHandler.beat + 1
         beatHandler.lastBeat = beatHandler.curBeat
+    end
+
+    if math.abs(beatHandler.simulatedCurBeat) > math.abs(beatHandler.simulatedLastBeat) then
+        beatHandler.isSimulatedBeatHit = true
+        beatHandler.simulatedBeat = beatHandler.simulatedBeat + 1
+        beatHandler.simulatedLastBeat = beatHandler.simulatedCurBeat
     end
 end
 
@@ -73,10 +84,26 @@ function beatHandler.reset()
     beatHandler.beatTime = 0
     beatHandler.lastBeat = 0
     beatHandler.curBeat = 0
+
+    beatHandler.isBeatHit = false
+
+    beatHandler.simulatedBeat = 0
+    beatHandler.simulatedLastBeat = 0
+    beatHandler.simulatedCurBeat = 0
+
+    beatHandler.isSimulatedBeatHit = false
 end
 
 function beatHandler.onBeat()
     return beatHandler.isBeatHit
+end
+
+function beatHandler.onSimulatedBeat()
+    return beatHandler.isSimulatedBeatHit
+end
+
+function beatHandler.getSimulatedBeat()
+    return beatHandler.simulatedBeat
 end
 
 function beatHandler.setBeat(beat)
