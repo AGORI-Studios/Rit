@@ -214,6 +214,41 @@ function graphics.newImage(path)
     }
 end
 
+function graphics.newRectangle(x, y, width, height, color)
+    local rect = {
+        x = x,
+        y = y,
+        width = width,
+        height = height,
+        color = color,
+        update = function(self, dt)
+        end,
+        draw = function(self)
+            love.graphics.setColor(self.color)
+            love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
+            love.graphics.setColor(1, 1, 1, 1)
+        end
+    }
+    return rect
+end
+
+function graphics.newCircle(x, y, radius, color)
+    local circle = {
+        x = x,
+        y = y,
+        radius = radius,
+        color = color,
+        update = function(self, dt)
+        end,
+        draw = function(self)
+            love.graphics.setColor(self.color)
+            love.graphics.circle("fill", self.x, self.y, self.radius)
+            love.graphics.setColor(1, 1, 1, 1)
+        end
+    }
+    return circle
+end
+
 function graphics.clearCache()
     graphics.cache = {}
 end
