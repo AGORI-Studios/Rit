@@ -15,11 +15,14 @@ modifiers.curEnabled = {}
 modifiers.reverseScale = 1 -- 1 means not flipped, -1 means flipped
 modifiers.tweens = {}
 modifiers.funcs = {}
+modifiers.funcsSimulated = {}
 modifiers.graphics = {}
 modifiers.draws = {}
 modifiers.shaders = {}
 modifiers.curShader = ""
 modifiers.camera = {x=0,y=0,zoom=1}
+modifiers.gameProperties = {["receptorsVisible"]=true,["healthbarVisible"]=true,["scoreVisible"]=true,["timebarVisible"]=true}
+modifiers.musicPlaying = true
 
 function modifiers:load()
     for i, v in pairs(modifiers.modList) do
@@ -55,6 +58,13 @@ function modifiers:createSprite(name, img)
     if spr.img then
         modifiers.graphics[name] = spr
         modifiers.draws[#modifiers.draws + 1] = name
+
+        modifiers.graphics[name].draw = function(self)
+            modifiers.graphics[name].img:draw()
+        end
+        modifiers.graphics[name].update = function(self, dt)
+            modifiers.graphics[name].img:update(dt)
+        end
     end
 end
 
@@ -131,9 +141,39 @@ function modifiers:setCameraPos(x, y)
     modifiers.camera.y = y
 end
 
+function modifiers:changeGameProperty(prop, value)
+    modifiers.gameProperties[prop] = value
+end
+
+function modifiers:setMusicPlaying(value)
+    modifiers.musicPlaying = value
+end
+
+function modifiers:createRect(name, x, y, w, h, color)
+    modifiers.graphics[name] = graphics.newRect(x, y, w, h, color)
+    modifiers.draws[#modifiers.draws + 1] = name
+end
+
+function modifiers:changeRectProperty(name, prop, value)
+    modifiers.graphics[name][prop] = value
+end
+
+function modifiers:newCircle(name, x, y, radius, color)
+    modifiers.graphics[name] = graphics.newCircle(x, y, radius, color)
+    modifiers.draws[#modifiers.draws + 1] = name
+end
+
+function modifiers:changeCircleProperty(name, prop, value)
+    modifiers.graphics[name][prop] = value
+end
+
 -- Globals
 function doMod(func, beat)
     table.insert(modifiers.funcs, {func = func, beat = beat})
+end
+
+function doModSimulated(func, beat)
+    table.insert(modifiers.funcsSimulated, {func = func, beat = beat})
 end
 
 function applyMod(mod, beat, amount)
@@ -201,9 +241,35 @@ function setCameraPos(x, y)
     modifiers:setCameraPos(x, y)
 end
 
+function changeGameProperty(prop, value)
+    modifiers:changeGameProperty(prop, value)
+end
+
+function setMusicPlaying(value)
+    modifiers:setMusicPlaying(value)
+    previousFrameTime = love.timer.getTime() * 1000
+end
+
+function createRect(name, x, y, w, h, color)
+    modifiers:createRect(name, x, y, w, h, color)
+end
+
+function changeRectProperty(name, prop, value)
+    modifiers:changeRectProperty(name, prop, value)
+end
+
+function newCircle(name, x, y, radius, color)
+    modifiers:newCircle(name, x, y, radius, color)
+end
+
+function changeCircleProperty(name, prop, value)
+    modifiers:changeCircleProperty(name, prop, value)
+end
+
 -- End globals
 
 function modifiers:update(dt, curBeat)
+    local curBeatSimulated = math.floor((simulatedMusicTime / 1000) * (beatHandler.bpm / 60))
     --print(curBeat)
     for i, v in pairs(modifiers.enabledList) do
         -- if current beat is the same as the beat the mod was applied
@@ -227,6 +293,13 @@ function modifiers:update(dt, curBeat)
             table.remove(modifiers.funcs, i)
         end
     end
+
+    for i, v in pairs(modifiers.funcsSimulated) do
+        if v.beat <= curBeatSimulated then
+            v.func()
+            table.remove(modifiers.funcsSimulated, i)
+        end
+    end
 end
 
 function modifiers:removeMod(mod, beat)
@@ -243,6 +316,7 @@ function modifiers:clear()
     modifiers.reverseScale = 1
     modifiers.tweens = {}
     modifiers.funcs = {}
+    modifiers.funcsSimulated = {}
     modifiers.graphics = {}
     modifiers.shaders = {}
     modifiers.curShader = ""
@@ -250,6 +324,8 @@ function modifiers:clear()
     modifiers.camera = {x = 0, y = 0, zoom = 1}
     notesize = 1
     modifiers.draws = {}
+    modifiers.gameProperties = {["receptorsVisible"]=true,["healthbarVisible"]=true,["scoreVisible"]=true,["timebarVisible"]=true}
+    modifiers.musicPlaying = true
 
     for _, v in pairs(modifiers.modList) do
         modifiers[v] = nil

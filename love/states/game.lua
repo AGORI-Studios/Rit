@@ -28,6 +28,7 @@ end
 
 local function pause()
     musicTimeDo = false 
+    paused = true
     love.audio.pause(audioFile)
     if voices then
         love.audio.pause(voices)
@@ -100,6 +101,7 @@ return {
         songSelect = require "states.songSelect"
     
         musicTime = -settings.startTime 
+        simulatedMusicTime = -settings.startTime
     
         PRESSEDMOMENTS = {
             [1] = 1,
@@ -112,6 +114,7 @@ return {
         }
         lastReportedPlaytime = 0
         previousFrameTime = love.timer.getTime() * 1000
+        simulatedPreviousFrameTime = love.timer.getTime() * 1000
         additionalScore = 0
         additionalAccuracy = 0
         noteCounter = 0
@@ -173,23 +176,32 @@ return {
     end,
 
     update = function(self, dt)
-        if musicTimeDo and not died then
+        simulatedTime = love.timer.getTime()
+
+        simulatedMusicTime = simulatedMusicTime + (simulatedTime * 1000)  - simulatedPreviousFrameTime
+        simulatedPreviousFrameTime = simulatedTime * 1000
+        absSimulatedMusicTime = math.abs(simulatedMusicTime)
+        if musicTimeDo and not died and modifiers.musicPlaying then
             local time = love.timer.getTime()
 
             musicTime = musicTime + (time * musicPosValue[1]) - previousFrameTime
             previousFrameTime = time * musicPosValue[1]
 
             musicPos = ((musicTime) * (speed)+100)
-            modifiers:update(dt, beatHandler.beat)
         elseif not musicTimeDo then
             previousFrameTime = love.timer.getTime() * 1000
-        elseif musicTimeDo and died then
+        elseif musicTimeDo and died and modifiers.musicPlaying then
             musicTime = musicTime + musicPosValue[1] * dt
             musicPos = ((musicTime) * (speed)+100)
+        end
+
+        if not paused then 
             modifiers:update(dt, beatHandler.beat)
         end
+
         absMusicTime = math.abs(musicTime)
-        if (musicTime > 0 - settings.audioOffset) and not audioFile:isPlaying() and not died then
+
+        if (musicTime > 0 - settings.audioOffset) and not audioFile:isPlaying() and not died and modifiers.musicPlaying then
             if musicTimeDo then
                 audioFile:play()
                 if voices then -- support for fnf voices
@@ -274,6 +286,7 @@ return {
                 pause()
             else
                 musicTimeDo = true
+                paused = false
                 if musicTime >= 0 then
                     audioFile:play()
                     if voices then -- support for fnf voices
@@ -464,7 +477,7 @@ return {
         end
 
         for i,v in pairs(modifiers.graphics) do
-            v.img:update(dt)
+            v:update(dt)
         end
     end,
 
@@ -483,7 +496,7 @@ return {
                         love.graphics.scale(modifiers.camera.zoom, modifiers.camera.zoom)
                         -- draw in order of modifiers.graphics[name].img.drawLayer
                         for i = 1, #modifiers.draws do 
-                            modifiers.graphics[modifiers.draws[i]].img:draw()
+                            modifiers.graphics[modifiers.draws[i]]:draw()
                         end
                     love.graphics.pop()
 
@@ -565,25 +578,31 @@ return {
                         end
                     end
                     love.graphics.translate(push.getWidth() / 2, 0)
-                    love.graphics.rectangle("fill", -1000, 0, scoring.healthTween * 400+10, 20, 10, 10)
-
-                    love.graphics.setFont(scoreFont)
-                    scoreFormat = string.format("%07d", round(scoring.score))
-                    if scoring.accuracy >= 100 then
-                        accuracyFormat = "100.00%"
-                    else
-                        accuracyFormat = string.format("%.2f%%", scoring.accuracy)
+                    if modifiers.gameProperties["healthbarVisible"] then 
+                        love.graphics.rectangle("fill", -1000, 0, scoring.healthTween * 400+10, 20, 10, 10)
                     end
-                    love.graphics.setFont(accuracyFont)
-                    love.graphics.printf(scoreFormat, 0, 0, 960, "right")
-                    if accuracyFormat == "nan%" then 
-                        accuracyFormat = "0.00%"
-                    end
-                    love.graphics.printf(accuracyFormat, 0, 45, 960, "right")
-                    love.graphics.setFont(font)
 
-                    -- Time remaining bar 
-                    love.graphics.rectangle("fill", -push.getWidth()/2, push.getHeight() - 10, push.getWidth() * (1 - (musicTime/1000 / audioFile:getDuration())), 10, 10, 10)
+                    if modifiers.gameProperties["scoreVisible"] then
+                        love.graphics.setFont(scoreFont)
+                        scoreFormat = string.format("%07d", round(scoring.score))
+                        if scoring.accuracy >= 100 then
+                            accuracyFormat = "100.00%"
+                        else
+                            accuracyFormat = string.format("%.2f%%", scoring.accuracy)
+                        end
+                        love.graphics.setFont(accuracyFont)
+                        love.graphics.printf(scoreFormat, 0, 0, 960, "right")
+                        if accuracyFormat == "nan%" then 
+                            accuracyFormat = "0.00%"
+                        end
+                        love.graphics.printf(accuracyFormat, 0, 45, 960, "right")
+                        love.graphics.setFont(font)
+                    end
+
+                    if modifiers.gameProperties["timebarVisible"] then
+                        -- Time remaining bar 
+                        love.graphics.rectangle("fill", -push.getWidth()/2, push.getHeight() - 10, push.getWidth() * (1 - (musicTime/1000 / audioFile:getDuration())), 10, 10, 10)
+                    end
                 love.graphics.pop()
             love.graphics.setCanvas()
 
@@ -595,8 +614,6 @@ return {
             love.graphics.draw(gameCanvas, 0, 0, 0, push:getWidth() / gameCanvas:getWidth(), push:getHeight() / gameCanvas:getHeight())
             love.graphics.setShader()
 
-
-            
         end
     end,
 
