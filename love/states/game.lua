@@ -60,6 +60,8 @@ function addJudgement(judgement)
     end
     curJudgement = judgement
 
+    additionalScore = additionalScore + scoring.scorePoints[judgement]
+
     if judgeTimer then 
         Timer.cancel(judgeTimer)
     end
@@ -135,6 +137,42 @@ return {
         scoring["Great"] = 0
         scoring["Good"] = 0
         scoring["Miss"] = 0
+
+        scoring.scorePoints = {
+            ["Marvellous"] = 0,
+            ["Perfect"] = 0,
+            ["Great"] = 0,
+            ["Good"] = 0,
+            ["Miss"] = 0
+        }
+
+        scoring.totalNotes = 0
+
+        -- count all notes that are NOT holds or ends
+        for i = 1, #charthits do
+            for j = 1, #charthits[i] do
+                if not charthits[i][j][5] and not charthits[i][j][4] then
+                    scoring.totalNotes = scoring.totalNotes + 1
+                end
+            end
+        end
+
+        -- If the player were to get full marvellous, they would get 1,000,000 score
+        -- meaning with each note, they would get 1,000,000 / totalNotes
+        -- All perfects would be 800,000 / totalNotes
+        -- All greats would be 600,000 / totalNotes
+        -- All goods would be 400,000 / totalNotes
+        -- All misses would be 0
+        scoring.scorePoints["Marvellous"] = 1000000 / scoring.totalNotes
+        scoring.scorePoints["Perfect"] = 800000 / scoring.totalNotes
+        scoring.scorePoints["Great"] = 600000 / scoring.totalNotes
+        scoring.scorePoints["Good"] = 400000 / scoring.totalNotes
+        scoring.scorePoints["Miss"] = 0
+
+        for i, v in ipairs(scoring.scorePoints) do
+            v = math.floor(v)
+        end
+
         combo = 0
     
         sv = 1 -- Scroll Velocity
@@ -210,7 +248,7 @@ return {
                 debug.print("Playing audio file")
             end
         elseif musicTime > audioFile:getDuration() * 1000 then
-            state.switch(resultsScreen, scoring, {songTitle, songDifficultyName}, false)
+            state.switch(resultsScreen, scoring.score > 1000000 and 1000000 or scoring.score, {songTitle, songDifficultyName}, false)
         end
         for i = 1, #charthits do
             for j = 1, #charthits[i] do
@@ -312,75 +350,72 @@ return {
                             hitsoundCache[hit] = nil -- Nil afterwords to prevent memory leak
                         end --                             maybe, idk how love2d works lmfao
                     end
-                    if notes[1] then
-                        if not notes[1][4] and not notes[1][5] then
-                            if notes[1][1] - musicTime >= -80 and notes[1][1] - musicTime <= 180 or (notes[2] and notes[1][5] and notes[2][1] - musicTime >= -80 and notes[2][1] - musicTime <= 180) then
-                                noteCounter = noteCounter + 1
-                                pos = math.abs(notes[1][1] - musicTime)
-                                if notes[2] and notes[1][5] and notes[2][1] - musicTime >= -80 and notes[2][1] - musicTime <= 180 then
-                                    pos = math.abs(notes[2][1] - musicTime)
-                                end
-                                if pos < 28 then
-                                    judgement = "Marvellous"
-                                    scoring.health = scoring.health + 0.135
-                                    additionalScore = additionalScore + 650
-                                    additionalAccuracy = additionalAccuracy + 100
-                                elseif pos < 43 then
-                                    judgement = "Perfect"
-                                    scoring.health = scoring.health + 0.135
-                                    additionalScore = additionalScore + 500
-                                    additionalAccuracy = additionalAccuracy + 100
-                                elseif pos < 102 then
-                                    judgement = "Great"
-                                    scoring.health = scoring.health + 0.135
-                                    additionalScore = additionalScore + 350
-                                    additionalAccuracy = additionalAccuracy + 75
-                                elseif pos < 135 then
-                                    judgement = "Good"
-                                    scoring.health = scoring.health + 0.135
-                                    additionalScore = additionalScore + 200
-                                    additionalAccuracy = additionalAccuracy + 50
-                                else
-                                    judgement = "Miss"
-                                    scoring.health = scoring.health - 0.270
-                                    additionalAccuracy = additionalAccuracy
-                                end
-
-                                addJudgement(judgement)
-
-                                if scoring.health > 2 then
-                                    scoring.health = 2
-                                end
-                                if scoringTimer then 
-                                    Timer.cancel(scoringTimer)
-                                end
-                                if accuracyTimer then
-                                    Timer.cancel(accuracyTimer)
-                                end
-                                scoringTimer = Timer.tween(
-                                    0.35,
-                                    scoring,
-                                    {score = additionalScore},
-                                    "out-quad",
-                                    function()
-                                        scoringTimer = nil
+                    for j = 1, #charthits[1] do
+                        if notes[j] then
+                            if not notes[j][4] and not notes[j][5] then
+                                if notes[j][1] - musicTime >= -80 and notes[j][1] - musicTime <= 180 or (notes[2] and notes[1][5] and notes[2][1] - musicTime >= -80 and notes[2][1] - musicTime <= 180) then
+                                    noteCounter = noteCounter + 1
+                                    pos = math.abs(notes[j][1] - musicTime)
+                                    if pos < 28 then
+                                        judgement = "Marvellous"
+                                        scoring.health = scoring.health + 0.135
+                                        additionalAccuracy = additionalAccuracy + 100
+                                    elseif pos < 43 then
+                                        judgement = "Perfect"
+                                        scoring.health = scoring.health + 0.135
+                                        additionalAccuracy = additionalAccuracy + 100
+                                    elseif pos < 102 then
+                                        judgement = "Great"
+                                        scoring.health = scoring.health + 0.135
+                                        additionalAccuracy = additionalAccuracy + 75
+                                    elseif pos < 135 then
+                                        judgement = "Good"
+                                        scoring.health = scoring.health + 0.135
+                                        additionalAccuracy = additionalAccuracy + 50
+                                    else
+                                        judgement = "Miss"
+                                        scoring.health = scoring.health - 0.270
+                                        additionalAccuracy = additionalAccuracy
                                     end
-                                )
-                                accuracyTimer = Timer.tween(
-                                    0.35,
-                                    scoring,
-                                    {accuracy = additionalAccuracy / (noteCounter + (scoring["Miss"] or 0))},
-                                    "out-quad",
-                                    function()
-                                        accuracyTimer = nil
-                                    end
-                                )
-                                table.remove(notes, 1)
 
-                                if hit then hit(i, judgement) end
+                                    addJudgement(judgement)
+
+                                    if scoring.health > 2 then
+                                        scoring.health = 2
+                                    end
+                                    if scoringTimer then 
+                                        Timer.cancel(scoringTimer)
+                                    end
+                                    if accuracyTimer then
+                                        Timer.cancel(accuracyTimer)
+                                    end
+                                    scoringTimer = Timer.tween(
+                                        0.35,
+                                        scoring,
+                                        {score = additionalScore},
+                                        "out-quad",
+                                        function()
+                                            scoringTimer = nil
+                                        end
+                                    )
+                                    accuracyTimer = Timer.tween(
+                                        0.35,
+                                        scoring,
+                                        {accuracy = additionalAccuracy / (noteCounter + (scoring["Miss"] or 0))},
+                                        "out-quad",
+                                        function()
+                                            accuracyTimer = nil
+                                        end
+                                    )
+                                    table.remove(notes, j)
+
+                                    if hit then hit(i, judgement) end
+
+                                    break
+                                end
                             end
-                        end
-                    end 
+                        end 
+                    end
                 end
 
                 if input:down(curInput) then
@@ -591,7 +626,7 @@ return {
                             accuracyFormat = string.format("%.2f%%", scoring.accuracy)
                         end
                         love.graphics.setFont(accuracyFont)
-                        love.graphics.printf(scoreFormat, 0, 0, 960, "right")
+                        love.graphics.printf(scoring.score > 1000000 and 1000000 or scoreFormat, 0, 0, 960, "right")
                         if accuracyFormat == "nan%" then 
                             accuracyFormat = "0.00%"
                         end
