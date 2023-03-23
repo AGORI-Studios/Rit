@@ -244,7 +244,7 @@ if  (love.system.getOS() == "Windows" or love.system.getOS() == "OS X") then
 end
 function love.load()
     require "modules.overrides"
-    debug = require "modules.debug"
+    require "modules.debug"
     input = (require "lib.baton").new({
         controls = {
             -- 4K inputs

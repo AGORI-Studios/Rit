@@ -623,7 +623,7 @@ return {
     end,
 
     focus = function(self, f)
-        debug.print("focus: " .. tostring(f))
+        --debug.print("focus: " .. tostring(f))
         if not f then
             pause()
         end

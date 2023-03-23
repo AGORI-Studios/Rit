@@ -1,5 +1,3 @@
-local debug = {}
-
 debug.consolelines = {}
 
 function debug.print(...)
@@ -51,5 +49,3 @@ function debug.update(dt)
         debug.clearConsole()
     end
 end
-
-return debug
