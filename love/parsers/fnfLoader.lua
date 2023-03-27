@@ -53,13 +53,14 @@ function fnfLoader.load(chart, isPlayer, folderPath)
 
     for i = 1, #chart.notes do 
         eventBpm = chart.notes[i].bpm
+        table.insert(bpmEvents, {0, eventBpm or bpm})
 
         for j = 1, #chart.notes[i].sectionNotes do
             noteType = chart.notes[i].sectionNotes[j][2]
             if isPlayer then 
                 if chart.notes[i].mustHitSection then
                     if noteType <= 3 and noteType >= 0 then
-                        noteTime = chart.notes[i].sectionNotes[j][1]
+                        noteTime = chart.notes[i].sectionNotes[j][1] / songSpeed
                         noteLength = chart.notes[i].sectionNotes[j][3]
                         noteVer = chart.notes[i].sectionNotes[j][4] or ""
 
@@ -77,7 +78,7 @@ function fnfLoader.load(chart, isPlayer, folderPath)
                     end
                 else
                     if noteType >= 4 and noteType <= 7 then 
-                        noteTime = chart.notes[i].sectionNotes[j][1]
+                        noteTime = chart.notes[i].sectionNotes[j][1] / songSpeed
                         noteLength = chart.notes[i].sectionNotes[j][3]
                         noteVer = chart.notes[i].sectionNotes[j][4] or ""
 
@@ -97,7 +98,7 @@ function fnfLoader.load(chart, isPlayer, folderPath)
             else
                 if chart.notes[i].mustHitSection then
                     if noteType >= 4 and noteType <= 7 then 
-                        noteTime = chart.notes[i].sectionNotes[j][1]
+                        noteTime = chart.notes[i].sectionNotes[j][1] / songSpeed
                         noteLength = chart.notes[i].sectionNotes[j][3]
                         noteVer = chart.notes[i].sectionNotes[j][4] or ""
 
@@ -115,7 +116,7 @@ function fnfLoader.load(chart, isPlayer, folderPath)
                     end
                 else
                     if noteType <= 3 and noteType >= 0 then
-                        noteTime = chart.notes[i].sectionNotes[j][1]
+                        noteTime = chart.notes[i].sectionNotes[j][1] / songSpeed
                         noteLength = chart.notes[i].sectionNotes[j][3]
                         noteVer = chart.notes[i].sectionNotes[j][4] or ""
 

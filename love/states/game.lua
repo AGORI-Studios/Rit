@@ -211,6 +211,11 @@ return {
         whereNotesHit = {-35}
 
         gameCanvas = love.graphics.newCanvas(love.graphics.getWidth(), love.graphics.getHeight())
+
+        audioFile:setPitch(songSpeed)
+        if voices then
+            voices:setPitch(songSpeed)
+        end
     end,
 
     update = function(self, dt)
@@ -311,7 +316,7 @@ return {
         if bpmEvents[1] then
             if bpmEvents[1][1] then
                 if bpmEvents[1][1] <= absMusicTime then
-                    beatHandler.setBPM(bpmEvents[1][2])
+                    beatHandler.setBPM(bpmEvents[1][2] * songSpeed)
                     table.remove(bpmEvents, 1)
                 end
             end

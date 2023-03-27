@@ -51,7 +51,7 @@ function osuLoader.load(chart, folderPath)
                 curLine = line
                 lane = x / 128
                 lane = math.floor(lane)
-                startTime = tonumber(startTime)
+                startTime = tonumber(startTime) / songSpeed
                 hitSound = hitSound
                 if lane > 4 then
                     debug.print("This is not a 4k chart!\nSupport for 5k+ charts will be added in the future.")

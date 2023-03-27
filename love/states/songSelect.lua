@@ -55,6 +55,7 @@ return {
         chartEvents = {}
         bpmEvents = {}
         now = os.time()
+        songSpeed = 1
         chooseSongDifficulty()
     end,
 
@@ -104,6 +105,19 @@ return {
             if input:pressed("confirm") then
                 selectSongDifficulty(curSongSelected, songList[curSongSelected].type)
             end
+
+            if input:pressed("left") and (input:down("extB") or love.keyboard.isDown("lalt")) then
+                songSpeed = songSpeed - 0.1
+                if songSpeed < 0.1 then
+                    songSpeed = 0.1
+                end
+            elseif input:pressed("right") and (input:down("extB") or love.keyboard.isDown("lalt")) then
+                songSpeed = songSpeed + 0.1
+                if songSpeed > 2 then
+                    songSpeed = 2
+                end
+            end
+            elseif input:pressed("right") then
         elseif fnfChartMoment then
             if input:pressed("right") then 
                 fnfMomentSelected = fnfMomentSelected + 1
@@ -181,6 +195,8 @@ return {
                     love.graphics.setColor(1,1,1)
                 end
             love.graphics.pop()
+            -- Print song speed in top right
+            love.graphics.print("Song speed: " .. songSpeed, push.getWidth() - (font:getWidth("Song speed: " .. songSpeed) * 2), 0, 0, 2, 2)
         elseif fnfChartMoment then
             love.graphics.print("Play as [</>]: " .. (fnfMomentShiz[fnfMomentSelected] and "Player" or "Enemy"), 0, 0, 0, 2, 2)
         end

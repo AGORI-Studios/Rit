@@ -248,6 +248,7 @@ function love.load()
     input = (require "lib.baton").new({
         controls = {
             -- 4K inputs
+            
             one4 = {"axis:triggerleft+", "axis:leftx-", "axis:rightx-", "button:dpleft", "button:x", "key:d"},
             two4 = {"axis:lefty+", "axis:righty+", "button:leftshoulder", "button:dpdown", "button:a", "key:f"},
             three4 = {"axis:lefty-", "axis:righty-", "button:rightshoulder", "button:dpup", "button:y", "key:j"},
@@ -262,6 +263,8 @@ function love.load()
             five7 = {"key:j"},
             six7 = {"key:k"},
             seven7 = {"key:l"},
+
+            -- UI
     
             up = {"key:up", "button:dpup", "axis:lefty-"},
             down = {"key:down", "button:dpdown", "axis:lefty+"},
@@ -272,7 +275,7 @@ function love.load()
             confirm = {"key:return", "button:a"},
             pause = {"key:return", "button:start"},
             restart = {"key:r", "button:b"},
-            volChanger = {"button:back"}, -- Switch users don't have a mouse so this is the best I can do
+            extB = {"button:back"},
             volUp = {"button:rightshoulder"},
             volDown = {"button:leftshoulder"},
 
@@ -390,7 +393,7 @@ function love.update(dt)
     end
 
     if input:getActiveDevice() == "joy" then 
-        if input:down("volChanger") then 
+        if input:down("extB") then 
             if input:pressed("volUp") then 
                 audioVol = audioVol + 5
             elseif input:pressed("volDown") then

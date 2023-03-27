@@ -76,7 +76,7 @@ function quaverLoader.load(chart, folderPath)
                 curLine = line
                 startTime = curLine
                 startTime = startTime:gsub("- StartTime: ", "")
-                startTime = tonumber(startTime)
+                startTime = tonumber(startTime) / songSpeed
             end
             if line:find("Bpm:") then 
                 curLine = line
