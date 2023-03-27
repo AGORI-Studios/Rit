@@ -252,7 +252,7 @@ return {
                 end
                 debug.print("Playing audio file")
             end
-        elseif musicTime > audioFile:getDuration() * 1000 then
+        elseif musicTime > (audioFile:getDuration() * 1000) / songSpeed then 
             state.switch(resultsScreen, scoring.score > 1000000 and 1000000 or scoring.score, {songTitle, songDifficultyName}, false)
         end
         for i = 1, #charthits do
