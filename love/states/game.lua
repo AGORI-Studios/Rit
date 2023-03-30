@@ -250,7 +250,7 @@ return {
                 if voices then -- support for fnf voices
                     voices:play()
                 end
-                debug.print("Playing audio file")
+                debug.print("info", "Playing audio file")
             end
         elseif musicTime > (audioFile:getDuration() * 1000) / songSpeed then 
             state.switch(resultsScreen, scoring.score > 1000000 and 1000000 or scoring.score, {songTitle, songDifficultyName}, false)

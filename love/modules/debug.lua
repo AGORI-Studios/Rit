@@ -1,14 +1,60 @@
 debug.consolelines = {}
-
-function debug.print(...)
+debug.usecolor = true
+debug.outfile = "log.txt"
+debug.logLines = {}
+debug.logmodes = {
+    {name="trace",color="\27[34m",colprint={0,0,1}},
+    {name="debug",color="\27[36m",colprint={0,1,1}},
+    {name="info",color="\27[32m",colprint={0,1,0}},
+    {name="warn",color="\27[33m",colprint={1,1,0}},
+    {name="error",color="\27[31m",colprint={1,0,0}},
+    {name="fatal",color="\27[35m",colprint={1,0,1}},
+}
+function debug.print(inf, ...)
     -- print to fake console
     local args = {...}
     local str = ""
+    local col = {1,1,1}
+    -- the console lines should be given so console can do 
+    --[[
+        love.graphics.print({{col}, str},)
+    ]] 
+    local time = os.time()
+    -- get hours, minutes, seconds, should be formatted like [HH:MM:SS]
+    local hours = os.date("%H", time)
+    local minutes = os.date("%M", time)
+    local seconds = os.date("%S", time)
+    local curPrintCol, name
+    str = "[" .. hours .. ":" .. minutes .. ":" .. seconds .. "] "
     for i = 1, #args do
-        str = str .. tostring(args[i])
+        str = str .. tostring(args[i]) .. " "
     end
-    print(str)
-    debug.consolelines[#debug.consolelines + 1] = str
+    for i = 1, #debug.logmodes do
+        if debug.logmodes[i].name == inf then
+            col = debug.logmodes[i].colprint
+            if debug.usecolor then
+                str = str
+            end
+            curPrintCol = debug.logmodes[i].color
+            curPrintName = debug.logmodes[i].name
+        end
+    end
+    local logstr = str
+    -- now we print to console w/ the color
+    local prntStr = ""
+    local msg = (...)
+    local info = debug.getinfo(2, "Sl")
+    local lineinfo = info.short_src .. ":" .. info.currentline
+    -- output to console 
+    print(string.format("%s[%-6s%s]%s %s: %s",
+                        debug.usecolor and curPrintCol or "",
+                        curPrintName,
+                        os.date("%H:%M:%S"),
+                        debug.usecolor and "\27[0m" or "",
+                        lineinfo,
+                        msg))
+    table.insert(debug.logLines, logstr)
+    table.insert(debug.consolelines, {col, str})
 end
 
 function debug.drawConsole()
@@ -17,7 +63,7 @@ function debug.drawConsole()
     love.graphics.rectangle("fill", love.graphics.getWidth() - 300, 0, 300, 260)
     love.graphics.setColor(1, 1, 1, 1)
     for i = 1, #debug.consolelines do
-        love.graphics.print(debug.consolelines[i], love.graphics.getWidth() - 300, 20 * i - 20)
+        love.graphics.print(debug.consolelines[i], love.graphics.getWidth() - 300, 20 * i)
     end
 
     if #debug.consolelines > 10 then
@@ -36,6 +82,11 @@ function debug.drawdebug()
     love.graphics.print("Graphics memory usage: " .. round(love.graphics.getStats().texturememory / 1024) .. "KB", 0, 60)
     love.graphics.print("Music Time: " .. (musicTime or 0), 0, 80)
     love.graphics.print("Beat: " .. (math.floor(((musicTime or 0) / 1000) * (beatHandler.bpm/60)) or 0), 0, 100)
+end
+
+function debug.logfile()
+    print("Writing log to " .. debug.outfile)
+    love.filesystem.write(debug.outfile, table.concat(debug.logLines, "\n"))
 end
 
 function debug.draw()
