@@ -368,6 +368,8 @@ function love.load()
             os[k] = nil
         end
     end
+
+    ss.s = ""
 end
 
 function love.resize(w, h)

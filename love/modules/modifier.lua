@@ -49,7 +49,7 @@ function modifiers:createSprite(name, img)
             spr.img = graphics.newImage(folderPath .. "/mod/" .. img)
         end,
         function(err)
-            debug.print("Error loading sprite " .. name)
+            debug.print("error", "Error loading sprite " .. name)
         end
     )
 
@@ -74,7 +74,7 @@ function modifiers:changeSpriteProperty(name, prop, value)
             modifiers.graphics[name].img[prop] = value
         end,
         function(err)
-            debug.print("Error changing property " .. prop .. " of sprite " .. name)
+            debug.print("error", "Error changing property " .. prop .. " of sprite " .. name)
             return 0
         end
     )
@@ -94,8 +94,8 @@ function modifiers:newShader(name, file)
             modifiers.shaders[name] = love.graphics.newShader(folderPath .. "/mod/" .. file)
         end,
         function(err)
-            debug.print("Error loading shader " .. name)
-            debug.print(err)
+            debug.print("error","Error loading shader " .. name)
+            debug.print("error",err)
         end
     )
 end
@@ -106,8 +106,8 @@ function modifiers:changeShaderProperty(name, prop, value)
             modifiers.shaders[name]:send(prop, value)
         end,
         function(err)
-            debug.print("Error changing property " .. prop .. " of shader " .. name)
-            debug.print(err)
+            debug.print("error","Error changing property " .. prop .. " of shader " .. name)
+            debug.print("error",err)
         end
     )
 end
@@ -213,7 +213,7 @@ function applyShader(name)
     if modifiers.shaders[name] then
         modifiers:applyShader(name)
     else
-        debug.print("Shader " .. name .. " does not exist")
+        debug.print("error", "Shader " .. name .. " does not exist")
     end
 end
 

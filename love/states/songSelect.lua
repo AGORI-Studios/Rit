@@ -49,7 +49,7 @@ end
 
 return {
     enter = function(self)
-        debug.print("Entering song select")
+        debug.print("info", "Entering song select")
         choosingSong = true
         fnfChartMoment = false
         chartEvents = {}

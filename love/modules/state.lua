@@ -23,7 +23,7 @@ local state = {}
 local current, to, pre = nil, nil, nil
 
 function state.switch(to, ...)
-    debug.print("Switching state!")
+    debug.print("info", "Switching state!")
     pre = current
     current = to
     if current then current:enter(pre, ...) end
