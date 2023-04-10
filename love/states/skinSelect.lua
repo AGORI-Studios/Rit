@@ -92,6 +92,10 @@ function loadSkin(skinVer)
             ["Perfect"] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"]["PERFECT"]:gsub('"', "")),
             ["Marvellous"] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"]["MARVELLOUS"]:gsub('"', "")),
         }
+
+        healthBarColor = skinJson["skin"]["4k"]["ui"]["healthBarColor"]
+        uiTextColor = skinJson["skin"]["4k"]["ui"]["uiTextColor"]
+        timeBarColor = skinJson["skin"]["4k"]["ui"]["timeBarColor"]
     
         comboImages = {}
     

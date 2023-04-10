@@ -619,7 +619,9 @@ return {
                     end
                     love.graphics.translate(push.getWidth() / 2, 0)
                     if modifiers.gameProperties["healthbarVisible"] then 
+                        love.graphics.setColor(healthBarColor)
                         love.graphics.rectangle("fill", -1000, 0, scoring.healthTween * 400+10, 20, 10, 10)
+                        love.graphics.setColor(1, 1, 1, 1)
                     end
 
                     if modifiers.gameProperties["scoreVisible"] then
@@ -631,17 +633,21 @@ return {
                             accuracyFormat = string.format("%.2f%%", scoring.accuracy)
                         end
                         love.graphics.setFont(accuracyFont)
+                        love.graphics.setColor(uiTextColor)
                         love.graphics.printf(scoring.score > 1000000 and 1000000 or scoreFormat, 0, 0, 960, "right")
                         if accuracyFormat == "nan%" then 
                             accuracyFormat = "0.00%"
                         end
                         love.graphics.printf(accuracyFormat, 0, 45, 960, "right")
+                        love.graphics.setColor(1, 1, 1, 1)
                         love.graphics.setFont(font)
                     end
 
                     if modifiers.gameProperties["timebarVisible"] then
                         -- Time remaining bar 
+                        love.graphics.setColor(timeBarColor)
                         love.graphics.rectangle("fill", -push.getWidth()/2, push.getHeight() - 10, push.getWidth() * (1 - (musicTime/1000 / audioFile:getDuration())), 10, 10, 10)
+                        love.graphics.setColor(1, 1, 1, 1)
                     end
                 love.graphics.pop()
             love.graphics.setCanvas()

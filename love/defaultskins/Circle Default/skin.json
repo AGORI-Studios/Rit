@@ -33,6 +33,7 @@
         "PERFECT": "judgements/PERFECT.png",
         "MARVELLOUS": "judgements/MARVELLOUS.png"
       },
+
       "combo": {
         "COMBO0": "combo/COMBO0.png",
         "COMBO1": "combo/COMBO1.png",
@@ -45,6 +46,13 @@
         "COMBO8": "combo/COMBO8.png",
         "COMBO9": "combo/COMBO9.png"
       },
+      
+      "ui": {
+        "healthBarColor": [255, 255, 255],
+        "uiTextColor": [255, 255, 255],
+        "timeBarColor": [255, 255, 255]
+      },
+      
       "hitsound": "hitsound.wav",
       "hitsound volume": 0.25,
       "note size": 0.85,
@@ -112,6 +120,13 @@
         "COMBO8": "combo/COMBO8.png",
         "COMBO9": "combo/COMBO9.png"
       },
+
+      "ui": {
+        "healthBarColor": [255, 255, 255],
+        "uiTextColor": [255, 255, 255],
+        "timeBarColor": [255, 255, 255]
+      },
+      
       "hitsound": "hitsound.wav",
       "hitsound volume": 0.25,
       "note size": 0.75,
