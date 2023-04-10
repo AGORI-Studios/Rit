@@ -53,7 +53,7 @@ function addJudgement(judgement)
         end
         comboSize.y = 1
         comboTimer = Timer.tween(0.1, comboSize, {y = 1.85, x = 1.6}, "in-out-quad", function()
-            Timer.tween(0.1, comboSize, {y = 1.6,}, "in-out-quad")
+            comboTimer = Timer.tween(0.1, comboSize, {y = 1.6,}, "in-out-quad")
         end)
     else
         combo = 0
@@ -68,7 +68,7 @@ function addJudgement(judgement)
     ratingsize.x = 1
     ratingsize.y = 1
     judgeTimer = Timer.tween(0.1, ratingsize, {x = 1.15, y = 1.15}, "in-out-quad", function()
-        Timer.tween(0.1, ratingsize, {x = 0.85, y = 0.85}, "in-out-quad")
+        judgeTimer = Timer.tween(0.1, ratingsize, {x = 0.85, y = 0.85}, "in-out-quad")
     end)
 
     if waitTmr then 
@@ -79,6 +79,7 @@ function addJudgement(judgement)
         Timer.tween(0.1, ratingsize, {x = 0, y = 0}, "in-out-quad")
         Timer.tween(0.1, comboSize, {y = 0, x = 0}, "in-out-quad")
     end)
+    game:calculateRating()
 end
 
 return {
@@ -93,7 +94,14 @@ return {
             ["Perfect"] = 0,
             ["Great"] = 0,
             ["Good"] = 0,
-            ["Miss"] = 0
+            ["Miss"] = 0,
+            scorePoints = {
+                ["Marvellous"] = 0,
+                ["Perfect"] = 0,
+                ["Great"] = 0,
+                ["Good"] = 0,
+                ["Miss"] = 0
+            }
         }
     
         songRate = 1
@@ -118,7 +126,6 @@ return {
         previousFrameTime = love.timer.getTime() * 1000
         simulatedPreviousFrameTime = love.timer.getTime() * 1000
         additionalScore = 0
-        additionalAccuracy = 0
         noteCounter = 0
     
         died = false
@@ -137,14 +144,6 @@ return {
         scoring["Great"] = 0
         scoring["Good"] = 0
         scoring["Miss"] = 0
-
-        scoring.scorePoints = {
-            ["Marvellous"] = 0,
-            ["Perfect"] = 0,
-            ["Great"] = 0,
-            ["Good"] = 0,
-            ["Miss"] = 0
-        }
 
         scoring.totalNotes = 0
 
@@ -168,6 +167,9 @@ return {
         scoring.scorePoints["Great"] = 600000 / scoring.totalNotes
         scoring.scorePoints["Good"] = 400000 / scoring.totalNotes
         scoring.scorePoints["Miss"] = 0
+
+        scoring.ratingPercent = 0
+        scoring.ratingPercentLerp = 0
 
         for i, v in ipairs(scoring.scorePoints) do
             v = math.floor(v)
@@ -218,6 +220,15 @@ return {
         end
     end,
 
+    calculateRating = function(self)
+		scoring.ratingPercent = scoring.score / ((noteCounter + scoring["Miss"]) * scoring.scorePoints["Marvellous"])
+		if scoring.ratingPercent == nil or scoring.ratingPercent < 0 then 
+			scoring.ratingPercent = 0
+		elseif scoring.ratingPercent > 1 then
+			scoring.ratingPercent = 1
+		end
+	end,
+
     update = function(self, dt)
         simulatedTime = love.timer.getTime()
 
@@ -261,22 +272,9 @@ return {
                     if charthits[i][1][1] - musicTime <= -100 then 
                         if not charthits[i][1][4] then
                             noteCounter = noteCounter + 1
-                            additionalAccuracy = additionalAccuracy + 1.11
                             if scoring.health < 0 then
                                 scoring.health = 0
                             end
-                            if accuracyTimer then
-                                Timer.cancel(accuracyTimer)
-                            end
-                            accuracyTimer = Timer.tween(
-                                0.35,
-                                scoring,
-                                {accuracy = additionalAccuracy / noteCounter},
-                                "out-quad",
-                                function()
-                                    accuracyTimer = nil
-                                end
-                            )
                             scoring.health = scoring.health - 0.270
                             addJudgement("Miss")
                         end
@@ -287,6 +285,7 @@ return {
         end
 
         scoring.healthTween = math.lerp(scoring.healthTween, scoring.health, 0.05)
+        scoring.ratingPercentLerp = math.lerp(scoring.ratingPercentLerp, scoring.ratingPercent, 0.05)
 
         for i = 1, 4 do
             for _, hitObject in ipairs(charthits[i]) do
@@ -364,23 +363,18 @@ return {
                                     if pos < 28 then
                                         judgement = "Marvellous"
                                         scoring.health = scoring.health + 0.135
-                                        additionalAccuracy = additionalAccuracy + 100
                                     elseif pos < 43 then
                                         judgement = "Perfect"
                                         scoring.health = scoring.health + 0.135
-                                        additionalAccuracy = additionalAccuracy + 100
                                     elseif pos < 102 then
                                         judgement = "Great"
                                         scoring.health = scoring.health + 0.135
-                                        additionalAccuracy = additionalAccuracy + 75
                                     elseif pos < 135 then
                                         judgement = "Good"
                                         scoring.health = scoring.health + 0.135
-                                        additionalAccuracy = additionalAccuracy + 50
                                     else
                                         judgement = "Miss"
                                         scoring.health = scoring.health - 0.270
-                                        additionalAccuracy = additionalAccuracy
                                     end
 
                                     addJudgement(judgement)
@@ -391,9 +385,6 @@ return {
                                     if scoringTimer then 
                                         Timer.cancel(scoringTimer)
                                     end
-                                    if accuracyTimer then
-                                        Timer.cancel(accuracyTimer)
-                                    end
                                     scoringTimer = Timer.tween(
                                         0.35,
                                         scoring,
@@ -401,15 +392,6 @@ return {
                                         "out-quad",
                                         function()
                                             scoringTimer = nil
-                                        end
-                                    )
-                                    accuracyTimer = Timer.tween(
-                                        0.35,
-                                        scoring,
-                                        {accuracy = additionalAccuracy / (noteCounter + (scoring["Miss"] or 0))},
-                                        "out-quad",
-                                        function()
-                                            accuracyTimer = nil
                                         end
                                     )
                                     table.remove(notes, j)
@@ -454,8 +436,7 @@ return {
                             pos = math.abs(notes[1][1] - musicTime)
                             judgement = "Marvellous"
                             scoring.health = scoring.health + 0.135
-                            additionalScore = additionalScore + 650
-                            additionalAccuracy = additionalAccuracy + 100
+                            additionalScore = additionalScore + scoring.scorePoints["Marvellous"]
                             addJudgement(judgement)
 
                             if scoring.health > 100 then
@@ -464,9 +445,6 @@ return {
                             if scoringTimer then 
                                 Timer.cancel(scoringTimer)
                             end
-                            if accuracyTimer then
-                                Timer.cancel(accuracyTimer)
-                            end
                             scoringTimer = Timer.tween(
                                 0.35,
                                 scoring,
@@ -474,15 +452,6 @@ return {
                                 "out-quad",
                                 function()
                                     scoringTimer = nil
-                                end
-                            )
-                            accuracyTimer = Timer.tween(
-                                0.35,
-                                scoring,
-                                {accuracy = additionalAccuracy / (noteCounter + (scoring["Miss"] or 0))},
-                                "out-quad",
-                                function()
-                                    accuracyTimer = nil
                                 end
                             )
                         end
@@ -627,18 +596,10 @@ return {
                     if modifiers.gameProperties["scoreVisible"] then
                         love.graphics.setFont(scoreFont)
                         scoreFormat = string.format("%07d", round(scoring.score))
-                        if scoring.accuracy >= 100 then
-                            accuracyFormat = "100.00%"
-                        else
-                            accuracyFormat = string.format("%.2f%%", scoring.accuracy)
-                        end
                         love.graphics.setFont(accuracyFont)
                         love.graphics.setColor(uiTextColor)
                         love.graphics.printf(scoring.score > 1000000 and 1000000 or scoreFormat, 0, 0, 960, "right")
-                        if accuracyFormat == "nan%" then 
-                            accuracyFormat = "0.00%"
-                        end
-                        love.graphics.printf(accuracyFormat, 0, 45, 960, "right")
+                        love.graphics.printf(((math.floor(scoring.ratingPercentLerp * 10000) / 100)) .. "%", 0, 45, 960, "right")
                         love.graphics.setColor(1, 1, 1, 1)
                         love.graphics.setFont(font)
                     end

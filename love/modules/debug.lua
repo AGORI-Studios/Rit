@@ -21,9 +21,9 @@ function debug.print(inf, ...)
     ]] 
     local time = os.time()
     -- get hours, minutes, seconds, should be formatted like [HH:MM:SS]
-    local hours = os.date("%H", time)
-    local minutes = os.date("%M", time)
-    local seconds = os.date("%S", time)
+    local hours = os.date("%H", time) or 0
+    local minutes = os.date("%M", time) or 0
+    local seconds = os.date("%S", time) or 0
     local curPrintCol, name
     str = "[" .. hours .. ":" .. minutes .. ":" .. seconds .. "] "
     for i = 1, #args do

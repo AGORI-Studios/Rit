@@ -364,12 +364,10 @@ function love.load()
 
     -- Get rid of all of OS funcs except os.time
     for k, v in pairs(os) do
-        if k ~= "time" then
+        if k ~= "time" and k ~= "date" then
             os[k] = nil
         end
     end
-
-    ss.s = ""
 end
 
 function love.resize(w, h)
