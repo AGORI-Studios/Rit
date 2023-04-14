@@ -5,7 +5,7 @@ local function selectSongDifficulty(song, chartVer)
     if chartVer == "Quaver" then
         song = songList[curSongSelected]
         filename = song.filename
-        if song.folderPath ~= "" then love.filesystem.mount("songs/quaver/"..filename, "song") end
+        love.filesystem.mount("songs/quaver/"..filename, "song")
         songPath = song.path
         songTitle = song.title
         songDifficultyName = song.difficultyName

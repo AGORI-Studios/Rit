@@ -1,5 +1,6 @@
-local args, scorings, ratings, songData, died, scoreTXT, score, acc, curRating, replayHits
+local args, scorings, ratings, songData, died, scoreTXT, score, acc, curRating, replayHits, hitsTable
 local replayFormat = ""
+local tweenedAcc
 return {
     enter = function(self, _, ...)
         now = os.time()
@@ -22,6 +23,8 @@ Rating: %s
         score = math.floor(score)
 
         replayHits = args[4]
+        hitsTable = args[5].hits
+        songLength = args[5].songLength
         for i = 1, 4 do
             print(#replayHits[i])
         end
@@ -62,6 +65,46 @@ Rating: %s
 
         scoreS = score
         accS = acc
+
+        tweenAcc = {0}
+
+        points = {}
+        pointColors = {}
+        for i = 1, #hitsTable do
+            pos = hitsTable[i][1]
+            time = hitsTable[i][2]
+            -- pos of 0-28 is while
+            -- 29-43 is green
+            -- 44-102 is blue
+            -- 103-135 is purple
+            -- 136-180 is red
+            -- afterwords, set its position based off the width and height of 900, 400
+
+            if pos <= 28 then
+                table.insert(points, {x = 0, y = 0})
+                table.insert(pointColors, {r = 255, g = 255, b = 255})
+            elseif pos <= 43 then
+                table.insert(points, {x = 0, y = 0})
+                table.insert(pointColors, {r = 0, g = 255, b = 0})
+            elseif pos <= 102 then
+                table.insert(points, {x = 0, y = 0})
+                table.insert(pointColors, {r = 0, g = 0, b = 255})
+            elseif pos <= 135 then
+                table.insert(points, {x = 0, y = 0})
+                table.insert(pointColors, {r = 255, g = 0, b = 255})
+            elseif pos <= 180 then
+                table.insert(points, {x = 0, y = 0})
+                table.insert(pointColors, {r = 255, g = 0, b = 0})
+            end
+        end
+        for i = 1, #points do
+            -- set the x based off the musicTime, songLength and width of 900
+            -- pos is ms, songLength is seconds
+            points[i].x = (hitsTable[i][2] / (songLength * 1000)) * 900
+            print(points[i].x)
+            -- set the y based off the pos and height of 400
+            points[i].y = (hitsTable[i][1] / 180) * 400
+        end
 
         -- check if score is higher than the current highscore
         if love.filesystem.getInfo("results/" .. songData[1] .. "-" .. songData[2] .. ".ritsc") then
@@ -119,6 +162,7 @@ Rating: %s
     end,
 
     draw = function(self)
+        --[[
         -- show our results in middle of screen w/ song name
 
         -- TODO: MAKE THIS SHIT LOOK BETTER!!!!
@@ -129,5 +173,17 @@ Rating: %s
 
         -- show a button to go back to song select
         love.graphics.print("Press enter to go back to song select", graphics.getWidth() / 2, graphics.getHeight() / 2 + 188, 0, 2, 2)
+        --]]
+
+        love.graphics.setColor(0.7,0.7,0.7)
+        love.graphics.rectangle("fill", -1000, -1000, 3000, 3000)
+        love.graphics.setColor(0.9, 0.9, 0.9)
+        -- draw large rounded rectangle on bottom right
+        love.graphics.rectangle("fill", graphics.getWidth() - 925, graphics.getHeight() - 450, 900, 400, 10, 10)
+        -- draw the points
+        for i = 1, #points do
+            love.graphics.setColor(pointColors[i].r/255, pointColors[i].g/255, pointColors[i].b/255)
+            love.graphics.circle("fill", graphics.getWidth() - 925 + points[i].x, graphics.getHeight() - 450 + points[i].y, 5)
+        end
     end
 }

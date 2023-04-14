@@ -142,7 +142,6 @@ function quaverLoader.load(chart, folderPath)
             end
         end
     end
-
     Timer.after(2,
         function()
             state.switch(game)

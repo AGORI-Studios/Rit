@@ -44,7 +44,7 @@ inputList = {
 }
 musicPosValue = {1000}
 musicPitch = {1}
-function addJudgement(judgement)
+function addJudgement(judgement, lane, hitTime)
     scoring[judgement] = scoring[judgement] + 1
     if judgement ~= "Miss" then
         combo = combo + 1
@@ -80,6 +80,8 @@ function addJudgement(judgement)
         Timer.tween(0.1, comboSize, {y = 0, x = 0}, "in-out-quad")
     end)
     game:calculateRating()
+
+    table.insert(hitsTable.hits, {hitTime, musicTime})
 end
 
 return {
@@ -105,6 +107,7 @@ return {
         }
 
         replayHits = {}
+        hitsTable = {}
     
         songRate = 1
     
@@ -159,6 +162,9 @@ return {
 
             replayHits[i] = {}
         end
+
+        hitsTable.songLength = audioFile:getDuration("seconds") / songRate
+        hitsTable.hits = {}
 
         -- If the player were to get full marvellous, they would get 1,000,000 score
         -- meaning with each note, they would get 1,000,000 / totalNotes
@@ -268,7 +274,7 @@ return {
                 debug.print("info", "Playing audio file")
             end
         elseif musicTime > (audioFile:getDuration() * 1000) / songSpeed then 
-            state.switch(resultsScreen, scoring, {songTitle, songDifficultyName}, false, replayHits)
+            state.switch(resultsScreen, scoring, {songTitle, songDifficultyName}, false, replayHits, hitsTable)
         end
         for i = 1, #charthits do
             for j = 1, #charthits[i] do
@@ -280,7 +286,7 @@ return {
                                 scoring.health = 0
                             end
                             scoring.health = scoring.health - 0.270
-                            addJudgement("Miss")
+                            addJudgement("Miss", i, math.abs(charthits[i][1][1] - musicTime))
                         end
                         table.remove(charthits[i], 1)
                     end
@@ -365,16 +371,16 @@ return {
                                 if notes[j][1] - musicTime >= -80 and notes[j][1] - musicTime <= 180 or (notes[2] and notes[1][5] and notes[2][1] - musicTime >= -80 and notes[2][1] - musicTime <= 180) then
                                     noteCounter = noteCounter + 1
                                     pos = math.abs(notes[j][1] - musicTime)
-                                    if pos < 28 then
+                                    if pos <= 28 then
                                         judgement = "Marvellous"
                                         scoring.health = scoring.health + 0.135
-                                    elseif pos < 43 then
+                                    elseif pos <= 43 then
                                         judgement = "Perfect"
                                         scoring.health = scoring.health + 0.135
-                                    elseif pos < 102 then
+                                    elseif pos <= 102 then
                                         judgement = "Great"
                                         scoring.health = scoring.health + 0.135
-                                    elseif pos < 135 then
+                                    elseif pos <= 135 then
                                         judgement = "Good"
                                         scoring.health = scoring.health + 0.135
                                     else
@@ -382,7 +388,7 @@ return {
                                         scoring.health = scoring.health - 0.270
                                     end
 
-                                    addJudgement(judgement)
+                                    addJudgement(judgement, i, pos)
 
                                     if scoring.health > 2 then
                                         scoring.health = 2
@@ -442,7 +448,7 @@ return {
                             judgement = "Marvellous"
                             scoring.health = scoring.health + 0.135
                             additionalScore = additionalScore + scoring.scorePoints["Marvellous"]
-                            addJudgement(judgement)
+                            addJudgement(judgement, i, pos)
 
                             if scoring.health > 100 then
                                 scoring.health = 1
@@ -473,7 +479,7 @@ return {
             Timer.tween(3, musicPitch, {0.005}, "out-quad", function()
                 audioFile:stop()
                 Timer.after(0.6, function()
-                    state.switch(resultsScreen, scoring, {songTitle, songDifficultyName}, true, replayHits)
+                    state.switch(resultsScreen, scoring, {songTitle, songDifficultyName}, true, replayHits, hitsTable)
                 end)
             end)
         elseif died then

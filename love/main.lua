@@ -458,6 +458,17 @@ function love.keypressed(key)
         --]]
     end
 
+    --[[
+    if key == "7" then
+        scoring = {score=love.math.random(200000,1000000), ratingPercentLerp = love.math.randomFloat(0, 1),}
+        combo=200
+        state.switch(resultsScreen, scoring, {"Balls", "HARD"}, false, {{},{},{},{}}, {
+            hits={{0, 100}, {20, 300}, {40,600}, {100, 1000}, {160, 20000}}, 
+            songLength=200
+        })
+    end
+    --]]
+
     if key == "f11" then 
         __DEBUG__ = not __DEBUG__
     end
