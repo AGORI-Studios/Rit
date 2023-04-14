@@ -26,6 +26,7 @@ function debug.print(inf, ...)
     local seconds = os.date("%S", time) or 0
     local curPrintCol, name
     str = "[" .. hours .. ":" .. minutes .. ":" .. seconds .. "] "
+    time = hours .. ":" .. minutes .. ":" .. seconds
     for i = 1, #args do
         str = str .. tostring(args[i]) .. " "
     end
@@ -42,17 +43,11 @@ function debug.print(inf, ...)
     local logstr = str
     -- now we print to console w/ the color
     local prntStr = ""
-    local msg = (...)
+    local msg = (...) or ""
     local info = debug.getinfo(2, "Sl")
     local lineinfo = info.short_src .. ":" .. info.currentline
     -- output to console 
-    print(string.format("%s[%-6s%s]%s %s: %s",
-                        debug.usecolor and curPrintCol or "",
-                        curPrintName,
-                        os.date("%H:%M:%S"),
-                        debug.usecolor and "\27[0m" or "",
-                        lineinfo,
-                        msg))
+    print('[' .. curPrintName .. ' | ' .. time .. ']' .. lineinfo .. ': ' .. msg)
     table.insert(debug.logLines, logstr)
     table.insert(debug.consolelines, {col, str})
 end

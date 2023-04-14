@@ -309,7 +309,6 @@ function love.load()
 
     state = require "modules.state"
     beatHandler = require "modules.beatHandler"
-
     -- Modchart handlers
     modifiers = require "modules.modifier"
     modscript = require "modules.modscriptAPI"
@@ -469,7 +468,7 @@ function love.draw()
         state:draw()
         if choosingSong or choosingSkin then
             -- set x and y to bottom left corner of screen
-            love.graphics.print("Press K to open my Ko-fi page!", 1545, 1040, 0, 2, 2)
+            love.graphics.print("Press K to open my Ko-fi page!\nPress R to open the replays menu", 1545, 1035, 0, 2, 2)
         end
 
         if volFade > 0 then

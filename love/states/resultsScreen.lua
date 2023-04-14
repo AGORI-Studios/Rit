@@ -1,4 +1,5 @@
-local args, scorings, ratings, songData, died, scoreTXT, score, acc, curRating
+local args, scorings, ratings, songData, died, scoreTXT, score, acc, curRating, replayHits
+local replayFormat = ""
 return {
     enter = function(self, _, ...)
         now = os.time()
@@ -17,7 +18,13 @@ Rating: %s
 ]]
 
         score = scorings.score
-        acc = scorings.accuracy
+        acc = scorings.ratingPercentLerp
+        score = math.floor(score)
+
+        replayHits = args[4]
+        for i = 1, 4 do
+            print(#replayHits[i])
+        end
 
         debug.print("info", "Score: "..score.." - "..acc.."%")
 
@@ -41,8 +48,8 @@ Rating: %s
             debug.print("info", tostring(#ratings))
             for i = #ratings, 1, -1 do
                 debug.print("info", "loop iter: "..i)
-                debug.print("info", tostring(acc >= ratings[i].acc)..tostring(scorings.accuracy >= ratings[i].acc))
-                if scorings.accuracy >= ratings[i].acc then
+                debug.print("info", tostring(acc >= ratings[i].acc)..tostring(((math.floor(scoring.ratingPercentLerp * 10000) / 100)) >= ratings[i].acc))
+                if ((math.floor(scoring.ratingPercentLerp * 10000) / 100)) >= ratings[i].acc then
                     curRating = ratings[i].name
                     debug.print("info", "Acc >= "..ratings[i].acc.." - "..ratings[i].name)
                     -- break
@@ -57,8 +64,8 @@ Rating: %s
         accS = acc
 
         -- check if score is higher than the current highscore
-        if love.filesystem.getInfo("results/" .. songData[1] .. "-" .. songData[2] .. ".txt") then
-            local file = love.filesystem.read("results/" .. songData[1] .. "-" .. songData[2] .. ".txt")
+        if love.filesystem.getInfo("results/" .. songData[1] .. "-" .. songData[2] .. ".ritsc") then
+            local file = love.filesystem.read("results/" .. songData[1] .. "-" .. songData[2] .. ".ritsc")
             local oldScore = tonumber(file:match("Score: (%d+)"))
             local oldAcc = tonumber(file:match("Accuracy: (%d+)%%"))
 
@@ -77,11 +84,12 @@ Rating: %s
         end
 
         -- Temporary cuz i'm too stupid to make it work rn!!!! (I'm not stupid, I'm just lazy, its 4:26am)
-        if love.filesystem.getInfo("results/" .. songData[1] .. "-" .. songData[2] .. ".txt") then
-            love.filesystem.remove("results/" .. songData[1] .. "-" .. songData[2] .. ".txt")
+        if love.filesystem.getInfo("results/" .. songData[1] .. "-" .. songData[2] .. ".ritsc") then
+            love.filesystem.remove("results/" .. songData[1] .. "-" .. songData[2] .. ".ritsc")
         end
-        love.filesystem.write("results/" .. songData[1] .. "-" .. songData[2] .. ".txt", string.format(scoreTXT, scoreS, accS, curRating))
-
+        love.filesystem.write("results/" .. songData[1] .. "-" .. songData[2] .. ".ritsc", string.format(scoreTXT, scoreS, accS, curRating))
+        replayFormat = json.encode(replayHits)
+        love.filesystem.write("replays/" .. os.time() .. "-" .. songData[1] .. "-" .. songData[2] .. ".ritreplay", replayFormat)
         presence = {
             details = (autoplay and "Autoplaying " or "Playing ")..songData[1].." - "..songData[2].. " - Results", 
             state = "Score: "..scoreS.." - "..accS.."% - "..combo..(combo == noteCounter and " FC" or " combo"),
@@ -116,7 +124,7 @@ Rating: %s
         -- TODO: MAKE THIS SHIT LOOK BETTER!!!!
         love.graphics.print("Results for " .. songData[1] .. " - " .. songData[2], graphics.getWidth() / 2, graphics.getHeight() / 2, 0, 2, 2)
         love.graphics.print("Score: " .. score, graphics.getWidth() / 2, graphics.getHeight() / 2 + 32, 0, 2, 2)
-        love.graphics.print("Accuracy: " .. (math.floor(acc * 100) / 100) .. "%", graphics.getWidth() / 2, graphics.getHeight() / 2 + 64, 0, 2, 2)
+        love.graphics.print("Accuracy: " .. ((math.floor(scoring.ratingPercentLerp * 10000) / 100)) .. "%", graphics.getWidth() / 2, graphics.getHeight() / 2 + 64, 0, 2, 2)
         love.graphics.print("Rating: " .. curRating .. (died and " - Died" or ""), graphics.getWidth() / 2, graphics.getHeight() / 2 + 96, 0, 2, 2)
 
         -- show a button to go back to song select

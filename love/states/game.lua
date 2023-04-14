@@ -103,6 +103,8 @@ return {
                 ["Miss"] = 0
             }
         }
+
+        replayHits = {}
     
         songRate = 1
     
@@ -154,6 +156,8 @@ return {
                     scoring.totalNotes = scoring.totalNotes + 1
                 end
             end
+
+            replayHits[i] = {}
         end
 
         -- If the player were to get full marvellous, they would get 1,000,000 score
@@ -264,7 +268,7 @@ return {
                 debug.print("info", "Playing audio file")
             end
         elseif musicTime > (audioFile:getDuration() * 1000) / songSpeed then 
-            state.switch(resultsScreen, scoring.score > 1000000 and 1000000 or scoring.score, {songTitle, songDifficultyName}, false)
+            state.switch(resultsScreen, scoring, {songTitle, songDifficultyName}, false, replayHits)
         end
         for i = 1, #charthits do
             for j = 1, #charthits[i] do
@@ -295,7 +299,7 @@ return {
         
         presence = {
             details = (autoplay and "Autoplaying " or "Playing ")..songTitle.." - "..songDifficultyName..(not musicTimeDo and " - Paused" or ""), 
-            state = "Score: "..string.format("%07d", round(scoring.score)).." - "..string.format("%.2f%%", scoring.accuracy).." - "..combo..(combo == noteCounter and " FC" or " combo"),
+            state = "Score: "..string.format("%07d", round(scoring.score)).." - "..string.format("%.2f%%", ((math.floor(scoring.ratingPercentLerp * 10000) / 100))).." - "..combo..(combo == noteCounter and " FC" or " combo"),
             largeImageKey = "totallyreallogo",
             largeImageText = "Rit"..(__DEBUG__ and " DEBUG MODE" or ""),
             startTimestamp = now
@@ -343,6 +347,7 @@ return {
             notes = charthits[i]
             if not autoplay then
                 if input:pressed(curInput) then
+                    table.insert(replayHits[i], {musicTime, 1})
                     if hitsoundCache[#hitsoundCache]:isPlaying() then
                         hitsoundCache[#hitsoundCache] = hitsoundCache[#hitsoundCache]:clone()
                         hitsoundCache[#hitsoundCache]:play()
@@ -468,7 +473,7 @@ return {
             Timer.tween(3, musicPitch, {0.005}, "out-quad", function()
                 audioFile:stop()
                 Timer.after(0.6, function()
-                    state.switch(resultsScreen, scoring, {songTitle, songDifficultyName}, true)
+                    state.switch(resultsScreen, scoring, {songTitle, songDifficultyName}, true, replayHits)
                 end)
             end)
         elseif died then
@@ -607,7 +612,7 @@ return {
                     if modifiers.gameProperties["timebarVisible"] then
                         -- Time remaining bar 
                         love.graphics.setColor(timeBarColor)
-                        love.graphics.rectangle("fill", -push.getWidth()/2, push.getHeight() - 10, push.getWidth() * (1 - (musicTime/1000 / audioFile:getDuration())), 10, 10, 10)
+                        love.graphics.rectangle("fill", -push.getWidth()/2, push.getHeight() - 10, push.getWidth() * (1 - (musicTime/1000 / (audioFile:getDuration() / songSpeed))), 10, 10, 10)
                         love.graphics.setColor(1, 1, 1, 1)
                     end
                 love.graphics.pop()
