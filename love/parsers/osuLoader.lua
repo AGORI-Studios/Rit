@@ -78,9 +78,9 @@ function osuLoader.load(chart, folderPath)
                         if length ~= startTime then 
                             for i = 1, length, noteImgs[lane+1][2]:getHeight()/2/speed do 
                                 if i + noteImgs[lane+1][2]:getHeight()/2/speed < length then 
-                                    charthits[lane+1][#charthits[lane+1] + 1] = {startTime+i, 0, 1, true}
+                                    charthits[lane+1][#charthits[lane+1] + 1] = {startTime+i, 0, lane, true}
                                 else
-                                    charthits[lane+1][#charthits[lane+1] + 1] = {startTime+i, 0, 1, true, true}
+                                    charthits[lane+1][#charthits[lane+1] + 1] = {startTime+i, 0, lane, true, true}
                                 end
                             end
                         end

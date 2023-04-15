@@ -103,7 +103,7 @@ function quaverLoader.load(chart, folderPath)
                 lane = curLine
                 lane = lane:gsub("  Lane: ", "")
                 lane = tonumber(lane)
-                charthits[lane][#charthits[lane] + 1] = {startTime, 0, 1, false}
+                charthits[lane][#charthits[lane] + 1] = {startTime, 0, lane, false}
             end
             if line:find("  EndTime: ") then
                 curLine = line
@@ -114,9 +114,9 @@ function quaverLoader.load(chart, folderPath)
                     
                 for i = 1, length, noteImgs[lane][2]:getHeight()/2/speed do
                     if i + noteImgs[lane][2]:getHeight()/2/speed < length then
-                        charthits[lane][#charthits[lane] + 1] = {startTime+i, 0, 1, true}
+                        charthits[lane][#charthits[lane] + 1] = {startTime+i, 0, lane, true}
                     else
-                        charthits[lane][#charthits[lane] + 1] = {startTime+i, 0, 1, true, true}
+                        charthits[lane][#charthits[lane] + 1] = {startTime+i, 0, lane, true, true}
                     end
                 end
             end

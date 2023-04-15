@@ -45,6 +45,14 @@ function math.angle(x1, y1, x2, y2)
     return math.atan2(y2 - y1, x2 - x1)
 end
 
+function math.truncateFloat(x, precision)
+    local precision = precision or 2
+    local num = x or 0
+    num = num * math.pow(10, precision)
+    num = math.round(num) / math.pow(10, precision)
+    return num
+end
+
 -- String Funcs
 
 function string.startsWith(str, start)
@@ -103,7 +111,7 @@ function table.find(table, element)
             return i
         end
     end
-    return nil
+    return -1
 end
 
 function table.removeValue(table, element)

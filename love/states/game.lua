@@ -185,6 +185,8 @@ return {
             v = math.floor(v)
         end
 
+        --print(DiffCalc:CalculateDiff())
+
         combo = 0
     
         sv = 1 -- Scroll Velocity

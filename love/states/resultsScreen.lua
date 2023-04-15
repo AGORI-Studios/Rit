@@ -24,10 +24,7 @@ Rating: %s
 
         replayHits = args[4]
         hitsTable = args[5].hits
-        songLength = args[5].songLength
-        for i = 1, 4 do
-            print(#replayHits[i])
-        end
+        songLength = args[5].songLength / songSpeed
 
         debug.print("info", "Score: "..score.." - "..acc.."%")
 
@@ -101,7 +98,6 @@ Rating: %s
             -- set the x based off the musicTime, songLength and width of 900
             -- pos is ms, songLength is seconds
             points[i].x = (hitsTable[i][2] / (songLength * 1000)) * 900
-            print(points[i].x)
             -- set the y based off the pos and height of 400
             points[i].y = (hitsTable[i][1] / 180) * 400
         end

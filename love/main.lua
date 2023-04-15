@@ -245,6 +245,7 @@ end
 function love.load()
     require "modules.overrides"
     require "modules.debug"
+    DiffCalc = require "modules.DiffCalc"
     input = (require "lib.baton").new({
         controls = {
             -- 4K inputs
