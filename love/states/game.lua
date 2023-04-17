@@ -230,6 +230,8 @@ return {
         if voices then
             voices:setPitch(songSpeed)
         end
+
+        graphics.fadeIn(0.2)
     end,
 
     calculateRating = function(self)
@@ -590,32 +592,32 @@ return {
                     end
                     love.graphics.translate(push.getWidth() / 2, 0)
                     if modifiers.gameProperties["healthbarVisible"] then 
-                        love.graphics.setColor(healthBarColor)
+                        graphics.setColor(healthBarColor)
                         love.graphics.rectangle("fill", -1000, 0, scoring.healthTween * 400+10, 20, 10, 10)
-                        love.graphics.setColor(1, 1, 1, 1)
+                        graphics.setColor(1, 1, 1, 1)
                     end
 
                     if modifiers.gameProperties["scoreVisible"] then
                         love.graphics.setFont(scoreFont)
                         scoreFormat = string.format("%07d", round(scoring.score))
                         love.graphics.setFont(accuracyFont)
-                        love.graphics.setColor(uiTextColor)
+                        graphics.setColor(uiTextColor)
                         love.graphics.printf(scoring.score > 1000000 and 1000000 or scoreFormat, 0, 0, 960, "right")
                         love.graphics.printf(((math.floor(scoring.ratingPercentLerp * 10000) / 100)) .. "%", 0, 45, 960, "right")
-                        love.graphics.setColor(1, 1, 1, 1)
+                        graphics.setColor(1, 1, 1, 1)
                         love.graphics.setFont(font)
                     end
 
                     if modifiers.gameProperties["timebarVisible"] then
                         -- Time remaining bar 
-                        love.graphics.setColor(timeBarColor)
+                        graphics.setColor(timeBarColor)
                         love.graphics.rectangle("fill", -push.getWidth()/2, push.getHeight() - 10, push.getWidth() * (1 - (musicTime/1000 / (audioFile:getDuration() / songSpeed))), 10, 10, 10)
-                        love.graphics.setColor(1, 1, 1, 1)
+                        graphics.setColor(1, 1, 1, 1)
                     end
                 love.graphics.pop()
             love.graphics.setCanvas()
 
-            love.graphics.setColor(1, 1, 1, 1)
+            graphics.setColor(1, 1, 1, 1)
             if modifiers.curShader ~= "" then
                 love.graphics.setShader(modifiers.shaders[modifiers.curShader])
             end

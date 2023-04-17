@@ -171,14 +171,14 @@ Rating: %s
         love.graphics.print("Press enter to go back to song select", graphics.getWidth() / 2, graphics.getHeight() / 2 + 188, 0, 2, 2)
         --]]
 
-        love.graphics.setColor(0.7,0.7,0.7)
+        graphics.setColor(0.7,0.7,0.7)
         love.graphics.rectangle("fill", -1000, -1000, 3000, 3000)
-        love.graphics.setColor(0.9, 0.9, 0.9)
+        graphics.setColor(0.9, 0.9, 0.9)
         -- draw large rounded rectangle on bottom right
         love.graphics.rectangle("fill", graphics.getWidth() - 925, graphics.getHeight() - 450, 900, 400, 10, 10)
         -- draw the points
         for i = 1, #points do
-            love.graphics.setColor(pointColors[i].r/255, pointColors[i].g/255, pointColors[i].b/255)
+            graphics.setColor(pointColors[i].r/255, pointColors[i].g/255, pointColors[i].b/255)
             love.graphics.circle("fill", graphics.getWidth() - 925 + points[i].x, graphics.getHeight() - 450 + points[i].y, 5)
         end
     end

@@ -109,12 +109,8 @@ function osuLoader.load(chart, folderPath)
             end
         end
     end
-    Timer.after(2,
-        function()
-            state.switch(game)
-            musicTimeDo = true
-        end
-    )
+    state.switch(game)
+    musicTimeDo = true
 end
 
 return osuLoader

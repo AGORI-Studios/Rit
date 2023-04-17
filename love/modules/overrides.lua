@@ -94,6 +94,12 @@ function string.splitAtFirst(str, index)
     return str:sub(1, index), str:sub(index + 1)
 end
 
+function string.title(str)
+    return str:gsub("(%a)([%w_']*)", function(first, rest)
+        return first:upper() .. rest:lower()
+    end)
+end
+
 -- Table Funcs
 
 function table.contains(table, element)

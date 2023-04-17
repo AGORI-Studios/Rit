@@ -2,37 +2,39 @@ local function chooseSongDifficulty()
 end
 
 local function selectSongDifficulty(song, chartVer)
-    if chartVer == "Quaver" then
-        song = songList[curSongSelected]
-        filename = song.filename
-        love.filesystem.mount("songs/quaver/"..filename, "song")
-        songPath = song.path
-        songTitle = song.title
-        songDifficultyName = song.difficultyName
-        quaverLoader.load(songPath, song.folderPath)
-        choosingSong = false
-    elseif chartVer == "osu!" then 
-        song = songList[curSongSelected]
-        filename = song.filename
-        love.filesystem.mount("songs/osu/"..filename, "song")
-        songPath = song.path
-        songTitle = song.title
-        songDifficultyName = song.difficultyName
-        osuLoader.load(songPath, song.folderPath)
-        choosingSong = false
-    elseif chartVer == "FNF" then
-        fnfChartMoment = true
-        choosingSong = false
-    elseif chartVer == "Stepmania" then
-        song = songList[curSongSelected]
-        filename = song.filename
-        songPath = song.path
-        songTitle = song.title
-        folderPath = song.folderPath
-        songDifficultyName = song.difficultyName
-        stepmaniaLoader.load(songPath, filename)
-        choosingSong = false
-    end
+    graphics.fadeOut(0.25,function()
+        if chartVer == "Quaver" then
+            song = songList[curSongSelected]
+            filename = song.filename
+            love.filesystem.mount("songs/quaver/"..filename, "song")
+            songPath = song.path
+            songTitle = song.title
+            songDifficultyName = song.difficultyName
+            quaverLoader.load(songPath, song.folderPath)
+            choosingSong = false
+        elseif chartVer == "osu!" then 
+            song = songList[curSongSelected]
+            filename = song.filename
+            love.filesystem.mount("songs/osu/"..filename, "song")
+            songPath = song.path
+            songTitle = song.title
+            songDifficultyName = song.difficultyName
+            osuLoader.load(songPath, song.folderPath)
+            choosingSong = false
+        elseif chartVer == "FNF" then
+            fnfChartMoment = true
+            choosingSong = false
+        elseif chartVer == "Stepmania" then
+            song = songList[curSongSelected]
+            filename = song.filename
+            songPath = song.path
+            songTitle = song.title
+            folderPath = song.folderPath
+            songDifficultyName = song.difficultyName
+            stepmaniaLoader.load(songPath, filename)
+            choosingSong = false
+        end
+    end)
 end
 
 local function doFnfMoment(fnfMoment)
@@ -132,7 +134,9 @@ return {
             end
     
             if input:pressed("confirm") then
-                doFnfMoment(fnfMomentShiz[fnfMomentSelected])
+                graphics.fadeOut(0.25,function()
+                    doFnfMoment(fnfMomentShiz[fnfMomentSelected])
+                end)
             end
         end
     end,
@@ -187,12 +191,12 @@ return {
                 love.graphics.translate(0, songSelectScrollOffset)
                 for i, v in ipairs(songList) do
                     if i == curSongSelected then
-                        love.graphics.setColor(1, 1, 1)
+                        graphics.setColor(1, 1, 1)
                     else
-                        love.graphics.setColor(0.5, 0.5, 0.5)
+                        graphics.setColor(0.5, 0.5, 0.5)
                     end
                     love.graphics.print(v.title .. " - " .. v.difficultyName, 0, i * (font:getHeight() *1.5), 0, 2, 2)
-                    love.graphics.setColor(1,1,1)
+                    graphics.setColor(1,1,1)
                 end
             love.graphics.pop()
             -- Print song speed in top right

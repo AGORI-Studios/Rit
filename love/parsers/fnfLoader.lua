@@ -156,13 +156,8 @@ function fnfLoader.load(chart, isPlayer, folderPath)
     end
     if create then create() end
 
-    Timer.after((modscript.file and 5 or 2), -- let the modscript LOAD
-        function()
-            state.switch(game)
-
-            musicTimeDo = true 
-        end
-    )
+    state.switch(game)
+    musicTimeDo = true 
 end                    
 
 return fnfLoader
