@@ -5,13 +5,13 @@ dc.lastDiffHandOne = {}
 dc.lastDiffHandTwo = {}
 
 function dc.CalculateDiff(self, accuracy)
-    local chart = table.copy(charthits)
+    local chartc = table.copy(charthits)
     local accuracy = accuracy or .93
     dc.cleanedNotes = {}
     -- go through all of charthits[i] and add j to dc.cleanedNotes
-    for i = 1, #chart do
-        for j = 1, #chart[i] do
-            table.insert(dc.cleanedNotes, chart[i][j])
+    for i = 1, #chartc do
+        for j = 1, #chartc[i] do
+            table.insert(dc.cleanedNotes, chartc[i][j])
         end
     end
     dc.handOne = {}
