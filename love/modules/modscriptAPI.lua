@@ -6,7 +6,7 @@ msa.drawLayers = {}
 msa.file = false
 
 function msa.loadScript(path)
-    msa.file = file
+    msa.file = false
     tryExcept(
         function()
             love.filesystem.load(path .. "/mod/mod.lua")()
