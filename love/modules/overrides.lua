@@ -111,7 +111,7 @@ function table.find(table, element)
             return i
         end
     end
-    return -1
+    return nil
 end
 
 function table.removeValue(table, element)
