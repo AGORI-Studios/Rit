@@ -488,9 +488,9 @@ return {
             if musicPitch[1] < 0 then 
                 musicPitch[1] = 0
             end
-            audioFile:setPitch(musicPitch[1])
+            audioFile:setPitch(songSpeed * musicPitch[1])
             if voices then
-                voices:setPitch(musicPitch[1])
+                voices:setPitch(songSpeed * musicPitch[1])
             end
         end
 
@@ -552,12 +552,12 @@ return {
                                     -- if the note is actually on screen (even with scroll velocity modifiers)
                                     if not charthits[i][j][5] then
                                         
-                                        if charthits[i][j][4] then
+                                        if charthits[i][j][4] then -- hold end
                                             noteImgs[i][2]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), charthits[i][j][2], notesize, noteImgs[i][2].scaleY * notesize * (settings.downscroll and -1 or 1))
-                                        else
+                                        else -- hold
                                             noteImgs[i][1]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), charthits[i][j][2], notesize, notesize * (settings.downscroll and -1 or 1))
                                         end
-                                    else
+                                    else -- normal
                                         noteImgs[i][3]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), charthits[i][j][2]+50, notesize, -notesize)
                                     end
                                 end
@@ -570,18 +570,7 @@ return {
                     end
                     if combo > 0 then
                         -- determine the offsetX of the combo of how many digits it is
-                        local offsetX = 0
-                        if combo >= 10000 then
-                            offsetX = 0
-                        elseif combo >= 1000 then
-                            offsetX = -5
-                        elseif combo >= 100 then
-                            offsetX = -10
-                        elseif combo >= 10 then
-                            offsetX = -15
-                        else
-                            offsetX = -20
-                        end
+                        local offsetX = -5 * math.floor(math.log10(combo)) - 10
                         comboImages[1][combo % 10]:draw(comboImages[1][combo % 10].x + offsetX, comboImages[1][combo % 10].y, comboSize.x, comboSize.y)
                         if math.floor(combo / 10 % 10) ~= 0 or combo >= 100 then
                             comboImages[2][math.floor(combo / 10 % 10)]:draw(comboImages[2][math.floor(combo / 10 % 10)].x + offsetX, comboImages[2][math.floor(combo / 10 % 10)].y, comboSize.x, comboSize.y)
