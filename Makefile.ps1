@@ -22,6 +22,8 @@ function Download-Love {
     Remove-Item -Path ./resources/$Architecture/love-$Architecture.zip -Force
   } else {
     Write-Host "Download love.elf..." #https://github.com/retronx-team/love-nx/releases/download/11.4-nx1/love.elf
+    # create build\nx
+    New-Item -ItemType Directory -Force -Path build/nx
     Invoke-WebRequest -Uri "https://github.com/retronx-team/love-nx/releases/download/11.4-nx1/love.elf" -OutFile build/nx/love.elf
   }
 }
@@ -39,8 +41,9 @@ function Build-Lovefile {
 function Collect-Bundle {
   if ($Architecture -ne "nx"){
     Remove-Item -Recurse -Force -Path build/$Architecture
+    New-Item -ItemType Directory -Force -Path build/$Architecture
   }
-  New-Item -ItemType Directory -Force -Path build/$Architecture
+ 
   
   Copy-Item -Recurse -Path build/lovefile/Rit.love -Destination build/$Architecture/game.love
   if ($Architecture -ne "nx"){
@@ -61,6 +64,9 @@ function Collect-Bundle {
     Remove-Item -Path build\lovefile\Rit.love -Force
 
     cmd.exe /c "tools\switch\elf2nro.exe build\nx\love.elf build\nx\Rit.nro --icon=resources\nx\icon.jpg --nacp=build\nx\Rit.nacp"
+    # move to build\nx\build 
+    New-Item -ItemType Directory -Force -Path build\nx\build
+    Move-Item -Path build\nx\Rit.nro -Destination build\nx\build\Rit.nro
   }
   Set-Location ../..
 }
