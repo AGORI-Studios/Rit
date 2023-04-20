@@ -300,6 +300,7 @@ return {
 
         scoring.healthTween = math.lerp(scoring.healthTween, scoring.health, 0.05)
         scoring.ratingPercentLerp = math.lerp(scoring.ratingPercentLerp, scoring.ratingPercent, 0.05)
+        scoring.score = math.lerp(scoring.score, additionalScore, 0.05)
 
         for i = 1, 4 do
             for _, hitObject in ipairs(charthits[i]) do
@@ -397,18 +398,6 @@ return {
                                     if scoring.health > 2 then
                                         scoring.health = 2
                                     end
-                                    if scoringTimer then 
-                                        Timer.cancel(scoringTimer)
-                                    end
-                                    scoringTimer = Timer.tween(
-                                        0.35,
-                                        scoring,
-                                        {score = additionalScore},
-                                        "out-quad",
-                                        function()
-                                            scoringTimer = nil
-                                        end
-                                    )
                                     table.remove(notes, j)
 
                                     if hit then hit(i, judgement) end
@@ -432,6 +421,20 @@ return {
                 else
                     PRESSEDMOMENTS[i] = 1
                 end
+
+                if input:released(curInput) then
+                    if notes[1] then
+                        if notes[1][4] then
+                            while true do
+                                if notes[1][4] or notes[1][5] then
+                                    table.remove(notes, 1)
+                                else
+                                    break
+                                end
+                            end
+                        end
+                    end
+                end 
             else
                 if notes[1] then
                     if notes[1][1] - musicTime >= -80 and notes[1][1] - musicTime <= 5 then
@@ -460,15 +463,6 @@ return {
                             if scoringTimer then 
                                 Timer.cancel(scoringTimer)
                             end
-                            scoringTimer = Timer.tween(
-                                0.35,
-                                scoring,
-                                {score = additionalScore},
-                                "out-quad",
-                                function()
-                                    scoringTimer = nil
-                                end
-                            )
                         end
                         
                         table.remove(notes, 1)
