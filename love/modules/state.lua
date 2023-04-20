@@ -32,6 +32,10 @@ function state.switch(to, ...)
     collectgarbage()
 end
 
+function state.current()
+    return current
+end
+
 function state.update(dt)
     if current then current:update(dt) end
 end
