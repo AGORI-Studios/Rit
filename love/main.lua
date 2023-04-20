@@ -36,185 +36,115 @@ function loadSongs()
     -- get all .qp files in songs/
     if not love.filesystem.getInfo("songs") then
         love.filesystem.createDirectory("songs")
-        love.window.showMessageBox("Songs folder created!", "songs folder has been created at " .. love.filesystem.getSaveDirectory() .. "/songs", "info")
+        love.window.showMessageBox("Songs folder created!",
+        "songs folder has been created at " .. love.filesystem.getSaveDirectory() .. "/songs", "info")
     end
-    if not love.filesystem.getInfo("songs/quaver") then
-        love.filesystem.createDirectory("songs/quaver")
+    if not love.filesystem.getInfo("songs/packs") then
+        love.filesystem.createDirectory("songs/packs")
     end
-    if not love.filesystem.getInfo("songs/osu") then
-        love.filesystem.createDirectory("songs/osu")
+    if love.filesystem.getInfo("songs/quaver") or love.filesystem.getInfo("songs/osu") or love.filesystem.getInfo("songs/fnf") or
+        love.filesystem.getInfo("songs/quaverExtracted") or love.filesystem.getInfo("songs/osuExtracted") then
+        love.window.showMessageBox("Songs folder structure outdated!",
+            "songs folder structure is outdated, please move all songs to the songs folder and delete the old folders",
+            "error")
     end
-    --[[
-    if not love.filesystem.getInfo("songs/stepmania") then
-        love.filesystem.createDirectory("songs/stepmania")
-    end
-    --]]
-    if not love.filesystem.getInfo("songs/fnf") then
-        love.filesystem.createDirectory("songs/fnf")
-    end
-    -- These folders are specifically for extracted songs to make it work with modscripts
-    if not love.filesystem.getInfo("songs/quaverExtracted") then
-        love.filesystem.createDirectory("songs/quaverExtracted")
-        if not love.filesystem.getInfo("songs/quaverExtracted/info.txt") then 
-            love.filesystem.write("songs/quaverExtracted/info.txt", "This folder is for extracted quaver songs to make it work with modscripts\nOne day it will work in the same folder")
-        end
-    end
-    if not love.filesystem.getInfo("songs/osuExtracted") then
-        love.filesystem.createDirectory("songs/osuExtracted")
-        if not love.filesystem.getInfo("songs/osuExtracted/info.txt") then 
-            love.filesystem.write("songs/osuExtracted/info.txt", "This folder is for extracted osu songs to make it work with modscripts\nOne day it will work in the same folder")
-        end
-    end
+
     songList = {}
-    for i, v in ipairs(love.filesystem.getDirectoryItems("songs/quaver")) do
-        if love.filesystem.getInfo("songs/quaver/" .. v).type == "file" then
-            love.filesystem.mount("songs/quaver/" .. v, "song")
-            -- get all .qua files in the .qp file
-            for k, j in ipairs(love.filesystem.getDirectoryItems("song")) do
-                if love.filesystem.getInfo("song/" .. j).type == "file" then
+    packs = {}
+    -- gross song loading... i know... i'm sorry...
+    for i, v in ipairs(love.filesystem.getDirectoryItems("songs")) do
+        -- check if the file is a directory
+        if love.filesystem.getInfo("songs/" .. v).type == "directory" then
+            -- check if it has a .qua, .osu, or .json file
+            for k, j in ipairs(love.filesystem.getDirectoryItems("songs/" .. v)) do
+                if love.filesystem.getInfo("songs/" .. v .. "/" .. j).type == "file" then
                     if j:sub(-4) == ".qua" then
-                        local title = love.filesystem.read("song/" .. j):match("Title:(.-)\r?\n")
-                        local difficultyName = love.filesystem.read("song/" .. j):match("DifficultyName:(.-)\r?\n")
-                        local BackgroundFile = love.filesystem.read("song/" .. j):match("BackgroundFile:(.-)\r?\n")
+                        local title = love.filesystem.read("songs/" .. v .. "/" .. j):match("Title:(.-)\r?\n")
+                        local difficultyName = love.filesystem.read("songs/" .. v .. "/" .. j):match(
+                        "DifficultyName:(.-)\r?\n")
+                        local BackgroundFile = love.filesystem.read("songs/" .. v .. "/" .. j):match(
+                        "BackgroundFile:(.-)\r?\n")
                         songList[#songList + 1] = {
                             filename = v,
                             title = title,
                             difficultyName = difficultyName or "???",
                             BackgroundFile = BackgroundFile:sub(2),
-                            path = "song/" .. j,
-                            folderPath = "",
-                            type = "Quaver"
+                            path = "songs/" .. v .. "/" .. j,
+                            folderPath = "songs/" .. v,
+                            type = "Quaver",
                         }
-                    end
-                end
-            end
-            love.filesystem.unmount("songs/quaver/"..v)
-        end
-    end
-    for i, v in ipairs(love.filesystem.getDirectoryItems("songs/osu")) do 
-        if love.filesystem.getInfo("songs/osu/" .. v).type == "file" then
-            love.filesystem.mount("songs/osu/" .. v, "song")
-            -- get all .osu files in the .osz file
-            for k, j in ipairs(love.filesystem.getDirectoryItems("song")) do
-                --print(j)
-                --print(love.filesystem.getInfo("song/" .. j).type == "file")
-                if love.filesystem.getInfo("song/" .. j).type == "file" then
-                    --print("ok so")
-                    if j:sub(-4) == ".osu" then
-                        --print(j)
-                        --print(love.filesystem.getInfo("song/" .. j).type == "file")
-                        local title = love.filesystem.read("song/" .. j):match("Title:(.-)\r?\n")
-                        local difficultyName = love.filesystem.read("song/" .. j):match("Version:(.-)\r?\n")
+                    elseif j:sub(-4) == ".osu" then
+                        local title = love.filesystem.read("songs/" .. v .. "/" .. j):match("Title:(.-)\r?\n")
+                        local difficultyName = love.filesystem.read("songs/" .. v .. "/" .. j):match("Version:(.-)\r?\n")
                         songList[#songList + 1] = {
                             filename = v,
                             title = title,
                             difficultyName = difficultyName or "???",
-                            path = "song/" .. j,
-                            folderPath = "",
+                            path = "songs/" .. v .. "/" .. j,
+                            folderPath = "songs/" .. v,
                             type = "osu!"
                         }
-                    end
-                end
-            end
-            love.filesystem.unmount("songs/osu/"..v)
-        end
-    end
-    for i, v in ipairs(love.filesystem.getDirectoryItems("songs/fnf")) do
-        if love.filesystem.getInfo("songs/fnf/" .. v).type == "directory" then
-            local songDir = "songs/fnf/" .. v
-            for k, j in ipairs(love.filesystem.getDirectoryItems(songDir)) do
-                if love.filesystem.getInfo(songDir .. "/" .. j).type == "file" then
-                    if j:sub(-4) == "json" then
+                    elseif j:sub(-5) == ".json" then
                         gsubbedFile = j:gsub(".json", "")
                         local difficultyName = gsubbedFile:match("-(.*)")
                         songList[#songList + 1] = {
                             filename = j,
-                            title = json.decode(love.filesystem.read(songDir .. "/" .. j)).song.song,
+                            title = json.decode(love.filesystem.read("songs/" .. v .. "/" .. j)).song.song,
                             difficultyName = difficultyName or "normal",
                             BackgroundFile = "None",
-                            path = songDir .. "/" .. j,
-                            folderPath = songDir,
+                            path = "songs/" .. v .. "/" .. j,
+                            folderPath = "songs/" .. v,
                             type = "FNF"
                         }
                     end
                 end
             end
-        end
-    end
-
-    for i, v in ipairs(love.filesystem.getDirectoryItems("songs/quaverExtracted")) do
-        if love.filesystem.getInfo("songs/quaverExtracted/" .. v).type == "directory" then
-            -- all qua files in the folder
-            local songDir = "songs/quaverExtracted/" .. v
-            for k, j in ipairs(love.filesystem.getDirectoryItems(songDir)) do
-                if love.filesystem.getInfo(songDir .. "/" .. j).type == "file" then
-                    if j:sub(-4) == ".qua" then
-                        local title = love.filesystem.read(songDir .. "/" .. j):match("Title:(.-)\r?\n")
-                        local difficultyName = love.filesystem.read(songDir .. "/" .. j):match("DifficultyName:(.-)\r?\n")
-                        local BackgroundFile = love.filesystem.read(songDir .. "/" .. j):match("BackgroundFile:(.-)\r?\n")
-                        songList[#songList + 1] = {
-                            filename = v,
-                            title = title,
-                            difficultyName = difficultyName or "???",
-                            BackgroundFile = BackgroundFile:sub(2),
-                            path = songDir .. "/" .. j,
-                            folderPath = songDir,
-                            type = "Quaver",
-                        }
+        else
+            print("songs/" .. v .. " is not a directory")
+            -- check if it is a .qp or .osz file
+            if v:sub(-3) == ".qp" then
+                love.filesystem.mount("songs/" .. v, "qp")
+                for k, j in ipairs(love.filesystem.getDirectoryItems("qp")) do
+                    if love.filesystem.getInfo("qp/" .. j).type == "file" then
+                        if j:sub(-4) == ".qua" then
+                            local title = love.filesystem.read("qp/" .. j):match("Title:(.-)\r?\n")
+                            local difficultyName = love.filesystem.read("qp/" .. j):match("DifficultyName:(.-)\r?\n")
+                            local BackgroundFile = love.filesystem.read("qp/" .. j):match("BackgroundFile:(.-)\r?\n")
+                            songList[#songList + 1] = {
+                                filename = v,
+                                title = title,
+                                difficultyName = difficultyName or "???",
+                                BackgroundFile = BackgroundFile:sub(2),
+                                path = "qp/" .. j,
+                                folderPath = "qp",
+                                type = "Quaver",
+                            }
+                        end
                     end
                 end
-            end
-            
-        end
-    end
-
-    for i, v in ipairs(love.filesystem.getDirectoryItems("songs/osuExtracted")) do 
-        if love.filesystem.getInfo("songs/osuExtracted/" .. v).type == "directory" then
-            -- all osu files in the folder
-            local songDir = "songs/osuExtracted/" .. v
-            for k, j in ipairs(love.filesystem.getDirectoryItems(songDir)) do
-                if love.filesystem.getInfo(songDir .. "/" .. j).type == "file" then
-                    if j:sub(-4) == ".osu" then
-                        local title = love.filesystem.read(songDir .. "/" .. j):match("Title:(.-)\r?\n")
-                        local difficultyName = love.filesystem.read(songDir .. "/" .. j):match("Version:(.-)\r?\n")
-                        songList[#songList + 1] = {
-                            filename = v,
-                            title = title,
-                            difficultyName = difficultyName or "???",
-                            path = songDir .. "/" .. j,
-                            folderPath = songDir,
-                            type = "osu!"
-                        }
+                love.filesystem.unmount("qp")
+            elseif v:sub(-4) == ".osz" then
+                love.filesystem.mount("songs/" .. v, "osz")
+                for k, j in ipairs(love.filesystem.getDirectoryItems("osz")) do
+                    if love.filesystem.getInfo("osz/" .. j).type == "file" then
+                        if j:sub(-4) == ".osu" then
+                            local title = love.filesystem.read("osz/" .. j):match("Title:(.-)\r?\n")
+                            local difficultyName = love.filesystem.read("osz/" .. j):match("Version:(.-)\r?\n")
+                            songList[#songList + 1] = {
+                                filename = v,
+                                title = title,
+                                difficultyName = difficultyName or "???",
+                                path = "osz/" .. j,
+                                folderPath = "osz",
+                                type = "osu!"
+                            }
+                        end
                     end
                 end
+                love.filesystem.unmount("osz")
             end
         end
     end
-    --[[ -- Stepmania is currently not finished
-    for i, v in ipairs(love.filesystem.getDirectoryItems("songs/stepmania")) do 
-        -- stepmania songs are in folders
-        if love.filesystem.getInfo("songs/stepmania/" .. v).type == "directory" then
-            local songDir = "songs/stepmania/" .. v
-            for k, j in ipairs(love.filesystem.getDirectoryItems(songDir)) do
-                if love.filesystem.getInfo(songDir .. "/" .. j).type == "file" then
-                    if j:sub(-3) == ".sm" then
-                        local title = love.filesystem.read(songDir .. "/" .. j):match("#TITLE:(.-);")
-                        local difficultyName = love.filesystem.read(songDir .. "/" .. j):match("#CREDIT:(.-);")
-                        songList[#songList + 1] = {
-                            filename = v,
-                            title = title,
-                            difficultyName = difficultyName or "???",
-                            BackgroundFile = "None",
-                            path = songDir .. "/" .. j,
-                            folderPath = songDir,
-                            type = "Stepmania"
-                        }
-                    end
-                end
-            end
-        end
-    end
-    --]]
 
     -- go through all songs, if it starts with " " then remove it
     for i, v in ipairs(songList) do
@@ -238,7 +168,7 @@ fnfMomentShiz = {
 }
 songSelectScrollOffset = 0
 -- love.filesystem.isFused() and
-if  (love.system.getOS() == "Windows" or love.system.getOS() == "OS X") then
+if (love.system.getOS() == "Windows" or love.system.getOS() == "OS X") then
     discordRPC = require "lib.discordRPC"
     nextPresenceUpdate = 0
 end
@@ -249,38 +179,33 @@ function love.load()
     input = (require "lib.baton").new({
         controls = {
             -- 4K inputs
-            
-            one4 = {"axis:triggerleft+", "axis:leftx-", "axis:rightx-", "button:dpleft", "button:x", "key:d"},
-            two4 = {"axis:lefty+", "axis:righty+", "button:leftshoulder", "button:dpdown", "button:a", "key:f"},
-            three4 = {"axis:lefty-", "axis:righty-", "button:rightshoulder", "button:dpup", "button:y", "key:j"},
-            four4 = {"axis:triggerright+", "axis:leftx+", "axis:rightx+", "button:dpright", "button:b", "key:k"},
 
+            one4 = { "axis:triggerleft+", "axis:leftx-", "axis:rightx-", "button:dpleft", "button:x", "key:d" },
+            two4 = { "axis:lefty+", "axis:righty+", "button:leftshoulder", "button:dpdown", "button:a", "key:f" },
+            three4 = { "axis:lefty-", "axis:righty-", "button:rightshoulder", "button:dpup", "button:y", "key:j" },
+            four4 = { "axis:triggerright+", "axis:leftx+", "axis:rightx+", "button:dpright", "button:b", "key:k" },
             -- 7K inputs
 
-            one7 = {"key:s"},
-            two7 = {"key:d"},
-            three7 = {"key:f"},
-            four7 = {"key:space"},
-            five7 = {"key:j"},
-            six7 = {"key:k"},
-            seven7 = {"key:l"},
-
+            one7 = { "key:s" },
+            two7 = { "key:d" },
+            three7 = { "key:f" },
+            four7 = { "key:space" },
+            five7 = { "key:j" },
+            six7 = { "key:k" },
+            seven7 = { "key:l" },
             -- UI
-    
-            up = {"key:up", "button:dpup", "axis:lefty-"},
-            down = {"key:down", "button:dpdown", "axis:lefty+"},
-            left = {"key:left", "button:dpleft", "axis:leftx-"},
-            right = {"key:right", "button:dpright", "axis:leftx+"},
-           
-    
-            confirm = {"key:return", "button:a"},
-            pause = {"key:return", "button:start"},
-            restart = {"key:r", "button:b"},
-            extB = {"button:back"},
-            volUp = {"button:rightshoulder"},
-            volDown = {"button:leftshoulder"},
 
-            quit = {"key:escape", "button:back"}
+            up = { "key:up", "button:dpup", "axis:lefty-" },
+            down = { "key:down", "button:dpdown", "axis:lefty+" },
+            left = { "key:left", "button:dpleft", "axis:leftx-" },
+            right = { "key:right", "button:dpright", "axis:leftx+" },
+            confirm = { "key:return", "button:a" },
+            pause = { "key:return", "button:start" },
+            restart = { "key:r", "button:b" },
+            extB = { "button:back" },
+            volUp = { "button:rightshoulder" },
+            volDown = { "button:leftshoulder" },
+            quit = { "key:escape", "button:back" }
         },
         joystick = love.joystick.getJoysticks()[1]
     })
@@ -288,8 +213,8 @@ function love.load()
 
     ini = require "lib.ini"
     xml = require "lib.xml".parse
-    if discordRPC then 
-        discordRPC.initialize("785717724906913843", true) 
+    if discordRPC then
+        discordRPC.initialize("785717724906913843", true)
     end
     settingsIni = require "settings"
     settingsIni.loadSettings()
@@ -336,12 +261,13 @@ function love.load()
     musicTimeDo = false
     health = 1
 
-    love.window.setMode(settings.width, settings.height, {resizable = true, vsync = settings.vsync, fullscreen = settings.fullscreen})
-    push.setupScreen(1920, 1080, {upscale = "normal"})
+    love.window.setMode(settings.width, settings.height,
+    { resizable = true, vsync = settings.vsync, fullscreen = settings.fullscreen })
+    push.setupScreen(1920, 1080, { upscale = "normal" })
 
     fnfMomentSelected = 1
 
-    if not love.filesystem.getInfo("fnf-note.blacklist") then 
+    if not love.filesystem.getInfo("fnf-note.blacklist") then
         love.filesystem.write("fnf-note.blacklist", "# Add the note types you want to chart generator to ignore.\n")
     end
 
@@ -351,13 +277,13 @@ function love.load()
             table.insert(fnfBlacklist, line)
         end
     end
-    
+
     loadSongs()
     state.switch(skinSelect)
 
     -- scissorScale is meant for 720p
     scissorScale = 1
-    
+
     audioVol = 50
     love.audio.setVolume(audioVol / 100)
     volFade = 0
@@ -382,7 +308,7 @@ function love.update(dt)
     Timer.update(dt)
     state.update(dt)
     if __DEBUG__ then debug.update(dt) end
-    if discordRPC then 
+    if discordRPC then
         if love.timer.getTime() or 0 > nextPresenceUpdate then
             if presence then
                 discordRPC.updatePresence(presence)
@@ -392,9 +318,9 @@ function love.update(dt)
         discordRPC.runCallbacks()
     end
 
-    if input:getActiveDevice() == "joy" then 
-        if input:down("extB") then 
-            if input:pressed("volUp") then 
+    if input:getActiveDevice() == "joy" then
+        if input:down("extB") then
+            if input:pressed("volUp") then
                 audioVol = audioVol + 5
             elseif input:pressed("volDown") then
                 audioVol = audioVol - 5
@@ -421,7 +347,7 @@ function love.wheelmoved(x, y)
     end
 
     if love.keyboard.isDown("lalt") then
-        if y > 0 then 
+        if y > 0 then
             audioVol = audioVol + 5
         elseif y < 0 then
             audioVol = audioVol - 5
@@ -451,7 +377,7 @@ function love.keypressed(key)
         love.system.openURL("https://ko-fi.com/A0A8GRXMX")
     end
 
-    if key == "o" then 
+    if key == "o" then
         --[[
         if choosingSkin or choosingSong then -- currently unused
             state.switch(audioOffsetter)
@@ -464,41 +390,40 @@ function love.keypressed(key)
         scoring = {score=love.math.random(200000,1000000), ratingPercentLerp = love.math.randomFloat(0, 1),}
         combo=200
         state.switch(resultsScreen, scoring, {"Balls", "HARD"}, false, {{},{},{},{}}, {
-            hits={{0, 100}, {20, 300}, {40,600}, {100, 1000}, {160, 20000}}, 
+            hits={{0, 100}, {20, 300}, {40,600}, {100, 1000}, {160, 20000}},
             songLength=200
         })
     end
     --]]
-
-    if key == "f11" then 
+    if key == "f11" then
         __DEBUG__ = not __DEBUG__
     end
 end
 
 function love.draw()
     push.start()
-        state:draw()
-        if choosingSong or choosingSkin then
-            -- set x and y to bottom left corner of screen
-            love.graphics.print("Press K to open my Ko-fi page!\nPress R to open the replays menu", 1545, 1035, 0, 2, 2)
-        end
+    state:draw()
+    if choosingSong or choosingSkin then
+        -- set x and y to bottom left corner of screen
+        love.graphics.print("Press K to open my Ko-fi page!\nPress R to open the replays menu", 1545, 1035, 0, 2, 2)
+    end
 
-        if volFade > 0 then
-            volFade = volFade - 1 * love.timer.getDelta()
-            -- draw vol slider in bottom right
-            love.graphics.setColor(0, 0, 0, volFade-0.4)
-            love.graphics.rectangle("fill", 1800, 1020, 120, 60)
-            love.graphics.setColor(1, 1, 1, volFade)
-            -- set width based on audioVol
-            love.graphics.rectangle("fill", 1800, 1020, audioVol * 1.2, 60)
-            love.graphics.print(audioVol, 1820-2, 1030, 0, 2, 2)
-            love.graphics.print(audioVol, 1820+2, 1030, 0, 2, 2)
-            love.graphics.print(audioVol, 1820, 1030-2, 0, 2, 2)
-            love.graphics.print(audioVol, 1820, 1030+2, 0, 2, 2)
-            love.graphics.setColor(0, 0, 0, volFade)
-            love.graphics.print(audioVol, 1820, 1030, 0, 2, 2)
-            love.graphics.setColor(1, 1, 1, 1)
-        end
+    if volFade > 0 then
+        volFade = volFade - 1 * love.timer.getDelta()
+        -- draw vol slider in bottom right
+        love.graphics.setColor(0, 0, 0, volFade - 0.4)
+        love.graphics.rectangle("fill", 1800, 1020, 120, 60)
+        love.graphics.setColor(1, 1, 1, volFade)
+        -- set width based on audioVol
+        love.graphics.rectangle("fill", 1800, 1020, audioVol * 1.2, 60)
+        love.graphics.print(audioVol, 1820 - 2, 1030, 0, 2, 2)
+        love.graphics.print(audioVol, 1820 + 2, 1030, 0, 2, 2)
+        love.graphics.print(audioVol, 1820, 1030 - 2, 0, 2, 2)
+        love.graphics.print(audioVol, 1820, 1030 + 2, 0, 2, 2)
+        love.graphics.setColor(0, 0, 0, volFade)
+        love.graphics.print(audioVol, 1820, 1030, 0, 2, 2)
+        love.graphics.setColor(1, 1, 1, 1)
+    end
     push.finish()
 
     if __DEBUG__ then debug.draw() end
@@ -509,7 +434,7 @@ function love.focus(f)
 end
 
 function love.quit()
-    if discordRPC then 
+    if discordRPC then
         discordRPC.shutdown()
     end
 end
