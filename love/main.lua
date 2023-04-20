@@ -54,7 +54,7 @@ function loadSongs()
     -- gross song loading... i know... i'm sorry...
     for i, v in ipairs(love.filesystem.getDirectoryItems("songs")) do
         -- check if the file is a directory
-        if love.filesystem.getInfo("songs/" .. v).type == "directory" then
+        if love.filesystem.getInfo("songs/" .. v).type == "directory" and v ~= "packs" then
             -- check if it has a .qua, .osu, or .json file
             for k, j in ipairs(love.filesystem.getDirectoryItems("songs/" .. v)) do
                 if love.filesystem.getInfo("songs/" .. v .. "/" .. j).type == "file" then
@@ -64,43 +64,69 @@ function loadSongs()
                         "DifficultyName:(.-)\r?\n")
                         local BackgroundFile = love.filesystem.read("songs/" .. v .. "/" .. j):match(
                         "BackgroundFile:(.-)\r?\n")
-                        songList[#songList + 1] = {
-                            filename = v,
-                            title = title,
-                            difficultyName = difficultyName or "???",
-                            BackgroundFile = BackgroundFile:sub(2),
-                            path = "songs/" .. v .. "/" .. j,
-                            folderPath = "songs/" .. v,
-                            type = "Quaver",
-                        }
+                        -- if song is already in the list, don't add it again
+                        local alreadyInList = false
+                        for i, v in ipairs(songList) do
+                            if v.title == title and v.difficultyName == difficultyName then
+                                alreadyInList = true
+                            end
+                        end
+                        if not alreadyInList then
+                            songList[#songList + 1] = {
+                                filename = v,
+                                title = title,
+                                difficultyName = difficultyName or "???",
+                                BackgroundFile = BackgroundFile or "None",
+                                path = "songs/" .. v .. "/" .. j,
+                                folderPath = "songs/" .. v,
+                                type = "Quaver"
+                            }
+                        end
                     elseif j:sub(-4) == ".osu" then
                         local title = love.filesystem.read("songs/" .. v .. "/" .. j):match("Title:(.-)\r?\n")
                         local difficultyName = love.filesystem.read("songs/" .. v .. "/" .. j):match("Version:(.-)\r?\n")
-                        songList[#songList + 1] = {
-                            filename = v,
-                            title = title,
-                            difficultyName = difficultyName or "???",
-                            path = "songs/" .. v .. "/" .. j,
-                            folderPath = "songs/" .. v,
-                            type = "osu!"
-                        }
+                        local alreadyInList = false
+                        for i, v in ipairs(songList) do
+                            if v.title == title and v.difficultyName == difficultyName then
+                                alreadyInList = true
+                            end
+                        end
+                        if not alreadyInList then
+                            songList[#songList + 1] = {
+                                filename = v,
+                                title = title,
+                                difficultyName = difficultyName or "???",
+                                BackgroundFile = "None",
+                                path = "songs/" .. v .. "/" .. j,
+                                folderPath = "songs/" .. v,
+                                type = "Osu"
+                            }
+                        end
                     elseif j:sub(-5) == ".json" then
                         gsubbedFile = j:gsub(".json", "")
+                        local title = json.decode(love.filesystem.read("songs/" .. v .. "/" .. j)).song.song
                         local difficultyName = gsubbedFile:match("-(.*)")
-                        songList[#songList + 1] = {
-                            filename = j,
-                            title = json.decode(love.filesystem.read("songs/" .. v .. "/" .. j)).song.song,
-                            difficultyName = difficultyName or "normal",
-                            BackgroundFile = "None",
-                            path = "songs/" .. v .. "/" .. j,
-                            folderPath = "songs/" .. v,
-                            type = "FNF"
-                        }
+                        local alreadyInList = false
+                        for i, v in ipairs(songList) do
+                            if v.title == title and v.difficultyName == difficultyName then
+                                alreadyInList = true
+                            end
+                        end
+                        if not alreadyInList then
+                            songList[#songList + 1] = {
+                                filename = v,
+                                title = title,
+                                difficultyName = difficultyName or "???",
+                                BackgroundFile = "None",
+                                path = "songs/" .. v .. "/" .. j,
+                                folderPath = "songs/" .. v,
+                                type = "FNF"
+                            }
+                        end
                     end
                 end
             end
-        else
-            print("songs/" .. v .. " is not a directory")
+        elseif love.filesystem.getInfo("songs/" .. v).type == "file" then
             -- check if it is a .qp or .osz file
             if v:sub(-3) == ".qp" then
                 love.filesystem.mount("songs/" .. v, "qp")
@@ -110,15 +136,23 @@ function loadSongs()
                             local title = love.filesystem.read("qp/" .. j):match("Title:(.-)\r?\n")
                             local difficultyName = love.filesystem.read("qp/" .. j):match("DifficultyName:(.-)\r?\n")
                             local BackgroundFile = love.filesystem.read("qp/" .. j):match("BackgroundFile:(.-)\r?\n")
-                            songList[#songList + 1] = {
-                                filename = v,
-                                title = title,
-                                difficultyName = difficultyName or "???",
-                                BackgroundFile = BackgroundFile:sub(2),
-                                path = "qp/" .. j,
-                                folderPath = "qp",
-                                type = "Quaver",
-                            }
+                            local alreadyInList = false
+                            for i, v in ipairs(songList) do
+                                if v.title == title and v.difficultyName == difficultyName then
+                                    alreadyInList = true
+                                end
+                            end
+                            if not alreadyInList then
+                                songList[#songList + 1] = {
+                                    filename = v,
+                                    title = title,
+                                    difficultyName = difficultyName or "???",
+                                    BackgroundFile = BackgroundFile or "None",
+                                    path = "qp/" .. j,
+                                    folderPath = "qp",
+                                    type = "Quaver"
+                                }
+                            end
                         end
                     end
                 end
@@ -130,14 +164,22 @@ function loadSongs()
                         if j:sub(-4) == ".osu" then
                             local title = love.filesystem.read("osz/" .. j):match("Title:(.-)\r?\n")
                             local difficultyName = love.filesystem.read("osz/" .. j):match("Version:(.-)\r?\n")
-                            songList[#songList + 1] = {
-                                filename = v,
-                                title = title,
-                                difficultyName = difficultyName or "???",
-                                path = "osz/" .. j,
-                                folderPath = "osz",
-                                type = "osu!"
-                            }
+                            for i, v in ipairs(songList) do
+                                if v.title == title and v.difficultyName == difficultyName then
+                                    alreadyInList = true
+                                end
+                            end
+                            if not alreadyInList then
+                                songList[#songList + 1] = {
+                                    filename = v,
+                                    title = title,
+                                    difficultyName = difficultyName or "???",
+                                    BackgroundFile = "None",
+                                    path = "osz/" .. j,
+                                    folderPath = "osz",
+                                    type = "Osu"
+                                }
+                            end
                         end
                     end
                 end
@@ -145,6 +187,147 @@ function loadSongs()
             end
         end
     end
+
+    -- go through all packs
+    --[[
+    for i, v in ipairs(love.filesystem.getDirectoryItems("packs")) do
+        -- check if the file is a directory
+        for k, j in ipairs(love.filesystem.getDirectoryItems("packs/" .. v)) do
+            -- all packs have a pack.meta file
+            -- they are formatted like this:
+            --[[
+                Name: TestPack
+                Creator: GuglioIsStupid
+                Description: This is a test pack
+            if j == "pack.meta" then
+                local name = love.filesystem.read("packs/" .. v .. "/" .. j):match("Name:(.-)\r?\n")
+                local creator = love.filesystem.read("packs/" .. v .. "/" .. j):match("Creator:(.-)\r?\n")
+                local description = love.filesystem.read("packs/" .. v .. "/" .. j):match("Description:(.-)\r?\n")
+                -- add to packs
+                packs[#packs + 1] = {
+                    name = name or "???",
+                    creator = creator or "???",
+                    description = description or "???",
+                    songs = {},
+                    path = "packs/" .. v
+                }
+                print("Found pack " .. name .. " by " .. creator)
+
+                -- go through all songs in the pack,
+                -- packs ar formatted like:
+                --[[
+                    pack/
+                        pack.meta
+                        song1.qp
+                        song2.osz
+                        song3/
+                for k, l in ipairs(love.filesystem.getDirectoryItems("packs/" .. v)) do
+                    -- check if the file is a directory
+                    if love.filesystem.getInfo("packs/" .. v .. "/" .. l).type == "directory" then
+                        -- check if the directory has a .qua file
+                        for m, n in ipairs(love.filesystem.getDirectoryItems("packs/" .. v .. "/" .. l)) do
+                            if n:sub(-4) == ".qua" then
+                                local title = love.filesystem.read("packs/" .. v .. "/" .. l .. "/" .. n):match("Title:(.-)\r?\n")
+                                local difficultyName = love.filesystem.read("packs/" .. v .. "/" .. l .. "/" .. n):match("DifficultyName:(.-)\r?\n")
+                                local BackgroundFile = love.filesystem.read("packs/" .. v .. "/" .. l .. "/" .. n):match("BackgroundFile:(.-)\r?\n")
+                                -- add to packs
+                                packs[#packs].songs[#packs[#packs].songs + 1] = {
+                                    filename = l,
+                                    title = title,
+                                    difficultyName = difficultyName or "???",
+                                    BackgroundFile = BackgroundFile:sub(2),
+                                    path = "packs/" .. v .. "/" .. l .. "/" .. n,
+                                    folderPath = "packs/" .. v .. "/" .. l,
+                                    type = "Quaver",
+                                }
+                            elseif n:sub(-4) == ".osu" then
+                                local title = love.filesystem.read("packs/" .. v .. "/" .. l .. "/" .. n):match("Title:(.-)\r?\n")
+                                local difficultyName = love.filesystem.read("packs/" .. v .. "/" .. l .. "/" .. n):match("Version:(.-)\r?\n")
+                                -- add to packs
+                                packs[#packs].songs[#packs[#packs].songs + 1] = {
+                                    filename = l,
+                                    title = title,
+                                    difficultyName = difficultyName or "???",
+                                    path = "packs/" .. v .. "/" .. l .. "/" .. n,
+                                    folderPath = "packs/" .. v .. "/" .. l,
+                                    type = "osu!"
+                                }
+                            elseif n:sub(-5) == ".json" then
+                                local title = love.filesystem.read("packs/" .. v .. "/" .. l .. "/" .. n):match('"title":"(.-)"')
+                                local difficultyName = love.filesystem.read("packs/" .. v .. "/" .. l .. "/" .. n):match('"difficulty":"(.-)"')
+                                local BackgroundFile = love.filesystem.read("packs/" .. v .. "/" .. l .. "/" .. n):match('"background":"(.-)"')
+                                -- add to packs
+                                packs[#packs].songs[#packs[#packs].songs + 1] = {
+                                    filename = l,
+                                    title = title or "???",
+                                    difficultyName = difficultyName or "???",
+                                    BackgroundFile = BackgroundFile,
+                                    path = "packs/" .. v .. "/" .. l .. "/" .. n,
+                                    folderPath = "packs/" .. v .. "/" .. l,
+                                    type = "FNF",
+                                }
+                            end
+                        end
+                    elseif love.filesystem.getInfo("packs/" .. v .. "/" .. l).type == "file" then
+                        if l:sub(-3) == ".qp" then
+                            love.filesystem.mount("packs/" .. v .. "/" .. l, "qp")
+                            for k, j in ipairs(love.filesystem.getDirectoryItems("qp")) do
+                                if love.filesystem.getInfo("qp/" .. j).type == "file" then
+                                    if j:sub(-4) == ".qua" then
+                                        local title = love.filesystem.read("qp/" .. j):match("Title:(.-)\r?\n")
+                                        local difficultyName = love.filesystem.read("qp/" .. j):match("DifficultyName:(.-)\r?\n")
+                                        local BackgroundFile = love.filesystem.read("qp/" .. j):match("BackgroundFile:(.-)\r?\n")
+                                        songList[#songList + 1] = {
+                                            filename = v,
+                                            title = title,
+                                            difficultyName = difficultyName or "???",
+                                            BackgroundFile = BackgroundFile:sub(2),
+                                            path = "qp/" .. j,
+                                            folderPath = "qp",
+                                            type = "Quaver",
+                                        }
+                                    end
+                                end
+                            end
+                            love.filesystem.unmount("qp")
+                        elseif l:sub(-4) == ".osz" then
+                            love.filesystem.mount("packs/" .. v .. "/" .. l, "osz")
+                            for k, j in ipairs(love.filesystem.getDirectoryItems("osz")) do
+                                if love.filesystem.getInfo("osz/" .. j).type == "file" then
+                                    if j:sub(-4) == ".osu" then
+                                        local title = love.filesystem.read("osz/" .. j):match("Title:(.-)\r?\n")
+                                        local difficultyName = love.filesystem.read("osz/" .. j):match("Version:(.-)\r?\n")
+                                        songList[#songList + 1] = {
+                                            filename = v,
+                                            title = title,
+                                            difficultyName = difficultyName or "???",
+                                            path = "osz/" .. j,
+                                            folderPath = "osz",
+                                            type = "osu!"
+                                        }
+                                    end
+                                end
+                            end
+                            love.filesystem.unmount("osz")
+                        end
+                    end
+                end
+            end
+        end
+    end
+    --]]
+
+
+    -- add "packs" to the song list
+    songList[#songList + 1] = {
+        filename = "packs",
+        title = "Packs",
+        difficultyName = "???",
+        BackgroundFile = "None",
+        path = "packs",
+        folderPath = "packs",
+        type = "packs"
+    }
 
     -- go through all songs, if it starts with " " then remove it
     for i, v in ipairs(songList) do
@@ -156,9 +339,15 @@ function loadSongs()
             v.title = v.title:sub(1, 1):upper() .. v.title:sub(2)
         end
     end
-    -- sort the song list by title a-z
+    -- sort the song list by title a-z, if its "packs", force it to top
     table.sort(songList, function(a, b)
-        return a.title < b.title
+        if a.title == "Packs" then
+            return true
+        elseif b.title == "Packs" then
+            return false
+        else
+            return a.title < b.title
+        end
     end)
 end
 
@@ -373,9 +562,6 @@ function love.keypressed(key)
     if state.keypressed then
         state.keypressed(key)
     end
-    if key == "k" and (choosingSong or choosingSkin) then
-        love.system.openURL("https://ko-fi.com/A0A8GRXMX")
-    end
 
     if key == "o" then
         --[[
@@ -403,10 +589,6 @@ end
 function love.draw()
     push.start()
     state:draw()
-    if choosingSong or choosingSkin then
-        -- set x and y to bottom left corner of screen
-        love.graphics.print("Press K to open my Ko-fi page!\nPress R to open the replays menu", 1545, 1035, 0, 2, 2)
-    end
 
     if volFade > 0 then
         volFade = volFade - 1 * love.timer.getDelta()
