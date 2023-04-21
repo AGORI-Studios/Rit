@@ -36,6 +36,17 @@ function quaverLoader.load(chart, folderPath)
             audioPath = (folderPath == "" and "song/" .. audioPath or folderPath .. "/" .. audioPath)
             audioFile = love.audio.newSource(audioPath, "stream")
         end
+        if line:find("BackgroundFile:") then
+            curLine = line
+            local bgPath = curLine
+            bgPath = bgPath:gsub("BackgroundFile: ", "")
+            bgPath = (folderPath == "" and "song/" .. bgPath or folderPath .. "/" .. bgPath)
+            tryExcept(function()
+                bgFile = graphics.newImage(bgPath)
+            end, function()
+                bgFile = nil
+            end)
+        end
         if line:find("Mode: ") then
             modeLine = line
             mode = modeLine:gsub("Mode: ", "")
