@@ -152,6 +152,9 @@ return {
 
         scoring.totalNotes = 0
 
+        leftGradient = love.graphics.gradient("horizontal", {0, 0, 0, 0}, {0,0,0,1}, {0, 0, 0, 1})
+        rightGradient = love.graphics.gradient("horizontal", {0, 0, 0, 1}, {0,0,0,1}, {0, 0, 0, 0})
+
         -- count all notes that are NOT holds or ends
         for i = 1, #charthits do
             for j = 1, #charthits[i] do
@@ -302,7 +305,7 @@ return {
         scoring.ratingPercentLerp = math.lerp(scoring.ratingPercentLerp, scoring.ratingPercent, 0.05)
         scoring.score = math.lerp(scoring.score, additionalScore, 0.05)
 
-        for i = 1, 4 do
+        for i = 1, (mode == "Keys4" and 4 or 7) do
             for _, hitObject in ipairs(charthits[i]) do
                 hitObject[2] = (whereNotesHit[1] + (-((musicTime - hitObject[1]) * 0.6 * speed))) * modifiers.reverseScale
             end
@@ -460,9 +463,6 @@ return {
                             if scoring.health > 100 then
                                 scoring.health = 1
                             end
-                            if scoringTimer then 
-                                Timer.cancel(scoringTimer)
-                            end
                         end
                         
                         table.remove(notes, 1)
@@ -515,6 +515,25 @@ return {
                         -- draw in order of modifiers.graphics[name].img.drawLayer
                         for i = 1, #modifiers.draws do 
                             modifiers.graphics[modifiers.draws[i]]:draw()
+                        end
+                    love.graphics.pop()
+                    love.graphics.push()
+                        if not modscript.file then
+                            if bgFile then
+                                -- reize to 1080x1920
+                                if bgFile then
+                                    love.graphics.translate(push.getWidth() / 2, push.getHeight() / 2)
+                                    bgFile:draw(0, 0, resize(bgFile, push.getWidth(), push.getHeight()))
+                                end
+                            end
+                        end
+                    love.graphics.pop()
+
+                    love.graphics.push()
+                        love.graphics.translate(push.getWidth() / 2-800, push.getHeight() / 2-540)
+                        if settings.underlay then
+                            leftGradient:draw(0, 0, 0, 800, push:getHeight())
+                            rightGradient:draw(800, 0, 0, 800, push:getHeight())
                         end
                     love.graphics.pop()
 
