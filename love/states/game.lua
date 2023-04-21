@@ -341,7 +341,7 @@ return {
         end
         beatHandler.update(dt)
 
-        if input:pressed("pause") then 
+        if input:pressed("pause") and not debug.consoleTyping then
             if musicTimeDo then 
                 pause()
             else
@@ -360,7 +360,7 @@ return {
             curInput = inputList[i]
             notes = charthits[i]
             if not autoplay then
-                if input:pressed(curInput) then
+                if input:pressed(curInput) and not debug.consoleTyping then
                     table.insert(replayHits[i], {musicTime, 1})
                     if hitsoundCache[#hitsoundCache]:isPlaying() then
                         hitsoundCache[#hitsoundCache] = hitsoundCache[#hitsoundCache]:clone()
@@ -412,7 +412,7 @@ return {
                     end
                 end
 
-                if input:down(curInput) then
+                if input:down(curInput) and not debug.consoleTyping then
                     PRESSEDMOMENTS[i] = 2
                     if notes[1] then
                         if notes[1][4] then
@@ -425,7 +425,7 @@ return {
                     PRESSEDMOMENTS[i] = 1
                 end
 
-                if input:released(curInput) then
+                if input:released(curInput) and not debug.consoleTyping then
                     if notes[1] then
                         if notes[1][4] then
                             while true do

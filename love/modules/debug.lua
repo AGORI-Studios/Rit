@@ -10,6 +10,9 @@ debug.logmodes = {
     {name="error",color="\27[31m",colprint={1,0,0}},
     {name="fatal",color="\27[35m",colprint={1,0,1}},
 }
+debug.consoleTyping = false
+debug.command = ""
+debug.commandLines = {}
 function debug.print(inf, ...)
     -- print to fake console
     local args = {...}
@@ -66,6 +69,15 @@ function debug.drawConsole()
     end
 end
 
+function debug.typeConsole()
+    -- another console specifically for typing, shows at top left and the width is until the other console
+    love.graphics.setColor(0.2, 0.2, 0.2, 0.5)
+    love.graphics.rectangle("fill", 0, 0, 300, 20)
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.print(debug.command, 8, 0)
+    love.graphics.print(">", 0, 0)
+end
+
 function debug.clearConsole()
     -- clear fake console
     debug.consolelines = {}
@@ -84,9 +96,41 @@ function debug.logfile()
     love.filesystem.write(debug.outfile, table.concat(debug.logLines, "\n"))
 end
 
+function debug.keypressed(k)
+    if k == "lctrl" then
+        debug.consoleTyping = not debug.consoleTyping
+    elseif k == "backspace" then
+        debug.command = debug.command:sub(1, -2)
+    elseif k == "return" then
+        -- execute command
+        local cmd = debug.command
+        debug.command = ""
+        debug.commandLines[#debug.commandLines + 1] = cmd
+        local func, err = loadstring(cmd)
+        if func then
+            local success, err = pcall(func)
+            if not success then
+                debug.print("error", err)
+            end
+        else
+            debug.print("error", err)
+        end
+        return
+    end
+end
+
+function debug.textinput(t)
+    if debug.consoleTyping and t ~= "lctrl" and t ~= "lshift" and t ~= "return" then
+        debug.command = debug.command .. t
+    end
+end
+
 function debug.draw()
     debug.drawConsole()
     debug.drawdebug()
+    if debug.consoleTyping then
+        debug.typeConsole()
+    end
 end
 
 function debug.update(dt)

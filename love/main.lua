@@ -564,6 +564,8 @@ function love.keypressed(key)
         state.keypressed(key)
     end
 
+    debug.keypressed(key)
+
     if key == "o" then
         --[[
         if choosingSkin or choosingSong then -- currently unused
@@ -585,6 +587,13 @@ function love.keypressed(key)
     if key == "f11" then
         __DEBUG__ = not __DEBUG__
     end
+end
+
+function love.textinput(text)
+    if state.textinput then
+        state.textinput(text)
+    end
+    debug.textinput(text)
 end
 
 function love.draw()

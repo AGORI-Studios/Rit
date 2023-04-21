@@ -54,6 +54,7 @@ function quaverLoader.load(chart, folderPath)
                 loadSkin("7k")
             elseif mode == "Keys4" then
                 loadSkin("4k")
+                print(notesize)
             end
         end
         -- if the line has "- Bpm: " in it, then it's the line with the BPM

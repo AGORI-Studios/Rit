@@ -55,7 +55,7 @@ end
 
 function loadSkin(skinVer)
     if skinVer == "4k" then
-        notesize = skinJson["skin"]["4k"]["note size"]
+        notesize = skinJson["skin"]["4k"]["note size"] or "1"
         notesize = tonumber(notesize)
         antiAliasing = skinJson["skin"]["4k"]["antialiasing"]
     
@@ -138,7 +138,7 @@ function loadSkin(skinVer)
     
         love.graphics.setDefaultFilter("linear", "linear")
     elseif skinVer == "7k" then
-        notesize = skinJson["skin"]["7k"]["note size"]
+        notesize = skinJson["skin"]["7k"]["note size"] or "1"
         notesize = tonumber(notesize)
         antiAliasing = skinJson["skin"]["7k"]["antialiasing"]
 
@@ -218,9 +218,9 @@ function loadSkin(skinVer)
             end
         end
             
-        healthBarColor = skinJson["skin"]["4k"]["ui"]["healthBarColor"]
-        uiTextColor = skinJson["skin"]["4k"]["ui"]["uiTextColor"]
-        timeBarColor = skinJson["skin"]["4k"]["ui"]["timeBarColor"]
+        healthBarColor = skinJson["skin"]["7k"]["ui"]["healthBarColor"]
+        uiTextColor = skinJson["skin"]["7k"]["ui"]["uiTextColor"]
+        timeBarColor = skinJson["skin"]["7k"]["ui"]["timeBarColor"]
     
         comboImages = {}
     
