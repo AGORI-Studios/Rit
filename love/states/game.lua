@@ -530,7 +530,7 @@ return {
                     love.graphics.pop()
 
                     love.graphics.push()
-                        love.graphics.translate(push.getWidth() / 2-800, push.getHeight() / 2-540)
+                        love.graphics.translate(push.getWidth() / 2-786, push.getHeight() / 2-540)
                         if settings.underlay then
                             leftGradient:draw(0, 0, 0, 800, push:getHeight())
                             rightGradient:draw(800, 0, 0, 800, push:getHeight())
