@@ -1,12 +1,13 @@
 local function chooseSongDifficulty()
 end
 
-local function selectSongDifficulty(song, chartVer)
+local function selectSongDifficulty(_, chartVer)
     graphics.fadeOut(0.25,function()
         if chartVer == "Quaver" then
             song = songList[curSongSelected]
             filename = song.filename
-            love.filesystem.mount("songs/quaver/"..filename, "song")
+            love.filesystem.mount("songs/"..filename, "song")
+            print("songs/"..filename)
             songPath = song.path
             songTitle = song.title
             songDifficultyName = song.difficultyName
@@ -14,7 +15,7 @@ local function selectSongDifficulty(song, chartVer)
         elseif chartVer == "osu!" then 
             song = songList[curSongSelected]
             filename = song.filename
-            love.filesystem.mount("songs/osu/"..filename, "song")
+            love.filesystem.mount("songs/"..filename, "song")
             songPath = song.path
             songTitle = song.title
             songDifficultyName = song.difficultyName
