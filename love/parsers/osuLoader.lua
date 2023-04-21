@@ -39,11 +39,35 @@ function osuLoader.load(chart, folderPath)
             audioPath = (folderPath == "" and "song/" .. audioPath or folderPath .. "/" .. audioPath)
             audioFile = love.audio.newSource(audioPath, "stream")
         end
+        --[[
+        if line:find("BackgroundFile:") then
+            curLine = line
+            local bgPath = curLine
+            bgPath = bgPath:gsub("BackgroundFile: ", "")
+            bgPath = (folderPath == "" and "song/" .. bgPath or folderPath .. "/" .. bgPath)
+            tryExcept(function()
+                bgFile = love.graphics.newImage(bgPath)
+            end, function()
+                bgFile = nil
+            end)
+        end
+        --]]
+        -- background is found in '0,0,"background desuuu.jpg",0,0', the numbers can and will change
+        if line:find("0,0,") then 
+            local bgPath = line:match("0,0,\"([^\"]+)\"") or ""
+            bgPath = (folderPath == "" and "song/" .. bgPath or folderPath .. "/" .. bgPath)
+            tryExcept(function()
+                bgFile = graphics.newImage(bgPath)
+            end, function()
+                bgFile = nil
+            end)
+        end
+
         mode = "Keys4"
         bpm = 0
         if line:find("[HitObjects]") then 
             readChart = true
-        end
+        end 
         if line:find(",") then 
             local x, _, startTime, _, _, endtime = line:match("([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+)") -- _ is used to ignore the values we don't need
             x = tonumber(x) or 128
