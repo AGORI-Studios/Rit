@@ -26,7 +26,10 @@ settingsStr = love.system.getOS() ~= "NX" and [[
 ; UPSCROLL IS NOT AS STABLE AS DOWNSCROLL, USE AT YOUR OWN RISK! MAY BREAK VISUALS!
 downscroll = True
 
-; scroll speed is the scroll speed ever
+; Adds an underlay under the notes
+underlay = True
+
+; scroll speed is the speed of the notes
 scrollspeed = 1.0
 
 ; Currently WIP, while it works, it's not recommended to use it
@@ -60,13 +63,17 @@ vsync = False
 volume = 1.0
 
 [System]
-version = settingsVer1/0.0.3-beta
+version = settingsVer1/0.0.4-beta
 ]] or [[
+[Game]
 ; Makes the notes scroll down instead of up
 ; UPSCROLL IS NOT AS STABLE AS DOWNSCROLL, USE AT YOUR OWN RISK! MAY BREAK VISUALS!
 downscroll = True
 
-; scroll speed is the scroll speed ever
+; Adds an underlay under the notes
+underlay = True
+
+; scroll speed is the speed of the notes
 scrollspeed = 1.0
 
 ; Currently WIP, while it works, it's not recommended to use it
@@ -94,7 +101,7 @@ vsync = False
 volume = 1.0
 
 [System]
-version = settingsVer1/0.0.3-beta
+version = settingsVer1/0.0.4-beta
 ]] -- NX (Nintendo Switch)
 
 function settingsIni.loadSettings()
@@ -102,33 +109,70 @@ function settingsIni.loadSettings()
     if not love.filesystem.getInfo("settings.ini") then
         love.filesystem.write("settings.ini", settingsStr)
     end
-    inifile = ini.load("settings.ini")
-    settings.version = inifile["System"]["version"] or "Unknown"
-    if settings.version ~= "settingsVer1/0.0.3-beta" then
-        love.filesystem.write("settings.ini", settingsStr)
-    end
-    settings.downscroll = inifile["Game"]["downscroll"] == "True" or false
-    settings.scrollspeed = tonumber(inifile["Game"]["scrollspeed"]) or 1.0
-    settings.scrollvelocities = inifile["Game"]["Scroll Velocities"] == "True"
-    settings.startTime = tonumber(inifile["Game"]["startTime"]) or 700
-    settings.noteSpacing = tonumber(inifile["Game"]["noteSpacing"]) or 200
-    settings.autoplay = inifile["Game"]["autoplay"] == "True" or false
-    settings.audioOffset = tonumber(inifile["Game"]["audioOffset"]) or 0
+    tryExcept(
+        function()
+            inifile = ini.load("settings.ini")
+            settings.version = inifile["System"]["version"] or "Unknown"
+            if settings.version ~= "settingsVer1/0.0.4-beta" then
+                love.filesystem.write("settings.ini", settingsStr)
+            end
+            settings.downscroll = inifile["Game"]["downscroll"] == "True" or false
+            settings.underlay = inifile["Game"]["underlay"] == "True" or false
+            settings.scrollspeed = tonumber(inifile["Game"]["scrollspeed"]) or 1.0
+            settings.scrollvelocities = inifile["Game"]["Scroll Velocities"] == "True"
+            settings.startTime = tonumber(inifile["Game"]["startTime"]) or 700
+            settings.noteSpacing = tonumber(inifile["Game"]["noteSpacing"]) or 200
+            settings.autoplay = inifile["Game"]["autoplay"] == "True" or false
+            settings.audioOffset = tonumber(inifile["Game"]["audioOffset"]) or 0
 
-    if settings.curSystem ~= "NX" then
-        settings.width = tonumber(inifile["Graphics"]["width"]) or 1280
-        settings.height = tonumber(inifile["Graphics"]["height"]) or 720
-        settings.fullscreen = inifile["Graphics"]["fullscreen"] == "True" or false
-    else
-        settings.width = 1920
-        settings.height = 1080
-        settings.fullscreen = false
-    end
-    settings.vsync = inifile["Graphics"]["vsync"] == "True" or false
+            if settings.curSystem ~= "NX" then
+                settings.width = tonumber(inifile["Graphics"]["width"]) or 1280
+                settings.height = tonumber(inifile["Graphics"]["height"]) or 720
+                settings.fullscreen = inifile["Graphics"]["fullscreen"] == "True" or false
+            else
+                settings.width = 1920
+                settings.height = 1080
+                settings.fullscreen = false
+            end
+            settings.vsync = inifile["Graphics"]["vsync"] == "True" or false
 
-    settings.volume = inifile["Audio"]["volume"] or 1.0
+            settings.volume = inifile["Audio"]["volume"] or 1.0
 
-    love.audio.setVolume(settings.volume)
+            love.audio.setVolume(settings.volume)
+        end,
+
+        function()
+            settings.version = "Unknown"
+            if settings.version ~= "settingsVer1/0.0.4-beta" then
+                love.filesystem.write("settings.ini", settingsStr)
+            end
+            settings.downscroll = false
+            settings.underlay = true
+            settings.scrollspeed = 1.0
+            settings.scrollvelocities = false
+            settings.startTime = 700
+            settings.noteSpacing = 200
+            settings.autoplay = false
+            settings.audioOffset = 0
+
+            if settings.curSystem ~= "NX" then
+                settings.width = 1280
+                settings.height = 720
+                settings.fullscreen = false
+            else
+                settings.width = 1920
+                settings.height = 1080
+                settings.fullscreen = false
+            end
+            settings.vsync = false
+
+            settings.volume = 1.0
+
+            love.audio.setVolume(settings.volume)
+        end
+    )
+
+    print(settings.underlay)
 end
 
 return settingsIni
