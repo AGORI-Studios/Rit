@@ -7,9 +7,13 @@ modifiers.modList = {
     -- Notig mods
     "drunk",
     "tipsy",
-    "reverse"
-}
+    "reverse",
+    "xmod",
 
+    -- column mods
+    "xmod1", "xmod2", "xmod3", "xmod4",
+}
+modifiers.mods = {}
 modifiers.enabledList = {}
 modifiers.curEnabled = {}
 modifiers.reverseScale = 1 -- 1 means not flipped, -1 means flipped
@@ -20,26 +24,45 @@ modifiers.graphics = {}
 modifiers.draws = {}
 modifiers.shaders = {}
 modifiers.curShader = ""
+modifiers.xmodLane = {}
+modifiers.defaultX = {}
+modifiers.defaultY = {}
+modifiers.notePos = {}
+for i = 1, 4 do
+    modifiers.notePos[i] = 0
+end
+for i = 1, 4 do
+    modifiers.defaultX[i] = 90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1))
+end
+for i = 1, 4 do
+    modifiers.defaultY[i] = -35
+end
+for i = 1, 4 do
+    modifiers.xmodLane[i] = 0
+end
 modifiers.camera = {x=0,y=0,zoom=1}
 modifiers.gameProperties = {["receptorsVisible"]=true,["healthbarVisible"]=true,["scoreVisible"]=true,["timebarVisible"]=true}
 modifiers.musicPlaying = true
 
-function modifiers:load()
-    for i, v in pairs(modifiers.modList) do
-        modifiers[v] = require("modules.modifiers." .. v)
-    end
-    
-    -- Reset the modifiers
-    modifiers:applyMod("drunk", 0, 0)
-    modifiers:applyMod("tipsy", 0, 0)
-    modifiers:applyMod("reverse", 0, 1) 
+function getReverseForCol(l)
+    local val = 0
+
+    val = val + modifiers.reverseScale
+
+    return val
 end
 
-function modifiers:applyMod(mod, beat, amount)
-    if modifiers[mod] then
-        table.insert(self.enabledList, {mod = mod, beat = beat, amount = amount})
-       -- debug.print("Applied mod " .. mod .. " at beat " .. beat .. " with amount " .. amount)
+function modifiers:load()
+    for i, v in pairs(modifiers.modList) do
+        modifiers.mods[v] = require("modules.modifiers." .. v)
+        print("Loaded modifier " .. v)
     end
+end
+
+function modifiers:applyMod(mod, beat, amount, lane)
+    local lane = lane or 0
+    table.insert(self.enabledList, {mod = mod, beat = beat, amount = amount, lane = lane})
+    -- debug.print("Applied mod " .. mod .. " at beat " .. beat .. " with amount " .. amount)
 end
 
 function modifiers:createSprite(name, img)
@@ -176,8 +199,8 @@ function doModSimulated(func, beat)
     table.insert(modifiers.funcsSimulated, {func = func, beat = beat})
 end
 
-function applyMod(mod, beat, amount)
-    modifiers:applyMod(mod, beat, amount)
+function applyMod(mod, beat, amount, lane)
+    modifiers:applyMod(mod, beat, amount, lane)
 end
 function removeMod(mod, beat)
     modifiers:removeMod(mod, beat)
@@ -266,6 +289,16 @@ function changeCircleProperty(name, prop, value)
     modifiers:changeCircleProperty(name, prop, value)
 end
 
+function setLaneScrollspeed(lane, speed)
+    if lane == 0 then
+        for i = 1, 4 do
+            speedLane[i] = speed
+        end
+    else
+        speedLane[lane] = speed
+    end
+end
+
 -- End globals
 
 function modifiers:update(dt, curBeat)
@@ -275,16 +308,17 @@ function modifiers:update(dt, curBeat)
         -- if current beat is the same as the beat the mod was applied
         if v.beat <= curBeat and audioFile:isPlaying() then
             -- apply the mod
-            modifiers[v.mod]:apply(v.amount)
+            modifiers.mods[v.mod]:apply(v.amount, v.lane)
             -- remove the mod from the list
             --debug.print("Applied mod " .. v.mod .. " at beat " .. v.beat .. " with amount " .. v.amount)
+            
             table.remove(modifiers.enabledList, i)
         end
     end
 
     for i, v in pairs(modifiers.curEnabled) do
         -- update the mod
-        modifiers[v[1]]:update(dt, curBeat, v[2])
+        modifiers.mods[v[1]]:update(dt, curBeat, v[2])
     end
 
     for i, v in pairs(modifiers.funcs) do

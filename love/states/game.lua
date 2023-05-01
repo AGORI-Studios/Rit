@@ -307,7 +307,7 @@ return {
 
         for i = 1, (mode == "Keys4" and 4 or 7) do
             for _, hitObject in ipairs(charthits[i]) do
-                hitObject[2] = (whereNotesHit[1] + (-((musicTime - hitObject[1]) * 0.6 * speed))) * modifiers.reverseScale
+                hitObject[2] = (whereNotesHit[1] + (-((musicTime - hitObject[1]) * 0.6 * speedLane[i]))) * modifiers.reverseScale
             end
         end
         
@@ -429,8 +429,12 @@ return {
                     if notes[1] then
                         if notes[1][4] then
                             while true do
-                                if notes[1][4] or notes[1][5] then
-                                    table.remove(notes, 1)
+                                if notes[1] then
+                                    if notes[1][4] or notes[1][5] then
+                                        table.remove(notes, 1)
+                                    else
+                                        break
+                                    end
                                 else
                                     break
                                 end
@@ -672,6 +676,11 @@ return {
         Timer.clear()
         presence = {}
         camera = {x=0, y=0, zoom=1}
+
+        speedLane = {}
+        for i = 1, 4 do
+            speedLane[i] = speed
+        end
 
         modifiers:clear()
     end

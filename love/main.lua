@@ -414,6 +414,10 @@ function love.load()
     end
 
     speed = settings.scrollspeed or 1
+    speedLane = {}
+    for i = 1, 4 do
+        speedLane[i] = speed
+    end
     autoplay = settings.autoplay or false
 
     quaverLoader = require "parsers.quaverLoader"
