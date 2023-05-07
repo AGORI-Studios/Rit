@@ -8,10 +8,6 @@ modifiers.modList = {
     "drunk",
     "tipsy",
     "reverse",
-    "xmod",
-
-    -- column mods
-    "xmod1", "xmod2", "xmod3", "xmod4",
 }
 modifiers.mods = {}
 modifiers.enabledList = {}
@@ -24,7 +20,6 @@ modifiers.graphics = {}
 modifiers.draws = {}
 modifiers.shaders = {}
 modifiers.curShader = ""
-modifiers.xmodLane = {}
 modifiers.defaultX = {}
 modifiers.defaultY = {}
 modifiers.notePos = {}
@@ -36,9 +31,6 @@ for i = 1, 4 do
 end
 for i = 1, 4 do
     modifiers.defaultY[i] = -35
-end
-for i = 1, 4 do
-    modifiers.xmodLane[i] = 0
 end
 modifiers.camera = {x=0,y=0,zoom=1}
 modifiers.gameProperties = {["receptorsVisible"]=true,["healthbarVisible"]=true,["scoreVisible"]=true,["timebarVisible"]=true}
