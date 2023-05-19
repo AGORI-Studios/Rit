@@ -78,9 +78,11 @@ function quaverLoader.load(chart, folderPath)
                 multiplier = curLine
                 multiplier = multiplier:gsub("Multiplier: ", "")
                 multiplier = tonumber(multiplier)
+                    
+                local sv = 1
+                local timingPoint = charthits[1] or 0
 
-                local sv = {}
-                local timingPoint = charthits[1].timingPoint or 0
+                table.insert(chartEvents, {startTime, multiplier})
             end
         end
 

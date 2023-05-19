@@ -21,7 +21,7 @@ function debug.print(inf, ...)
     -- the console lines should be given so console can do 
     --[[
         love.graphics.print({{col}, str},)
-    ]] 
+    --]] 
     local time = os.time()
     -- get hours, minutes, seconds, should be formatted like [HH:MM:SS]
     local hours = os.date("%H", time) or 0
@@ -89,6 +89,7 @@ function debug.drawdebug()
     love.graphics.print("Graphics memory usage: " .. round(love.graphics.getStats().texturememory / 1024) .. "KB", 0, 60)
     love.graphics.print("Music Time: " .. (musicTime or 0), 0, 80)
     love.graphics.print("Beat: " .. (math.floor(((musicTime or 0) / 1000) * (beatHandler.bpm/60)) or 0), 0, 100)
+    love.graphics.print("sv: " .. tostring(sv or 0), 0, 120)
 end
 
 function debug.logfile()

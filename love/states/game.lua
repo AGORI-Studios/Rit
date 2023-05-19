@@ -84,6 +84,11 @@ function addJudgement(judgement, lane, hitTime)
     table.insert(hitsTable.hits, {hitTime, musicTime})
 end
 
+function getYAdjust(yoffset)
+    local yadj = 0
+    return yoffset + yadj
+end
+
 return {
     enter = function(self)
         now = os.time()
@@ -192,7 +197,7 @@ return {
 
         combo = 0
     
-        sv = 1 -- Scroll Velocity
+        sv = speed -- Scroll Velocity
     
         curJudgement = "none"
 
@@ -307,7 +312,19 @@ return {
 
         for i = 1, (mode == "Keys4" and 4 or 7) do
             for _, hitObject in ipairs(charthits[i]) do
+                local xmod = sv
+                local scrollspeed = xmod
+                local off = receptors[i][1].offsetY
+                local defaulty = modifiers.defaultY[i]
+                local targTime = hitObject[1]
+                local ypos = getYAdjust(defaulty - (musicTime - targTime)) * scrollspeed * 0.6 - off
                 hitObject[2] = (whereNotesHit[1] + (-((musicTime - hitObject[1]) * 0.6 * speedLane[i]))) * modifiers.reverseScale
+
+                if hitObject[4] or hitObject[5] then
+                    local ypos2 = getYAdjust(defaulty - ((musicTime+0.1) - targTime)) * scrollspeed * 0.6 - off
+                end
+
+                hitObject[2] = ypos
             end
         end
         
@@ -323,6 +340,7 @@ return {
             if chartEvents[1][1] <= absMusicTime then
                 if settings.scrollvelocities then 
                     sv = chartEvents[1][2] 
+                    if sv == 1 then sv = speed end
                     for i = 1, 4 do 
                         noteImgs[i][2].scaleY = 1 * sv
                     end
@@ -476,6 +494,7 @@ return {
         end
 
         if scoring.health <= 0 and not died then
+            --[[
             died = true
             Timer.tween(3, musicPosValue, {0}, "out-quad")
             Timer.tween(3, musicPitch, {0.005}, "out-quad", function()
@@ -484,6 +503,7 @@ return {
                     state.switch(resultsScreen, scoring, {songTitle, songDifficultyName}, true, replayHits, hitsTable)
                 end)
             end)
+            --]]
         elseif died then
             if musicPitch[1] < 0 then 
                 musicPitch[1] = 0
@@ -567,16 +587,16 @@ return {
                         
                         for i = 1, #charthits do
                             for j = #charthits[i], 1, -1 do
-                                if math.abs(charthits[i][j][2]) <= 1100 then
+                                if math.abs((whereNotesHit[1] + (-((musicTime - charthits[i][j][1]) * 0.6 * speed)))) <= 2250 then
                                     -- if the note is actually on screen (even with scroll velocity modifiers)
                                     if not charthits[i][j][5] then
                                         
-                                        if charthits[i][j][4] then -- hold end
+                                        if charthits[i][j][4] then -- normal
                                             noteImgs[i][2]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), charthits[i][j][2], notesize, noteImgs[i][2].scaleY * notesize * (settings.downscroll and -1 or 1))
                                         else -- hold
                                             noteImgs[i][1]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), charthits[i][j][2], notesize, notesize * (settings.downscroll and -1 or 1))
                                         end
-                                    else -- normal
+                                    else -- end
                                         noteImgs[i][3]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), charthits[i][j][2]+50, notesize, -notesize)
                                     end
                                 end
