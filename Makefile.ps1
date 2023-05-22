@@ -66,7 +66,15 @@ function Collect-Bundle {
     cmd.exe /c "tools\switch\elf2nro.exe build\nx\love.elf build\nx\Rit.nro --icon=resources\nx\icon.jpg --nacp=build\nx\Rit.nacp"
     # move to build\nx\build 
     New-Item -ItemType Directory -Force -Path build\nx\build
-    Move-Item -Path build\nx\Rit.nro -Destination build\nx\build\Rit.nro
+    New-Item -ItemType Directory -Force -Path build\nx\build\rit
+    Move-Item -Path build\nx\Rit.nro -Destination build\nx\build\rit\Rit.nro
+
+    # if build/release doesn't exist, create it
+    if (!(Test-Path build/release)) {
+      New-Item -ItemType Directory -Force -Path build/release
+    }
+    # zip build\nx\build\rit to build\release\Rit.zip
+    Compress-Archive -Path build\nx\build\rit\* -DestinationPath build\release\Rit.zip -CompressionLevel Optimal
   }
   Set-Location ../..
 }
