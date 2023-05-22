@@ -48,7 +48,8 @@ local function selectSkin(skin) -- TODO: seperate functions for different skin a
     choosingSong = true
 
     musicPos = 0
-    state.switch(songSelect)
+    settings.skin = skinName
+    state.switch(settingsMenu)
     dt = 0
     for i = 1, 4 do charthits[i] = {} end
 end

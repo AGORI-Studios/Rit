@@ -24,7 +24,7 @@ Rating: %s
 
         replayHits = args[4]
         hitsTable = args[5].hits
-        songLength = args[5].songLength / songSpeed
+        songLength = args[5].songLength / (songSpeed or 1)
 
         debug.print("info", "Score: "..score.." - "..acc.."%")
 
@@ -171,8 +171,40 @@ Rating: %s
         love.graphics.print("Press enter to go back to song select", graphics.getWidth() / 2, graphics.getHeight() / 2 + 188, 0, 2, 2)
         --]]
 
+        -- WIP Menu, just exists so people can see their scores :>
+
+        -- BG
         graphics.setColor(0.7,0.7,0.7)
         love.graphics.rectangle("fill", -1000, -1000, 3000, 3000)
+
+        -- Left bar
+        love.graphics.setColor(0.9, 0.9, 0.9)
+        love.graphics.rectangle("fill", 10, 10, 900, push:getHeight()-20, 10, 10)
+
+        -- Left bar info
+        love.graphics.push()
+            love.graphics.scale(2,2)
+            love.graphics.setColor(0, 0, 0)
+            love.graphics.print("Results for " .. songData[1] .. " - " .. songData[2], 20, 20)
+            love.graphics.print("Score: " .. score, 20, 52)
+            love.graphics.print("Accuracy: " .. ((math.floor(scoring.ratingPercentLerp * 10000) / 100)) .. "%", 20, 84)
+            love.graphics.print("Rating: " .. curRating .. (died and " - Died" or ""), 20, 116)
+        love.graphics.pop()
+
+        -- Accuracy circle
+        love.graphics.push()
+            love.graphics.translate(50, 400)
+            love.graphics.scale(0.5, 0.5)
+            love.graphics.setColor(0.5, 0.5, 0.5)
+            love.graphics.circle("fill", 450, 450, 400)
+            -- Draw a border around the circle, ((math.floor(scoring.ratingPercentLerp * 10000) / 100)) is 1-100
+            love.graphics.setColor(0.25, 0.25, 0.25)
+            love.graphics.setLineWidth(10)
+            love.graphics.arc("line", "open", 450, 450, 400, 0, ((math.floor(scoring.ratingPercentLerp * 10000) / 100) / 100) * (2 * math.pi))
+            love.graphics.setLineWidth(1)
+        love.graphics.pop()
+
+        -- Rating Graph
         graphics.setColor(0.9, 0.9, 0.9)
         -- draw large rounded rectangle on bottom right
         love.graphics.rectangle("fill", graphics.getWidth() - 925, graphics.getHeight() - 450, 900, 400, 10, 10)

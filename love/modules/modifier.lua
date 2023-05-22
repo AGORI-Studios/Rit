@@ -27,7 +27,7 @@ for i = 1, 4 do
     modifiers.notePos[i] = 0
 end
 for i = 1, 4 do
-    modifiers.defaultX[i] = 90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1))
+    modifiers.defaultX[i] = 90 -(settings.settings.Game["note spacing"]*(#receptors/2-1)) + (settings.settings.Game["note spacing"] * (i-1))
 end
 for i = 1, 4 do
     modifiers.defaultY[i] = -35

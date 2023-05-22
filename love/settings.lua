@@ -39,7 +39,7 @@ Scroll Velocities = False
 startTime = 700
 
 ; Note spacing is the amount of space between each note (in pixels) ((its broken a bit tho))
-noteSpacing = 200
+["note spacing"] = 200
 
 ; Autoplay - automatically play songs without user input. Can also be toggled with B in song select.
 autoplay = False
@@ -83,7 +83,7 @@ Scroll Velocities = False
 startTime = 700
 
 ; Note spacing is the amount of space between each note (in pixels) ((its broken a bit tho))
-noteSpacing = 200
+["note spacing"] = 200
 
 ; Autoplay - automatically play songs without user input. Can also be toggled with B in song select.
 autoplay = False
@@ -119,9 +119,9 @@ function settingsIni.loadSettings()
             settings.downscroll = inifile["Game"]["downscroll"] == "True" or false
             settings.underlay = inifile["Game"]["underlay"] == "True" or false
             settings.scrollspeed = tonumber(inifile["Game"]["scrollspeed"]) or 1.0
-            settings.scrollvelocities = inifile["Game"]["Scroll Velocities"] == "True"
+            settings.["Scroll Velocities"] = inifile["Game"]["Scroll Velocities"] == "True"
             settings.startTime = tonumber(inifile["Game"]["startTime"]) or 700
-            settings.noteSpacing = tonumber(inifile["Game"]["noteSpacing"]) or 200
+            settings.["note spacing"] = tonumber(inifile["Game"]["["note spacing"]"]) or 200
             settings.autoplay = inifile["Game"]["autoplay"] == "True" or false
             settings.audioOffset = tonumber(inifile["Game"]["audioOffset"]) or 0
 
@@ -149,9 +149,9 @@ function settingsIni.loadSettings()
             settings.downscroll = false
             settings.underlay = true
             settings.scrollspeed = 1.0
-            settings.scrollvelocities = false
+            settings.["Scroll Velocities"] = false
             settings.startTime = 700
-            settings.noteSpacing = 200
+            settings.["note spacing"] = 200
             settings.autoplay = false
             settings.audioOffset = 0
 

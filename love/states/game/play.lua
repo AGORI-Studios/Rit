@@ -116,12 +116,8 @@ return {
     
         songRate = 1
     
-        game = require "states.game"
-        skinSelect = require "states.skinSelect"
-        songSelect = require "states.songSelect"
-    
-        musicTime = -settings.startTime 
-        simulatedMusicTime = -settings.startTime
+        musicTime = -settings.settings.Game["start time"] 
+        simulatedMusicTime = -settings.settings.Game["start time"]
     
         PRESSEDMOMENTS = {
             [1] = 1,
@@ -277,7 +273,7 @@ return {
 
         absMusicTime = math.abs(musicTime)
 
-        if (musicTime > 0 - settings.audioOffset) and not audioFile:isPlaying() and not died and modifiers.musicPlaying then
+        if (musicTime > 0 - settings.settings.Game["audio offset"]) and not audioFile:isPlaying() and not died and modifiers.musicPlaying then
             if musicTimeDo then
                 audioFile:play()
                 if voices then -- support for fnf voices
@@ -338,7 +334,7 @@ return {
         
         if chartEvents[1] then
             if chartEvents[1][1] <= absMusicTime then
-                if settings.scrollvelocities then 
+                if settings.settings.Game["scroll velocities"] then 
                     sv = chartEvents[1][2] 
                     if sv == 1 then sv = speed end
                     for i = 1, 4 do 
@@ -555,14 +551,14 @@ return {
 
                     love.graphics.push()
                         love.graphics.translate(push.getWidth() / 2-786, push.getHeight() / 2-540)
-                        if settings.underlay then
+                        if settings.settings.Game.underlay then
                             leftGradient:draw(0, 0, 0, 800, push:getHeight())
                             rightGradient:draw(800, 0, 0, 800, push:getHeight())
                         end
                     love.graphics.pop()
 
                     love.graphics.push()
-                        if settings.downscroll then 
+                        if settings.settings.downscroll then 
                             love.graphics.translate(0, push.getHeight() - 175)
                             love.graphics.scale(1, -1)
                         else
@@ -570,12 +566,12 @@ return {
                         end
                         love.graphics.translate(push.getWidth() / 2 - 175, 50)
                         for i = 1, #receptors do
-                            receptors[i][PRESSEDMOMENTS[i]]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), strumlineY[1], notesize, notesize * (settings.downscroll and -1 or 1))
+                            receptors[i][PRESSEDMOMENTS[i]]:draw(90 -(settings.settings.Game["note spacing"]*(#receptors/2-1)) + (settings.settings.Game["note spacing"] * (i-1)), strumlineY[1], notesize, notesize * (settings.settings.Game.downscroll and -1 or 1))
                         end 
                     love.graphics.pop()
 
                     love.graphics.push()
-                        if settings.downscroll then 
+                        if settings.settings.downscroll then 
                             love.graphics.translate(0, push.getHeight() - 175)
                             love.graphics.scale(1, -1)
                         else
@@ -592,12 +588,12 @@ return {
                                     if not charthits[i][j][5] then
                                         
                                         if charthits[i][j][4] then -- normal
-                                            noteImgs[i][2]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), charthits[i][j][2], notesize, noteImgs[i][2].scaleY * notesize * (settings.downscroll and -1 or 1))
+                                            noteImgs[i][2]:draw(90 -(settings.settings.Game["note spacing"]*(#receptors/2-1)) + (settings.settings.Game["note spacing"] * (i-1)), charthits[i][j][2], notesize, noteImgs[i][2].scaleY * notesize * (settings.settings.Game.downscroll and -1 or 1))
                                         else -- hold
-                                            noteImgs[i][1]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), charthits[i][j][2], notesize, notesize * (settings.downscroll and -1 or 1))
+                                            noteImgs[i][1]:draw(90 -(settings.settings.Game["note spacing"]*(#receptors/2-1)) + (settings.settings.Game["note spacing"] * (i-1)), charthits[i][j][2], notesize, notesize * (settings.settings.Game.downscroll and -1 or 1))
                                         end
                                     else -- end
-                                        noteImgs[i][3]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), charthits[i][j][2]+50, notesize, -notesize)
+                                        noteImgs[i][3]:draw(90 -(settings.settings.Game["note spacing"]*(#receptors/2-1)) + (settings.settings.Game["note spacing"] * (i-1)), charthits[i][j][2]+50, notesize, -notesize)
                                     end
                                 end
                             end

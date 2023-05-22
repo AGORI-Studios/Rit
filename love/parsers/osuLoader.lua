@@ -21,6 +21,28 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 local osuLoader = {}
 
+function osuLoader.getBpm(line)
+    -- https://github.com/semyon422/chartbase/blob/507866709138225c200ed8c360424d752f2e5981/osu/Osu.lua#LL100C41-L100C41
+    local split = line:split(",")
+    local tp = {}
+
+    tp.offset = tonumber(split[1])
+    tp.beatLength = tonumber(split[2])
+
+	tp.beatLength = math.abs(tp.beatLength)
+
+    -- get bpm 
+    if tp.beatLength > 0 then
+        bpm = 60 / tp.beatLength
+    elseif tp.beatLength < 0 then
+        bpm = 60 / (tp.beatLength * -1)
+    else
+        bpm = 120
+    end
+
+    return bpm
+end
+
 lineCount = 0
 function osuLoader.load(chart, folderPath)
     curChart = "osu!"

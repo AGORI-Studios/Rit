@@ -100,6 +100,12 @@ function string.title(str)
     end)
 end
 
+function string.cap(str)
+    -- capitalized the first letter of each word
+    return str:gsub("(%a)([%w_']*)", function(first, rest)
+        return first:upper() .. rest:lower()
+    end)
+end
 -- Table Funcs
 
 function table.contains(table, element)

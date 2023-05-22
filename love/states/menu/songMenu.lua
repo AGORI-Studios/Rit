@@ -3,36 +3,25 @@ end
 
 local function selectSongDifficulty(_, chartVer)
     graphics.fadeOut(0.25,function()
-        if chartVer == "Quaver" then
+        if chartVer ~= "FNF" and chartVer ~= "packs" then
+            Timer.tween(0.25, menuMusicVol, {0})
+
             song = songList[curSongSelected]
             filename = song.filename
             love.filesystem.mount("songs/"..filename, "song")
-            print("songs/"..filename)
             songPath = song.path
             songTitle = song.title
             songDifficultyName = song.difficultyName
+        end
+        if chartVer == "Quaver" then
             quaverLoader.load(songPath, song.folderPath)
         elseif chartVer == "osu!" then 
-            song = songList[curSongSelected]
-            filename = song.filename
-            love.filesystem.mount("songs/"..filename, "song")
-            songPath = song.path
-            songTitle = song.title
-            songDifficultyName = song.difficultyName
             osuLoader.load(songPath, song.folderPath)
         elseif chartVer == "FNF" then
             curMenu = "fnf"
         elseif chartVer == "Stepmania" then
-            song = songList[curSongSelected]
-            filename = song.filename
-            songPath = song.path
-            songTitle = song.title
-            folderPath = song.folderPath
-            songDifficultyName = song.difficultyName
             stepmaniaLoader.load(songPath, filename)
         elseif chartVer == "packs" then -- Open pack selector
-            --curMenu = "packs"
-            --songSelectScrollOffset = 0
             graphics.fadeIn(0.25)
         end
     end)
@@ -45,6 +34,7 @@ local function doFnfMoment(fnfMoment)
     songTitle = song.title
     songDifficultyName = song.difficultyName..(fnfMomentShiz[fnfMomentSelected] and " - Player" or " - Enemy")
     folderPath = song.folderPath
+    Timer.tween(0.25, menuMusicVol, {0})
     fnfLoader.load(songPath, fnfMomentShiz[fnfMomentSelected], folderPath)
     curMenu = "songSelect"
 end

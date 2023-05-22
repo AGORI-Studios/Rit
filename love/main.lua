@@ -318,7 +318,6 @@ function loadSongs()
     end
     --]]
 
-
     -- add "packs" to the song list
     songList[#songList + 1] = {
         filename = "packs",
@@ -390,6 +389,7 @@ function love.load()
             left = { "key:left", "button:dpleft", "axis:leftx-" },
             right = { "key:right", "button:dpright", "axis:leftx+" },
             confirm = { "key:return", "button:a" },
+            back = { "key:escape", "button:b" },
             pause = { "key:return", "button:start" },
             restart = { "key:r", "button:b" },
             extB = { "button:back" },
@@ -403,22 +403,32 @@ function love.load()
 
     ini = require "lib.ini"
     xml = require "lib.xml".parse
+    lume = require "lib.lume"
+    json = require "lib.json"
     if discordRPC then
         discordRPC.initialize("785717724906913843", true)
     end
-    settingsIni = require "settings"
-    settingsIni.loadSettings()
+    settings = require "modules.settings"
 
     function round(num)
         return math.floor(num + 0.5)
     end
 
-    speed = settings.scrollspeed or 1
+    speed = settings.settings.scrollspeed or 1
     speedLane = {}
     for i = 1, 4 do
         speedLane[i] = speed
     end
-    autoplay = settings.autoplay or false
+    autoplay = settings.settings.autoplay or false
+
+    skinName = settings.settings.skin or "Circle Default"
+    if love.filesystem.getInfo("skins/" .. skinName) then
+        fffff = "skins/" .. skinName
+    else
+        fffff = "defaultskins/" .. skinName
+    end
+    skinJson = json.decode(love.filesystem.read(fffff .. "/skin.json"))
+    skinFolder = fffff
 
     quaverLoader = require "parsers.quaverLoader"
     osuLoader = require "parsers.osuLoader"
@@ -427,17 +437,24 @@ function love.load()
 
     receptors = {}
 
-    state = require "modules.state"
+    state = require "lib.gamestate"
     beatHandler = require "modules.beatHandler"
     -- Modchart handlers
     modifiers = require "modules.modifier"
     modscript = require "modules.modscriptAPI"
 
-    game = require "states.game"
-    songSelect = require "states.songSelect"
-    skinSelect = require "states.skinSelect"
-    resultsScreen = require "states.resultsScreen"
-    audioOffsetter = require "states.audioOffset"
+    -- Menus
+    startMenu = require "states.menu.startMenu"
+    settingsMenu = require "states.menu.settingsMenu"
+    songSelect = require "states.menu.songMenu"
+    skinSelect = require "states.menu.skinMenu"
+
+    -- Gameplay
+    game = require "states.game.play"
+    resultsScreen = require "states.game.resultsScreen"
+
+    -- Misc
+    audioOffsetter = require "states.misc.audioOffset"
 
     push = require "lib.push"
     Timer = require "lib.timer"
@@ -455,8 +472,8 @@ function love.load()
     musicTimeDo = false
     health = 1
 
-    love.window.setMode(settings.width, settings.height,
-    { resizable = true, vsync = settings.vsync, fullscreen = settings.fullscreen })
+    love.window.setMode(settings.settings.Graphics.width, settings.settings.Graphics.height,
+    { resizable = true, vsync = settings.settings.Graphics.vsync, fullscreen = settings.settings.Graphics.fullscreen })
     push.setupScreen(1920, 1080, { upscale = "normal" })
 
     fnfMomentSelected = 1
@@ -473,7 +490,68 @@ function love.load()
     end
 
     loadSongs()
-    state.switch(skinSelect)
+    -- choose a random song
+    song = songList[love.math.random(#songList)]
+    -- get the song type
+    songType = song.type
+    -- get the song path
+    songPath = song.path
+    -- get the song folder path
+    songFolderPath = song.folderPath
+    songFilename = song.filename
+
+    -- load audio
+    if songType == "Quaver" then
+        -- mount the qua file
+        love.filesystem.mount("songs/"..songFilename, "song")
+        local lines = love.filesystem.lines(songPath)
+        for line in lines do
+            if line:find("AudioFile:") then
+                curLine = line
+                audioPath = curLine:gsub("AudioFile: ", "")
+                audioPath = (songFolderPath == "" and "song/" .. audioPath or folderPath .. "/" .. audioPath)
+                menuMusic = love.audio.newSource(audioPath, "stream")
+            elseif line:find("Bpm:") then
+                curLine = line
+                menuBPM = curLine:gsub("Bpm: ", "")
+                menuBPM = menuBPM:gsub("%D", "")
+                menuBPM = tonumber(menuBPM) or 120
+            end
+        end
+    elseif songType == "osu!" then
+        love.filesystem.mount("songs/"..songFilename, "song")
+        local lines = love.filesystem.lines(songPath)
+        linesIndex = 0
+        for line in lines do
+            linesIndex = linesIndex + 1
+            if line:find("AudioFilename:") then
+                curLine = line
+                audioPath = curLine:gsub("AudioFilename: ", "")
+                audioPath = (songFolderPath == "" and "song/" .. audioPath or folderPath .. "/" .. audioPath)
+                menuMusic = love.audio.newSource(audioPath, "stream")
+            elseif line:find("[TimingPoints]") then
+                -- go to the next line
+                curLine = lines[linesIndex + 1]
+                -- get the bpm
+                menuBPM = osuLoader.getBPM(curLine) or 120
+            end
+        end
+    elseif songType == "FNF" then
+        local file = json.decode(love.filesystem.read(songPath)).song
+        menuBPM = file.bpm or 120
+        menuMusic = love.audio.newSource(songPath .. "/Inst.ogg", "stream")
+    end
+
+    if menuMusic then
+        menuMusic:setVolume(0.5)
+        menuMusic:play()
+        menuMusic:seek(0)
+        menuMusic:setLooping(true)
+    end
+
+    menuMusicVol = { menuMusic:getVolume() }
+
+    state.switch(startMenu)
 
     -- scissorScale is meant for 720p
     scissorScale = 1
@@ -512,6 +590,10 @@ function love.update(dt)
         discordRPC.runCallbacks()
     end
 
+    if menuMusic then
+        menuMusic:setVolume(menuMusicVol[1])
+    end
+
     if input:getActiveDevice() == "joy" then
         if input:down("extB") then
             if input:pressed("volUp") then
@@ -536,9 +618,7 @@ function love.update(dt)
 end
 
 function love.wheelmoved(x, y)
-    if state.wheelmoved then
-        state.wheelmoved(x, y)
-    end
+    state.wheelmoved(x, y)
 
     if love.keyboard.isDown("lalt") then
         if y > 0 then
@@ -561,12 +641,7 @@ function love.wheelmoved(x, y)
 end
 
 function love.keypressed(key)
-    if key == "escape" then
-        love.event.quit()
-    end
-    if state.keypressed then
-        state.keypressed(key)
-    end
+    state.keypressed(key)
 
     debug.keypressed(key)
 
@@ -594,9 +669,7 @@ function love.keypressed(key)
 end
 
 function love.textinput(text)
-    if state.textinput then
-        state.textinput(text)
-    end
+    state.textinput(text)
     debug.textinput(text)
 end
 
