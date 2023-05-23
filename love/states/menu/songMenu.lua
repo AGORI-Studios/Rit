@@ -12,6 +12,7 @@ local function selectSongDifficulty(_, chartVer)
             songPath = song.path
             songTitle = song.title
             songDifficultyName = song.difficultyName
+            songRating = song.rating
         end
         if chartVer == "Quaver" then
             quaverLoader.load(songPath, song.folderPath)
@@ -34,6 +35,7 @@ local function doFnfMoment(fnfMoment)
     songTitle = song.title
     songDifficultyName = song.difficultyName..(fnfMomentShiz[fnfMomentSelected] and " - Player" or " - Enemy")
     folderPath = song.folderPath
+    songRating = song.rating
     Timer.tween(0.25, menuMusicVol, {0})
     fnfLoader.load(songPath, fnfMomentShiz[fnfMomentSelected], folderPath)
     curMenu = "songSelect"

@@ -11,5 +11,7 @@ for /f "tokens=1-3 delims=/ " %%a in ('date /t') do (
     set yyyy=%%a
 )
 
+set /a count+=1
+
 rem edit love/buildver.txt
 echo %count% - %yyyy% > love/buildver.txt

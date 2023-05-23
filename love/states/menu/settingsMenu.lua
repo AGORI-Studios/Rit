@@ -189,5 +189,12 @@ return {
 
     leave = function()
         settings.saveSettings()
+        
+
+        speed = settings.settings.Game["scroll speed"] or 1
+        speedLane = {}
+        for i = 1, 4 do
+            speedLane[i] = speed
+        end
     end
 }

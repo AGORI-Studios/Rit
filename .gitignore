@@ -8,6 +8,8 @@
 *.osz
 *.zip
 
+!love/defaultsongs/*
+
 # Compiled files
 /test/
 /build/

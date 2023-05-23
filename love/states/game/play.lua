@@ -81,6 +81,10 @@ function addJudgement(judgement, lane, hitTime)
     end)
     game:calculateRating()
 
+    -- Determine scoring.scoreRating based of song rating and accuracy
+    -- should be a relativly low number, so if a song has like a 30 rating, you can get a max of like 34-ish
+    scoring.scoreRating = (scoring.score / ((noteCounter + scoring["Miss"]) * scoring.scorePoints["Marvellous"]) * 100) * (songRating / 100) * 1.05
+
     table.insert(hitsTable.hits, {hitTime, musicTime})
 end
 
@@ -108,7 +112,8 @@ return {
                 ["Great"] = 0,
                 ["Good"] = 0,
                 ["Miss"] = 0
-            }
+            },
+            scoreRating = 0,
         }
 
         replayHits = {}
@@ -643,6 +648,9 @@ return {
                         graphics.setColor(uiTextColor)
                         love.graphics.printf(scoring.score > 1000000 and 1000000 or scoreFormat, 0, 0, 960, "right")
                         love.graphics.printf(((math.floor(scoring.ratingPercentLerp * 10000) / 100)) .. "%", 0, 45, 960, "right")
+                        -- format scoring.scoreRating to 2 decimal places
+                        scoreRatingFormat = string.format("%.2f", scoring.scoreRating)
+                        love.graphics.printf(scoreRatingFormat, 0, 90, 960, "right")
                         graphics.setColor(1, 1, 1, 1)
                         love.graphics.setFont(font)
                     end

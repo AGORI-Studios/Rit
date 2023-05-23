@@ -253,7 +253,15 @@ function dc.calcPerFinger(self, floats, column)
         return 0
     end
     for i = 1, #floats-1 do
-        sum = sum + column[startIndex + 1] - column[startIndex]
+        --sum = sum + column[startIndex + 1] - column[startIndex]
+        tryExcept(
+            function()
+                sum = sum + column[startIndex + 1] - column[startIndex]
+            end,
+            function()
+                sum = sum
+            end
+        )
         startIndex = startIndex + 1
     end
 
