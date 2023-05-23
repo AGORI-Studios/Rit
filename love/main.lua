@@ -651,7 +651,7 @@ function love.wheelmoved(x, y)
         if y > 0 then
             settings.settings.Audio.master = settings.settings.Audio.master + 0.05
         elseif y < 0 then
-            settings.settings.Audio.Master = settings.settings.Audio.master - 0.05
+            settings.settings.Audio.master = settings.settings.Audio.master - 0.05
         end
 
         -- apply volume
