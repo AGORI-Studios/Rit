@@ -21,12 +21,26 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 local fnfLoader = {}
 
+function fnfLoader.getDiff(chart)
+    songSpeed = 1
+    charthits = {}
+    for i = 1, 4 do
+        charthits[i] = {}
+    end
+    bpmEvents = {}
+    chartEvents = {}
+    -- ehhhh not rn
+    return "N/A"
+end
+
 function fnfLoader.load(chart, isPlayer, folderPath)
     player = isPlayer and "boyfriend" or "enemy"
     curChart = "FNF"
     chart = json.decode(love.filesystem.read(chart))
     chart = chart["song"]
-    modscript.loadScript(folderPath)
+    if not forDiff then
+        modscript.loadScript(folderPath)
+    end
     songName = chart["song"]:gsub(" ", "-")
     songName = string.lower(songName)
 

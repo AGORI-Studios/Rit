@@ -264,7 +264,16 @@ return {
                     else
                         graphics.setColor(0.5, 0.5, 0.5)
                     end
-                    love.graphics.print(v.title .. (v.type ~= "packs" and (" - " .. v.difficultyName) or ("")), 0, i * (font:getHeight() *1.5), 0, 2, 2)
+                    love.graphics.print(
+                        {
+                            {1,1,1}, v.title .. (v.type ~= "packs" and (" - " .. v.difficultyName) or ""), 
+                            DiffCalc.ratingColours(tonumber(v.rating) or 0), (v.type ~= "packs" and " (" .. (v.rating or "N/A") .. ")" or "")
+                        },
+                        0, 
+                        i * (font:getHeight() *1.5), 
+                        0, 
+                        2, 2
+                    )
                     graphics.setColor(1,1,1)
                 end
             love.graphics.pop()

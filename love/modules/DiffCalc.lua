@@ -21,30 +21,8 @@ function dc.CalculateDiff(self, accuracy)
     table.sort(dc.cleanedNotes, function(a, b) return a[1] < b[1] end)
 
     if #dc.cleanedNotes == 0 then
-        return 9999
+        return "N/A"
     end
-
-    --[[
-    for i = 1, #dc.cleanedNotes do
-        if firstNoteTime == nil then
-            firstNoteTime = dc.cleanedNotes[i][1]
-        end
-
-        if dc.cleanedNotes[i][1] < firstNoteTime then
-            firstNoteTime = dc.cleanedNotes[i][1]
-        end
-
-        -- normalize the notes
-
-        dc.cleanedNotes[i][1] = (dc.cleanedNotes[i][1] - firstNoteTime) * 2
-
-        if i == 1 or i == 2 then
-            table.insert(dc.handOne, dc.cleanedNotes[i])
-        else
-            table.insert(dc.handTwo, dc.cleanedNotes[i])
-        end
-    end
-    --]]
 
     local firstNoteTime = dc.cleanedNotes[1][1]
 
@@ -61,7 +39,7 @@ function dc.CalculateDiff(self, accuracy)
         local note = dc.cleanedNotes[i]
         if note[3] == 1 or note[3] == 2 then
             table.insert(dc.handOne, note)
-        else
+        elseif note[3] == 3 or note[3] == 4 then
             table.insert(dc.handTwo, note)
         end
     end
@@ -86,42 +64,48 @@ function dc.CalculateDiff(self, accuracy)
         end
     end
 
-    dc.length = ((dc.cleanedNotes[#dc.cleanedNotes][1] / 1000) / 0.5)
+    dc.length = math.floor(((dc.cleanedNotes[#dc.cleanedNotes][1] / 1000) / 0.5))
     
     dc.segmentsOne = {}
     dc.segmentsTwo = {}
-    for i = #dc.segmentsOne, dc.length do
+    for i = 1, dc.length do
         table.insert(dc.segmentsOne, {})
         table.insert(dc.segmentsTwo, {})
     end
 
-    -- algo loop
-    for i, v in ipairs(dc.handOne) do
-        local index = math.floor((((v[1]*2)/1000)))
+    -- for i in handOne
+    for i = 1, #dc.handOne do
+        local note = dc.handOne[i]
+        local index = math.floor((((note[1]*2)/1000)))
         if index + 1 > dc.length then
             break
         end
-        dc.segmentsOne[index + 1] = v
+        table.insert(dc.segmentsOne[index + 1], note)
     end
 
-    for i, v in ipairs(dc.handTwo) do
-        local index = math.floor((((v[1]*2)/1000)))
+    for i = 1, #dc.handTwo do
+        local note = dc.handTwo[i]
+        local index = math.floor((((note[1]*2)/1000)))
         if index + 1 > dc.length then
             break
         end
-        dc.segmentsTwo[index + 1] = v
+        table.insert(dc.segmentsTwo[index + 1], note)
     end
     
     dc.hand_npsOne = {}
     dc.hand_npsTwo = {}
 
+    -- for i in segmentsOne
     for i = 1, #dc.segmentsOne do
-        if i == nil then break end
-        table.insert(dc.hand_npsOne, #dc.segmentsOne[i] * dc.scale * 1.6)
+        local segment = dc.segmentsOne[i]
+        if segment == nil then break end
+        table.insert(dc.hand_npsOne, #segment * dc.scale * 1.6)
     end
+
     for i = 1, #dc.segmentsTwo do
-        if i == nil then break end
-        table.insert(dc.hand_npsTwo, #dc.segmentsTwo[i] * dc.scale * 1.6)
+        local segment = dc.segmentsTwo[i]
+        if segment == nil then break end
+        table.insert(dc.hand_npsTwo, #segment * dc.scale * 1.6)
     end
 
     dc.hand_diffOne = {}
@@ -135,10 +119,12 @@ function dc.CalculateDiff(self, accuracy)
         local fyOne = {}
         local fyTwo = {}
 
-        if ve[3] == 1 then
-            table.insert(fyOne, ve)
-        elseif ve[3] == 2 then
-            table.insert(fyTwo, ve)
+        for j = 1, #ve do
+            if ve[j][3] == 1 then
+                table.insert(fyOne, ve[j])
+            elseif ve[j][3] == 2 then
+                table.insert(fyTwo, ve[j])
+            end
         end
         
         local one = self:calcPerFinger(fyOne, dc.leftHandCol)
@@ -156,11 +142,12 @@ function dc.CalculateDiff(self, accuracy)
         end
         local fyOne = {}
         local fyTwo = {}
-        
-        if ve[3] == 3 then
-            table.insert(fyOne, ve)
-        elseif ve[3] == 4 then
-            table.insert(fyTwo, ve)
+        for j = 1, #ve do
+            if ve[j][3] == 3 then
+                table.insert(fyOne, ve[j])
+            elseif ve[j][3] == 4 then
+                table.insert(fyTwo, ve[j])
+            end
         end
 
         local one = self:calcPerFinger(fyOne, dc.rightMHandCol)
@@ -172,29 +159,27 @@ function dc.CalculateDiff(self, accuracy)
     end
 
     for i = 1, 4 do
-        self:smoothen(dc.hand_npsOne, 0)
-        self:smoothen(dc.hand_npsTwo, 0)
+        dc.hand_npsOne = self:smoothen(dc.hand_npsOne, 0)
+        dc.hand_npsTwo = self:smoothen(dc.hand_npsTwo, 0)
 
-        self:smoothen2(dc.hand_diffOne)
-        self:smoothen2(dc.hand_diffTwo)
+        dc.hand_diffOne = self:smoothen2(dc.hand_diffOne)
+        dc.hand_diffTwo = self:smoothen2(dc.hand_diffTwo)
     end
 
     dc.point_npsOne = {}
     dc.point_npsTwo = {}
 
+    -- for i in segmentsOne
     for i = 1, #dc.segmentsOne do
-        if i == nil then
-            break
-        else
-            table.insert(dc.point_npsOne, dc.hand_npsOne[i])
-        end
+        local segment = dc.segmentsOne[i]
+        if segment == nil then break end
+        table.insert(dc.point_npsOne, #segment)
     end
+
     for i = 1, #dc.segmentsTwo do
-        if i == nil then
-            break
-        else
-            table.insert(dc.point_npsTwo, dc.hand_npsTwo[i])
-        end
+        local segment = dc.segmentsTwo[i]
+        if segment == nil then break end
+        table.insert(dc.point_npsTwo, #segment)
     end
 
     local maxPoints = 0
@@ -212,11 +197,8 @@ function dc.CalculateDiff(self, accuracy)
     dc.lastDiffHandOne = dc.hand_diffOne
     dc.lastDiffHandTwo = dc.hand_diffTwo
 
-    print(dc.hand_diffOne, dc.hand_diffTwo, dc.point_npsOne, dc.point_npsTwo, maxPoints)
-
-    local lol = math.truncateFloat(self:chisel(accuracy, dc.hand_diffOne, dc.hand_diffTwo, dc.point_npsOne, dc.point_npsTwo, maxPoints), 2) * 25
-    print(lol)
-    return lol
+    local lol = math.truncateFloat(self:chisel(accuracy, dc.hand_diffOne, dc.hand_diffTwo, dc.point_npsOne, dc.point_npsTwo, maxPoints), 2)
+    return lol * 6
 end
 
 function dc.chisel(self, scoreGoal, diffOne, diffTwo, pointsOne, pointsTwo, maxPoints)
@@ -295,6 +277,8 @@ function dc.smoothen(self, nps, wc)
 
         nps[i] = (chunker + fOne + fTwo) / 3
     end
+
+    return nps
 end
 
 function dc.smoothen2(self, dv)
@@ -306,6 +290,51 @@ function dc.smoothen2(self, dv)
         local f = fZ
         fZ = result
         dv[i] = (f + fZ) / 2
+    end
+
+    return dv
+end
+
+function dc.ratingColours(rating)
+    -- blue = easy
+    -- red = hard
+    -- green = medium
+    -- yellow = very easy
+    -- purple = very hard
+    -- orange = impossible
+
+    --[[
+        somewhat off of - https://github.com/Quaver/Quaver.API/blob/87c428ea9cd4229c5334b23c680cb4311546d6b7/Quaver.API/Maps/Processors/Difficulty/StrainColors.cs
+        { ColorTier.Tier1, 0 },
+        { ColorTier.Tier2, 6 },
+        { ColorTier.Tier3, 14 },
+        { ColorTier.Tier4, 26 },
+        { ColorTier.Tier5, 32 },
+        { ColorTier.Tier6, 40 },
+        { ColorTier.Tier7, 58 }
+        ..
+        { ColorTier.Tier1, Color.FromArgb(255, 126, 111, 90) },
+        { ColorTier.Tier2, Color.FromArgb(255, 184, 184, 184) },
+        { ColorTier.Tier3, Color.FromArgb(255, 242, 218, 104) },
+        { ColorTier.Tier4, Color.FromArgb(255, 146, 255, 172) },
+        { ColorTier.Tier5, Color.FromArgb(255, 112, 227, 225) },
+        { ColorTier.Tier6, Color.FromArgb(255, 255, 146, 255) },
+        { ColorTier.Tier7, Color.FromArgb(255, 255, 97, 119) }
+    --]]
+    if rating < 6 then
+        return { 126/255, 111/255, 90/255 }
+    elseif rating < 14 then
+        return { 184/255, 184/255, 184/255 }
+    elseif rating < 26 then
+        return { 242/255, 218/255, 104/255 }
+    elseif rating < 32 then
+        return { 146/255, 255/255, 172/255 }
+    elseif rating < 40 then
+        return { 112/255, 227/255, 225/255 }
+    elseif rating < 58 then
+        return { 255/255, 146/255, 255/255 }
+    else
+        return { 255/255, 97/255, 119/255 }
     end
 end
 

@@ -80,8 +80,11 @@ function loadSongs()
                                 BackgroundFile = BackgroundFile or "None",
                                 path = "songs/" .. v .. "/" .. j,
                                 folderPath = "songs/" .. v,
-                                type = "Quaver"
+                                type = "Quaver",
+                                rating = "",
+                                ratingColour = {1, 1, 1}
                             }
+                            songList[#songList].rating = quaverLoader.getDiff(songList[#songList].path)
                         end
                     elseif j:sub(-4) == ".osu" then
                         local title = love.filesystem.read("songs/" .. v .. "/" .. j):match("Title:(.-)\r?\n")
@@ -100,8 +103,12 @@ function loadSongs()
                                 BackgroundFile = "None",
                                 path = "songs/" .. v .. "/" .. j,
                                 folderPath = "songs/" .. v,
-                                type = "osu!"
+                                type = "osu!",
+                                rating = "",
+                                ratingColour = {1, 1, 1}
                             }
+                            songList[#songList].rating = osuLoader.getDiff(songList[#songList].path)
+                            songList[#songList].ratingColour = DiffCalc.ratingColours(tonumber(songList[#songList].rating) or 0)
                         end
                     elseif j:sub(-5) == ".json" then
                         gsubbedFile = j:gsub(".json", "")
@@ -121,8 +128,12 @@ function loadSongs()
                                 BackgroundFile = "None",
                                 path = "songs/" .. v .. "/" .. j,
                                 folderPath = "songs/" .. v,
-                                type = "FNF"
+                                type = "FNF",
+                                rating = "",
+                                ratingColour = {1, 1, 1}
                             }
+                            songList[#songList].rating = fnfLoader.getDiff(songList[#songList].path)
+                            songList[#songList].ratingColour = DiffCalc.ratingColours(tonumber(songList[#songList].rating) or 0)
                         end
                     end
                 end
@@ -151,8 +162,12 @@ function loadSongs()
                                     BackgroundFile = BackgroundFile or "None",
                                     path = "song/" .. j,
                                     folderPath = "",
-                                    type = "Quaver"
+                                    type = "Quaver",
+                                    rating = "",
+                                    ratingColour = {1, 1, 1}
                                 }
+                                songList[#songList].rating = quaverLoader.getDiff(songList[#songList].path)
+                                songList[#songList].ratingColour = DiffCalc.ratingColours(tonumber(songList[#songList].rating) or 0)
                             end
                         end
                     end
@@ -178,8 +193,12 @@ function loadSongs()
                                     BackgroundFile = "None",
                                     path = "song/" .. j,
                                     folderPath = "",
-                                    type = "osu!"
+                                    type = "osu!",
+                                    rating = "",
+                                    ratingColour = {1, 1, 1}
                                 }
+                                songList[#songList].rating = osuLoader.getDiff(songList[#songList].path)
+                                songList[#songList].ratingColour = DiffCalc.ratingColours(tonumber(songList[#songList].rating) or 0)
                             end
                         end
                     end
@@ -541,6 +560,14 @@ function love.load()
         menuBPM = file.bpm or 120
         menuMusic = love.audio.newSource(songPath .. "/Inst.ogg", "stream")
     end
+
+    songSpeed = 1
+    charthits = {}
+    for i = 1, 4 do
+        charthits[i] = {}
+    end
+    bpmEvents = {}
+    chartEvents = {}
 
     if menuMusic then
         menuMusic:setVolume(0.5)

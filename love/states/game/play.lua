@@ -135,6 +135,8 @@ return {
         noteCounter = 0
     
         died = false
+
+        DiffCalc:CalculateDiff()
     
         ratingsize = {
             x = 1,

@@ -21,6 +21,18 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 local osuLoader = {}
 
+function osuLoader.getDiff(chart)
+    songSpeed = 1
+    charthits = {}
+    for i = 1, 4 do
+        charthits[i] = {}
+    end
+    bpmEvents = {}
+    chartEvents = {}
+    osuLoader.load(chart, "",  true) -- Run through the chart once to get the difficulty
+    return DiffCalc:CalculateDiff()
+end
+
 function osuLoader.getBpm(line)
     -- https://github.com/semyon422/chartbase/blob/507866709138225c200ed8c360424d752f2e5981/osu/Osu.lua#LL100C41-L100C41
     local split = line:split(",")
@@ -44,18 +56,21 @@ function osuLoader.getBpm(line)
 end
 
 lineCount = 0
-function osuLoader.load(chart, folderPath)
+function osuLoader.load(chart, folderPath, forDiff)
+    local forDiff = forDiff or false
     curChart = "osu!"
     local file = love.filesystem.read(chart)
     lines = love.filesystem.lines(chart)
     local readChart = false
-    modscript.loadScript(folderPath)
+    if not forDiff then
+        modscript.loadScript(folderPath)
+    end
 
     loadSkin("4k")
 
     for line in lines do 
         lineCount = lineCount + 1
-        if line:find("AudioFilename: ") then 
+        if line:find("AudioFilename: ") and not forDiff then
             curLine = line
             local audioPath = curLine:gsub("AudioFilename: ", "")
             audioPath = (folderPath == "" and "song/" .. audioPath or folderPath .. "/" .. audioPath)
@@ -75,7 +90,7 @@ function osuLoader.load(chart, folderPath)
         end
         --]]
         -- background is found in '0,0,"background desuuu.jpg",0,0', the numbers can and will change
-        if line:find("0,0,") then 
+        if line:find("0,0,") and not forDiff then 
             local bgPath = line:match("0,0,\"([^\"]+)\"") or ""
             bgPath = (folderPath == "" and "song/" .. bgPath or folderPath .. "/" .. bgPath)
             tryExcept(function()
@@ -155,8 +170,10 @@ function osuLoader.load(chart, folderPath)
             end
         end
     end
-    state.switch(game)
-    musicTimeDo = true
+    if not forDiff then
+        state.switch(game)
+        musicTimeDo = true
+    end
 end
 
 return osuLoader

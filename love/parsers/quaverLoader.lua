@@ -21,22 +21,38 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 local quaverLoader = {}
 lineCount = 0
-function quaverLoader.load(chart, folderPath)
+
+function quaverLoader.getDiff(chart)
+    songSpeed = 1
+    charthits = {}
+    for i = 1, 4 do
+        charthits[i] = {}
+    end
+    bpmEvents = {}
+    chartEvents = {}
+    quaverLoader.load(chart, "",  true) -- Run through the chart once to get the difficulty
+    return DiffCalc:CalculateDiff()
+end
+
+function quaverLoader.load(chart, folderPath, forDiff)
+    local forDiff = forDiff or false
     -- read the first line of the file
     curChart = "Quaver"
     local file = love.filesystem.read(chart)
-    modscript.loadScript(folderPath)
+    if not forDiff then
+        modscript.loadScript(folderPath)
+    end
 
     for line in love.filesystem.lines(chart) do
         lineCount = lineCount + 1
-        if line:find("AudioFile:") then
+        if line:find("AudioFile:") and not forDiff then
             curLine = line
             local audioPath = curLine
             audioPath = audioPath:gsub("AudioFile: ", "")
             audioPath = (folderPath == "" and "song/" .. audioPath or folderPath .. "/" .. audioPath)
             audioFile = love.audio.newSource(audioPath, "stream")
         end
-        if line:find("BackgroundFile:") then
+        if line:find("BackgroundFile:") and not forDiff then
             curLine = line
             local bgPath = curLine
             bgPath = bgPath:gsub("BackgroundFile: ", "")
@@ -50,11 +66,14 @@ function quaverLoader.load(chart, folderPath)
         if line:find("Mode: ") then
             modeLine = line
             mode = modeLine:gsub("Mode: ", "")
-            if mode == "Keys7" then
-                loadSkin("7k")
-            elseif mode == "Keys4" then
+            if mode == "Keys4" then
                 loadSkin("4k")
-                print(notesize)
+            else
+                if not forDiff then
+                    error("This chart is not a 4k chart!")
+                else
+                    return "N/A"
+                end
             end
         end
         -- if the line has "- Bpm: " in it, then it's the line with the BPM
@@ -156,13 +175,14 @@ function quaverLoader.load(chart, folderPath)
             end
         end
     end
-    Timer.after(2,
-        function()
-            state.switch(game)
-            musicTimeDo = true
-        end
-    )
-    
+    if not forDiff then
+        Timer.after(2,
+            function()
+                state.switch(game)
+                musicTimeDo = true
+            end
+        )
+    end
 end
 
 return quaverLoader
