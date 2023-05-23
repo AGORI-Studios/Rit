@@ -71,7 +71,7 @@ function loadSkin(skinVer)
         else
             hitsound = love.audio.newSource("defaultskins/skinThrowbacks/hitsound.wav", "static")
         end
-        hitsound:setVolume(tonumber(skinJson["skin"]["4k"]["hitsound volume"] or 1))
+        hitsound:setVolume(tonumber(skinJson["skin"]["4k"]["hitsound volume"] or 1) * settings.settings.Audio.sfx)
         hitsoundCache = { -- allows for multiple hitsounds to be played at once
             hitsound:clone()
         }
@@ -154,7 +154,7 @@ function loadSkin(skinVer)
         else
             hitsound = love.audio.newSource("defaultskins/skinThrowbacks/hitsound.wav", "static")
         end
-        hitsound:setVolume(tonumber(skinJson["skin"]["7k"]["hitsound volume"]))
+        hitsound:setVolume(tonumber(skinJson["skin"]["7k"]["hitsound volume"]) * settings.settings.Audio.sfx)
         hitsoundCache = { -- allows for multiple hitsounds to be played at once
             hitsound:clone()
         }

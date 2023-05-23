@@ -649,18 +649,18 @@ function love.wheelmoved(x, y)
 
     if love.keyboard.isDown("lalt") then
         if y > 0 then
-            audioVol = audioVol + 5
+            settings.settings.Audio.master = settings.settings.Audio.master + 0.05
         elseif y < 0 then
-            audioVol = audioVol - 5
+            settings.settings.Audio.Master = settings.settings.Audio.master - 0.05
         end
 
         -- apply volume
-        if audioVol > 100 then audioVol = 100 end
-        if audioVol < 0 then audioVol = 0 end
-        if audioVol == 0 then
+        if settings.settings.Audio.master > 1 then settings.settings.Audio.master = 1 end
+        if settings.settings.Audio.master < 0 then settings.settings.Audio.master = 0 end
+        if settings.settings.Audio.master == 0 then
             love.audio.setVolume(0)
         else
-            love.audio.setVolume(audioVol / 100)
+            love.audio.setVolume(settings.settings.Audio.master)
         end
 
         volFade = 1
@@ -703,7 +703,7 @@ end
 function love.draw()
     push.start()
     state:draw()
-
+    love.graphics.setColor(1, 1, 1)
     if volFade > 0 then
         volFade = volFade - 1 * love.timer.getDelta()
         -- draw vol slider in bottom right
@@ -711,13 +711,13 @@ function love.draw()
         love.graphics.rectangle("fill", 1800, 1020, 120, 60)
         love.graphics.setColor(1, 1, 1, volFade)
         -- set width based on audioVol
-        love.graphics.rectangle("fill", 1800, 1020, audioVol * 1.2, 60)
-        love.graphics.print(audioVol, 1820 - 2, 1030, 0, 2, 2)
-        love.graphics.print(audioVol, 1820 + 2, 1030, 0, 2, 2)
-        love.graphics.print(audioVol, 1820, 1030 - 2, 0, 2, 2)
-        love.graphics.print(audioVol, 1820, 1030 + 2, 0, 2, 2)
+        love.graphics.rectangle("fill", 1800, 1020, settings.settings.Audio.Master*100 * 1.2, 60)
+        love.graphics.print(settings.settings.Audio.Master*100, 1820 - 2, 1030, 0, 2, 2)
+        love.graphics.print(settings.settings.Audio.Master*100, 1820 + 2, 1030, 0, 2, 2)
+        love.graphics.print(settings.settings.Audio.Master*100, 1820, 1030 - 2, 0, 2, 2)
+        love.graphics.print(settings.settings.Audio.Master*100, 1820, 1030 + 2, 0, 2, 2)
         love.graphics.setColor(0, 0, 0, volFade)
-        love.graphics.print(audioVol, 1820, 1030, 0, 2, 2)
+        love.graphics.print(settings.settings.Audio.Master*100, 1820, 1030, 0, 2, 2)
         love.graphics.setColor(1, 1, 1, 1)
     end
     push.finish()

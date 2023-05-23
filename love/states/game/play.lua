@@ -233,8 +233,10 @@ return {
         gameCanvas = love.graphics.newCanvas(love.graphics.getWidth(), love.graphics.getHeight())
 
         audioFile:setPitch(songSpeed)
+        audioFile:setVolume(settings.settings.Audio.music)
         if voices then
             voices:setPitch(songSpeed)
+            voices:setVolume(settings.settings.Audio.music)
         end
 
         graphics.fadeIn(0.2)

@@ -17,16 +17,18 @@ sh.baseSettings = {
         vsync = false
     },
     ["Audio"] = {
-        Master = 1.0,
-        Music = 1.0,
-        SFX = 1.0
+        master = 1.0,
+        music = 1.0,
+        sfx = 1.0
     },
     ["System"] = {
-        version = "1"
+        version = "2"
     },
 
     skin = "Circle Default" -- The skin chosen by the player.
 }
+
+gameVersion = "2"
 
 function sh.saveSettings(base) 
     local saveStr = ""
@@ -45,6 +47,9 @@ function sh.loadSettings()
 end
 
 sh.settings = sh.loadSettings() or sh.baseSettings
-print(sh.settings["Game"]["scroll speed"])
+if sh.settings["System"]["version"] ~= gameVersion then
+    sh.settings = sh.baseSettings
+    sh.saveSettings()
+end
 
 return sh
