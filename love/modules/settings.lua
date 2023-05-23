@@ -17,7 +17,7 @@ sh.baseSettings = {
         vsync = false
     },
     ["Audio"] = {
-        master = 1.0,
+        master = 0.5,
         music = 1.0,
         sfx = 1.0
     },
