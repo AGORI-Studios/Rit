@@ -18,8 +18,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ------------------------------------------------------------------------------]]
+buildver = love.filesystem.read("buildver.txt")
 function love.conf(t)
-    t.window.title = "Rit"
+    t.window.title = "Rit // Commit " .. buildver
     t.identity = "rit"
     t.console = true
     t.window.icon = "icon.png"

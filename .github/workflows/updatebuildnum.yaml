@@ -1,0 +1,20 @@
+name: Rit - Master build number update
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  # run updatebuild.bat
+  updatebuild:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Update build number
+        run: |
+          cmd /c updatebuild.bat
+          
