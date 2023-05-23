@@ -31,7 +31,7 @@ Other systems:
 - If you get a crash, add [discord-rpc.(dll/dylib)](https://github.com/discord/discord-rpc/releases/tag/v3.4.0) to your love installation folder.
 - - Can also be found in the [resources](/resources) folder for your desired architecture.
 
-Add songs to the %appdata%\rit\songs folder in their respective folders. (Quaver in quaver, osu in osu, etc.)
+Add songs to the %appdata%\rit\songs folder
   
 ### How to contribute
 - Fork the repository
@@ -44,7 +44,7 @@ Add songs to the %appdata%\rit\songs folder in their respective folders. (Quaver
 
 ### TODO
 - [ ] Add a pause screen (High priority) (1/2)
-- [ ] Add a settings screen (Low priority)
+- [x] Add a settings screen (Low priority)
 - [x] Save high scores (Low priority)
 - [x] Controller support (Low priority)
 - [ ] 5k+ support (Low priority) (1/2 (Only available for Quaver))
