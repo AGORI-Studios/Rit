@@ -340,6 +340,8 @@ return {
                     for i = 1, 4 do 
                         noteImgs[i][2].scaleY = 1 * sv
                     end
+                else
+                    sv = speed
                 end
                 table.remove(chartEvents, 1)
             end

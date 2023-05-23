@@ -414,7 +414,7 @@ function love.load()
         return math.floor(num + 0.5)
     end
 
-    speed = settings.settings.scrollspeed or 1
+    speed = settings.settings.Game["scroll speed"] or 1
     speedLane = {}
     for i = 1, 4 do
         speedLane[i] = speed
@@ -551,7 +551,7 @@ function love.load()
 
     menuMusicVol = { menuMusic:getVolume() }
 
-    state.switch(startMenu)
+    state.switch(settingsMenu)
 
     -- scissorScale is meant for 720p
     scissorScale = 1

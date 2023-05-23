@@ -14,9 +14,17 @@ function dc.CalculateDiff(self, accuracy)
             table.insert(dc.cleanedNotes, chartc[i][j])
         end
     end
+
     dc.handOne = {}
     dc.handTwo = {}
 
+    table.sort(dc.cleanedNotes, function(a, b) return a[1] < b[1] end)
+
+    if #dc.cleanedNotes == 0 then
+        return 9999
+    end
+
+    --[[
     for i = 1, #dc.cleanedNotes do
         if firstNoteTime == nil then
             firstNoteTime = dc.cleanedNotes[i][1]
@@ -36,6 +44,27 @@ function dc.CalculateDiff(self, accuracy)
             table.insert(dc.handTwo, dc.cleanedNotes[i])
         end
     end
+    --]]
+
+    local firstNoteTime = dc.cleanedNotes[1][1]
+
+    -- Normalize the notes
+
+    for i,v in pairs(dc.cleanedNotes) do
+        dc.cleanedNotes[i][1] = (dc.cleanedNotes[i][1] - firstNoteTime) * 2
+        -- fixed note time
+    end
+
+    table.sort(dc.cleanedNotes, function(a, b) return a[1] < b[1] end)
+
+    for i = 1, #dc.cleanedNotes do
+        local note = dc.cleanedNotes[i]
+        if note[3] == 1 or note[3] == 2 then
+            table.insert(dc.handOne, note)
+        else
+            table.insert(dc.handTwo, note)
+        end
+    end
 
     dc.leftHandCol = {}
     dc.leftMHandCol = {}
@@ -50,7 +79,7 @@ function dc.CalculateDiff(self, accuracy)
         end
     end
     for i = 1, #dc.handTwo do
-        if dc.handTwo[i][3] == 1 then
+        if dc.handTwo[i][3] == 3 then
             table.insert(dc.rightHandCol, dc.handTwo[i][1])
         else
             table.insert(dc.rightMHandCol, dc.handTwo[i][1])
@@ -61,28 +90,37 @@ function dc.CalculateDiff(self, accuracy)
     
     dc.segmentsOne = {}
     dc.segmentsTwo = {}
-
-    for i = 1, #dc.cleanedNotes do
-        table.insert(dc.segmentsOne, dc.cleanedNotes[i])
-        table.insert(dc.segmentsTwo, dc.cleanedNotes[i])
+    for i = #dc.segmentsOne, dc.length do
+        table.insert(dc.segmentsOne, {})
+        table.insert(dc.segmentsTwo, {})
     end
 
-    for i,v in pairs(dc.handOne) do
+    -- algo loop
+    for i, v in ipairs(dc.handOne) do
         local index = math.floor((((v[1]*2)/1000)))
-        table.insert(dc.segmentsOne, v)
-    end
-    for i,v in pairs(dc.handTwo) do
-        local index = math.floor((((v[1]*2)/1000)))
-        table.insert(dc.segmentsTwo, v)
+        if index + 1 > dc.length then
+            break
+        end
+        dc.segmentsOne[index + 1] = v
     end
 
+    for i, v in ipairs(dc.handTwo) do
+        local index = math.floor((((v[1]*2)/1000)))
+        if index + 1 > dc.length then
+            break
+        end
+        dc.segmentsTwo[index + 1] = v
+    end
+    
     dc.hand_npsOne = {}
     dc.hand_npsTwo = {}
 
     for i = 1, #dc.segmentsOne do
+        if i == nil then break end
         table.insert(dc.hand_npsOne, #dc.segmentsOne[i] * dc.scale * 1.6)
     end
     for i = 1, #dc.segmentsTwo do
+        if i == nil then break end
         table.insert(dc.hand_npsTwo, #dc.segmentsTwo[i] * dc.scale * 1.6)
     end
 
@@ -92,18 +130,17 @@ function dc.CalculateDiff(self, accuracy)
     for i = 1, #dc.segmentsOne do
         local ve = dc.segmentsOne[i]
         if ve == nil then
-            ve = 1
+            break
         end
         local fyOne = {}
         local fyTwo = {}
-        for j = 1, #ve do
-            if ve[j] == 0 then
-                table.insert(fyOne, ve[j])
-            elseif ve[j] == 1 then
-                table.insert(fyTwo, ve[j])
-            end
-        end
 
+        if ve[3] == 1 then
+            table.insert(fyOne, ve)
+        elseif ve[3] == 2 then
+            table.insert(fyTwo, ve)
+        end
+        
         local one = self:calcPerFinger(fyOne, dc.leftHandCol)
         local two = self:calcPerFinger(fyTwo, dc.leftMHandCol)
 
@@ -113,21 +150,21 @@ function dc.CalculateDiff(self, accuracy)
     end
     for i = 1, #dc.segmentsTwo do
         local ve = dc.segmentsTwo[i] 
+        
         if ve == nil then
-            ve = {}
+            break
         end
         local fyOne = {}
         local fyTwo = {}
-        for j = 1, #ve do
-            if ve[j] == 0 then
-                table.insert(fyOne, ve[j])
-            elseif ve[j] == 1 then
-                table.insert(fyTwo, ve[j])
-            end
+        
+        if ve[3] == 3 then
+            table.insert(fyOne, ve)
+        elseif ve[3] == 4 then
+            table.insert(fyTwo, ve)
         end
 
-        local one = self:calcPerFinger(fyOne, dc.rightHandCol)
-        local two = self:calcPerFinger(fyTwo, dc.rightMHandCol)
+        local one = self:calcPerFinger(fyOne, dc.rightMHandCol)
+        local two = self:calcPerFinger(fyTwo, dc.rightHandCol)
 
         local bf = ((((one > two and one or two) * 8) + (dc.hand_npsTwo[i] / dc.scale) * 5) / 13) * dc.scale
 
@@ -147,14 +184,14 @@ function dc.CalculateDiff(self, accuracy)
 
     for i = 1, #dc.segmentsOne do
         if i == nil then
-            table.insert(dc.point_npsOne, 0)
+            break
         else
             table.insert(dc.point_npsOne, dc.hand_npsOne[i])
         end
     end
     for i = 1, #dc.segmentsTwo do
         if i == nil then
-            table.insert(dc.point_npsTwo, 0)
+            break
         else
             table.insert(dc.point_npsTwo, dc.hand_npsTwo[i])
         end
@@ -175,24 +212,28 @@ function dc.CalculateDiff(self, accuracy)
     dc.lastDiffHandOne = dc.hand_diffOne
     dc.lastDiffHandTwo = dc.hand_diffTwo
 
-    return math.truncateFloat(self:chisel(accuracy, dc.hand_diffOne, dc.hand_diffTwo, dc.point_npsOne, dc.point_npsTwo, maxPoints), 2)
+    print(dc.hand_diffOne, dc.hand_diffTwo, dc.point_npsOne, dc.point_npsTwo, maxPoints)
+
+    local lol = math.truncateFloat(self:chisel(accuracy, dc.hand_diffOne, dc.hand_diffTwo, dc.point_npsOne, dc.point_npsTwo, maxPoints), 2) * 25
+    print(lol)
+    return lol
 end
 
-function dc.chisel(self, sG, dO, dT, pO, pT, mP)
-    local lB = 0
-    local uB = 100
+function dc.chisel(self, scoreGoal, diffOne, diffTwo, pointsOne, pointsTwo, maxPoints)
+    local lowerBound = 0
+    local upperBound = 100
 
-    while uB - lB > .01 do
-        local mid = (lB + uB) / 2
-        local diff = self:calculate(mid, dO, pO) + self:calculate(mid, dT, pT)
-        if diff / mP < sG then
-            lB = mid
+    while upperBound - lowerBound > 0.01 do
+        local average = (upperBound + lowerBound) / 2
+        local amountOfPoints = self:calculate(average, diffOne, pointsOne) + self:calculate(average, diffTwo, pointsTwo)
+        if amountOfPoints / maxPoints < scoreGoal then
+            lowerBound = average
         else
-            uB = mid
+            upperBound = average
         end
     end
 
-    return uB
+    return upperBound
 end
 
 function dc.findIndex(self, st, array)
@@ -219,34 +260,26 @@ function dc.calculate(self, mP, diff, p)
     return output
 end
 
-function dc.calcPerFinger(self, float, column)
-    local column = column or {}
+function dc.calcPerFinger(self, floats, column)
     local sum = 0
-    if #float == 0 then
-        --print("no floats")
+    if #floats == 0 then
         return 0
     end
-    local startIndex = dc:findIndex(float[1], column)
+    local startIndex = dc:findIndex(floats[1][1], column)
+
     if startIndex == -1 then
-        --print("no start index")
         return 0
     end
-    for i = 1, #float do
-        if column[startIndex+1] ~= nil then
-            sum = sum + column[startIndex+1] - column[startIndex]
-        else
-            sum = sum + 1
-        end
+    for i = 1, #floats-1 do
+        sum = sum + column[startIndex + 1] - column[startIndex]
         startIndex = startIndex + 1
     end
 
     if sum == 0 then
-        --print("no sum")
         return 0
     end
 
-    print("sum: " .. sum)
-    return (1375 * (#float)) / sum
+    return (1375 * (#floats)) / sum
 end
 
 function dc.smoothen(self, nps, wc)
