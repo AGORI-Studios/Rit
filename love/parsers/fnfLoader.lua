@@ -19,16 +19,28 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ------------------------------------------------------------------------------]]
 
-json = require "lib.json"
-
 local fnfLoader = {}
+
+function fnfLoader.getDiff(chart)
+    songSpeed = 1
+    charthits = {}
+    for i = 1, 4 do
+        charthits[i] = {}
+    end
+    bpmEvents = {}
+    chartEvents = {}
+    -- ehhhh not rn
+    return "N/A"
+end
 
 function fnfLoader.load(chart, isPlayer, folderPath)
     player = isPlayer and "boyfriend" or "enemy"
     curChart = "FNF"
     chart = json.decode(love.filesystem.read(chart))
     chart = chart["song"]
-    modscript.loadScript(folderPath)
+    if not forDiff then
+        modscript.loadScript(folderPath)
+    end
     songName = chart["song"]:gsub(" ", "-")
     songName = string.lower(songName)
 
@@ -53,42 +65,43 @@ function fnfLoader.load(chart, isPlayer, folderPath)
 
     for i = 1, #chart.notes do 
         eventBpm = chart.notes[i].bpm
+        table.insert(bpmEvents, {0, eventBpm or bpm})
 
         for j = 1, #chart.notes[i].sectionNotes do
             noteType = chart.notes[i].sectionNotes[j][2]
             if isPlayer then 
                 if chart.notes[i].mustHitSection then
                     if noteType <= 3 and noteType >= 0 then
-                        noteTime = chart.notes[i].sectionNotes[j][1]
+                        noteTime = chart.notes[i].sectionNotes[j][1] / songSpeed
                         noteLength = chart.notes[i].sectionNotes[j][3]
                         noteVer = chart.notes[i].sectionNotes[j][4] or ""
 
                         if not table.find(fnfBlacklist, noteVer) then
-                            table.insert(charthits[noteType+1], {noteTime, 0, 1, false, false})
+                            table.insert(charthits[noteType+1], {noteTime, 0, noteType+1, false, false})
 
                             for i = 1, noteLength, 95/2/speed do
                                 if i + 95/2/speed < noteLength then
-                                    charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, 1, true}
+                                    charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, noteType+1, true}
                                 else
-                                    charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, 1, true, true}
+                                    charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, noteType+1, true, true}
                                 end
                             end
                         end
                     end
                 else
                     if noteType >= 4 and noteType <= 7 then 
-                        noteTime = chart.notes[i].sectionNotes[j][1]
+                        noteTime = chart.notes[i].sectionNotes[j][1] / songSpeed
                         noteLength = chart.notes[i].sectionNotes[j][3]
                         noteVer = chart.notes[i].sectionNotes[j][4] or ""
 
                         if not table.find(fnfBlacklist, noteVer) then
-                            table.insert(charthits[noteType-3], {noteTime, 0, 1, false, false})
+                            table.insert(charthits[noteType-3], {noteTime, 0, noteType-3, false, false})
 
                             for i = 1, noteLength, 95/2/speed do
                                 if i + 95/2/speed < noteLength then
-                                    charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, 1, true}
+                                    charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, noteType-3, true}
                                 else
-                                    charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, 1, true, true}
+                                    charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, noteType-3, true, true}
                                 end
                             end
                         end
@@ -97,36 +110,36 @@ function fnfLoader.load(chart, isPlayer, folderPath)
             else
                 if chart.notes[i].mustHitSection then
                     if noteType >= 4 and noteType <= 7 then 
-                        noteTime = chart.notes[i].sectionNotes[j][1]
+                        noteTime = chart.notes[i].sectionNotes[j][1] / songSpeed
                         noteLength = chart.notes[i].sectionNotes[j][3]
                         noteVer = chart.notes[i].sectionNotes[j][4] or ""
 
                         if not table.find(fnfBlacklist, noteVer) then
-                            table.insert(charthits[noteType-3], {noteTime, 0, 1, false, false})
+                            table.insert(charthits[noteType-3], {noteTime, 0, noteType-3, false, false})
 
                             for i = 1, noteLength, noteImgs[noteType-3][2]:getHeight()/2/speed do
                                 if i + noteImgs[noteType-3][2]:getHeight()/2/speed < noteLength then
-                                    charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, 1, true}
+                                    charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, noteType-3, true}
                                 else
-                                    charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, 1, true, true}
+                                    charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, noteType-3, true, true}
                                 end
                             end
                         end
                     end
                 else
                     if noteType <= 3 and noteType >= 0 then
-                        noteTime = chart.notes[i].sectionNotes[j][1]
+                        noteTime = chart.notes[i].sectionNotes[j][1] / songSpeed
                         noteLength = chart.notes[i].sectionNotes[j][3]
                         noteVer = chart.notes[i].sectionNotes[j][4] or ""
 
                         if not table.find(fnfBlacklist, noteVer) then
-                            table.insert(charthits[noteType+1], {noteTime, 0, 1, false, false})
+                            table.insert(charthits[noteType+1], {noteTime, 0, noteType+1, false, false})
 
                             for i = 1, noteLength, noteImgs[noteType+1][2]:getHeight()/2/speed do
                                 if i + noteImgs[noteType+1][2]:getHeight()/2/speed < noteLength then
-                                    charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, 1, true}
+                                    charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, noteType+1, true}
                                 else
-                                    charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, 1, true, true}
+                                    charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, noteType+1, true, true}
                                 end
                             end
                         end
@@ -155,13 +168,8 @@ function fnfLoader.load(chart, isPlayer, folderPath)
     end
     if create then create() end
 
-    Timer.after((modscript.file and 5 or 2), -- let the modscript LOAD
-        function()
-            state.switch(game)
-
-            musicTimeDo = true 
-        end
-    )
+    state.switch(game)
+    musicTimeDo = true 
 end                    
 
 return fnfLoader

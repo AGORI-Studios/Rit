@@ -1,4 +1,15 @@
 {
     "Lua.completion.autoRequire": false,
-    "Lua.workspace.checkThirdParty": false
+    "Lua.workspace.checkThirdParty": false,
+    "Lua.diagnostics.globals": [
+        "love",
+        "audioVol",
+        "file",
+        "jit"
+    ],
+    "Lua.diagnostics.disable": [
+        "redundant-parameter",
+        "deprecated",
+        "param-type-mismatch"
+    ]
 }

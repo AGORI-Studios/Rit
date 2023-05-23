@@ -21,29 +21,90 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 local osuLoader = {}
 
+function osuLoader.getDiff(chart)
+    songSpeed = 1
+    charthits = {}
+    for i = 1, 4 do
+        charthits[i] = {}
+    end
+    bpmEvents = {}
+    chartEvents = {}
+    osuLoader.load(chart, "",  true) -- Run through the chart once to get the difficulty
+    return DiffCalc:CalculateDiff()
+end
+
+function osuLoader.getBpm(line)
+    -- https://github.com/semyon422/chartbase/blob/507866709138225c200ed8c360424d752f2e5981/osu/Osu.lua#LL100C41-L100C41
+    local split = line:split(",")
+    local tp = {}
+
+    tp.offset = tonumber(split[1])
+    tp.beatLength = tonumber(split[2])
+
+	tp.beatLength = math.abs(tp.beatLength)
+
+    -- get bpm 
+    if tp.beatLength > 0 then
+        bpm = 60 / tp.beatLength
+    elseif tp.beatLength < 0 then
+        bpm = 60 / (tp.beatLength * -1)
+    else
+        bpm = 120
+    end
+
+    return bpm
+end
+
 lineCount = 0
-function osuLoader.load(chart, folderPath)
+function osuLoader.load(chart, folderPath, forDiff)
+    local forDiff = forDiff or false
     curChart = "osu!"
     local file = love.filesystem.read(chart)
     lines = love.filesystem.lines(chart)
     local readChart = false
-    modscript.loadScript(folderPath)
+    if not forDiff then
+        modscript.loadScript(folderPath)
+    end
 
     loadSkin("4k")
 
     for line in lines do 
         lineCount = lineCount + 1
-        if line:find("AudioFilename: ") then 
+        if line:find("AudioFilename: ") and not forDiff then
             curLine = line
             local audioPath = curLine:gsub("AudioFilename: ", "")
             audioPath = (folderPath == "" and "song/" .. audioPath or folderPath .. "/" .. audioPath)
             audioFile = love.audio.newSource(audioPath, "stream")
         end
+        --[[
+        if line:find("BackgroundFile:") then
+            curLine = line
+            local bgPath = curLine
+            bgPath = bgPath:gsub("BackgroundFile: ", "")
+            bgPath = (folderPath == "" and "song/" .. bgPath or folderPath .. "/" .. bgPath)
+            tryExcept(function()
+                bgFile = love.graphics.newImage(bgPath)
+            end, function()
+                bgFile = nil
+            end)
+        end
+        --]]
+        -- background is found in '0,0,"background desuuu.jpg",0,0', the numbers can and will change
+        if line:find("0,0,") and not forDiff then 
+            local bgPath = line:match("0,0,\"([^\"]+)\"") or ""
+            bgPath = (folderPath == "" and "song/" .. bgPath or folderPath .. "/" .. bgPath)
+            tryExcept(function()
+                bgFile = graphics.newImage(bgPath)
+            end, function()
+                bgFile = nil
+            end)
+        end
+
         mode = "Keys4"
         bpm = 0
         if line:find("[HitObjects]") then 
             readChart = true
-        end
+        end 
         if line:find(",") then 
             local x, _, startTime, _, _, endtime = line:match("([^,]+),([^,]+),([^,]+),([^,]+),([^,]+),([^,]+)") -- _ is used to ignore the values we don't need
             x = tonumber(x) or 128
@@ -51,10 +112,10 @@ function osuLoader.load(chart, folderPath)
                 curLine = line
                 lane = x / 128
                 lane = math.floor(lane)
-                startTime = tonumber(startTime)
+                startTime = tonumber((startTime or 0)) / (songSpeed or 1)
                 hitSound = hitSound
                 if lane > 4 then
-                    debug.print("This is not a 4k chart!\nSupport for 5k+ charts will be added in the future.")
+                    debug.print("warn", "This is not a 4k chart!\nSupport for 5k+ charts will be added in the future.")
                     break
                 end
                 
@@ -78,9 +139,9 @@ function osuLoader.load(chart, folderPath)
                         if length ~= startTime then 
                             for i = 1, length, noteImgs[lane+1][2]:getHeight()/2/speed do 
                                 if i + noteImgs[lane+1][2]:getHeight()/2/speed < length then 
-                                    charthits[lane+1][#charthits[lane+1] + 1] = {startTime+i, 0, 1, true}
+                                    charthits[lane+1][#charthits[lane+1] + 1] = {startTime+i, 0, lane, true}
                                 else
-                                    charthits[lane+1][#charthits[lane+1] + 1] = {startTime+i, 0, 1, true, true}
+                                    charthits[lane+1][#charthits[lane+1] + 1] = {startTime+i, 0, lane, true, true}
                                 end
                             end
                         end
@@ -109,12 +170,10 @@ function osuLoader.load(chart, folderPath)
             end
         end
     end
-    Timer.after(2,
-        function()
-            state.switch(game)
-            musicTimeDo = true
-        end
-    )
+    if not forDiff then
+        state.switch(game)
+        musicTimeDo = true
+    end
 end
 
 return osuLoader

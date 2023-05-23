@@ -28,6 +28,7 @@ end
 
 local function pause()
     musicTimeDo = false 
+    paused = true
     love.audio.pause(audioFile)
     if voices then
         love.audio.pause(voices)
@@ -43,7 +44,7 @@ inputList = {
 }
 musicPosValue = {1000}
 musicPitch = {1}
-function addJudgement(judgement)
+function addJudgement(judgement, lane, hitTime)
     scoring[judgement] = scoring[judgement] + 1
     if judgement ~= "Miss" then
         combo = combo + 1
@@ -52,12 +53,14 @@ function addJudgement(judgement)
         end
         comboSize.y = 1
         comboTimer = Timer.tween(0.1, comboSize, {y = 1.85, x = 1.6}, "in-out-quad", function()
-            Timer.tween(0.1, comboSize, {y = 1.6,}, "in-out-quad")
+            comboTimer = Timer.tween(0.1, comboSize, {y = 1.6,}, "in-out-quad")
         end)
     else
         combo = 0
     end
     curJudgement = judgement
+
+    additionalScore = additionalScore + scoring.scorePoints[judgement]
 
     if judgeTimer then 
         Timer.cancel(judgeTimer)
@@ -65,7 +68,7 @@ function addJudgement(judgement)
     ratingsize.x = 1
     ratingsize.y = 1
     judgeTimer = Timer.tween(0.1, ratingsize, {x = 1.15, y = 1.15}, "in-out-quad", function()
-        Timer.tween(0.1, ratingsize, {x = 0.85, y = 0.85}, "in-out-quad")
+        judgeTimer = Timer.tween(0.1, ratingsize, {x = 0.85, y = 0.85}, "in-out-quad")
     end)
 
     if waitTmr then 
@@ -76,6 +79,14 @@ function addJudgement(judgement)
         Timer.tween(0.1, ratingsize, {x = 0, y = 0}, "in-out-quad")
         Timer.tween(0.1, comboSize, {y = 0, x = 0}, "in-out-quad")
     end)
+    game:calculateRating()
+
+    table.insert(hitsTable.hits, {hitTime, musicTime})
+end
+
+function getYAdjust(yoffset)
+    local yadj = 0
+    return yoffset + yadj
 end
 
 return {
@@ -90,16 +101,23 @@ return {
             ["Perfect"] = 0,
             ["Great"] = 0,
             ["Good"] = 0,
-            ["Miss"] = 0
+            ["Miss"] = 0,
+            scorePoints = {
+                ["Marvellous"] = 0,
+                ["Perfect"] = 0,
+                ["Great"] = 0,
+                ["Good"] = 0,
+                ["Miss"] = 0
+            }
         }
+
+        replayHits = {}
+        hitsTable = {}
     
         songRate = 1
     
-        game = require "states.game"
-        skinSelect = require "states.skinSelect"
-        songSelect = require "states.songSelect"
-    
-        musicTime = -settings.startTime 
+        musicTime = -settings.settings.Game["start time"] 
+        simulatedMusicTime = -settings.settings.Game["start time"]
     
         PRESSEDMOMENTS = {
             [1] = 1,
@@ -112,11 +130,13 @@ return {
         }
         lastReportedPlaytime = 0
         previousFrameTime = love.timer.getTime() * 1000
+        simulatedPreviousFrameTime = love.timer.getTime() * 1000
         additionalScore = 0
-        additionalAccuracy = 0
         noteCounter = 0
     
         died = false
+
+        DiffCalc:CalculateDiff()
     
         ratingsize = {
             x = 1,
@@ -132,9 +152,50 @@ return {
         scoring["Great"] = 0
         scoring["Good"] = 0
         scoring["Miss"] = 0
+
+        scoring.totalNotes = 0
+
+        leftGradient = love.graphics.gradient("horizontal", {0, 0, 0, 0}, {0,0,0,1}, {0, 0, 0, 1})
+        rightGradient = love.graphics.gradient("horizontal", {0, 0, 0, 1}, {0,0,0,1}, {0, 0, 0, 0})
+
+        -- count all notes that are NOT holds or ends
+        for i = 1, #charthits do
+            for j = 1, #charthits[i] do
+                if not charthits[i][j][5] and not charthits[i][j][4] then
+                    scoring.totalNotes = scoring.totalNotes + 1
+                end
+            end
+
+            replayHits[i] = {}
+        end
+
+        hitsTable.songLength = audioFile:getDuration("seconds") / songRate
+        hitsTable.hits = {}
+
+        -- If the player were to get full marvellous, they would get 1,000,000 score
+        -- meaning with each note, they would get 1,000,000 / totalNotes
+        -- All perfects would be 800,000 / totalNotes
+        -- All greats would be 600,000 / totalNotes
+        -- All goods would be 400,000 / totalNotes
+        -- All misses would be 0
+        scoring.scorePoints["Marvellous"] = 1000000 / scoring.totalNotes
+        scoring.scorePoints["Perfect"] = 800000 / scoring.totalNotes
+        scoring.scorePoints["Great"] = 600000 / scoring.totalNotes
+        scoring.scorePoints["Good"] = 400000 / scoring.totalNotes
+        scoring.scorePoints["Miss"] = 0
+
+        scoring.ratingPercent = 0
+        scoring.ratingPercentLerp = 0
+
+        for i, v in ipairs(scoring.scorePoints) do
+            v = math.floor(v)
+        end
+
+        --print(DiffCalc:CalculateDiff())
+
         combo = 0
     
-        sv = 1 -- Scroll Velocity
+        sv = speed -- Scroll Velocity
     
         curJudgement = "none"
 
@@ -170,35 +231,62 @@ return {
         whereNotesHit = {-35}
 
         gameCanvas = love.graphics.newCanvas(love.graphics.getWidth(), love.graphics.getHeight())
+
+        audioFile:setPitch(songSpeed)
+        audioFile:setVolume(settings.settings.Audio.music)
+        if voices then
+            voices:setPitch(songSpeed)
+            voices:setVolume(settings.settings.Audio.music)
+        end
+
+        graphics.fadeIn(0.2)
     end,
 
+    calculateRating = function(self)
+		scoring.ratingPercent = scoring.score / ((noteCounter + scoring["Miss"]) * scoring.scorePoints["Marvellous"])
+		if scoring.ratingPercent == nil or scoring.ratingPercent < 0 then 
+			scoring.ratingPercent = 0
+		elseif scoring.ratingPercent > 1 then
+			scoring.ratingPercent = 1
+		end
+	end,
+
     update = function(self, dt)
-        if musicTimeDo and not died then
+        simulatedTime = love.timer.getTime()
+
+        simulatedMusicTime = simulatedMusicTime + (simulatedTime * 1000)  - simulatedPreviousFrameTime
+        simulatedPreviousFrameTime = simulatedTime * 1000
+        absSimulatedMusicTime = math.abs(simulatedMusicTime)
+        if musicTimeDo and not died and modifiers.musicPlaying then
             local time = love.timer.getTime()
 
             musicTime = musicTime + (time * musicPosValue[1]) - previousFrameTime
             previousFrameTime = time * musicPosValue[1]
 
             musicPos = ((musicTime) * (speed)+100)
-            modifiers:update(dt, beatHandler.beat)
         elseif not musicTimeDo then
             previousFrameTime = love.timer.getTime() * 1000
-        elseif musicTimeDo and died then
+        elseif musicTimeDo and died and modifiers.musicPlaying then
             musicTime = musicTime + musicPosValue[1] * dt
             musicPos = ((musicTime) * (speed)+100)
+        end
+
+        if not paused then 
             modifiers:update(dt, beatHandler.beat)
         end
+
         absMusicTime = math.abs(musicTime)
-        if (musicTime > 0 - settings.audioOffset) and not audioFile:isPlaying() and not died then
+
+        if (musicTime > 0 - settings.settings.Game["audio offset"]) and not audioFile:isPlaying() and not died and modifiers.musicPlaying then
             if musicTimeDo then
                 audioFile:play()
                 if voices then -- support for fnf voices
                     voices:play()
                 end
-                debug.print("Playing audio file")
+                debug.print("info", "Playing audio file")
             end
-        elseif musicTime > audioFile:getDuration() * 1000 then
-            state.switch(resultsScreen, scoring, {songTitle, songDifficultyName}, false)
+        elseif musicTime > (audioFile:getDuration() * 1000) / songSpeed then 
+            state.switch(resultsScreen, scoring, {songTitle, songDifficultyName}, false, replayHits, hitsTable)
         end
         for i = 1, #charthits do
             for j = 1, #charthits[i] do
@@ -206,24 +294,11 @@ return {
                     if charthits[i][1][1] - musicTime <= -100 then 
                         if not charthits[i][1][4] then
                             noteCounter = noteCounter + 1
-                            additionalAccuracy = additionalAccuracy + 1.11
                             if scoring.health < 0 then
                                 scoring.health = 0
                             end
-                            if accuracyTimer then
-                                Timer.cancel(accuracyTimer)
-                            end
-                            accuracyTimer = Timer.tween(
-                                0.35,
-                                scoring,
-                                {accuracy = additionalAccuracy / noteCounter},
-                                "out-quad",
-                                function()
-                                    accuracyTimer = nil
-                                end
-                            )
                             scoring.health = scoring.health - 0.270
-                            addJudgement("Miss")
+                            addJudgement("Miss", i, math.abs(charthits[i][1][1] - musicTime))
                         end
                         table.remove(charthits[i], 1)
                     end
@@ -232,16 +307,30 @@ return {
         end
 
         scoring.healthTween = math.lerp(scoring.healthTween, scoring.health, 0.05)
+        scoring.ratingPercentLerp = math.lerp(scoring.ratingPercentLerp, scoring.ratingPercent, 0.05)
+        scoring.score = math.lerp(scoring.score, additionalScore, 0.05)
 
-        for i = 1, 4 do
+        for i = 1, (mode == "Keys4" and 4 or 7) do
             for _, hitObject in ipairs(charthits[i]) do
-                hitObject[2] = (whereNotesHit[1] + (-((musicTime - hitObject[1]) * 0.6 * speed))) * modifiers.reverseScale
+                local xmod = sv
+                local scrollspeed = xmod
+                local off = receptors[i][1].offsetY
+                local defaulty = modifiers.defaultY[i]
+                local targTime = hitObject[1]
+                local ypos = getYAdjust(defaulty - (musicTime - targTime)) * scrollspeed * 0.6 - off
+                hitObject[2] = (whereNotesHit[1] + (-((musicTime - hitObject[1]) * 0.6 * speedLane[i]))) * modifiers.reverseScale
+
+                if hitObject[4] or hitObject[5] then
+                    local ypos2 = getYAdjust(defaulty - ((musicTime+0.1) - targTime)) * scrollspeed * 0.6 - off
+                end
+
+                hitObject[2] = ypos
             end
         end
         
         presence = {
             details = (autoplay and "Autoplaying " or "Playing ")..songTitle.." - "..songDifficultyName..(not musicTimeDo and " - Paused" or ""), 
-            state = "Score: "..string.format("%07d", round(scoring.score)).." - "..string.format("%.2f%%", scoring.accuracy).." - "..combo..(combo == noteCounter and " FC" or " combo"),
+            state = "Score: "..string.format("%07d", round(scoring.score)).." - "..string.format("%.2f%%", ((math.floor(scoring.ratingPercentLerp * 10000) / 100))).." - "..combo..(combo == noteCounter and " FC" or " combo"),
             largeImageKey = "totallyreallogo",
             largeImageText = "Rit"..(__DEBUG__ and " DEBUG MODE" or ""),
             startTimestamp = now
@@ -249,11 +338,14 @@ return {
         
         if chartEvents[1] then
             if chartEvents[1][1] <= absMusicTime then
-                if settings.scrollvelocities then 
+                if settings.settings.Game["scroll velocities"] then 
                     sv = chartEvents[1][2] 
+                    if sv == 1 then sv = speed end
                     for i = 1, 4 do 
                         noteImgs[i][2].scaleY = 1 * sv
                     end
+                else
+                    sv = speed
                 end
                 table.remove(chartEvents, 1)
             end
@@ -261,7 +353,7 @@ return {
         if bpmEvents[1] then
             if bpmEvents[1][1] then
                 if bpmEvents[1][1] <= absMusicTime then
-                    beatHandler.setBPM(bpmEvents[1][2])
+                    beatHandler.setBPM(bpmEvents[1][2] * songSpeed)
                     table.remove(bpmEvents, 1)
                 end
             end
@@ -269,11 +361,12 @@ return {
         end
         beatHandler.update(dt)
 
-        if input:pressed("pause") then 
+        if input:pressed("pause") and not debug.consoleTyping then
             if musicTimeDo then 
                 pause()
             else
                 musicTimeDo = true
+                paused = false
                 if musicTime >= 0 then
                     audioFile:play()
                     if voices then -- support for fnf voices
@@ -287,7 +380,8 @@ return {
             curInput = inputList[i]
             notes = charthits[i]
             if not autoplay then
-                if input:pressed(curInput) then
+                if input:pressed(curInput) and not debug.consoleTyping then
+                    table.insert(replayHits[i], {musicTime, 1})
                     if hitsoundCache[#hitsoundCache]:isPlaying() then
                         hitsoundCache[#hitsoundCache] = hitsoundCache[#hitsoundCache]:clone()
                         hitsoundCache[#hitsoundCache]:play()
@@ -299,78 +393,46 @@ return {
                             hitsoundCache[hit] = nil -- Nil afterwords to prevent memory leak
                         end --                             maybe, idk how love2d works lmfao
                     end
-                    if notes[1] then
-                        if not notes[1][4] and not notes[1][5] then
-                            if notes[1][1] - musicTime >= -80 and notes[1][1] - musicTime <= 180 or (notes[2] and notes[1][5] and notes[2][1] - musicTime >= -80 and notes[2][1] - musicTime <= 180) then
-                                noteCounter = noteCounter + 1
-                                pos = math.abs(notes[1][1] - musicTime)
-                                if notes[2] and notes[1][5] and notes[2][1] - musicTime >= -80 and notes[2][1] - musicTime <= 180 then
-                                    pos = math.abs(notes[2][1] - musicTime)
-                                end
-                                if pos < 28 then
-                                    judgement = "Marvellous"
-                                    scoring.health = scoring.health + 0.135
-                                    additionalScore = additionalScore + 650
-                                    additionalAccuracy = additionalAccuracy + 100
-                                elseif pos < 43 then
-                                    judgement = "Perfect"
-                                    scoring.health = scoring.health + 0.135
-                                    additionalScore = additionalScore + 500
-                                    additionalAccuracy = additionalAccuracy + 100
-                                elseif pos < 102 then
-                                    judgement = "Great"
-                                    scoring.health = scoring.health + 0.135
-                                    additionalScore = additionalScore + 350
-                                    additionalAccuracy = additionalAccuracy + 75
-                                elseif pos < 135 then
-                                    judgement = "Good"
-                                    scoring.health = scoring.health + 0.135
-                                    additionalScore = additionalScore + 200
-                                    additionalAccuracy = additionalAccuracy + 50
-                                else
-                                    judgement = "Miss"
-                                    scoring.health = scoring.health - 0.270
-                                    additionalAccuracy = additionalAccuracy
-                                end
-
-                                addJudgement(judgement)
-
-                                if scoring.health > 2 then
-                                    scoring.health = 2
-                                end
-                                if scoringTimer then 
-                                    Timer.cancel(scoringTimer)
-                                end
-                                if accuracyTimer then
-                                    Timer.cancel(accuracyTimer)
-                                end
-                                scoringTimer = Timer.tween(
-                                    0.35,
-                                    scoring,
-                                    {score = additionalScore},
-                                    "out-quad",
-                                    function()
-                                        scoringTimer = nil
+                    for j = 1, #charthits[1] do
+                        if notes[j] then
+                            if not notes[j][4] and not notes[j][5] then
+                                if notes[j][1] - musicTime >= -80 and notes[j][1] - musicTime <= 180 or (notes[2] and notes[1][5] and notes[2][1] - musicTime >= -80 and notes[2][1] - musicTime <= 180) then
+                                    noteCounter = noteCounter + 1
+                                    pos = math.abs(notes[j][1] - musicTime)
+                                    if pos <= 28 then
+                                        judgement = "Marvellous"
+                                        scoring.health = scoring.health + 0.135
+                                    elseif pos <= 43 then
+                                        judgement = "Perfect"
+                                        scoring.health = scoring.health + 0.135
+                                    elseif pos <= 102 then
+                                        judgement = "Great"
+                                        scoring.health = scoring.health + 0.135
+                                    elseif pos <= 135 then
+                                        judgement = "Good"
+                                        scoring.health = scoring.health + 0.135
+                                    else
+                                        judgement = "Miss"
+                                        scoring.health = scoring.health - 0.270
                                     end
-                                )
-                                accuracyTimer = Timer.tween(
-                                    0.35,
-                                    scoring,
-                                    {accuracy = additionalAccuracy / (noteCounter + (scoring["Miss"] or 0))},
-                                    "out-quad",
-                                    function()
-                                        accuracyTimer = nil
-                                    end
-                                )
-                                table.remove(notes, 1)
 
-                                if hit then hit(i, judgement) end
+                                    addJudgement(judgement, i, pos)
+
+                                    if scoring.health > 2 then
+                                        scoring.health = 2
+                                    end
+                                    table.remove(notes, j)
+
+                                    if hit then hit(i, judgement) end
+
+                                    break
+                                end
                             end
-                        end
-                    end 
+                        end 
+                    end
                 end
 
-                if input:down(curInput) then
+                if input:down(curInput) and not debug.consoleTyping then
                     PRESSEDMOMENTS[i] = 2
                     if notes[1] then
                         if notes[1][4] then
@@ -382,6 +444,24 @@ return {
                 else
                     PRESSEDMOMENTS[i] = 1
                 end
+
+                if input:released(curInput) and not debug.consoleTyping then
+                    if notes[1] then
+                        if notes[1][4] then
+                            while true do
+                                if notes[1] then
+                                    if notes[1][4] or notes[1][5] then
+                                        table.remove(notes, 1)
+                                    else
+                                        break
+                                    end
+                                else
+                                    break
+                                end
+                            end
+                        end
+                    end
+                end 
             else
                 if notes[1] then
                     if notes[1][1] - musicTime >= -80 and notes[1][1] - musicTime <= 5 then
@@ -401,37 +481,12 @@ return {
                             pos = math.abs(notes[1][1] - musicTime)
                             judgement = "Marvellous"
                             scoring.health = scoring.health + 0.135
-                            additionalScore = additionalScore + 650
-                            additionalAccuracy = additionalAccuracy + 100
-                            addJudgement(judgement)
+                            additionalScore = additionalScore + scoring.scorePoints["Marvellous"]
+                            addJudgement(judgement, i, pos)
 
                             if scoring.health > 100 then
                                 scoring.health = 1
                             end
-                            if scoringTimer then 
-                                Timer.cancel(scoringTimer)
-                            end
-                            if accuracyTimer then
-                                Timer.cancel(accuracyTimer)
-                            end
-                            scoringTimer = Timer.tween(
-                                0.35,
-                                scoring,
-                                {score = additionalScore},
-                                "out-quad",
-                                function()
-                                    scoringTimer = nil
-                                end
-                            )
-                            accuracyTimer = Timer.tween(
-                                0.35,
-                                scoring,
-                                {accuracy = additionalAccuracy / (noteCounter + (scoring["Miss"] or 0))},
-                                "out-quad",
-                                function()
-                                    accuracyTimer = nil
-                                end
-                            )
                         end
                         
                         table.remove(notes, 1)
@@ -441,21 +496,23 @@ return {
         end
 
         if scoring.health <= 0 and not died then
+            --[[
             died = true
             Timer.tween(3, musicPosValue, {0}, "out-quad")
             Timer.tween(3, musicPitch, {0.005}, "out-quad", function()
                 audioFile:stop()
                 Timer.after(0.6, function()
-                    state.switch(resultsScreen, scoring, {songTitle, songDifficultyName}, true)
+                    state.switch(resultsScreen, scoring, {songTitle, songDifficultyName}, true, replayHits, hitsTable)
                 end)
             end)
+            --]]
         elseif died then
             if musicPitch[1] < 0 then 
                 musicPitch[1] = 0
             end
-            audioFile:setPitch(musicPitch[1])
+            audioFile:setPitch(songSpeed * musicPitch[1])
             if voices then
-                voices:setPitch(musicPitch[1])
+                voices:setPitch(songSpeed * musicPitch[1])
             end
         end
 
@@ -464,7 +521,7 @@ return {
         end
 
         for i,v in pairs(modifiers.graphics) do
-            v.img:update(dt)
+            v:update(dt)
         end
     end,
 
@@ -483,12 +540,31 @@ return {
                         love.graphics.scale(modifiers.camera.zoom, modifiers.camera.zoom)
                         -- draw in order of modifiers.graphics[name].img.drawLayer
                         for i = 1, #modifiers.draws do 
-                            modifiers.graphics[modifiers.draws[i]].img:draw()
+                            modifiers.graphics[modifiers.draws[i]]:draw()
+                        end
+                    love.graphics.pop()
+                    love.graphics.push()
+                        if not modscript.file then
+                            if bgFile then
+                                -- reize to 1080x1920
+                                if bgFile then
+                                    love.graphics.translate(push.getWidth() / 2, push.getHeight() / 2)
+                                    bgFile:draw(0, 0, resize(bgFile, push.getWidth(), push.getHeight()))
+                                end
+                            end
                         end
                     love.graphics.pop()
 
                     love.graphics.push()
-                        if settings.downscroll then 
+                        love.graphics.translate(push.getWidth() / 2-786, push.getHeight() / 2-540)
+                        if settings.settings.Game.underlay then
+                            leftGradient:draw(0, 0, 0, 800, push:getHeight())
+                            rightGradient:draw(800, 0, 0, 800, push:getHeight())
+                        end
+                    love.graphics.pop()
+
+                    love.graphics.push()
+                        if settings.settings.downscroll then 
                             love.graphics.translate(0, push.getHeight() - 175)
                             love.graphics.scale(1, -1)
                         else
@@ -496,12 +572,12 @@ return {
                         end
                         love.graphics.translate(push.getWidth() / 2 - 175, 50)
                         for i = 1, #receptors do
-                            receptors[i][PRESSEDMOMENTS[i]]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), strumlineY[1], notesize, notesize * (settings.downscroll and -1 or 1))
+                            receptors[i][PRESSEDMOMENTS[i]]:draw(90 -(settings.settings.Game["note spacing"]*(#receptors/2-1)) + (settings.settings.Game["note spacing"] * (i-1)), strumlineY[1], notesize, notesize * (settings.settings.Game.downscroll and -1 or 1))
                         end 
                     love.graphics.pop()
 
                     love.graphics.push()
-                        if settings.downscroll then 
+                        if settings.settings.downscroll then 
                             love.graphics.translate(0, push.getHeight() - 175)
                             love.graphics.scale(1, -1)
                         else
@@ -513,17 +589,17 @@ return {
                         
                         for i = 1, #charthits do
                             for j = #charthits[i], 1, -1 do
-                                if math.abs(charthits[i][j][2]) <= 1100 then
+                                if math.abs((whereNotesHit[1] + (-((musicTime - charthits[i][j][1]) * 0.6 * speed)))) <= 2250 then
                                     -- if the note is actually on screen (even with scroll velocity modifiers)
                                     if not charthits[i][j][5] then
                                         
-                                        if charthits[i][j][4] then
-                                            noteImgs[i][2]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), charthits[i][j][2], notesize, noteImgs[i][2].scaleY * notesize * (settings.downscroll and -1 or 1))
-                                        else
-                                            noteImgs[i][1]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), charthits[i][j][2], notesize, notesize * (settings.downscroll and -1 or 1))
+                                        if charthits[i][j][4] then -- normal
+                                            noteImgs[i][2]:draw(90 -(settings.settings.Game["note spacing"]*(#receptors/2-1)) + (settings.settings.Game["note spacing"] * (i-1)), charthits[i][j][2], notesize, noteImgs[i][2].scaleY * notesize * (settings.settings.Game.downscroll and -1 or 1))
+                                        else -- hold
+                                            noteImgs[i][1]:draw(90 -(settings.settings.Game["note spacing"]*(#receptors/2-1)) + (settings.settings.Game["note spacing"] * (i-1)), charthits[i][j][2], notesize, notesize * (settings.settings.Game.downscroll and -1 or 1))
                                         end
-                                    else
-                                        noteImgs[i][3]:draw(90 -(settings.noteSpacing*(#receptors/2-1)) + (settings.noteSpacing * (i-1)), charthits[i][j][2]+50, notesize, -notesize)
+                                    else -- end
+                                        noteImgs[i][3]:draw(90 -(settings.settings.Game["note spacing"]*(#receptors/2-1)) + (settings.settings.Game["note spacing"] * (i-1)), charthits[i][j][2]+50, notesize, -notesize)
                                     end
                                 end
                             end
@@ -535,18 +611,7 @@ return {
                     end
                     if combo > 0 then
                         -- determine the offsetX of the combo of how many digits it is
-                        local offsetX = 0
-                        if combo >= 10000 then
-                            offsetX = 0
-                        elseif combo >= 1000 then
-                            offsetX = -5
-                        elseif combo >= 100 then
-                            offsetX = -10
-                        elseif combo >= 10 then
-                            offsetX = -15
-                        else
-                            offsetX = -20
-                        end
+                        local offsetX = -5 * math.floor(math.log10(combo)) - 10
                         comboImages[1][combo % 10]:draw(comboImages[1][combo % 10].x + offsetX, comboImages[1][combo % 10].y, comboSize.x, comboSize.y)
                         if math.floor(combo / 10 % 10) ~= 0 or combo >= 100 then
                             comboImages[2][math.floor(combo / 10 % 10)]:draw(comboImages[2][math.floor(combo / 10 % 10)].x + offsetX, comboImages[2][math.floor(combo / 10 % 10)].y, comboSize.x, comboSize.y)
@@ -565,29 +630,33 @@ return {
                         end
                     end
                     love.graphics.translate(push.getWidth() / 2, 0)
-                    love.graphics.rectangle("fill", -1000, 0, scoring.healthTween * 400+10, 20, 10, 10)
-
-                    love.graphics.setFont(scoreFont)
-                    scoreFormat = string.format("%07d", round(scoring.score))
-                    if scoring.accuracy >= 100 then
-                        accuracyFormat = "100.00%"
-                    else
-                        accuracyFormat = string.format("%.2f%%", scoring.accuracy)
+                    if modifiers.gameProperties["healthbarVisible"] then 
+                        graphics.setColor(healthBarColor)
+                        love.graphics.rectangle("fill", -1000, 0, scoring.healthTween * 400+10, 20, 10, 10)
+                        graphics.setColor(1, 1, 1, 1)
                     end
-                    love.graphics.setFont(accuracyFont)
-                    love.graphics.printf(scoreFormat, 0, 0, 960, "right")
-                    if accuracyFormat == "nan%" then 
-                        accuracyFormat = "0.00%"
-                    end
-                    love.graphics.printf(accuracyFormat, 0, 45, 960, "right")
-                    love.graphics.setFont(font)
 
-                    -- Time remaining bar 
-                    love.graphics.rectangle("fill", -push.getWidth()/2, push.getHeight() - 10, push.getWidth() * (1 - (musicTime/1000 / audioFile:getDuration())), 10, 10, 10)
+                    if modifiers.gameProperties["scoreVisible"] then
+                        love.graphics.setFont(scoreFont)
+                        scoreFormat = string.format("%07d", round(scoring.score))
+                        love.graphics.setFont(accuracyFont)
+                        graphics.setColor(uiTextColor)
+                        love.graphics.printf(scoring.score > 1000000 and 1000000 or scoreFormat, 0, 0, 960, "right")
+                        love.graphics.printf(((math.floor(scoring.ratingPercentLerp * 10000) / 100)) .. "%", 0, 45, 960, "right")
+                        graphics.setColor(1, 1, 1, 1)
+                        love.graphics.setFont(font)
+                    end
+
+                    if modifiers.gameProperties["timebarVisible"] then
+                        -- Time remaining bar 
+                        graphics.setColor(timeBarColor)
+                        love.graphics.rectangle("fill", -push.getWidth()/2, push.getHeight() - 10, push.getWidth() * (1 - (musicTime/1000 / (audioFile:getDuration() / songSpeed))), 10, 10, 10)
+                        graphics.setColor(1, 1, 1, 1)
+                    end
                 love.graphics.pop()
             love.graphics.setCanvas()
 
-            love.graphics.setColor(1, 1, 1, 1)
+            graphics.setColor(1, 1, 1, 1)
             if modifiers.curShader ~= "" then
                 love.graphics.setShader(modifiers.shaders[modifiers.curShader])
             end
@@ -595,8 +664,6 @@ return {
             love.graphics.draw(gameCanvas, 0, 0, 0, push:getWidth() / gameCanvas:getWidth(), push:getHeight() / gameCanvas:getHeight())
             love.graphics.setShader()
 
-
-            
         end
     end,
 
@@ -606,7 +673,7 @@ return {
     end,
 
     focus = function(self, f)
-        debug.print("focus: " .. tostring(f))
+        --debug.print("focus: " .. tostring(f))
         if not f then
             pause()
         end
@@ -631,6 +698,11 @@ return {
         Timer.clear()
         presence = {}
         camera = {x=0, y=0, zoom=1}
+
+        speedLane = {}
+        for i = 1, 4 do
+            speedLane[i] = speed
+        end
 
         modifiers:clear()
     end

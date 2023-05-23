@@ -7,37 +7,19 @@ function drunk:apply(amount)
 
 end
 
-local drunkTweens = {}
-
 function drunk:update(dt, beat, amount)
     --print("drunkIsEnabled")
-    local time = (beat / (beatHandler.bpm / 60)) * 1000 -- get the ms of the current beat
-    if amount ~= 0 then 
-        for i = 1, #receptors do
-            local speed = 0.5
-            local period = 1 / speed
-            local offset = (time / period) * math.pi * 2
+    for i = 1, 4 do
+        local xpos = 0
 
-            local angle = time * (1+speed) + i*( (offset*0.2) + 0.2)
-            receptors[i][1].newoffsetX = amount * (math.cos(angle) * receptors[i][1]:getWidth()/2)
+        xpos = xpos + amount * (math.cos(musicTime*0.001+i*(0.2)+1*(0.2))*receptors[i][1]:getWidth()*0.5)
 
-            if drunkTweens[i] then 
-                Timer.cancel(drunkTweens[i])
-            end
+        receptors[i][1].offsetX = xpos
+        receptors[i][2].offsetX = xpos
 
-            drunkTweens[i] = Timer.tween((60/beatHandler.bpm), receptors[i][1], {offsetX = receptors[i][1].newoffsetX}, "out-quad")
-            receptors[i][2].offsetX = receptors[i][1].offsetX
-            
-            noteImgs[i][1].offsetX = receptors[i][1].offsetX
-            noteImgs[i][2].offsetX = receptors[i][1].offsetX
-            noteImgs[i][3].offsetX = receptors[i][1].offsetX
-        end
-    else
-        -- disable the mod
-        for i, receptor in pairs(receptors) do
-            receptor[1].offsetX = 0
-            receptor[2].offsetX = 0
-        end
+        noteImgs[i][1].offsetX = xpos
+        noteImgs[i][2].offsetX = xpos
+        noteImgs[i][3].offsetX = xpos
     end
 end
 

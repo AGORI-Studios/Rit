@@ -1,0 +1,44 @@
+name: Rit - Dev Branch Nightly
+on:
+  push:
+    branches: [ Dev ]
+  pull_request:
+    branches: [ Dev ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build x32
+        run: |
+          powershell .\Makefile.ps1 -Architecture win32
+
+      - name: Build x64
+        run: |
+          powershell .\Makefile.ps1 -Architecture win64
+          
+      - name: Build NX
+        run: |
+          powershell .\Makefile.ps1 -Architecture nx
+
+      - name: Upload x32
+        uses: actions/upload-artifact@v2
+        with:
+          name: Rit-Win32
+          path: build/win32/
+
+      - name: Upload x64
+        uses: actions/upload-artifact@v2
+        with:
+          name: Rit-Win64
+          path: build/win64/
+
+      - name: Upload NX
+        uses: actions/upload-artifact@v2
+        with:
+          name: Rit-NX
+          path: build/nx/release/Rit.zip

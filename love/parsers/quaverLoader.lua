@@ -21,28 +21,59 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 local quaverLoader = {}
 lineCount = 0
-function quaverLoader.load(chart, folderPath)
+
+function quaverLoader.getDiff(chart)
+    songSpeed = 1
+    charthits = {}
+    for i = 1, 4 do
+        charthits[i] = {}
+    end
+    bpmEvents = {}
+    chartEvents = {}
+    quaverLoader.load(chart, "",  true) -- Run through the chart once to get the difficulty
+    return DiffCalc:CalculateDiff()
+end
+
+function quaverLoader.load(chart, folderPath, forDiff)
+    local forDiff = forDiff or false
     -- read the first line of the file
     curChart = "Quaver"
     local file = love.filesystem.read(chart)
-    modscript.loadScript(folderPath)
+    if not forDiff then
+        modscript.loadScript(folderPath)
+    end
 
     for line in love.filesystem.lines(chart) do
         lineCount = lineCount + 1
-        if line:find("AudioFile:") then
+        if line:find("AudioFile:") and not forDiff then
             curLine = line
             local audioPath = curLine
             audioPath = audioPath:gsub("AudioFile: ", "")
             audioPath = (folderPath == "" and "song/" .. audioPath or folderPath .. "/" .. audioPath)
             audioFile = love.audio.newSource(audioPath, "stream")
         end
+        if line:find("BackgroundFile:") and not forDiff then
+            curLine = line
+            local bgPath = curLine
+            bgPath = bgPath:gsub("BackgroundFile: ", "")
+            bgPath = (folderPath == "" and "song/" .. bgPath or folderPath .. "/" .. bgPath)
+            tryExcept(function()
+                bgFile = graphics.newImage(bgPath)
+            end, function()
+                bgFile = nil
+            end)
+        end
         if line:find("Mode: ") then
             modeLine = line
             mode = modeLine:gsub("Mode: ", "")
-            if mode == "Keys7" then
-                loadSkin("7k")
-            elseif mode == "Keys4" then
+            if mode == "Keys4" then
                 loadSkin("4k")
+            else
+                if not forDiff then
+                    error("This chart is not a 4k chart!")
+                else
+                    return "N/A"
+                end
             end
         end
         -- if the line has "- Bpm: " in it, then it's the line with the BPM
@@ -66,6 +97,9 @@ function quaverLoader.load(chart, folderPath)
                 multiplier = curLine
                 multiplier = multiplier:gsub("Multiplier: ", "")
                 multiplier = tonumber(multiplier)
+                    
+                local sv = 1
+                local timingPoint = charthits[1] or 0
 
                 table.insert(chartEvents, {startTime, multiplier})
             end
@@ -76,7 +110,7 @@ function quaverLoader.load(chart, folderPath)
                 curLine = line
                 startTime = curLine
                 startTime = startTime:gsub("- StartTime: ", "")
-                startTime = tonumber(startTime)
+                startTime = tonumber(startTime) / songSpeed
             end
             if line:find("Bpm:") then 
                 curLine = line
@@ -102,7 +136,7 @@ function quaverLoader.load(chart, folderPath)
                 lane = curLine
                 lane = lane:gsub("  Lane: ", "")
                 lane = tonumber(lane)
-                charthits[lane][#charthits[lane] + 1] = {startTime, 0, 1, false}
+                charthits[lane][#charthits[lane] + 1] = {startTime, 0, lane, false}
             end
             if line:find("  EndTime: ") then
                 curLine = line
@@ -113,9 +147,9 @@ function quaverLoader.load(chart, folderPath)
                     
                 for i = 1, length, noteImgs[lane][2]:getHeight()/2/speed do
                     if i + noteImgs[lane][2]:getHeight()/2/speed < length then
-                        charthits[lane][#charthits[lane] + 1] = {startTime+i, 0, 1, true}
+                        charthits[lane][#charthits[lane] + 1] = {startTime+i, 0, lane, true}
                     else
-                        charthits[lane][#charthits[lane] + 1] = {startTime+i, 0, 1, true, true}
+                        charthits[lane][#charthits[lane] + 1] = {startTime+i, 0, lane, true, true}
                     end
                 end
             end
@@ -141,14 +175,14 @@ function quaverLoader.load(chart, folderPath)
             end
         end
     end
-
-    Timer.after(2,
-        function()
-            state.switch(game)
-            musicTimeDo = true
-        end
-    )
-    
+    if not forDiff then
+        Timer.after(2,
+            function()
+                state.switch(game)
+                musicTimeDo = true
+            end
+        )
+    end
 end
 
 return quaverLoader

@@ -7,36 +7,54 @@ modifiers.modList = {
     -- Notig mods
     "drunk",
     "tipsy",
-    "reverse"
+    "reverse",
 }
-
+modifiers.mods = {}
 modifiers.enabledList = {}
 modifiers.curEnabled = {}
 modifiers.reverseScale = 1 -- 1 means not flipped, -1 means flipped
 modifiers.tweens = {}
 modifiers.funcs = {}
+modifiers.funcsSimulated = {}
 modifiers.graphics = {}
 modifiers.draws = {}
 modifiers.shaders = {}
 modifiers.curShader = ""
+modifiers.defaultX = {}
+modifiers.defaultY = {}
+modifiers.notePos = {}
+for i = 1, 4 do
+    modifiers.notePos[i] = 0
+end
+for i = 1, 4 do
+    modifiers.defaultX[i] = 90 -(settings.settings.Game["note spacing"]*(#receptors/2-1)) + (settings.settings.Game["note spacing"] * (i-1))
+end
+for i = 1, 4 do
+    modifiers.defaultY[i] = -35
+end
 modifiers.camera = {x=0,y=0,zoom=1}
+modifiers.gameProperties = {["receptorsVisible"]=true,["healthbarVisible"]=true,["scoreVisible"]=true,["timebarVisible"]=true}
+modifiers.musicPlaying = true
+
+function getReverseForCol(l)
+    local val = 0
+
+    val = val + modifiers.reverseScale
+
+    return val
+end
 
 function modifiers:load()
     for i, v in pairs(modifiers.modList) do
-        modifiers[v] = require("modules.modifiers." .. v)
+        modifiers.mods[v] = require("modules.modifiers." .. v)
+        print("Loaded modifier " .. v)
     end
-    
-    -- Reset the modifiers
-    modifiers:applyMod("drunk", 0, 0)
-    modifiers:applyMod("tipsy", 0, 0)
-    modifiers:applyMod("reverse", 0, 1) 
 end
 
-function modifiers:applyMod(mod, beat, amount)
-    if modifiers[mod] then
-        table.insert(self.enabledList, {mod = mod, beat = beat, amount = amount})
-       -- debug.print("Applied mod " .. mod .. " at beat " .. beat .. " with amount " .. amount)
-    end
+function modifiers:applyMod(mod, beat, amount, lane)
+    local lane = lane or 0
+    table.insert(self.enabledList, {mod = mod, beat = beat, amount = amount, lane = lane})
+    -- debug.print("Applied mod " .. mod .. " at beat " .. beat .. " with amount " .. amount)
 end
 
 function modifiers:createSprite(name, img)
@@ -46,7 +64,7 @@ function modifiers:createSprite(name, img)
             spr.img = graphics.newImage(folderPath .. "/mod/" .. img)
         end,
         function(err)
-            debug.print("Error loading sprite " .. name)
+            debug.print("error", "Error loading sprite " .. name)
         end
     )
 
@@ -55,6 +73,13 @@ function modifiers:createSprite(name, img)
     if spr.img then
         modifiers.graphics[name] = spr
         modifiers.draws[#modifiers.draws + 1] = name
+
+        modifiers.graphics[name].draw = function(self)
+            modifiers.graphics[name].img:draw()
+        end
+        modifiers.graphics[name].update = function(self, dt)
+            modifiers.graphics[name].img:update(dt)
+        end
     end
 end
 
@@ -64,7 +89,7 @@ function modifiers:changeSpriteProperty(name, prop, value)
             modifiers.graphics[name].img[prop] = value
         end,
         function(err)
-            debug.print("Error changing property " .. prop .. " of sprite " .. name)
+            debug.print("error", "Error changing property " .. prop .. " of sprite " .. name)
             return 0
         end
     )
@@ -84,8 +109,8 @@ function modifiers:newShader(name, file)
             modifiers.shaders[name] = love.graphics.newShader(folderPath .. "/mod/" .. file)
         end,
         function(err)
-            debug.print("Error loading shader " .. name)
-            debug.print(err)
+            debug.print("error","Error loading shader " .. name)
+            debug.print("error",err)
         end
     )
 end
@@ -96,8 +121,8 @@ function modifiers:changeShaderProperty(name, prop, value)
             modifiers.shaders[name]:send(prop, value)
         end,
         function(err)
-            debug.print("Error changing property " .. prop .. " of shader " .. name)
-            debug.print(err)
+            debug.print("error","Error changing property " .. prop .. " of shader " .. name)
+            debug.print("error",err)
         end
     )
 end
@@ -131,13 +156,43 @@ function modifiers:setCameraPos(x, y)
     modifiers.camera.y = y
 end
 
+function modifiers:changeGameProperty(prop, value)
+    modifiers.gameProperties[prop] = value
+end
+
+function modifiers:setMusicPlaying(value)
+    modifiers.musicPlaying = value
+end
+
+function modifiers:createRect(name, x, y, w, h, color)
+    modifiers.graphics[name] = graphics.newRect(x, y, w, h, color)
+    modifiers.draws[#modifiers.draws + 1] = name
+end
+
+function modifiers:changeRectProperty(name, prop, value)
+    modifiers.graphics[name][prop] = value
+end
+
+function modifiers:newCircle(name, x, y, radius, color)
+    modifiers.graphics[name] = graphics.newCircle(x, y, radius, color)
+    modifiers.draws[#modifiers.draws + 1] = name
+end
+
+function modifiers:changeCircleProperty(name, prop, value)
+    modifiers.graphics[name][prop] = value
+end
+
 -- Globals
 function doMod(func, beat)
     table.insert(modifiers.funcs, {func = func, beat = beat})
 end
 
-function applyMod(mod, beat, amount)
-    modifiers:applyMod(mod, beat, amount)
+function doModSimulated(func, beat)
+    table.insert(modifiers.funcsSimulated, {func = func, beat = beat})
+end
+
+function applyMod(mod, beat, amount, lane)
+    modifiers:applyMod(mod, beat, amount, lane)
 end
 function removeMod(mod, beat)
     modifiers:removeMod(mod, beat)
@@ -173,7 +228,7 @@ function applyShader(name)
     if modifiers.shaders[name] then
         modifiers:applyShader(name)
     else
-        debug.print("Shader " .. name .. " does not exist")
+        debug.print("error", "Shader " .. name .. " does not exist")
     end
 end
 
@@ -201,30 +256,74 @@ function setCameraPos(x, y)
     modifiers:setCameraPos(x, y)
 end
 
+function changeGameProperty(prop, value)
+    modifiers:changeGameProperty(prop, value)
+end
+
+function setMusicPlaying(value)
+    modifiers:setMusicPlaying(value)
+    previousFrameTime = love.timer.getTime() * 1000
+end
+
+function createRect(name, x, y, w, h, color)
+    modifiers:createRect(name, x, y, w, h, color)
+end
+
+function changeRectProperty(name, prop, value)
+    modifiers:changeRectProperty(name, prop, value)
+end
+
+function newCircle(name, x, y, radius, color)
+    modifiers:newCircle(name, x, y, radius, color)
+end
+
+function changeCircleProperty(name, prop, value)
+    modifiers:changeCircleProperty(name, prop, value)
+end
+
+function setLaneScrollspeed(lane, speed)
+    if lane == 0 then
+        for i = 1, 4 do
+            speedLane[i] = speed
+        end
+    else
+        speedLane[lane] = speed
+    end
+end
+
 -- End globals
 
 function modifiers:update(dt, curBeat)
+    local curBeatSimulated = math.floor((simulatedMusicTime / 1000) * (beatHandler.bpm / 60))
     --print(curBeat)
     for i, v in pairs(modifiers.enabledList) do
         -- if current beat is the same as the beat the mod was applied
         if v.beat <= curBeat and audioFile:isPlaying() then
             -- apply the mod
-            modifiers[v.mod]:apply(v.amount)
+            modifiers.mods[v.mod]:apply(v.amount, v.lane)
             -- remove the mod from the list
             --debug.print("Applied mod " .. v.mod .. " at beat " .. v.beat .. " with amount " .. v.amount)
+            
             table.remove(modifiers.enabledList, i)
         end
     end
 
     for i, v in pairs(modifiers.curEnabled) do
         -- update the mod
-        modifiers[v[1]]:update(dt, curBeat, v[2])
+        modifiers.mods[v[1]]:update(dt, curBeat, v[2])
     end
 
     for i, v in pairs(modifiers.funcs) do
         if v.beat <= curBeat and audioFile:isPlaying() then
             v.func()
             table.remove(modifiers.funcs, i)
+        end
+    end
+
+    for i, v in pairs(modifiers.funcsSimulated) do
+        if v.beat <= curBeatSimulated then
+            v.func()
+            table.remove(modifiers.funcsSimulated, i)
         end
     end
 end
@@ -243,6 +342,7 @@ function modifiers:clear()
     modifiers.reverseScale = 1
     modifiers.tweens = {}
     modifiers.funcs = {}
+    modifiers.funcsSimulated = {}
     modifiers.graphics = {}
     modifiers.shaders = {}
     modifiers.curShader = ""
@@ -250,6 +350,8 @@ function modifiers:clear()
     modifiers.camera = {x = 0, y = 0, zoom = 1}
     notesize = 1
     modifiers.draws = {}
+    modifiers.gameProperties = {["receptorsVisible"]=true,["healthbarVisible"]=true,["scoreVisible"]=true,["timebarVisible"]=true}
+    modifiers.musicPlaying = true
 
     for _, v in pairs(modifiers.modList) do
         modifiers[v] = nil

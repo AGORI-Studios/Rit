@@ -22,6 +22,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 local graphics = {}
 
 graphics.cache = {}
+graphics.fade = {1}
 
 function graphics.newImage(path)
     if not graphics.cache[path] then
@@ -170,7 +171,7 @@ function graphics.newImage(path)
             if sx == nil then sx = self.scaleX end
             if sy == nil then sy = self.scaleY end       
             
-            love.graphics.setColor(self.r, self.g, self.b, self.a)
+            graphics.setColor(self.r, self.g, self.b, self.a)
             if not self.sparrowSheet then
                 love.graphics.draw(
                     self.img, 
@@ -209,9 +210,44 @@ function graphics.newImage(path)
                     self.shearY
                 )
             end
-            love.graphics.setColor(1, 1, 1, 1)
+            graphics.setColor(1, 1, 1, 1)
         end
     }
+end
+
+function graphics.newRectangle(x, y, width, height, color)
+    local rect = {
+        x = x,
+        y = y,
+        width = width,
+        height = height,
+        color = color,
+        update = function(self, dt)
+        end,
+        draw = function(self)
+            graphics.setColor(self.color)
+            love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
+            graphics.setColor(1, 1, 1, 1)
+        end
+    }
+    return rect
+end
+
+function graphics.newCircle(x, y, radius, color)
+    local circle = {
+        x = x,
+        y = y,
+        radius = radius,
+        color = color,
+        update = function(self, dt)
+        end,
+        draw = function(self)
+            graphics.setColor(self.color)
+            love.graphics.circle("fill", self.x, self.y, self.radius)
+            graphics.setColor(1, 1, 1, 1)
+        end
+    }
+    return circle
 end
 
 function graphics.clearCache()
@@ -230,6 +266,25 @@ function graphics.getHeight()
     return push:getHeight()
 end
 
+function graphics.fadeIn(d, cb)
+    Timer.tween(d, graphics.fade, {1}, "linear", cb or function() end)
+end
 
+function graphics.fadeOut(d, cb)
+    Timer.tween(d, graphics.fade, {0}, "linear", cb or function() end)
+end
+
+function graphics.setFade(f)
+    graphics.fade = f
+end
+
+function graphics.setColor(r,g,b,a)
+    local r,g,b,a = r or 1, g or 1, b or 1, a or 1
+    if type(r) == "table" then
+        r,g,b,a = r[1] or 1, r[2] or 1, r[3] or 1, r[4] or 1
+    end
+    local f = graphics.fade[1]
+    love.graphics.setColor(r*f,g*f,b*f,a)
+end
 
 return graphics

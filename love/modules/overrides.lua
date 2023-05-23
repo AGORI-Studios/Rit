@@ -45,6 +45,14 @@ function math.angle(x1, y1, x2, y2)
     return math.atan2(y2 - y1, x2 - x1)
 end
 
+function math.truncateFloat(x, precision)
+    local precision = precision or 2
+    local num = x or 0
+    num = num * math.pow(10, precision)
+    num = math.round(num) / math.pow(10, precision)
+    return num
+end
+
 -- String Funcs
 
 function string.startsWith(str, start)
@@ -86,6 +94,18 @@ function string.splitAtFirst(str, index)
     return str:sub(1, index), str:sub(index + 1)
 end
 
+function string.title(str)
+    return str:gsub("(%a)([%w_']*)", function(first, rest)
+        return first:upper() .. rest:lower()
+    end)
+end
+
+function string.cap(str)
+    -- capitalized the first letter of each word
+    return str:gsub("(%a)([%w_']*)", function(first, rest)
+        return first:upper() .. rest:lower()
+    end)
+end
 -- Table Funcs
 
 function table.contains(table, element)
@@ -263,4 +283,111 @@ else
             end
         end
     end
+end
+
+function love.math.randomFloat(min, max, precision)
+    -- Generate a random floating point number between min and max
+    --[[1]] local range = max - min
+    --[[2]] local offset = range * math.random()
+    --[[3]] local unrounded = min + offset
+    
+    -- Return unrounded number if precision isn't given
+    if not precision then
+        return unrounded
+    end
+    
+    -- Round number to precision and return
+    --[[1]] local powerOfTen = 10 ^ precision
+    local n
+    --[[2]] n = unrounded * powerOfTen
+     --[[3]] n = n + 0.5
+    --[[4]] n = math.floor(n)
+    --[[5]] n = n / powerOfTen
+    return n
+end
+
+function love.graphics.gradient(dir, ...)
+    -- Check for direction
+    local isHorizontal = true
+    if dir == "vertical" then
+        isHorizontal = false
+    elseif dir ~= "horizontal" then
+        error("bad argument #1 to 'gradient' (invalid value)", 2)
+    end
+
+    -- Check for colors
+    local colorLen = select("#", ...)
+    if colorLen < 2 then
+        error("color list is less than two", 2)
+    end
+
+    -- Generate mesh
+    local meshData = {}
+    if isHorizontal then
+        for i = 1, colorLen do
+            local color = select(i, ...)
+            local x = (i - 1) / (colorLen - 1)
+
+            meshData[#meshData + 1] = {x, 1, x, 1, color[1], color[2], color[3], color[4] or (1 )}
+            meshData[#meshData + 1] = {x, 0, x, 0, color[1], color[2], color[3], color[4] or (1)}
+        end
+    else
+        for i = 1, colorLen do
+            local color = select(i, ...)
+            local y = (i - 1) / (colorLen - 1)
+
+            meshData[#meshData + 1] = {1, y, 1, y, color[1], color[2], color[3], color[4] or (1)}
+            meshData[#meshData + 1] = {0, y, 0, y, color[1], color[2], color[3], color[4] or (1)}
+        end
+    end
+
+    -- Resulting Mesh has 1x1 image size
+    --return love.graphics.newMesh(meshData, "strip", "static")
+    return {
+        img = love.graphics.newMesh(meshData, "strip", "static"),
+
+        change = function(self, dir, ...)
+            -- Check for direction
+            local isHorizontal = true
+            if dir == "vertical" then
+                isHorizontal = false
+            elseif dir ~= "horizontal" then
+                error("bad argument #1 to 'gradient' (invalid value)", 2)
+            end
+
+            -- Check for colors
+            local colorLen = select("#", ...)
+            if colorLen < 2 then
+                error("color list is less than two", 2)
+            end
+
+            -- Generate mesh
+            local meshData = {}
+            if isHorizontal then
+                for i = 1, colorLen do
+                    local color = select(i, ...)
+                    local x = (i - 1) / (colorLen - 1)
+
+                    meshData[#meshData + 1] = {x, 1, x, 1, color[1], color[2], color[3], color[4] or (1 )}
+                    meshData[#meshData + 1] = {x, 0, x, 0, color[1], color[2], color[3], color[4] or (1)}
+                end
+            else
+                for i = 1, colorLen do
+                    local color = select(i, ...)
+                    local y = (i - 1) / (colorLen - 1)
+
+                    meshData[#meshData + 1] = {1, y, 1, y, color[1], color[2], color[3], color[4] or (1)}
+                    meshData[#meshData + 1] = {0, y, 0, y, color[1], color[2], color[3], color[4] or (1)}
+                end
+            end
+
+            -- Resulting Mesh has 1x1 image size
+            --return love.graphics.newMesh(meshData, "strip", "static")
+            self.img = love.graphics.newMesh(meshData, "strip", "static")
+        end,
+
+        draw = function(self, x, y, r, sx, sy, ox, oy, kx, ky)
+            love.graphics.draw(self.img, x, y, r, sx, sy, ox, oy, kx, ky)
+        end
+    }
 end

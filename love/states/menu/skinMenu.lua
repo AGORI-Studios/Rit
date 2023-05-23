@@ -5,7 +5,7 @@ local function chooseSkin()
     end
     skins = {}
     for i, v in ipairs(love.filesystem.getDirectoryItems("defaultskins")) do
-        if love.filesystem.getInfo("defaultskins/" .. v).type == "directory" then
+        if love.filesystem.getInfo("defaultskins/" .. v).type == "directory" and love.filesystem.getInfo("defaultskins/" .. v .. "/skin.json") then
             local folderPath = "defaultskins/" .. v
             -- get the skin.json
             local skinJson = json.decode(love.filesystem.read(folderPath .. "/skin.json"))
@@ -21,7 +21,7 @@ local function chooseSkin()
         end
     end
     for i, v in ipairs(love.filesystem.getDirectoryItems("skins")) do
-        if love.filesystem.getInfo("skins/" .. v).type == "directory" then
+        if love.filesystem.getInfo("skins/" .. v).type == "directory" and love.filesystem.getInfo("skins/" .. v .. "/skin.json") then
             local folderPath = "skins/" .. v
             -- get the skin.ini
             local skinJson = json.decode(love.filesystem.read(folderPath .. "/skin.json"))
@@ -48,14 +48,15 @@ local function selectSkin(skin) -- TODO: seperate functions for different skin a
     choosingSong = true
 
     musicPos = 0
-    state.switch(songSelect)
+    settings.skin = skinName
+    state.switch(settingsMenu)
     dt = 0
     for i = 1, 4 do charthits[i] = {} end
 end
 
 function loadSkin(skinVer)
     if skinVer == "4k" then
-        notesize = skinJson["skin"]["4k"]["note size"]
+        notesize = skinJson["skin"]["4k"]["note size"] or "1"
         notesize = tonumber(notesize)
         antiAliasing = skinJson["skin"]["4k"]["antialiasing"]
     
@@ -65,8 +66,12 @@ function loadSkin(skinVer)
             love.graphics.setDefaultFilter("linear", "linear")
         end
         
-        hitsound = love.audio.newSource(skinFolder .. "/" .. skinJson["skin"]["4k"]["hitsound"]:gsub('"', ""), "static")
-        hitsound:setVolume(tonumber(skinJson["skin"]["4k"]["hitsound volume"]))
+        if love.filesystem.getInfo(skinFolder .. "/" .. skinJson["skin"]["4k"]["hitsound"]:gsub('"', "")) then
+            hitsound = love.audio.newSource(skinFolder .. "/" .. skinJson["skin"]["4k"]["hitsound"]:gsub('"', ""), "static")
+        else
+            hitsound = love.audio.newSource("defaultskins/skinThrowbacks/hitsound.wav", "static")
+        end
+        hitsound:setVolume(tonumber(skinJson["skin"]["4k"]["hitsound volume"] or 1) * settings.settings.Audio.sfx)
         hitsoundCache = { -- allows for multiple hitsounds to be played at once
             hitsound:clone()
         }
@@ -84,7 +89,9 @@ function loadSkin(skinVer)
             {graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["up note"]:gsub('"', "")), graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["up note hold"]:gsub('"', "")), graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["up note hold end"]:gsub('"', ""))},
             {graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["right note"]:gsub('"', "")), graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["right note hold"]:gsub('"', "")), graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["right note hold end"]:gsub('"', ""))}
         }
-    
+        
+        local judgementNames = {"MISS", "GOOD", "GREAT", "PERFECT", "MARVELLOUS"}
+        --[[
         judgementImages = { -- images for the judgement text
             ["Miss"] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"]["MISS"]:gsub('"', "")),
             ["Good"] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"]["GOOD"]:gsub('"', "")),
@@ -92,13 +99,33 @@ function loadSkin(skinVer)
             ["Perfect"] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"]["PERFECT"]:gsub('"', "")),
             ["Marvellous"] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"]["MARVELLOUS"]:gsub('"', "")),
         }
+        --]]
+        judgementImages = {}
+        -- when adding it to the table, make all the keys except the first one lowercase
+        for i = 1, #judgementNames do
+            if love.filesystem.getInfo(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"][judgementNames[i]]) then
+                local lowerName = string.title(judgementNames[i])
+                judgementImages[lowerName] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"][judgementNames[i]]:gsub('"', ""))
+            else
+                local lowerName = string.title(judgementNames[i])
+                judgementImages[lowerName] = graphics.newImage("defaultskins/skinThrowbacks/judgements/" .. judgementNames[i] .. ".png")
+            end
+        end 
+
+        healthBarColor = skinJson["skin"]["4k"]["ui"]["healthBarColor"]
+        uiTextColor = skinJson["skin"]["4k"]["ui"]["uiTextColor"]
+        timeBarColor = skinJson["skin"]["4k"]["ui"]["timeBarColor"]
     
         comboImages = {}
     
         for i = 1, 6 do
             comboImages[i] = {}
             for j = 0, 9 do
-                comboImages[i][j] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO" .. j]:gsub('"', ""))
+                if love.filesystem.getInfo(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO" .. j]) then
+                    comboImages[i][j] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO" .. j]:gsub('"', ""))
+                else
+                    comboImages[i][j] = graphics.newImage("defaultskins/skinThrowbacks/combo/COMBO" .. j .. ".png")
+                end
                 comboImages[i][j].x = push.getWidth() / 2+325-275 + skinJson["skin"]["rating position"]["x"]
                 comboImages[i][j].x = comboImages[i][j].x - (i - 1) * (comboImages[i][j]:getWidth() - 5) + 25
                 comboImages[i][j].y = push.getHeight() / 2 + skinJson["skin"]["rating position"]["y"] + 50
@@ -112,7 +139,7 @@ function loadSkin(skinVer)
     
         love.graphics.setDefaultFilter("linear", "linear")
     elseif skinVer == "7k" then
-        notesize = skinJson["skin"]["7k"]["note size"]
+        notesize = skinJson["skin"]["7k"]["note size"] or "1"
         notesize = tonumber(notesize)
         antiAliasing = skinJson["skin"]["7k"]["antialiasing"]
 
@@ -122,8 +149,12 @@ function loadSkin(skinVer)
             love.graphics.setDefaultFilter("linear", "linear")
         end
 
-        hitsound = love.audio.newSource(skinFolder .. "/" .. skinJson["skin"]["7k"]["hitsound"]:gsub('"', ""), "static")
-        hitsound:setVolume(tonumber(skinJson["skin"]["7k"]["hitsound volume"]))
+        if love.filesystem.getInfo(skinFolder .. "/" .. skinJson["skin"]["4k"]["hitsound"]:gsub('"', "")) then
+            hitsound = love.audio.newSource(skinFolder .. "/" .. skinJson["skin"]["4k"]["hitsound"]:gsub('"', ""), "static")
+        else
+            hitsound = love.audio.newSource("defaultskins/skinThrowbacks/hitsound.wav", "static")
+        end
+        hitsound:setVolume(tonumber(skinJson["skin"]["7k"]["hitsound volume"]) * settings.settings.Audio.sfx)
         hitsoundCache = { -- allows for multiple hitsounds to be played at once
             hitsound:clone()
         }
@@ -150,24 +181,64 @@ function loadSkin(skinVer)
             {graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["7k"]["note 7"]:gsub('"', "")), graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["7k"]["note 7 hold"]:gsub('"', "")), graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["7k"]["note 7 hold end"]:gsub('"', ""))}
         }
 
+        local judgementNames = {"MISS", "GOOD", "GREAT", "PERFECT", "MARVELLOUS"}
+        --[[
         judgementImages = { -- images for the judgement text
-            ["Miss"] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["7k"]["judgements"]["MISS"]:gsub('"', "")),
-            ["Good"] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["7k"]["judgements"]["GOOD"]:gsub('"', "")),
-            ["Great"] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["7k"]["judgements"]["GREAT"]:gsub('"', "")),
-            ["Perfect"] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["7k"]["judgements"]["PERFECT"]:gsub('"', "")),
-            ["Marvellous"] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["7k"]["judgements"]["MARVELLOUS"]:gsub('"', "")),
+            ["Miss"] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"]["MISS"]:gsub('"', "")),
+            ["Good"] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"]["GOOD"]:gsub('"', "")),
+            ["Great"] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"]["GREAT"]:gsub('"', "")),
+            ["Perfect"] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"]["PERFECT"]:gsub('"', "")),
+            ["Marvellous"] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"]["MARVELLOUS"]:gsub('"', "")),
         }
+        --]]
+        judgementImages = {}
+        -- when adding it to the table, make all the keys except the first one lowercase
+        for i = 1, #judgementNames do
+            if love.filesystem.getInfo(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"][judgementNames[i]]) then
+                local lowerName = string.title(judgementNames[i])
+                judgementImages[lowerName] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["judgements"][judgementNames[i]]:gsub('"', ""))
+            else
+                local lowerName = string.title(judgementNames[i])
+                judgementImages[lowerName] = graphics.newImage("defaultskins/skinThrowbacks/judgements/" .. judgementNames[i] .. ".png")
+            end
+        end 
 
+        comboImages = {}
+    
         for i = 1, 6 do
             comboImages[i] = {}
             for j = 0, 9 do
-                comboImages[i][j] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["7k"]["combo"]["COMBO" .. j]:gsub('"', ""))
+                if love.filesystem.getInfo(skinFolder .. "/" .. skinJson["skin"]["7k"]["combo"]["COMBO" .. j]) then
+                    comboImages[i][j] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["7k"]["combo"]["COMBO" .. j]:gsub('"', ""))
+                else
+                    comboImages[i][j] = graphics.newImage("defaultskins/skinThrowbacks/combo/COMBO" .. j .. ".png")
+                end
                 comboImages[i][j].x = push.getWidth() / 2+325-275 + skinJson["skin"]["rating position"]["x"]
                 comboImages[i][j].x = comboImages[i][j].x - (i - 1) * (comboImages[i][j]:getWidth() - 5) + 25
                 comboImages[i][j].y = push.getHeight() / 2 + skinJson["skin"]["rating position"]["y"] + 50
             end
         end
             
+        healthBarColor = skinJson["skin"]["7k"]["ui"]["healthBarColor"]
+        uiTextColor = skinJson["skin"]["7k"]["ui"]["uiTextColor"]
+        timeBarColor = skinJson["skin"]["7k"]["ui"]["timeBarColor"]
+    
+        comboImages = {}
+    
+        for i = 1, 6 do
+            comboImages[i] = {}
+            for j = 0, 9 do
+                if love.filesystem.getInfo(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO" .. j]) then
+                    comboImages[i][j] = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["4k"]["combo"]["COMBO" .. j]:gsub('"', ""))
+                else
+                    comboImages[i][j] = graphics.newImage("defaultskins/skinThrowbacks/combo/COMBO" .. j .. ".png")
+                end
+                comboImages[i][j].x = push.getWidth() / 2+325-275 + skinJson["skin"]["rating position"]["x"]
+                comboImages[i][j].x = comboImages[i][j].x - (i - 1) * (comboImages[i][j]:getWidth() - 5) + 25
+                comboImages[i][j].y = push.getHeight() / 2 + skinJson["skin"]["rating position"]["y"] + 50
+            end
+        end
+    
         for k, v in pairs(judgementImages) do
             v.x = push.getWidth() / 2+325-275 + skinJson["skin"]["rating position"]["x"]
             v.y = push.getHeight() / 2 + skinJson["skin"]["rating position"]["y"]
@@ -227,12 +298,12 @@ return {
     draw = function(self)
         for i, v in ipairs(skins) do
             if i == curSkinSelected then
-                love.graphics.setColor(1, 1, 1)
+                graphics.setColor(1, 1, 1)
             else
-                love.graphics.setColor(0.5, 0.5, 0.5)
+                graphics.setColor(0.5, 0.5, 0.5)
             end
             love.graphics.print(v.name, 0, i * 35, 0, 2, 2)
-            love.graphics.setColor(1,1,1)
+            graphics.setColor(1,1,1)
         end
     end
 }

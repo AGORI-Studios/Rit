@@ -2,7 +2,7 @@ return {
     enter = function()
         now = os.time()
         -- offset is in milliseconds
-        audioOffset = settings.audioOffset
+        audioOffset = settings.settings.audioOffset
         offsetTimer = 0
         -- the bpm is 1 tick every tenth of a second
         beatHandler.setBPM(60)
