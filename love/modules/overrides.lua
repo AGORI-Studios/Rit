@@ -297,23 +297,17 @@ function love.math.randomFloat(min, max, precision)
     end
     
     -- Round number to precision and return
-    --[[1]] local powerOfTen = 10 ^ precision
+    --[[1--]] local powerOfTen = 10 ^ precision
     local n
-    --[[2]] n = unrounded * powerOfTen
-     --[[3]] n = n + 0.5
-    --[[4]] n = math.floor(n)
-    --[[5]] n = n / powerOfTen
+    --[[2--]] n = unrounded * powerOfTen
+     --[[3--]] n = n + 0.5
+    --[[4--]] n = math.floor(n)
+    --[[5--]] n = n / powerOfTen
     return n
 end
 
 function love.graphics.gradient(dir, ...)
     -- Check for direction
-    local isHorizontal = true
-    if dir == "vertical" then
-        isHorizontal = false
-    elseif dir ~= "horizontal" then
-        error("bad argument #1 to 'gradient' (invalid value)", 2)
-    end
 
     -- Check for colors
     local colorLen = select("#", ...)
@@ -323,7 +317,7 @@ function love.graphics.gradient(dir, ...)
 
     -- Generate mesh
     local meshData = {}
-    if isHorizontal then
+    if dir == "horizontal" then
         for i = 1, colorLen do
             local color = select(i, ...)
             local x = (i - 1) / (colorLen - 1)
@@ -331,7 +325,7 @@ function love.graphics.gradient(dir, ...)
             meshData[#meshData + 1] = {x, 1, x, 1, color[1], color[2], color[3], color[4] or (1 )}
             meshData[#meshData + 1] = {x, 0, x, 0, color[1], color[2], color[3], color[4] or (1)}
         end
-    else
+    elseif dir == "vertical" then
         for i = 1, colorLen do
             local color = select(i, ...)
             local y = (i - 1) / (colorLen - 1)
@@ -339,6 +333,16 @@ function love.graphics.gradient(dir, ...)
             meshData[#meshData + 1] = {1, y, 1, y, color[1], color[2], color[3], color[4] or (1)}
             meshData[#meshData + 1] = {0, y, 0, y, color[1], color[2], color[3], color[4] or (1)}
         end
+    elseif dir == "radial" then
+        for i = 1, colorLen do
+            local color = select(i, ...)
+            local x = (i - 1) / (colorLen - 1)
+            local y = (i - 1) / (colorLen - 1)
+
+            meshData[#meshData + 1] = {x, y, x, y, color[1], color[2], color[3], color[4] or (1)}
+        end
+    else
+        error("invalid direction", 2)
     end
 
     -- Resulting Mesh has 1x1 image size
@@ -348,12 +352,6 @@ function love.graphics.gradient(dir, ...)
 
         change = function(self, dir, ...)
             -- Check for direction
-            local isHorizontal = true
-            if dir == "vertical" then
-                isHorizontal = false
-            elseif dir ~= "horizontal" then
-                error("bad argument #1 to 'gradient' (invalid value)", 2)
-            end
 
             -- Check for colors
             local colorLen = select("#", ...)
@@ -363,7 +361,7 @@ function love.graphics.gradient(dir, ...)
 
             -- Generate mesh
             local meshData = {}
-            if isHorizontal then
+            if dir == "horizontal" then
                 for i = 1, colorLen do
                     local color = select(i, ...)
                     local x = (i - 1) / (colorLen - 1)
@@ -371,7 +369,7 @@ function love.graphics.gradient(dir, ...)
                     meshData[#meshData + 1] = {x, 1, x, 1, color[1], color[2], color[3], color[4] or (1 )}
                     meshData[#meshData + 1] = {x, 0, x, 0, color[1], color[2], color[3], color[4] or (1)}
                 end
-            else
+            elseif dir == "vertical" then
                 for i = 1, colorLen do
                     local color = select(i, ...)
                     local y = (i - 1) / (colorLen - 1)
@@ -379,6 +377,16 @@ function love.graphics.gradient(dir, ...)
                     meshData[#meshData + 1] = {1, y, 1, y, color[1], color[2], color[3], color[4] or (1)}
                     meshData[#meshData + 1] = {0, y, 0, y, color[1], color[2], color[3], color[4] or (1)}
                 end
+            elseif dir == "radial" then
+                for i = 1, colorLen do
+                    local color = select(i, ...)
+                    local x = (i - 1) / (colorLen - 1)
+                    local y = (i - 1) / (colorLen - 1)
+
+                    meshData[#meshData + 1] = {x, y, x, y, color[1], color[2], color[3], color[4] or (1)}
+                end
+            else
+                error("invalid direction", 2)
             end
 
             -- Resulting Mesh has 1x1 image size

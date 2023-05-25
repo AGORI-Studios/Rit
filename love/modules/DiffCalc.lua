@@ -303,6 +303,16 @@ function dc.smoothen2(self, dv)
     return dv
 end
 
+dc.divideRatingColours = {
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+}
+
 function dc.ratingColours(rating)
     -- blue = easy
     -- red = hard
@@ -330,19 +340,68 @@ function dc.ratingColours(rating)
         { ColorTier.Tier7, Color.FromArgb(255, 255, 97, 119) }
     --]]
     if rating < 6 then
-        return { 126/255, 111/255, 90/255 }
+        local col = skinJson["skin"]["difficultyColors"][1]
+        if dc.divideRatingColours[1] then
+            col[1] = col[1] / 255
+            col[2] = col[2] / 255
+            col[3] = col[3] / 255
+            dc.divideRatingColours[1] = false
+        end
+        return col
     elseif rating < 14 then
-        return { 184/255, 184/255, 184/255 }
+        local col = skinJson["skin"]["difficultyColors"][2]
+        if dc.divideRatingColours[2] then
+            col[1] = col[1] / 255
+            col[2] = col[2] / 255
+            col[3] = col[3] / 255
+            dc.divideRatingColours[2] = false
+        end
+        return col
     elseif rating < 26 then
-        return { 242/255, 218/255, 104/255 }
+        local col = skinJson["skin"]["difficultyColors"][3]
+        if dc.divideRatingColours[3] then
+            col[1] = col[1] / 255
+            col[2] = col[2] / 255
+            col[3] = col[3] / 255
+            dc.divideRatingColours[3] = false
+        end
+        return col
     elseif rating < 32 then
-        return { 146/255, 255/255, 172/255 }
+        local col = skinJson["skin"]["difficultyColors"][4]
+        if dc.divideRatingColours[4] then
+            col[1] = col[1] / 255
+            col[2] = col[2] / 255
+            col[3] = col[3] / 255
+            dc.divideRatingColours[4] = false
+        end
+        return col
     elseif rating < 40 then
-        return { 112/255, 227/255, 225/255 }
+        local col = skinJson["skin"]["difficultyColors"][5]
+        if dc.divideRatingColours[5] then
+            col[1] = col[1] / 255
+            col[2] = col[2] / 255
+            col[3] = col[3] / 255
+            dc.divideRatingColours[5] = false
+        end
+        return col
     elseif rating < 58 then
-        return { 255/255, 146/255, 255/255 }
+        local col = skinJson["skin"]["difficultyColors"][6]
+        if dc.divideRatingColours[6] then
+            col[1] = col[1] / 255
+            col[2] = col[2] / 255
+            col[3] = col[3] / 255
+            dc.divideRatingColours[6] = false
+        end
+        return col
     else
-        return { 255/255, 97/255, 119/255 }
+        local col = skinJson["skin"]["difficultyColors"][7]
+        if dc.divideRatingColours[7] then
+            col[1] = col[1] / 255
+            col[2] = col[2] / 255
+            col[3] = col[3] / 255
+            dc.divideRatingColours[7] = false
+        end
+        return col
     end
 end
 

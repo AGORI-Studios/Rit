@@ -4,6 +4,8 @@ return {
 
         logoSize = 1
 
+        spectrum:setup()
+
         beat = 0
         time = 0
     end,
@@ -18,6 +20,8 @@ return {
             end
             time = 0
         end
+
+        spectrum:update(menuMusic, menuMusicData)
 
         if logoSize > 1 then
             logoSize = logoSize - (dt * ((menuBPM/60))) * 0.3
@@ -39,6 +43,10 @@ return {
                 logoSize, logoSize, 
                 logo:getWidth() / 2, logo:getHeight() / 2
             )
+        love.graphics.pop()
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.push()
+            spectrum:draw()
         love.graphics.pop()
     end,
 

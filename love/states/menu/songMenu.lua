@@ -269,7 +269,7 @@ return {
                     love.graphics.print(
                         {
                             {1,1,1}, v.title .. (v.type ~= "packs" and (" - " .. v.difficultyName) or ""), 
-                            DiffCalc.ratingColours(tonumber(v.rating) or 0), (v.type ~= "packs" and " (" .. (v.rating or "N/A") .. ")" or "")
+                            DiffCalc.ratingColours((tonumber(v.rating) or 0)*songSpeed), (v.type ~= "packs" and " (" .. (tonumber(v.rating) * songSpeed or "N/A") .. ")" or "")
                         },
                         0, 
                         i * (font:getHeight() *1.5), 

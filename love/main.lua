@@ -42,6 +42,7 @@ if (love.system.getOS() == "Windows" or love.system.getOS() == "OS X") then
     discordRPC = require "lib.discordRPC"
     nextPresenceUpdate = 0
 end
+spectrumDivideColours = true
 function love.load()
     require "modules.overrides"
     require "modules.debug"
@@ -49,21 +50,11 @@ function love.load()
     DiffCalc = require "modules.DiffCalc"
     input = (require "lib.baton").new({
         controls = {
-            -- 4K inputs
-
             one4 = { "axis:triggerleft+", "axis:leftx-", "axis:rightx-", "button:dpleft", "button:x", "key:d" },
             two4 = { "axis:lefty+", "axis:righty+", "button:leftshoulder", "button:dpdown", "button:a", "key:f" },
             three4 = { "axis:lefty-", "axis:righty-", "button:rightshoulder", "button:dpup", "button:y", "key:j" },
             four4 = { "axis:triggerright+", "axis:leftx+", "axis:rightx+", "button:dpright", "button:b", "key:k" },
-            -- 7K inputs
 
-            one7 = { "key:s" },
-            two7 = { "key:d" },
-            three7 = { "key:f" },
-            four7 = { "key:space" },
-            five7 = { "key:j" },
-            six7 = { "key:k" },
-            seven7 = { "key:l" },
             -- UI
 
             up = { "key:up", "button:dpup", "axis:lefty-" },
@@ -121,6 +112,7 @@ function love.load()
 
     state = require "lib.gamestate"
     beatHandler = require "modules.beatHandler"
+    spectrum = require "modules.spectrum"
     -- Modchart handlers
     modifiers = require "modules.modifier"
     modscript = require "modules.modscriptAPI"
@@ -140,6 +132,9 @@ function love.load()
 
     push = require "lib.push"
     Timer = require "lib.timer"
+    complex = require "lib.complex"
+    require "lib.luafft"
+    
     charthits = {}
     for i = 1, 4 do
         charthits[i] = {}
@@ -222,8 +217,11 @@ function love.load()
     elseif songType == "FNF" then
         local file = json.decode(love.filesystem.read(songPath)).song
         menuBPM = file.bpm or 120
-        menuMusic = love.audio.newSource(songPath .. "/Inst.ogg", "stream")
+        menuMusic = love.audio.newSource(songFolderPath .. "/Inst.ogg", "stream")
+        
     end
+
+    menuMusicData = love.sound.newSoundData(songType ~= "FNF" and audioPath or songFolderPath .. "/Inst.ogg")
 
     songSpeed = 1
     charthits = {}
@@ -403,4 +401,7 @@ function love.quit()
     if discordRPC then
         discordRPC.shutdown()
     end
+
+    settings.saveSettings()
+    print(settings.settings.skin)
 end
