@@ -17,6 +17,7 @@ return {
             "note spacing",
             "autoplay",
             "audio offset",
+            "lane cover",
             "skin"
         }
         graphicsSettings = {
@@ -33,6 +34,8 @@ return {
 
         curSetting = 1
         curOption = ""
+
+        love.keyboard.setKeyRepeat(true)
     end,
 
     update = function(self, dt)
@@ -106,7 +109,11 @@ return {
         elseif input:pressed("left") then
             if curOption == "Game" then
                 if type(settings.settings[curOption][gameSettings[curSetting]]) == "number" then
-                    settings.settings[curOption][gameSettings[curSetting]] = settings.settings[curOption][gameSettings[curSetting]] - (gameSettings[curSetting] == "scroll speed" and 0.1 or 1)
+                    settings.settings[curOption][gameSettings[curSetting]] = settings.settings[curOption][gameSettings[curSetting]] - (
+                        gameSettings[curSetting] == "scroll speed" and 0.1 
+                        or gameSettings[curSetting] == "lane cover" and 0.01
+                        or 1
+                    )
                 end
             elseif curOption == "Graphics" then
                 if type(settings.settings[curOption][graphicsSettings[curSetting]]) == "number" then
@@ -120,7 +127,11 @@ return {
         elseif input:pressed("right") then
             if curOption == "Game" then
                 if type(settings.settings[curOption][gameSettings[curSetting]]) == "number" then
-                    settings.settings[curOption][gameSettings[curSetting]] = settings.settings[curOption][gameSettings[curSetting]] + (gameSettings[curSetting] == "scroll speed" and 0.1 or 1)
+                    settings.settings[curOption][gameSettings[curSetting]] = settings.settings[curOption][gameSettings[curSetting]] + (
+                        gameSettings[curSetting] == "scroll speed" and 0.1 
+                        or gameSettings[curSetting] == "lane cover" and 0.01
+                        or 1
+                    )
                 end
             elseif curOption == "Graphics" then
                 if type(settings.settings[curOption][graphicsSettings[curSetting]]) == "number" then
@@ -137,6 +148,31 @@ return {
                 state.switch(startMenu)
             else
                 curOption = ""
+            end
+        end
+
+        -- go through all possible settings, if its less than 0 then set it to 0
+        for i=1,#allSettings do
+            for j=1,#gameSettings do
+                if type(settings.settings[allSettings[i]][gameSettings[j]]) == "number" then
+                    if settings.settings[allSettings[i]][gameSettings[j]] < 0.0001 then
+                        settings.settings[allSettings[i]][gameSettings[j]] = 0
+                    end
+                end
+            end
+            for j=1,#graphicsSettings do
+                if type(settings.settings[allSettings[i]][graphicsSettings[j]]) == "number" then
+                    if settings.settings[allSettings[i]][graphicsSettings[j]] < 0.0001 then
+                        settings.settings[allSettings[i]][graphicsSettings[j]] = 0
+                    end
+                end
+            end
+            for j=1,#audioSettings do
+                if type(settings.settings[allSettings[i]][audioSettings[j]]) == "number" then
+                    if settings.settings[allSettings[i]][audioSettings[j]] < 0.0001 then
+                        settings.settings[allSettings[i]][audioSettings[j]] = 0
+                    end
+                end
             end
         end
     end,
@@ -161,7 +197,11 @@ return {
                 else
                     love.graphics.setColor(1, 1, 1)
                 end
-                love.graphics.print(gameSettings[i]:cap() .. (gameSettings[i] ~= "skin" and ": " .. tostring(settings.settings[curOption][gameSettings[i]]) or ""), 10, 10 + (i * 20))
+                if gameSettings[i] ~= "lane cover" then
+                    love.graphics.print(gameSettings[i]:cap() .. (gameSettings[i] ~= "skin" and ": " .. tostring(settings.settings[curOption][gameSettings[i]]) or ""), 10, 10 + (i * 20))
+                else
+                    love.graphics.print(gameSettings[i]:cap() .. (gameSettings[i] ~= "skin" and ": " .. tostring(settings.settings[curOption][gameSettings[i]]*100) .. "%" or ""), 10, 10 + (i * 20))
+                end
             end
         elseif curOption == "Graphics" then
             love.graphics.print("Graphics Settings", 10, 10)
@@ -196,5 +236,7 @@ return {
         for i = 1, 4 do
             speedLane[i] = speed
         end
+
+        love.keyboard.setKeyRepeat(false)
     end
 }

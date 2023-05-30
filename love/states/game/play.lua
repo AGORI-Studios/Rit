@@ -611,6 +611,20 @@ return {
                         end
                     love.graphics.pop()
 
+                    love.graphics.push()
+                        if settings.settings.Game["lane cover"] > 0.001 then
+                            -- lane cover is given as a decimal, so we need to convert it to a percentage and draw a rectangle
+                            -- if its settings.settings.Game["downscroll"] == false then we need to draw it at the top of the screen, else bottom
+                            love.graphics.setColor(0, 0, 0)
+                            if settings.settings.Game.downscroll then
+                                love.graphics.rectangle("fill", 0, 0, push:getWidth(), push:getHeight() * settings.settings.Game["lane cover"])
+                            else
+                                love.graphics.rectangle("fill", 0, push:getHeight() - (push:getHeight() * settings.settings.Game["lane cover"]), push:getWidth(), push:getHeight() * settings.settings.Game["lane cover"])
+                            end
+                            love.graphics.setColor(1, 1, 1)
+                        end
+                    love.graphics.pop()
+
                     if curJudgement ~= "none" then
                         judgementImages[curJudgement]:draw(nil, nil, ratingsize.x, ratingsize.y)
                     end
