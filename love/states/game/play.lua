@@ -93,6 +93,256 @@ function getYAdjust(yoffset)
     return yoffset + yadj
 end
 
+function getScrollSpeed()
+    local speed = settings.settings.Game["scroll speed"]
+    -- game is a 1080p window
+    local SkinScalingFactor = 1920 / 1366
+    local BaseToVirtualRatio = 1080 / love.graphics.getHeight()
+    local s = (speed / 10) / (20 * songRate) * SkinScalingFactor * BaseToVirtualRatio
+    print(s)
+    return s
+end
+
+function resize(img, width, height)
+    local scaleX = width / img:getWidth()
+    local scaleY = height / img:getHeight()
+
+    return scaleX, scaleY
+end
+
+local function pause()
+    musicTimeDo = false 
+    paused = true
+    love.audio.pause(audioFile)
+    if voices then
+        love.audio.pause(voices)
+    end
+end
+
+trackRounding = 100
+
+local died
+inputList = {
+    "one4",
+    "two4",
+    "three4",
+    "four4"
+}
+musicPosValue = {1000}
+musicPitch = {1}
+function addJudgement(judgement, lane, hitTime)
+    scoring[judgement] = scoring[judgement] + 1
+    if judgement ~= "Miss" then
+        combo = combo + 1
+        if comboTimer then 
+            Timer.cancel(comboTimer)
+        end
+        comboSize.y = 1
+        comboTimer = Timer.tween(0.1, comboSize, {y = 1.85, x = 1.6}, "in-out-quad", function()
+            comboTimer = Timer.tween(0.1, comboSize, {y = 1.6,}, "in-out-quad")
+        end)
+    else
+        combo = 0
+    end
+    curJudgement = judgement
+
+    additionalScore = additionalScore + scoring.scorePoints[judgement]
+
+    if judgeTimer then 
+        Timer.cancel(judgeTimer)
+    end
+    ratingsize.x = 1
+    ratingsize.y = 1
+    judgeTimer = Timer.tween(0.1, ratingsize, {x = 1.15, y = 1.15}, "in-out-quad", function()
+        judgeTimer = Timer.tween(0.1, ratingsize, {x = 0.85, y = 0.85}, "in-out-quad")
+    end)
+
+    if waitTmr then 
+        Timer.cancel(waitTmr)
+    end
+
+    waitTmr = Timer.after(0.35, function()
+        Timer.tween(0.1, ratingsize, {x = 0, y = 0}, "in-out-quad")
+        Timer.tween(0.1, comboSize, {y = 0, x = 0}, "in-out-quad")
+    end)
+    game:calculateRating()
+
+    -- Determine scoring.scoreRating based of song rating and accuracy
+    -- should be a relativly low number, so if a song has like a 30 rating, you can get a max of like 34-ish
+    scoring.scoreRating = (scoring.score / ((noteCounter + scoring["Miss"]) * scoring.scorePoints["Marvellous"]) * 100) * (songRating / 100) * 1.05
+
+    table.insert(hitsTable.hits, {hitTime, musicTime})
+end
+
+-- // QUAVER SV STUFF \\ --
+function InitializePositionMarkers()
+    if #chartEvents == 0 then
+        return
+    end
+
+    -- long position
+    local position = chartEvents[1][1] * InitialScrollVelocity * trackRounding
+    table.insert(VelocityPositionMarkers, position)
+
+    for i = 2, #chartEvents do
+        position = position + (chartEvents[i][1] - chartEvents[i - 1][1]) * chartEvents[i - 1][2] * trackRounding
+        table.insert(VelocityPositionMarkers, position)
+    end
+end
+
+function UpdateCurrentTrackPosition()
+    CurrentAudioOffset = musicTime + 0 * songRate
+    CurrentVisualAudioOffset = CurrentAudioOffset + 0 * songRate
+    while currentSvIndex < #chartEvents and CurrentVisualAudioOffset >= chartEvents[currentSvIndex][1] do
+        currentSvIndex = currentSvIndex + 1
+    end
+
+    CurrentTrackPosition = GetPositionFromTime(CurrentVisualAudioOffset, currentSvIndex)
+end
+
+function GetPositionFromTime(time, index)
+    if settings.settings.Game["scroll velocity"] then
+        return (time * trackRounding)
+    end
+
+    if index == 1 then
+        return (time * InitialScrollVelocity * trackRounding)
+    end
+
+    index = index - 1
+
+    local curPos = VelocityPositionMarkers[index]
+    curPos = curPos + ((time - chartEvents[index][1]) * chartEvents[index][2] * trackRounding)
+    return curPos
+end
+
+function getPositionFromTime(time)
+    local _i = 1
+    for i = 1, #chartEvents do
+        if time < chartEvents[i][1] then
+            _i = i
+            break
+        end
+    end
+
+    return GetPositionFromTime(time, _i )
+end
+function IsSVNegative(time)
+    if settings.settings.Game["scroll velocity"] then
+        return false
+    end
+
+    local i_ = 1
+    -- find the sv index at time
+    for i = 1, #chartEvents do
+        if time >= chartEvents[i][1] then
+            i_ = i
+            break
+        end
+    end
+
+    i_ = i_ - 1
+
+    -- find index of the last non-zero SV
+    for i = i_, 1, -1 do
+        if chartEvents[i][2] ~= 0 then
+            i_ = i
+            break
+        end
+    end
+
+    -- if its -1 or 0
+    if i_ <= 0 then
+        return InitialScrollVelocity < 0
+    end
+
+    return chartEvents[i_][2] < 0
+end
+
+function normalizeSVs()
+
+end
+
+TimingTime = 0
+
+function GetSVDirectionChanges(startTime, endTime)
+    local changes = {}
+    if settings.settings.Game["scroll velocity"] then
+        return changes
+    end
+
+    local i_ = 1
+    -- find the sv index
+    for i = 1, #chartEvents do
+        if startTime < chartEvents[i][1] then
+            i_ = i
+            break
+        end
+    end
+
+    local forward = false
+    if (i <= 0) then
+        forward = InitialScrollVelocity > 0
+    else
+        forward = chartEvents[i_ - 1][2] > 0
+    end
+
+    -- loop over sv changes between start and end time
+    for i = i_, #chartEvents do
+        local multiplier = chartEvents[i][2]
+        if (multiplier == 0) then
+            break
+        elseif (forward == (multiplier >0)) then
+            -- direction didnt change
+            break
+        end
+        forward = multiplier > 0
+        table.insert(changes, {chartEvents[i][1], VelocityPositionMarkers[i]})
+    end
+
+    return changes
+end
+
+function initPositions() -- calculates all relevent positions
+    for i = 1, 4 do
+        for _, hitObject in ipairs(charthits[i]) do
+            hitObject.InitialTrackPosition = getPositionFromTime(hitObject[1])
+            hitObject.LatestTrackPosition = hitObject.InitialTrackPosition
+        end
+    end
+end
+
+function GetSpritePosition(offset, initialPos)
+    local sp
+    sp = -35 + ((initialPos - offset) * (speed) / trackRounding)
+    return sp
+end
+
+function UpdateSpritePositions(offset, curTime)
+    local spritePosition = 0.0
+
+    for i = 1, 4 do
+        for _, hitObject in ipairs(charthits[i]) do
+            spritePosition = GetSpritePosition(offset, hitObject.InitialTrackPosition)
+            hitObject[2] = spritePosition
+        end
+    end
+end
+
+function getScrollSpeed()
+    local speed = settings.settings.Game["scroll speed"]
+    -- game is a 1080p window
+    local SkinScalingFactor = 1920 / 1366
+    local BaseToVirtualRatio = 1080 / love.graphics.getHeight()
+    local s = (speed / 10) / (20 * songRate) * SkinScalingFactor * BaseToVirtualRatio
+    print(s)
+    return s
+end
+
+trackRounding = 100
+
+-- // END QUAVER SV STUFF \\ --
+
 return {
     enter = function(self)
         now = os.time()
@@ -121,23 +371,29 @@ return {
     
         songRate = 1
     
-        musicTime = -settings.settings.Game["start time"] 
-        simulatedMusicTime = -settings.settings.Game["start time"]
+        musicTime = -2500
+        simulatedMusicTime = -2500
     
         PRESSEDMOMENTS = {
-            [1] = 1,
-            [2] = 1,
-            [3] = 1,
-            [4] = 1,
-            [5] = 1,
-            [6] = 1,
-            [7] = 1
+            1,
+            1,
+            1,
+            1,
         }
         lastReportedPlaytime = 0
         previousFrameTime = love.timer.getTime() * 1000
         simulatedPreviousFrameTime = love.timer.getTime() * 1000
         additionalScore = 0
         noteCounter = 0
+
+        VelocityPositionMarkers = {}
+        CurrentTrackPosition = 0
+        CurrentAudioOffset = 0
+        CurrentVisualAudioOffset = 0
+        currentSvIndex = 1
+        InitialScrollVelocity = 1
+
+        InitialScrollVelocity = InitialScrollVelocity or 1
     
         died = false
 
@@ -229,8 +485,6 @@ return {
         end
 
         modifiers:load()
-        --modifiers:applyMod("tipsy", 1, 5)
-        --modifiers:applyMod("drunk", 1, 5)
         
         strumlineY = {-35}
         whereNotesHit = {-35}
@@ -243,6 +497,11 @@ return {
             voices:setPitch(songSpeed)
             voices:setVolume(settings.settings.Audio.music)
         end
+
+        InitializePositionMarkers()
+        UpdateCurrentTrackPosition()
+        initPositions()
+        UpdateSpritePositions(CurrentTrackPosition, CurrentVisualAudioOffset)
 
         graphics.fadeIn(0.2)
     end,
@@ -296,16 +555,16 @@ return {
         for i = 1, #charthits do
             for j = 1, #charthits[i] do
                 if charthits[i][j] then
-                    if charthits[i][1][1] - musicTime <= -100 then 
-                        if not charthits[i][1][4] then
+                    if math.abs(charthits[i][j][1] - musicTime) < -200 then
+                        if not charthits[i][j][4] then
                             noteCounter = noteCounter + 1
                             if scoring.health < 0 then
                                 scoring.health = 0
                             end
                             scoring.health = scoring.health - 0.270
-                            addJudgement("Miss", i, math.abs(charthits[i][1][1] - musicTime))
+                            addJudgement("Miss", i, math.abs(charthits[i][j][1] - musicTime))
                         end
-                        table.remove(charthits[i], 1)
+                        table.remove(charthits[i], j)
                     end
                 end
             end
@@ -315,24 +574,12 @@ return {
         scoring.ratingPercentLerp = math.lerp(scoring.ratingPercentLerp, scoring.ratingPercent, 0.05)
         scoring.score = math.lerp(scoring.score, additionalScore, 0.05)
 
-        for i = 1, (mode == "Keys4" and 4 or 7) do
-            for _, hitObject in ipairs(charthits[i]) do
-                local xmod = sv
-                local scrollspeed = xmod
-                local off = receptors[i][1].offsetY
-                local defaulty = modifiers.defaultY[i]
-                local targTime = hitObject[1]
-                local ypos = getYAdjust(defaulty - (musicTime - targTime)) * scrollspeed * 0.6 - off
-                hitObject[2] = (whereNotesHit[1] + (-((musicTime - hitObject[1]) * 0.6 * speedLane[i]))) * modifiers.reverseScale
-
-                if hitObject[4] or hitObject[5] then
-                    local ypos2 = getYAdjust(defaulty - ((musicTime+0.1) - targTime)) * scrollspeed * 0.6 - off
-                end
-
-                hitObject[2] = ypos
-            end
+        if audioFile then
+            TimingTime = audioFile:tell("seconds")
+            UpdateCurrentTrackPosition()
+            UpdateSpritePositions(CurrentTrackPosition, CurrentVisualAudioOffset)
         end
-        
+
         presence = {
             details = (autoplay and "Autoplaying " or "Playing ")..songTitle.." - "..songDifficultyName..(not musicTimeDo and " - Paused" or ""), 
             state = "Score: "..string.format("%07d", round(scoring.score)).." - "..string.format("%.2f%%", ((math.floor(scoring.ratingPercentLerp * 10000) / 100))).." - "..combo..(combo == noteCounter and " FC" or " combo"),
@@ -340,30 +587,16 @@ return {
             largeImageText = "Rit"..(__DEBUG__ and " DEBUG MODE" or ""),
             startTimestamp = now
         }
-        
-        if chartEvents[1] then
-            if chartEvents[1][1] <= absMusicTime then
-                if settings.settings.Game["scroll velocities"] then 
-                    sv = chartEvents[1][2] 
-                    if sv == 1 then sv = speed end
-                    for i = 1, 4 do 
-                        noteImgs[i][2].scaleY = 1 * sv
-                    end
-                else
-                    sv = speed
-                end
-                table.remove(chartEvents, 1)
-            end
-        end
+
         if bpmEvents[1] then
             if bpmEvents[1][1] then
-                if bpmEvents[1][1] <= absMusicTime then
+                if bpmEvents[1][1] <= absMusicTime and bpmEvents[1][2] ~= nil then
                     beatHandler.setBPM(bpmEvents[1][2] * songSpeed)
                     table.remove(bpmEvents, 1)
                 end
             end
-            
         end
+
         beatHandler.update(dt)
 
         if input:pressed("pause") and not debug.consoleTyping then
@@ -441,7 +674,7 @@ return {
                     PRESSEDMOMENTS[i] = 2
                     if notes[1] then
                         if notes[1][4] then
-                            if notes[1][1] - musicTime <= -15 then
+                            if notes[1][2] <= -35 then
                                 table.remove(notes, 1)
                             end
                         end
@@ -594,7 +827,7 @@ return {
                         
                         for i = 1, #charthits do
                             for j = #charthits[i], 1, -1 do
-                                if math.abs((whereNotesHit[1] + (-((musicTime - charthits[i][j][1]) * 0.6 * speed)))) <= 2250 then
+                                if math.abs(charthits[i][j][2]) <= 1100 then
                                     -- if the note is actually on screen (even with scroll velocity modifiers)
                                     if not charthits[i][j][5] then
                                         

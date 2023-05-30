@@ -63,6 +63,12 @@ function quaverLoader.load(chart, folderPath, forDiff)
                 bgFile = nil
             end)
         end
+        if line:find("InitialScrollVelocity: ") then
+            curLine = line
+            local InitialScrollVelocity = curLine
+            InitialScrollVelocity = InitialScrollVelocity:gsub("InitialScrollVelocity: ", "")
+            InitialScrollVelocity = tonumber(InitialScrollVelocity)
+        end
         if line:find("Mode: ") then
             modeLine = line
             mode = modeLine:gsub("Mode: ", "")
