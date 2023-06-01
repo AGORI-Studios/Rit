@@ -208,10 +208,8 @@ function love.load()
                 audioPath = (songFolderPath == "" and "song/" .. audioPath or folderPath .. "/" .. audioPath)
                 menuMusic = love.audio.newSource(audioPath, "stream")
             elseif line:find("[TimingPoints]") then
-                -- go to the next line
-                curLine = lines[linesIndex + 1]
-                -- get the bpm
-                menuBPM = osuLoader.getBPM(curLine) or 120
+
+                menuBPM = 120
             end
         end
     elseif songType == "FNF" then

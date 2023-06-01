@@ -83,7 +83,7 @@ function addJudgement(judgement, lane, hitTime)
 
     -- Determine scoring.scoreRating based of song rating and accuracy
     -- should be a relativly low number, so if a song has like a 30 rating, you can get a max of like 34-ish
-    scoring.scoreRating = (scoring.score / ((noteCounter + scoring["Miss"]) * scoring.scorePoints["Marvellous"]) * 100) * (songRating / 100) * 1.05
+    scoring.scoreRating = songRating / math.pow((scoring.score / ((noteCounter + scoring["Miss"]) * scoring.scorePoints["Marvellous"]) * 100)/92, 6)
 
     table.insert(hitsTable.hits, {hitTime, musicTime})
 end
@@ -91,16 +91,6 @@ end
 function getYAdjust(yoffset)
     local yadj = 0
     return yoffset + yadj
-end
-
-function getScrollSpeed()
-    local speed = settings.settings.Game["scroll speed"]
-    -- game is a 1080p window
-    local SkinScalingFactor = 1920 / 1366
-    local BaseToVirtualRatio = 1080 / love.graphics.getHeight()
-    local s = (speed / 10) / (20 * songRate) * SkinScalingFactor * BaseToVirtualRatio
-    print(s)
-    return s
 end
 
 function resize(img, width, height)
@@ -452,6 +442,8 @@ return {
             v = math.floor(v)
         end
 
+        speed = getScrollSpeed()
+
         --print(DiffCalc:CalculateDiff())
 
         combo = 0
@@ -555,7 +547,7 @@ return {
         for i = 1, #charthits do
             for j = 1, #charthits[i] do
                 if charthits[i][j] then
-                    if math.abs(charthits[i][j][1] - musicTime) < -200 then
+                    if charthits[i][j][1] - musicTime < -200 then
                         if not charthits[i][j][4] then
                             noteCounter = noteCounter + 1
                             if scoring.health < 0 then
@@ -674,7 +666,7 @@ return {
                     PRESSEDMOMENTS[i] = 2
                     if notes[1] then
                         if notes[1][4] then
-                            if notes[1][2] <= -35 then
+                            if notes[1][1] - musicTime <= 0 then
                                 table.remove(notes, 1)
                             end
                         end

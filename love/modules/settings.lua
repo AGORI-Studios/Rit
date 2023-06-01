@@ -3,7 +3,7 @@ sh.baseSettings = {
     ["Game"] = {
         ["downscroll"] = true,
         ["underlay"] = true,
-        ["scroll speed"] = 1.0,
+        ["scroll speed"] = 70.0,
         ["scroll velocities"] = true,
         ["start time"] = 700,
         ["note spacing"] = 200,
@@ -23,13 +23,13 @@ sh.baseSettings = {
         sfx = 1.0
     },
     ["System"] = {
-        version = "3"
+        version = "4"
     },
 
     skin = "Circle Default" -- The skin chosen by the player.
 }
 
-gameVersion = "3"
+gameVersion = "4"
 
 function sh.saveSettings(base) 
     local saveStr = ""

@@ -110,7 +110,7 @@ return {
             if curOption == "Game" then
                 if type(settings.settings[curOption][gameSettings[curSetting]]) == "number" then
                     settings.settings[curOption][gameSettings[curSetting]] = settings.settings[curOption][gameSettings[curSetting]] - (
-                        gameSettings[curSetting] == "scroll speed" and 0.1 
+                        gameSettings[curSetting] == "scroll speed" and 1
                         or gameSettings[curSetting] == "lane cover" and 0.01
                         or 1
                     )
@@ -128,7 +128,7 @@ return {
             if curOption == "Game" then
                 if type(settings.settings[curOption][gameSettings[curSetting]]) == "number" then
                     settings.settings[curOption][gameSettings[curSetting]] = settings.settings[curOption][gameSettings[curSetting]] + (
-                        gameSettings[curSetting] == "scroll speed" and 0.1 
+                        gameSettings[curSetting] == "scroll speed" and 1
                         or gameSettings[curSetting] == "lane cover" and 0.01
                         or 1
                     )
