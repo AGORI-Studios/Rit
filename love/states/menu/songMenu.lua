@@ -22,8 +22,6 @@ local function selectSongDifficulty(_, chartVer)
             curMenu = "fnf"
         elseif chartVer == "Stepmania" then
             stepmaniaLoader.load(songPath, filename)
-        elseif chartVer == "packs" then -- Open pack selector
-            graphics.fadeIn(0.25)
         end
     end)
 end
@@ -41,28 +39,6 @@ local function doFnfMoment(fnfMoment)
     curMenu = "songSelect"
 end
 
-local function loadPackSongs(pack)
-    packSongList = {}
-    graphics.fadeOut(0.25, function()
-        for i, v in pairs(packs) do
-            if v.name == pack then
-                for i2, v2 in pairs(v.songs) do
-                    packSongList[#packSongList + 1] = v2
-                    if i2 == 1 then
-                        for i3, v3 in pairs(v2) do
-                            print(i3, v3)
-                        end
-                    end
-                end
-            end
-        end
-
-        graphics.fadeIn(0.25)
-        curMenu = "packSongs"
-        songSelectScrollOffset = 0
-    end)
-end
-
 return {
     enter = function(self)
         debug.print("info", "Entering song select")
@@ -72,7 +48,6 @@ return {
         songSpeed = 1
         chooseSongDifficulty()
         curMenu = "songSelect"
-        packSongList = {}
     end,
 
     update = function(self, dt)
@@ -133,7 +108,6 @@ return {
                     songSpeed = 2
                 end
             end
-            elseif input:pressed("right") then
         elseif curMenu == "fnf" then
             if input:pressed("right") then 
                 fnfMomentSelected = fnfMomentSelected + 1
@@ -152,58 +126,16 @@ return {
                     doFnfMoment(fnfMomentShiz[fnfMomentSelected])
                 end)
             end
-        elseif curMenu == "packs" or curMenu == "packSongs" then
-            if input:pressed("up") then
-                curSongSelected = curSongSelected - 1
-                if curSongSelected < 1 then
-                    curSongSelected = #songList
-                end
-                if curSongSelected < 29 then 
-                    songSelectScrollOffset = songSelectScrollOffset + (font:getHeight() * 1.5)
-                end
-                if songSelectScrollOffset > 0 then
-                    songSelectScrollOffset = 0
-                end
-                if curSongSelected == #songList and #songList >= 29 then
-                    songSelectScrollOffset = -(#songList - 29) * (font:getHeight() * 1.5)
-                    if songSelectScrollOffset < -(#songList - 29) * (font:getHeight() * 1.5) then
-                        songSelectScrollOffset = -(#songList - 29) * (font:getHeight() * 1.5)
-                    end
-                end
-            elseif input:pressed("down") then
-                curSongSelected = curSongSelected + 1
-                if curSongSelected > #songList then
-                    curSongSelected = 1
-                end
-                if curSongSelected > 29 then 
-                    songSelectScrollOffset = songSelectScrollOffset - (font:getHeight() * 1.5)
-                    if songSelectScrollOffset < -(#songList - 29) * 30 then
-                        songSelectScrollOffset = -(#songList - 29) * 30
-                    end
-                end
-                if songSelectScrollOffset < 29 and songSelectScrollOffset > 0 then
-                    songSelectScrollOffset = 0
-                end
-                if curSongSelected == 1 then
-                    songSelectScrollOffset = 0
-                end
-            end
+        end
         if input:pressed("left") and (input:down("extB") or love.keyboard.isDown("lalt")) then
             songSpeed = songSpeed - 0.1
             if songSpeed < 0.1 then
-                    songSpeed = 0.1
-                end
-            elseif input:pressed("right") and (input:down("extB") or love.keyboard.isDown("lalt")) then
-                songSpeed = songSpeed + 0.1
-                if songSpeed > 2 then
-                    songSpeed = 2
-                end
-            elseif input:pressed("confirm") and curMenu == "packs" then
-                local curPack = packs[curSongSelected].name
-                loadPackSongs(curPack)
-                print("Loaded pack songs for " .. curPack)
-            elseif input:pressed("confirm") and curMenu == "packSongs" then
-                selectSongDifficulty(curSongSelected, songList[curSongSelected].type)
+                songSpeed = 0.1
+            end
+        elseif input:pressed("right") and (input:down("extB") or love.keyboard.isDown("lalt")) then
+            songSpeed = songSpeed + 0.1
+            if songSpeed > 2 then
+                songSpeed = 2
             end
         end
     end,
@@ -245,8 +177,6 @@ return {
                     songSelectScrollOffset = 0
                 end
             end
-        elseif curMenu == "packs" then
-
         end
     end,
 
@@ -283,33 +213,6 @@ return {
             love.graphics.print("Song speed: " .. songSpeed, push.getWidth() - (font:getWidth("Song speed: " .. songSpeed) * 2), 0, 0, 2, 2)
         elseif curMenu == "fnf" then
             love.graphics.print("Play as [</>]: " .. (fnfMomentShiz[fnfMomentSelected] and "Player" or "Enemy"), 0, 0, 0, 2, 2)
-        elseif curMenu == "packs" then
-            love.graphics.push()
-                love.graphics.translate(0, songSelectScrollOffset)
-                for i, v in ipairs(packs) do
-                    if i == curSongSelected then
-                        graphics.setColor(1, 1, 1)
-                    else
-                        graphics.setColor(0.5, 0.5, 0.5)
-                    end
-                    love.graphics.print(v.name .. " - " .. v.creator, 0, i * (font:getHeight() *1.5), 0, 2, 2)
-                    graphics.setColor(1,1,1)
-                end
-            love.graphics.pop()
-        elseif curMenu == "packSongs" then
-            love.graphics.push()
-                love.graphics.translate(0, songSelectScrollOffset)
-                for i, v in ipairs(packSongList) do -- table with all pack songs
-                    if i == curSongSelected then
-                        graphics.setColor(1, 1, 1)
-                    else
-                        graphics.setColor(0.5, 0.5, 0.5)
-                    end
-                    love.graphics.print((v.title or "") .. " - " .. v.difficultyName, 0, i * (font:getHeight() *1.5), 0, 2, 2)
-                    graphics.setColor(1,1,1)
-                end
-            love.graphics.pop()
-            love.graphics.print("Song speed: " .. songSpeed, push.getWidth() - (font:getWidth("Song speed: " .. songSpeed) * 2), 0, 0, 2, 2)
         end
     end,
 }

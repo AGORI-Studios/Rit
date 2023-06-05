@@ -150,8 +150,8 @@ function quaverLoader.load(chart, folderPath, forDiff)
                 local length = tonumber(endTime) - startTime
                 endTime = tonumber(endTime)
                     
-                for i = 1, length, noteImgs[lane][2]:getHeight()/2/speed do
-                    if i + noteImgs[lane][2]:getHeight()/2/speed < length then
+                for i = 1, length, noteImgs[lane][2]:getHeight()/2 do
+                    if i + noteImgs[lane][2]:getHeight()/2 < length then
                         charthits[lane][#charthits[lane] + 1] = {startTime+i, 0, lane, true}
                     else
                         charthits[lane][#charthits[lane] + 1] = {startTime+i, 0, lane, true, true}

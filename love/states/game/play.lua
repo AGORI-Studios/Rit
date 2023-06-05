@@ -912,6 +912,10 @@ return {
             love.graphics.setShader()
 
         end
+
+        if paused and not musicTimeDo then
+            -- pause menu... blehhhhhh
+        end
     end,
 
     resize = function(self,w, h)

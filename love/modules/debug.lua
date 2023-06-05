@@ -121,7 +121,7 @@ function debug.keypressed(k)
 end
 
 function debug.textinput(t)
-    if debug.consoleTyping and t ~= "lctrl" and t ~= "lshift" and t ~= "return" then
+    if debug.consoleTyping and t ~= "lctrl" and t ~= "lshift" and t ~= "return" and t ~= "backspace" and t ~= "escape" and t ~= "tab" and t ~= "rshift" and t ~= "rctrl" and __DEBUG__ then
         debug.command = debug.command .. t
     end
 end

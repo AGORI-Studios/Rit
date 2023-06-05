@@ -208,7 +208,6 @@ function love.load()
                 audioPath = (songFolderPath == "" and "song/" .. audioPath or folderPath .. "/" .. audioPath)
                 menuMusic = love.audio.newSource(audioPath, "stream")
             elseif line:find("[TimingPoints]") then
-
                 menuBPM = 120
             end
         end
@@ -216,7 +215,6 @@ function love.load()
         local file = json.decode(love.filesystem.read(songPath)).song
         menuBPM = file.bpm or 120
         menuMusic = love.audio.newSource(songFolderPath .. "/Inst.ogg", "stream")
-        
     end
 
     menuMusicData = love.sound.newSoundData(songType ~= "FNF" and audioPath or songFolderPath .. "/Inst.ogg")

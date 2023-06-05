@@ -14,7 +14,7 @@ sh.baseSettings = {
     ["Graphics"] = {
         width = 1280,
         height = 720,
-        fullscroll = false,
+        fullscreen = false,
         vsync = false
     },
     ["Audio"] = {
