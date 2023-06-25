@@ -36,6 +36,7 @@ return {
             "start time",
             "note spacing",
             "autoplay",
+            "pause on focus lost",
             "audio offset",
             "lane cover",
             "skin"

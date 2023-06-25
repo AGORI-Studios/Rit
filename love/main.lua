@@ -399,5 +399,4 @@ function love.quit()
     end
 
     settings.saveSettings()
-    print(settings.settings.skin)
 end

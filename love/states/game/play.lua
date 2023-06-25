@@ -325,7 +325,6 @@ function getScrollSpeed()
     local SkinScalingFactor = 1920 / 1366
     local BaseToVirtualRatio = 1080 / love.graphics.getHeight()
     local s = (speed / 10) / (20 * songRate) * SkinScalingFactor * BaseToVirtualRatio
-    print(s)
     return s
 end
 
@@ -443,8 +442,6 @@ return {
         end
 
         speed = getScrollSpeed()
-
-        --print(DiffCalc:CalculateDiff())
 
         combo = 0
     
@@ -924,8 +921,7 @@ return {
     end,
 
     focus = function(self, f)
-        --debug.print("focus: " .. tostring(f))
-        if not f then
+        if not f and not settings.settings.Game["autoplay"] and settings.settings.Game["pause on lost focus"] then
             pause()
         end
     end,

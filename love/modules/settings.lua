@@ -28,6 +28,7 @@ sh.baseSettings = {
         ["start time"] = 700,
         ["note spacing"] = 200,
         ["autoplay"] = false,
+        ["pause on focus lost"] = true,
         ["audio offset"] = 0,
         ["lane cover"] = 0.0 -- 0% of the screen
     },
@@ -43,13 +44,13 @@ sh.baseSettings = {
         sfx = 1.0
     },
     ["System"] = {
-        version = "4"
+        version = "5"
     },
 
     skin = "Circle Default" -- The skin chosen by the player.
 }
 
-gameVersion = "4"
+gameVersion = "5"
 
 function sh.saveSettings(base) 
     local saveStr = ""
