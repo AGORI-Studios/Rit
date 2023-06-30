@@ -132,6 +132,12 @@ function loadSkin(skinVer)
     healthBarColor = skinJson["skin"]["ui"]["healthBarColor"]
     uiTextColor = skinJson["skin"]["ui"]["uiTextColor"]
     timeBarColor = skinJson["skin"]["ui"]["timeBarColor"]
+
+    if love.filesystem.getInfo(skinFolder .. "/" .. skinJson["skin"]["ui"]["menu"]["mainmenu"]["container"]) then
+        emptyContainer = graphics.newImage(skinFolder .. "/" .. skinJson["skin"]["ui"]["menu"]["mainmenu"]["container"])
+    else
+        emptyContainer = graphics.newImage("defaultskins/skinThrowbacks/ui/Menu/MainMenu/container.png")
+    end
     
     comboImages = {}
     

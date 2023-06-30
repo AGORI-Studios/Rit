@@ -68,6 +68,38 @@ return {
         songSpeed = 1
         chooseSongDifficulty()
         curMenu = "songSelect"
+
+        containerList = {}
+
+        for i, song in ipairs(songList) do
+            local container = {}
+            --[[
+                filename = v,
+                title = title,
+                difficultyName = difficultyName or "???",
+                BackgroundFile = "None",
+                path = "songs/" .. v .. "/" .. j,
+                folderPath = "songs/" .. v,
+                type = "osu!",
+                rating = "",
+                ratingColour
+            ]]
+            -- check if BackgroundFile exists
+            if song.BackgroundFile ~= "None" and song.BackgroundFile ~= "" then
+                container.container = emptyContainer
+            else
+                container.container = emptyContainer
+            end
+
+            container.title = song.title
+            container.difficultyName = song.difficultyName
+            container.rating = song.rating
+            container.ratingColour = song.ratingColour
+            container.type = song.type
+            container.x = 1920 - container.container:getWidth()/2
+
+            table.insert(containerList, container)
+        end
     end,
 
     update = function(self, dt)
@@ -83,16 +115,16 @@ return {
                 if curSongSelected < 1 then
                     curSongSelected = #songList
                 end
-                if curSongSelected < 29 then 
-                    songSelectScrollOffset = songSelectScrollOffset + (font:getHeight() * 1.5)
+                if curSongSelected < 8 then 
+                    songSelectScrollOffset = songSelectScrollOffset + (emptyContainer:getHeight() + 60)
                 end
                 if songSelectScrollOffset > 0 then
                     songSelectScrollOffset = 0
                 end
-                if curSongSelected == #songList and #songList >= 29 then
-                    songSelectScrollOffset = -(#songList - 29) * (font:getHeight() * 1.5)
-                    if songSelectScrollOffset < -(#songList - 29) * (font:getHeight() * 1.5) then
-                        songSelectScrollOffset = -(#songList - 29) * (font:getHeight() * 1.5)
+                if curSongSelected == #songList and #songList >= 8 then
+                    songSelectScrollOffset = -(#songList - 8) * (emptyContainer:getHeight() + 60)
+                    if songSelectScrollOffset < -(#songList - 8) * (emptyContainer:getHeight() + 60) then
+                        songSelectScrollOffset = -(#songList - 8) * (emptyContainer:getHeight() + 60)
                     end
                 end
             elseif input:pressed("down") then
@@ -100,13 +132,13 @@ return {
                 if curSongSelected > #songList then
                     curSongSelected = 1
                 end
-                if curSongSelected > 29 then 
-                    songSelectScrollOffset = songSelectScrollOffset - (font:getHeight() * 1.5)
-                    if songSelectScrollOffset < -(#songList - 29) * 30 then
-                        songSelectScrollOffset = -(#songList - 29) * 30
+                if curSongSelected > 8 then 
+                    songSelectScrollOffset = songSelectScrollOffset - (emptyContainer:getHeight() + 60)
+                    if songSelectScrollOffset < -(#songList - 8) * (emptyContainer:getHeight() + 60) then
+                        songSelectScrollOffset = -(#songList - 8) * (emptyContainer:getHeight() + 60)
                     end
                 end
-                if songSelectScrollOffset < 29 and songSelectScrollOffset > 0 then
+                if songSelectScrollOffset < 8 and songSelectScrollOffset > 0 then
                     songSelectScrollOffset = 0
                 end
                 if curSongSelected == 1 then
@@ -158,6 +190,22 @@ return {
                 songSpeed = 2
             end
         end
+
+        for i, container in ipairs(containerList) do
+            if curSongSelected == i then
+                -- lerp x to 1920 - container.container:getWidth() - 200
+                container.x = math.lerp(container.x, 1920 - container.container:getWidth() - 210, 0.1)
+            elseif i == curSongSelected + 1 then
+                -- lerp x to 1920 - container.container:getWidth()/2 - 150
+                container.x = math.lerp(container.x, 1920 - container.container:getWidth()/2-150, 0.1)
+            elseif i == curSongSelected - 1 then
+                -- lerp x to 1920 - container.container:getWidth()/2 - 150  
+                container.x = math.lerp(container.x, 1920 - container.container:getWidth()/2-150, 0.1)
+            else
+                -- lerp x to 1920 - container.container:getWidth()/2 - 100
+                container.x = math.lerp(container.x, 1920 - container.container:getWidth()/2-100, 0.1)
+            end
+        end
     end,
 
     wheelmoved = function(self, x, y)
@@ -167,16 +215,16 @@ return {
                 if curSongSelected < 1 then
                     curSongSelected = #songList
                 end
-                if curSongSelected < 29 then 
-                    songSelectScrollOffset = songSelectScrollOffset + (font:getHeight() * 1.5)
+                if curSongSelected < 8 then 
+                    songSelectScrollOffset = songSelectScrollOffset + (emptyContainer:getHeight() + 60)
                 end
                 if songSelectScrollOffset > 0 then
                     songSelectScrollOffset = 0
                 end
-                if curSongSelected == #songList and #songList >= 29 then
-                    songSelectScrollOffset = -(#songList - 29) * (font:getHeight() * 1.5)
-                    if songSelectScrollOffset < -(#songList - 29) * (font:getHeight() * 1.5) then
-                        songSelectScrollOffset = -(#songList - 29) * (font:getHeight() * 1.5)
+                if curSongSelected == #songList and #songList >= 8 then
+                    songSelectScrollOffset = -(#songList - 8) * (emptyContainer:getHeight() + 60)
+                    if songSelectScrollOffset < -(#songList - 8) * (emptyContainer:getHeight() + 60) then
+                        songSelectScrollOffset = -(#songList - 8) * (emptyContainer:getHeight() + 60)
                     end
                 end
             elseif y < 0 then
@@ -184,13 +232,13 @@ return {
                 if curSongSelected > #songList then
                     curSongSelected = 1
                 end
-                if curSongSelected > 29 then 
-                    songSelectScrollOffset = songSelectScrollOffset - (font:getHeight() * 1.5)
-                    if songSelectScrollOffset < -(#songList - 29) * 30 then
-                        songSelectScrollOffset = -(#songList - 29) * 30
+                if curSongSelected > 8 then 
+                    songSelectScrollOffset = songSelectScrollOffset - (emptyContainer:getHeight() + 60)
+                    if songSelectScrollOffset < -(#songList - 8) * (emptyContainer:getHeight() + 60) then
+                        songSelectScrollOffset = -(#songList - 8) * (emptyContainer:getHeight() + 60)
                     end
                 end
-                if songSelectScrollOffset < 29 and songSelectScrollOffset > 0 then
+                if songSelectScrollOffset < 8 and songSelectScrollOffset > 0 then
                     songSelectScrollOffset = 0
                 end
                 if curSongSelected == 1 then
@@ -210,23 +258,28 @@ return {
         if curMenu == "songSelect" then
             love.graphics.push()
                 love.graphics.translate(0, songSelectScrollOffset)
-                for i, v in ipairs(songList) do
-                    if i == curSongSelected then
-                        graphics.setColor(1, 1, 1)
-                    else
-                        graphics.setColor(0.5, 0.5, 0.5)
+                for i, container in ipairs(containerList) do
+                    local y = (container.container:getHeight() + 60) * (i - 1)
+                    local x = container.x
+                    
+                    love.graphics.draw(container.container.img, x, y, 0, 1.5, 1.5)
+                    -- print song title using printf so it can't go out of bounds
+                    -- if the first character of difficultyName is a space, remove it
+                    if container.difficultyName:sub(1,1) == " " then
+                        container.difficultyName = container.difficultyName:sub(2)
                     end
-                    love.graphics.print(
+                    love.graphics.printf(
                         {
-                            {1,1,1}, v.title .. (v.type ~= "packs" and (" - " .. v.difficultyName) or ""), 
-                            DiffCalc.ratingColours((tonumber(v.rating) or 0)*songSpeed), (v.type ~= "packs" and " (" .. (tonumber(v.rating) * songSpeed or "N/A") .. ")" or "")
+                            {1,1,1}, container.title .. (container.type ~= "packs" and ("\n" .. container.difficultyName) or ""), 
+                            DiffCalc.ratingColours((tonumber(container.rating) or 0)*songSpeed), (container.type ~= "packs" and " (" .. (tonumber(container.rating) * songSpeed or "N/A") .. ")" or "")
                         },
-                        0, 
-                        i * (font:getHeight() *1.5), 
+                        x+10, 
+                        y+2, 
+                        container.container:getWidth() - 20, 
+                        "left", 
                         0, 
                         2, 2
                     )
-                    graphics.setColor(1,1,1)
                 end
             love.graphics.pop()
             -- Print song speed in top right

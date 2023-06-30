@@ -38,7 +38,9 @@ local function initValues()
 		scale.x = windowWidth / pushWidth
 		scale.y = windowHeight / pushHeight
 
-		if settings.upscale == "normal" or settings.upscale == "pixel-perfect" then
+		if settings.upscale == "stretched" then
+			offset.x, offset.y = 0, 0			
+		else -- always default to normal
 			local scaleVal
 
 			scaleVal = math.min(scale.x, scale.y)
@@ -48,10 +50,6 @@ local function initValues()
 			offset.y = math.floor((scale.y - scaleVal) * (pushHeight / 2))
 
 			scale.x, scale.y = scaleVal, scaleVal -- Apply same scale to width and height
-		elseif settings.upscale == "stretched" then -- If stretched, no need to apply offset
-			offset.x, offset.y = 0, 0
-		else
-			error("Invalid upscale setting")
 		end
 	else
 		scale.x, scale.y = 1, 1

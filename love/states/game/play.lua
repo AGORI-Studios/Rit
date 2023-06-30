@@ -313,7 +313,7 @@ function UpdateSpritePositions(offset, curTime)
 
     for i = 1, 4 do
         for _, hitObject in ipairs(charthits[i]) do
-            spritePosition = GetSpritePosition(offset, hitObject.InitialTrackPosition)
+            spritePosition = GetSpritePosition(offset, hitObject.InitialTrackPosition) * modifiers.reverseScale
             hitObject[2] = spritePosition
         end
     end

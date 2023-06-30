@@ -46,7 +46,7 @@ function loadSongs()
                         "DifficultyName:(.-)\r?\n")
                         local BackgroundFile = love.filesystem.read("songs/" .. v .. "/" .. j):match(
                         "BackgroundFile:(.-)\r?\n")
-                        local mode = love.filesystem.read("songs/" .. v .. j):match("Mode:(.-)\r?\n"):gsub("^%s*(.-)%s*$", "%1")
+                        local mode = love.filesystem.read("songs/" .. v .. "/" .. j):match("Mode:(.-)\r?\n"):gsub("^%s*(.-)%s*$", "%1")
                         if mode ~= "Keys7" then
                             -- if song is already in the list, don't add it again
                             local alreadyInList = false
