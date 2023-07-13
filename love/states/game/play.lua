@@ -19,29 +19,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ------------------------------------------------------------------------------]]
 
-function resize(img, width, height)
-    local scaleX = width / img:getWidth()
-    local scaleY = height / img:getHeight()
-
-    return scaleX, scaleY
-end
-
-local function pause()
-    musicTimeDo = false 
-    paused = true
-    love.audio.pause(audioFile)
-    if voices then
-        love.audio.pause(voices)
-    end
-end
-
-local died
-inputList = {
-    "one4",
-    "two4",
-    "three4",
-    "four4"
-}
 musicPosValue = {1000}
 musicPitch = {1}
 function addJudgement(judgement, lane, hitTime)
@@ -112,14 +89,43 @@ end
 trackRounding = 100
 
 local died
+
 inputList = {
-    "one4",
-    "two4",
-    "three4",
-    "four4"
+    "gameLeft",
+    "gameDown",
+    "gameUp",
+    "gameRight"
 }
+
+inputs = {
+    ["gameLeft"] = {
+        pressed = false,
+        down = false,
+        released = false
+    },
+
+    ["gameDown"] = {
+        pressed = false,
+        down = false,
+        released = false
+    },
+
+    ["gameUp"] = {
+        pressed = false,
+        down = false,
+        released = false
+    },
+
+    ["gameRight"] = {
+        pressed = false,
+        down = false,
+        released = false
+    }
+}
+
 musicPosValue = {1000}
 musicPitch = {1}
+
 function addJudgement(judgement, lane, hitTime)
     scoring[judgement] = scoring[judgement] + 1
     if judgement ~= "Miss" then
@@ -369,6 +375,7 @@ return {
             1,
             1,
         }
+
         lastReportedPlaytime = 0
         previousFrameTime = love.timer.getTime() * 1000
         simulatedPreviousFrameTime = love.timer.getTime() * 1000
@@ -453,26 +460,6 @@ return {
         musicPosValue = {1000}
         musicPitch = {1}
 
-        if #receptors ~= 4 then 
-            inputList = {
-                "one7",
-                "two7",
-                "three7",
-                "four7",
-                "five7",
-                "six7",
-                "seven7"
-            }
-        else
-            -- 4k
-            inputList = {
-                "one4",
-                "two4",
-                "three4",
-                "four4"
-            }
-        end
-
         modifiers:load()
         
         strumlineY = {-35}
@@ -492,6 +479,97 @@ return {
         initPositions()
         UpdateSpritePositions(CurrentTrackPosition, CurrentVisualAudioOffset)
 
+        -- mobile buttons
+
+        if isMobile or __DEBUG__ then
+            mobileButtons = {
+                ["gameLeft"] = {
+                    pressed = false,
+                    down = false,
+                    released = false,
+
+                    x = 325,
+                    y = 550,
+                    w = 150,
+                    h = 150,
+
+                    draw = function(self)
+                        -- rounded rectangle, fill if down
+
+                        if self.down then
+                            love.graphics.setColor(1, 1, 1, 0.5)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                        end
+
+                        love.graphics.setColor(1, 1, 1, 1)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                    end
+                },
+                ["gameDown"] = {
+                    pressed = false,
+                    down = false,
+                    released = false,
+
+                    x = 490,
+                    y = 550,
+                    w = 150,
+                    h = 150,
+
+                    draw = function(self)
+                        if self.down then
+                            love.graphics.setColor(1, 1, 1, 0.5)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                        end
+
+                        love.graphics.setColor(1, 1, 1, 1)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                    end
+                },
+                ["gameUp"] = {
+                    pressed = false,
+                    down = false,
+                    released = false,
+
+                    x = 655,
+                    y = 550,
+                    w = 150,
+                    h = 150,
+
+                    draw = function(self)
+                        if self.down then
+                            love.graphics.setColor(1, 1, 1, 0.5)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                        end
+
+                        love.graphics.setColor(1, 1, 1, 1)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                    end
+                },
+                ["gameRight"] = {
+                    pressed = false,
+                    down = false,
+                    released = false,
+
+                    x = 820,
+                    y = 550,
+                    w = 150,
+                    h = 150,
+
+                    draw = function(self)
+                        if self.down then
+                            love.graphics.setColor(1, 1, 1, 0.5)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                        end
+
+                        love.graphics.setColor(1, 1, 1, 1)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                    end
+                },
+            }
+        end
+
+        --
+
         graphics.fadeIn(0.2)
     end,
 
@@ -503,6 +581,76 @@ return {
 			scoring.ratingPercent = 1
 		end
 	end,
+
+    touchpressed = function(self, id, x, y, dx, dy, pressure)
+        if mobileButtons then
+            for i, v in pairs(mobileButtons) do
+                if x > v.x and x < v.x + v.w and y > v.y and y < v.y + v.h then
+                    v.pressed = true
+                    v.down = true
+                end
+            end
+        end
+    end,
+
+    touchreleased = function(self, id, x, y, dx, dy, pressure)
+        if mobileButtons then
+            for i, v in pairs(mobileButtons) do
+                if x > v.x and x < v.x + v.w and y > v.y and y < v.y + v.h then
+                    v.released = true
+                    v.down = false
+                end
+            end
+        end
+    end,
+
+    touchmoved = function(self, id, x, y, dx, dy, pressure)
+        if mobileButtons then
+            for i, v in pairs(mobileButtons) do
+                -- if its no longer in the button, set it to false
+                if not (x > v.x and x < v.x + v.w and y > v.y and y < v.y + v.h) then
+                    v.pressed = false
+                    v.down = false
+                    v.released = true
+                end
+            end
+        end
+    end,
+
+    mousepressed = function(self, x, y, button)
+        if mobileButtons then
+            for i, v in pairs(mobileButtons) do
+                if x > v.x and x < v.x + v.w and y > v.y and y < v.y + v.h then
+                    v.pressed = true
+                    v.down = true
+                end
+            end
+        end 
+    end,
+
+    mousereleased = function(self, x, y, button)
+        if mobileButtons then
+            for i, v in pairs(mobileButtons) do
+                if x > v.x and x < v.x + v.w and y > v.y and y < v.y + v.h then
+                    v.released = true
+                    v.down = false
+                end
+            end
+        end
+    end,
+
+    mousemoved = function(self, x, y, dx, dy, istouch)
+        if mobileButtons then
+            for i, v in pairs(mobileButtons) do
+                -- if its no longer in the button, set it to false
+                if not (x > v.x and x < v.x + v.w and y > v.y and y < v.y + v.h) then
+                    v.pressed = false
+                    v.down = false
+                    v.released = true
+                end
+            end
+        end
+    end,
 
     update = function(self, dt)
         simulatedTime = love.timer.getTime()
@@ -605,9 +753,22 @@ return {
 
         for i = 1, #inputList do
             curInput = inputList[i]
+            if not isMobile and __DEBUG__ and mobileButtons then
+                inputs[curInput].pressed = input:pressed(curInput) or mobileButtons[curInput].pressed
+                inputs[curInput].down = input:down(curInput) or mobileButtons[curInput].down
+                inputs[curInput].released = input:released(curInput) or mobileButtons[curInput].released
+            elseif not isMobile then
+                inputs[curInput].pressed = input:pressed(curInput)
+                inputs[curInput].down = input:down(curInput)
+                inputs[curInput].released = input:released(curInput)
+            elseif isMobile then
+                inputs[curInput].pressed = mobileButtons[curInput].pressed
+                inputs[curInput].down = mobileButtons[curInput].down
+                inputs[curInput].released = mobileButtons[curInput].released
+            end
             notes = charthits[i]
             if not autoplay then
-                if input:pressed(curInput) and not debug.consoleTyping then
+                if inputs[curInput].pressed and not debug.consoleTyping then
                     table.insert(replayHits[i], {musicTime, 1})
                     if hitsoundCache[#hitsoundCache]:isPlaying() then
                         hitsoundCache[#hitsoundCache] = hitsoundCache[#hitsoundCache]:clone()
@@ -659,7 +820,7 @@ return {
                     end
                 end
 
-                if input:down(curInput) and not debug.consoleTyping then
+                if inputs[curInput].down and not debug.consoleTyping then
                     PRESSEDMOMENTS[i] = 2
                     if notes[1] then
                         if notes[1][4] then
@@ -672,7 +833,7 @@ return {
                     PRESSEDMOMENTS[i] = 1
                 end
 
-                if input:released(curInput) and not debug.consoleTyping then
+                if inputs[curInput].released and not debug.consoleTyping then
                     if notes[1] then
                         if notes[1][4] then
                             while true do
@@ -749,6 +910,19 @@ return {
 
         for i,v in pairs(modifiers.graphics) do
             v:update(dt)
+        end
+
+        if mobileButtons then 
+            -- set pressed and released to false to all of them
+            for i, v in pairs(mobileButtons) do
+                v.pressed = false
+                v.released = false
+            end
+        end
+
+        for i, v in pairs(inputs) do
+            v.pressed = false
+            v.released = false
         end
     end,
 
@@ -907,7 +1081,6 @@ return {
             -- resize canvas to strech to screen
             love.graphics.draw(gameCanvas, 0, 0, 0, push:getWidth() / gameCanvas:getWidth(), push:getHeight() / gameCanvas:getHeight())
             love.graphics.setShader()
-
         end
 
         if paused and not musicTimeDo then

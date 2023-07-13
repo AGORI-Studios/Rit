@@ -44,16 +44,17 @@ if (love.system.getOS() == "Windows" or love.system.getOS() == "OS X") then
 end
 spectrumDivideColours = true
 function love.load()
+    isMobile = love.system.getOS() == "Android" or love.system.getOS() == "iOS"
     require "modules.overrides"
     require "modules.debug"
     require "modules.songHandler"
     DiffCalc = require "modules.DiffCalc"
     input = (require "lib.baton").new({
         controls = {
-            one4 = { "axis:triggerleft+", "axis:leftx-", "axis:rightx-", "button:dpleft", "button:x", "key:d" },
-            two4 = { "axis:lefty+", "axis:righty+", "button:leftshoulder", "button:dpdown", "button:a", "key:f" },
-            three4 = { "axis:lefty-", "axis:righty-", "button:rightshoulder", "button:dpup", "button:y", "key:j" },
-            four4 = { "axis:triggerright+", "axis:leftx+", "axis:rightx+", "button:dpright", "button:b", "key:k" },
+            gameLeft = { "axis:triggerleft+", "axis:leftx-", "axis:rightx-", "button:dpleft", "button:x", "key:d" },
+            gameDown = { "axis:lefty+", "axis:righty+", "button:leftshoulder", "button:dpdown", "button:a", "key:f" },
+            gameUp = { "axis:lefty-", "axis:righty-", "button:rightshoulder", "button:dpup", "button:y", "key:j" },
+            gameRight = { "axis:triggerright+", "axis:leftx+", "axis:rightx+", "button:dpright", "button:b", "key:k" },
 
             -- UI
 
@@ -261,6 +262,30 @@ function love.resize(w, h)
     scissorScale = h / 720
 end
 
+function love.mousepressed(x, y, button)
+    state.mousepressed(x, y, button)
+end
+
+function love.mousereleased(x, y, button)
+    state.mousereleased(x, y, button)
+end
+
+function love.mousemoved(x, y, dx, dy, istouch)
+    state.mousemoved(x, y, dx, dy, istouch)
+end
+
+function love.touchpressed(id, x, y, dx, dy, pressure)
+    state.touchpressed(id, x, y, dx, dy, pressure)
+end
+
+function love.touchreleased(id, x, y, dx, dy, pressure)
+    state.touchreleased(id, x, y, dx, dy, pressure)
+end
+
+function love.touchmoved(id, x, y, dx, dy, pressure)
+    state.touchmoved(id, x, y, dx, dy, pressure)
+end
+
 function love.update(dt)
     Timer.update(dt)
     state.update(dt)
@@ -387,6 +412,12 @@ function love.draw()
     push.finish()
 
     if __DEBUG__ then debug.draw() end
+
+    if mobileButtons then
+        for i, v in pairs(mobileButtons) do
+            v:draw()
+        end
+    end
 end
 
 function love.focus(f)
