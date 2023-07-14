@@ -20,6 +20,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ------------------------------------------------------------------------------]]
 local allSettings
 
+local inputList = {
+    "up",
+    "down",
+    "confirm",
+    "left",
+    "right",
+    "back"
+}
+
 return {
     enter = function(self)
         allSettings = {
@@ -56,11 +65,199 @@ return {
         curSetting = 1
         curOption = ""
 
+        inputs = {
+            ["up"] = {
+                pressed = false,
+                down = false,
+                released = false
+            },
+            ["down"] = {
+                pressed = false,
+                down = false,
+                released = false
+            },
+            ["left"] = {
+                pressed = false,
+                down = false,
+                released = false
+            },
+            ["right"] = {
+                pressed = false,
+                down = false,
+                released = false
+            },
+            ["confirm"] = {
+                pressed = false,
+                down = false,
+                released = false
+            },
+            ["back"] = {
+                pressed = false,
+                down = false,
+                released = false
+            }
+        }
+
+        if isMobile or __DEBUG__ then
+            mobileButtons = {
+                ["up"] = {
+                    pressed = false,
+                    down = false,
+                    released = false,
+
+                    x = 150,
+                    y = 400,
+                    w = 150,
+                    h = 150,
+
+                    draw = function(self)
+                        -- rounded rectangle, fill if down
+
+                        if self.down then
+                            love.graphics.setColor(1, 1, 1, 0.5)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                        end
+
+                        love.graphics.setColor(1, 1, 1, 1)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                    end
+                },
+                ["down"] = {
+                    pressed = false,
+                    down = false,
+                    released = false,
+
+                    x = 150,
+                    y = 550,
+                    w = 150,
+                    h = 150,
+
+                    draw = function(self)
+                        -- rounded rectangle, fill if down
+
+                        if self.down then
+                            love.graphics.setColor(1, 1, 1, 0.5)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                        end
+
+                        love.graphics.setColor(1, 1, 1, 1)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                    end
+                },
+                ["left"] = {
+                    pressed = false,
+                    down = false,
+                    released = false,
+
+                    x = 0,
+                    y = 475,
+                    w = 150,
+                    h = 150,
+
+                    draw = function(self)
+                        -- rounded rectangle, fill if down
+
+                        if self.down then
+                            love.graphics.setColor(1, 1, 1, 0.5)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                        end
+
+                        love.graphics.setColor(1, 1, 1, 1)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                    end
+                },
+                ["right"] = {
+                    pressed = false,
+                    down = false,
+                    released = false,
+
+                    x = 300,
+                    y = 475,
+                    w = 150,
+                    h = 150,
+
+                    draw = function(self)
+                        -- rounded rectangle, fill if down
+
+                        if self.down then
+                            love.graphics.setColor(1, 1, 1, 0.5)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                        end
+
+                        love.graphics.setColor(1, 1, 1, 1)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                    end
+                },
+                ["confirm"] = {
+                    pressed = false,
+                    down = false,
+                    released = false,
+
+                    x = 1060,
+                    y = 550,
+                    w = 150,
+                    h = 150,
+
+                    draw = function(self)
+                        -- rounded rectangle, fill if down
+
+                        if self.down then
+                            love.graphics.setColor(1, 1, 1, 0.5)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                        end
+
+                        love.graphics.setColor(1, 1, 1, 1)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                    end
+                },
+                ["back"] = {
+                    pressed = false,
+                    down = false,
+                    released = false,
+
+                    x = 900,
+                    y = 550,
+                    w = 150,
+                    h = 150,
+
+                    draw = function(self)
+                        -- rounded rectangle, fill if down
+
+                        if self.down then
+                            love.graphics.setColor(1, 0, 0, 0.5)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                        end
+
+                        love.graphics.setColor(1, 0, 0, 1)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                    end
+                }
+            }
+        end
+
         love.keyboard.setKeyRepeat(true)
     end,
 
     update = function(self, dt)
-        if input:pressed("down") then
+        for i = 1, #inputList do
+            local curInput = inputList[i]
+
+            if not isMobile and __DEBUG__ and mobileButtons then
+                inputs[curInput].pressed = input:pressed(curInput) or mobileButtons[curInput].pressed
+                inputs[curInput].down = input:down(curInput) or mobileButtons[curInput].down
+                inputs[curInput].released = input:released(curInput) or mobileButtons[curInput].released
+            elseif not isMobile then
+                inputs[curInput].pressed = input:pressed(curInput)
+                inputs[curInput].down = input:down(curInput)
+                inputs[curInput].released = input:released(curInput)
+            elseif isMobile then
+                inputs[curInput].pressed = mobileButtons[curInput].pressed
+                inputs[curInput].down = mobileButtons[curInput].down
+                inputs[curInput].released = mobileButtons[curInput].released
+            end
+        end
+
+        if inputs["down"].pressed then
             if curOption == "" then
                 curSetting = curSetting + 1
                 if curSetting > #allSettings then
@@ -82,7 +279,7 @@ return {
                     curSetting = 1
                 end
             end
-        elseif input:pressed("up") then
+        elseif inputs["up"].pressed then
             if curOption == "" then
                 curSetting = curSetting - 1
                 if curSetting < 1 then
@@ -106,7 +303,7 @@ return {
             end
         end
 
-        if input:pressed("confirm") then 
+        if inputs["confirm"].pressed then
             if curOption == "" then
                 curOption = allSettings[curSetting]
                 curSetting = 1
@@ -127,7 +324,7 @@ return {
                     settings.settings[curOption][audioSettings[curSetting]] = not settings.settings[curOption][audioSettings[curSetting]]
                 end
             end
-        elseif input:pressed("left") then
+        elseif inputs["left"].pressed then
             if curOption == "Game" then
                 if type(settings.settings[curOption][gameSettings[curSetting]]) == "number" then
                     settings.settings[curOption][gameSettings[curSetting]] = settings.settings[curOption][gameSettings[curSetting]] - (
@@ -145,7 +342,7 @@ return {
                     settings.settings[curOption][audioSettings[curSetting]] = settings.settings[curOption][audioSettings[curSetting]] - 0.1
                 end
             end
-        elseif input:pressed("right") then
+        elseif inputs["right"].pressed then
             if curOption == "Game" then
                 if type(settings.settings[curOption][gameSettings[curSetting]]) == "number" then
                     settings.settings[curOption][gameSettings[curSetting]] = settings.settings[curOption][gameSettings[curSetting]] + (
@@ -164,7 +361,7 @@ return {
                 end
             end
 
-        elseif input:pressed("back") then
+        elseif inputs["back"].pressed then
             if curOption == "" then
                 state.switch(startMenu)
             else
@@ -193,6 +390,88 @@ return {
                     if settings.settings[allSettings[i]][audioSettings[j]] < 0.0001 then
                         settings.settings[allSettings[i]][audioSettings[j]] = 0
                     end
+                end
+            end
+        end
+
+        if mobileButtons then
+            for i,v in pairs(mobileButtons) do
+                v.pressed = false
+                v.released = false
+            end
+        end
+
+        for i, v in pairs(inputs) do
+            v.pressed = false
+            v.released = false
+        end
+    end,
+
+    touchpressed = function(self, id, x, y, dx, dy, pressure)
+        if mobileButtons then
+            for i, v in pairs(mobileButtons) do
+                if x > v.x and x < v.x + v.w and y > v.y and y < v.y + v.h then
+                    v.pressed = true
+                    v.down = true
+                end
+            end
+        end
+    end,
+
+    touchreleased = function(self, id, x, y, dx, dy, pressure)
+        if mobileButtons then
+            for i, v in pairs(mobileButtons) do
+                if x > v.x and x < v.x + v.w and y > v.y and y < v.y + v.h then
+                    v.released = true
+                    v.down = false
+                end
+            end
+        end
+    end,
+
+    touchmoved = function(self, id, x, y, dx, dy, pressure)
+        if mobileButtons then
+            for i, v in pairs(mobileButtons) do
+                -- if its no longer in the button, set it to false
+                if not (x > v.x and x < v.x + v.w and y > v.y and y < v.y + v.h) then
+                    v.pressed = false
+                    v.down = false
+                    v.released = true
+                end
+            end
+        end
+    end,
+
+    mousepressed = function(self, x, y, button)
+        if mobileButtons then
+            for i, v in pairs(mobileButtons) do
+                if x > v.x and x < v.x + v.w and y > v.y and y < v.y + v.h then
+                    v.pressed = true
+                    v.down = true
+                end
+            end
+        end 
+    end,
+
+    mousereleased = function(self, x, y, button)
+        if mobileButtons then
+            for i, v in pairs(mobileButtons) do
+                if x > v.x and x < v.x + v.w and y > v.y and y < v.y + v.h then
+                    v.released = true
+                    v.down = false
+                end
+            end
+        end
+    end,
+
+    mousemoved = function(self, x, y, dx, dy, istouch)
+        if mobileButtons then
+            for i, v in pairs(mobileButtons) do
+                -- if its no longer in the button, set it to false
+                if not (x > v.x and x < v.x + v.w and y > v.y and y < v.y + v.h) then
+                    v.pressed = false
+                    v.down = false
+                    v.released = true
                 end
             end
         end
@@ -259,5 +538,7 @@ return {
         end
 
         love.keyboard.setKeyRepeat(false)
+
+        mobileButtons = nil
     end
 }

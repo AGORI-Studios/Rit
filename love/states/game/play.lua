@@ -44,7 +44,7 @@ function addJudgement(judgement, lane, hitTime)
     end
     ratingsize.x = 1
     ratingsize.y = 1
-    judgeTimer = Timer.tween(0.1, ratingsize, {x = 1.15, y = 1.15}, "in-out-quad", function()
+    judgeTimer = Timer.tween(0.1, ratingsize, {x = 1.08, y = 1.08}, "in-out-quad", function()
         judgeTimer = Timer.tween(0.1, ratingsize, {x = 0.85, y = 0.85}, "in-out-quad")
     end)
 
@@ -95,32 +95,6 @@ inputList = {
     "gameDown",
     "gameUp",
     "gameRight"
-}
-
-inputs = {
-    ["gameLeft"] = {
-        pressed = false,
-        down = false,
-        released = false
-    },
-
-    ["gameDown"] = {
-        pressed = false,
-        down = false,
-        released = false
-    },
-
-    ["gameUp"] = {
-        pressed = false,
-        down = false,
-        released = false
-    },
-
-    ["gameRight"] = {
-        pressed = false,
-        down = false,
-        released = false
-    }
 }
 
 musicPosValue = {1000}
@@ -359,6 +333,32 @@ return {
                 ["Miss"] = 0
             },
             scoreRating = 0,
+        }
+
+        inputs = {
+            ["gameLeft"] = {
+                pressed = false,
+                down = false,
+                released = false
+            },
+        
+            ["gameDown"] = {
+                pressed = false,
+                down = false,
+                released = false
+            },
+        
+            ["gameUp"] = {
+                pressed = false,
+                down = false,
+                released = false
+            },
+        
+            ["gameRight"] = {
+                pressed = false,
+                down = false,
+                released = false
+            }
         }
 
         replayHits = {}
@@ -1125,5 +1125,7 @@ return {
         end
 
         modifiers:clear()
-    end
+
+        mobileButtons = nil
+    end,
 }

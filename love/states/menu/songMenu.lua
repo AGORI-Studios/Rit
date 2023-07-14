@@ -21,6 +21,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 local function chooseSongDifficulty()
 end
 
+local inputList = {
+    "up",
+    "down",
+    "left",
+    "right",
+    "extB",
+    "confirm"
+}
+
 local function selectSongDifficulty(_, chartVer)
     graphics.fadeOut(0.25,function()
         if chartVer ~= "FNF" and chartVer ~= "packs" then
@@ -69,6 +78,176 @@ return {
         chooseSongDifficulty()
         curMenu = "songSelect"
 
+        inputs = {
+            ["up"] = {
+                pressed = false,
+                down = false,
+                released = false
+            },
+            ["down"] = {
+                pressed = false,
+                down = false,
+                released = false
+            },
+            ["left"] = {
+                pressed = false,
+                down = false,
+                released = false
+            },
+            ["right"] = {
+                pressed = false,
+                down = false,
+                released = false
+            },
+            ["confirm"] = {
+                pressed = false,
+                down = false,
+                released = false
+            },
+            ["extB"] = {
+                pressed = false,
+                down = false,
+                released = false
+            }
+        }
+
+        if isMobile or __DEBUG__ then
+            mobileButtons = {
+                ["up"] = {
+                    pressed = false,
+                    down = false,
+                    released = false,
+
+                    x = 150,
+                    y = 400,
+                    w = 150,
+                    h = 150,
+
+                    draw = function(self)
+                        -- rounded rectangle, fill if down
+
+                        if self.down then
+                            love.graphics.setColor(1, 1, 1, 0.5)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                        end
+
+                        love.graphics.setColor(1, 1, 1, 1)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                    end
+                },
+                ["down"] = {
+                    pressed = false,
+                    down = false,
+                    released = false,
+
+                    x = 150,
+                    y = 550,
+                    w = 150,
+                    h = 150,
+
+                    draw = function(self)
+                        -- rounded rectangle, fill if down
+
+                        if self.down then
+                            love.graphics.setColor(1, 1, 1, 0.5)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                        end
+
+                        love.graphics.setColor(1, 1, 1, 1)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                    end
+                },
+                ["left"] = {
+                    pressed = false,
+                    down = false,
+                    released = false,
+
+                    x = 0,
+                    y = 475,
+                    w = 150,
+                    h = 150,
+
+                    draw = function(self)
+                        -- rounded rectangle, fill if down
+
+                        if self.down then
+                            love.graphics.setColor(1, 1, 1, 0.5)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                        end
+
+                        love.graphics.setColor(1, 1, 1, 1)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                    end
+                },
+                ["right"] = {
+                    pressed = false,
+                    down = false,
+                    released = false,
+
+                    x = 300,
+                    y = 475,
+                    w = 150,
+                    h = 150,
+
+                    draw = function(self)
+                        -- rounded rectangle, fill if down
+
+                        if self.down then
+                            love.graphics.setColor(1, 1, 1, 0.5)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                        end
+
+                        love.graphics.setColor(1, 1, 1, 1)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                    end
+                },
+                ["confirm"] = {
+                    pressed = false,
+                    down = false,
+                    released = false,
+
+                    x = 900,
+                    y = 400,
+                    w = 300,
+                    h = 300,
+
+                    draw = function(self)
+                        -- rounded rectangle, fill if down
+
+                        if self.down then
+                            love.graphics.setColor(1, 1, 1, 0.5)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                        end
+
+                        love.graphics.setColor(1, 1, 1, 1)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                    end
+                },
+                ["extB"] = {
+                    pressed = false,
+                    down = false,
+                    released = false,
+
+                    x = 90,
+                    y = 90,
+                    w = 75,
+                    h = 75,
+
+                    draw = function(self)
+                        -- rounded rectangle, fill if down
+
+                        if self.down then
+                            love.graphics.setColor(1, 1, 1, 0.5)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                        end
+
+                        love.graphics.setColor(1, 1, 1, 1)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                    end
+                }
+            }
+        end
+
         containerList = {}
 
         for i, song in ipairs(songList) do
@@ -103,6 +282,24 @@ return {
     end,
 
     update = function(self, dt)
+        for i = 1, #inputList do
+            local curInput = inputList[i]
+
+            if not isMobile and __DEBUG__ and mobileButtons then
+                inputs[curInput].pressed = input:pressed(curInput) or mobileButtons[curInput].pressed
+                inputs[curInput].down = input:down(curInput) or mobileButtons[curInput].down
+                inputs[curInput].released = input:released(curInput) or mobileButtons[curInput].released
+            elseif not isMobile then
+                inputs[curInput].pressed = input:pressed(curInput)
+                inputs[curInput].down = input:down(curInput)
+                inputs[curInput].released = input:released(curInput)
+            elseif isMobile then
+                inputs[curInput].pressed = mobileButtons[curInput].pressed
+                inputs[curInput].down = mobileButtons[curInput].down
+                inputs[curInput].released = mobileButtons[curInput].released
+            end
+        end
+
         if curMenu == "songSelect" then
             presence = {
                 state = "Picking a song to play",
@@ -110,7 +307,7 @@ return {
                 largeImageText = "Rit"..(__DEBUG__ and " DEBUG MODE" or ""),
                 startTimestamp = now
             }
-            if input:pressed("up") then
+            if inputs["up"].pressed then 
                 curSongSelected = curSongSelected - 1
                 if curSongSelected < 1 then
                     curSongSelected = #songList
@@ -127,7 +324,7 @@ return {
                         songSelectScrollOffset = -(#songList - 8) * (emptyContainer:getHeight() + 60)
                     end
                 end
-            elseif input:pressed("down") then
+            elseif inputs["down"].pressed then 
                 curSongSelected = curSongSelected + 1
                 if curSongSelected > #songList then
                     curSongSelected = 1
@@ -145,25 +342,25 @@ return {
                     songSelectScrollOffset = 0
                 end
             end
-            if input:pressed("confirm") then
+            if inputs["confirm"].pressed then 
                 selectSongDifficulty(curSongSelected, songList[curSongSelected].type)
             end
 
-            if input:pressed("left") and (input:down("extB") or love.keyboard.isDown("lalt")) then
+            if inputs["left"].pressed and (inputs["extB"].pressed or love.keyboard.isDown("lalt")) then
                 songSpeed = songSpeed - 0.1
                 if songSpeed < 0.1 then
                     songSpeed = 0.1
                 end
-            elseif input:pressed("right") and (input:down("extB") or love.keyboard.isDown("lalt")) then
+            elseif inputs["right"].pressed and (inputs["extB"].pressed or love.keyboard.isDown("lalt")) then
                 songSpeed = songSpeed + 0.1
                 if songSpeed > 2 then
                     songSpeed = 2
                 end
             end
         elseif curMenu == "fnf" then
-            if input:pressed("right") then 
+            if inputs["right"].pressed then 
                 fnfMomentSelected = fnfMomentSelected + 1
-            elseif input:pressed("left") then
+            elseif inputs["left"].pressed then
                 fnfMomentSelected = fnfMomentSelected - 1
             end
     
@@ -173,18 +370,18 @@ return {
                 fnfMomentSelected = #fnfMomentShiz
             end
     
-            if input:pressed("confirm") then
+            if inputs["confirm"].pressed then
                 graphics.fadeOut(0.25,function()
                     doFnfMoment(fnfMomentShiz[fnfMomentSelected])
                 end)
             end
         end
-        if input:pressed("left") and (input:down("extB") or love.keyboard.isDown("lalt")) then
+        if inputs["left"].pressed and (inputs["extB"].pressed or love.keyboard.isDown("lalt")) then
             songSpeed = songSpeed - 0.1
             if songSpeed < 0.1 then
                 songSpeed = 0.1
             end
-        elseif input:pressed("right") and (input:down("extB") or love.keyboard.isDown("lalt")) then
+        elseif inputs["right"].pressed and (inputs["extB"].pressed or love.keyboard.isDown("lalt")) then
             songSpeed = songSpeed + 0.1
             if songSpeed > 2 then
                 songSpeed = 2
@@ -204,6 +401,88 @@ return {
             else
                 -- lerp x to 1920 - container.container:getWidth()/2 - 100
                 container.x = math.lerp(container.x, 1920 - container.container:getWidth()/2-100, 0.1)
+            end
+        end
+
+        if mobileButtons then
+            for i,v in pairs(mobileButtons) do
+                v.pressed = false
+                v.released = false
+            end
+        end
+
+        for i, v in pairs(inputs) do
+            v.pressed = false
+            v.released = false
+        end
+    end,
+
+    touchpressed = function(self, id, x, y, dx, dy, pressure)
+        if mobileButtons then
+            for i, v in pairs(mobileButtons) do
+                if x > v.x and x < v.x + v.w and y > v.y and y < v.y + v.h then
+                    v.pressed = true
+                    v.down = true
+                end
+            end
+        end
+    end,
+
+    touchreleased = function(self, id, x, y, dx, dy, pressure)
+        if mobileButtons then
+            for i, v in pairs(mobileButtons) do
+                if x > v.x and x < v.x + v.w and y > v.y and y < v.y + v.h then
+                    v.released = true
+                    v.down = false
+                end
+            end
+        end
+    end,
+
+    touchmoved = function(self, id, x, y, dx, dy, pressure)
+        if mobileButtons then
+            for i, v in pairs(mobileButtons) do
+                -- if its no longer in the button, set it to false
+                if not (x > v.x and x < v.x + v.w and y > v.y and y < v.y + v.h) then
+                    v.pressed = false
+                    v.down = false
+                    v.released = true
+                end
+            end
+        end
+    end,
+
+    mousepressed = function(self, x, y, button)
+        if mobileButtons then
+            for i, v in pairs(mobileButtons) do
+                if x > v.x and x < v.x + v.w and y > v.y and y < v.y + v.h then
+                    v.pressed = true
+                    v.down = true
+                end
+            end
+        end 
+    end,
+
+    mousereleased = function(self, x, y, button)
+        if mobileButtons then
+            for i, v in pairs(mobileButtons) do
+                if x > v.x and x < v.x + v.w and y > v.y and y < v.y + v.h then
+                    v.released = true
+                    v.down = false
+                end
+            end
+        end
+    end,
+
+    mousemoved = function(self, x, y, dx, dy, istouch)
+        if mobileButtons then
+            for i, v in pairs(mobileButtons) do
+                -- if its no longer in the button, set it to false
+                if not (x > v.x and x < v.x + v.w and y > v.y and y < v.y + v.h) then
+                    v.pressed = false
+                    v.down = false
+                    v.released = true
+                end
             end
         end
     end,
@@ -287,5 +566,9 @@ return {
         elseif curMenu == "fnf" then
             love.graphics.print("Play as [</>]: " .. (fnfMomentShiz[fnfMomentSelected] and "Player" or "Enemy"), 0, 0, 0, 2, 2)
         end
+    end,
+
+    leave = function(self)
+        mobileButtons = nil
     end,
 }
