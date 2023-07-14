@@ -482,6 +482,12 @@ return {
         -- mobile buttons
 
         if isMobile or __DEBUG__ then
+            buttonOrder = {
+                "gameLeft",
+                "gameDown",
+                "gameUp",
+                "gameRight"
+            }
             mobileButtons = {
                 ["gameLeft"] = {
                     pressed = false,
@@ -502,7 +508,7 @@ return {
                         end
 
                         love.graphics.setColor(1, 1, 1, 1)
-                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 25, 25)
                     end
                 },
                 ["gameDown"] = {
@@ -522,7 +528,7 @@ return {
                         end
 
                         love.graphics.setColor(1, 1, 1, 1)
-                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 25, 25)
                     end
                 },
                 ["gameUp"] = {
@@ -542,7 +548,7 @@ return {
                         end
 
                         love.graphics.setColor(1, 1, 1, 1)
-                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 25, 25)
                     end
                 },
                 ["gameRight"] = {
@@ -562,10 +568,16 @@ return {
                         end
 
                         love.graphics.setColor(1, 1, 1, 1)
-                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 25, 25)
                     end
                 },
             }
+
+            -- in buttonOrder, set button.x to the middle of the screen
+            for i, v in ipairs(buttonOrder) do
+                mobileButtons[v].x = (love.graphics.getWidth() / 2) - (mobileButtons[v].w / 2) + ((i - 2) * 165) - 75
+                mobileButtons[v].y = love.graphics.getHeight() - 200 
+            end
         end
 
         --

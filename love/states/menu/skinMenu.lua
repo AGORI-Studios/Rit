@@ -219,11 +219,11 @@ return {
 
                         if self.down then
                             love.graphics.setColor(1, 1, 1, 0.5)
-                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 25, 25)
                         end
 
                         love.graphics.setColor(1, 1, 1, 1)
-                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 25, 25)
                     end
                 },
                 ["down"] = {
@@ -241,11 +241,11 @@ return {
 
                         if self.down then
                             love.graphics.setColor(1, 1, 1, 0.5)
-                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 25, 25)
                         end
 
                         love.graphics.setColor(1, 1, 1, 1)
-                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 25, 25)
                     end
                 },
                 ["confirm"] = {
@@ -263,11 +263,11 @@ return {
 
                         if self.down then
                             love.graphics.setColor(1, 1, 1, 0.5)
-                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 25, 25)
                         end
 
                         love.graphics.setColor(1, 1, 1, 1)
-                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 25, 25)
                     end
                 }
             }

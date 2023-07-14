@@ -18,6 +18,10 @@ resources/win32/*
 resources/macos/*
 resources/nx/*
 resources/appimage/*
+resources/android/*
+
+love/defaultskins/AnimationTest/*
+
 
 # Important files to keep in the repository
 !resources/win32/download.txt
@@ -30,7 +34,9 @@ resources/appimage/*
 !resources/win32/discord-rpc.dll
 !resources/win64/discord-rpc.dll
 !resources/macos/discord-rpc.dylib
+!resources/android/TBD.txt
+!resources/android/AndroidManifest.xml
+!resources/android/build.gradle
 
-love/defaultskins/AnimationTest/*
 
 !love/audio/*

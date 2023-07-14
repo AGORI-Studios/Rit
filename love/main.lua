@@ -413,11 +413,14 @@ function love.draw()
 
     if __DEBUG__ then debug.draw() end
 
-    if mobileButtons then
-        for i, v in pairs(mobileButtons) do
-            v:draw()
+    love.graphics.push()
+        if mobileButtons then
+            for i, v in pairs(mobileButtons) do
+                -- for some reason, on mobile, they are offseted(??????)
+                v:draw()
+            end
         end
-    end
+    love.graphics.pop()
 end
 
 function love.focus(f)

@@ -49,21 +49,21 @@ return {
                     down = false,
                     released = false,
 
-                    x = 900,
-                    y = 400,
-                    w = 300,
-                    h = 300,
+                    x = love.graphics.getWidth() - 150,
+                    y = love.graphics.getHeight() - 150,
+                    w = 150,
+                    h = 150,
 
                     draw = function(self)
                         -- rounded rectangle, fill if down
 
                         if self.down then
                             love.graphics.setColor(1, 1, 1, 0.5)
-                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 25, 25)
                         end
 
                         love.graphics.setColor(1, 1, 1, 1)
-                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 25, 25)
                     end
                 }
             }

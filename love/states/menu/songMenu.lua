@@ -119,20 +119,20 @@ return {
                     released = false,
 
                     x = 150,
-                    y = 400,
-                    w = 150,
-                    h = 150,
+                    y = love.graphics.getHeight() - 225,
+                    w = 75,
+                    h = 75,
 
                     draw = function(self)
                         -- rounded rectangle, fill if down
 
                         if self.down then
                             love.graphics.setColor(1, 1, 1, 0.5)
-                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 25, 25)
                         end
 
                         love.graphics.setColor(1, 1, 1, 1)
-                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 25, 25)
                     end
                 },
                 ["down"] = {
@@ -141,20 +141,20 @@ return {
                     released = false,
 
                     x = 150,
-                    y = 550,
-                    w = 150,
-                    h = 150,
+                    y = love.graphics.getHeight() - 150,
+                    w = 75,
+                    h = 75,
 
                     draw = function(self)
                         -- rounded rectangle, fill if down
 
                         if self.down then
                             love.graphics.setColor(1, 1, 1, 0.5)
-                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 25, 25)
                         end
 
                         love.graphics.setColor(1, 1, 1, 1)
-                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 25, 25)
                     end
                 },
                 ["left"] = {
@@ -162,21 +162,21 @@ return {
                     down = false,
                     released = false,
 
-                    x = 0,
-                    y = 475,
-                    w = 150,
-                    h = 150,
+                    x = 75,
+                    y = love.graphics.getHeight() - 175,
+                    w = 75,
+                    h = 75,
 
                     draw = function(self)
                         -- rounded rectangle, fill if down
 
                         if self.down then
                             love.graphics.setColor(1, 1, 1, 0.5)
-                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 25, 25)
                         end
 
                         love.graphics.setColor(1, 1, 1, 1)
-                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 25, 25)
                     end
                 },
                 ["right"] = {
@@ -184,8 +184,30 @@ return {
                     down = false,
                     released = false,
 
-                    x = 300,
-                    y = 475,
+                    x = 225,
+                    y = love.graphics.getHeight() - 175,
+                    w = 75,
+                    h = 75,
+
+                    draw = function(self)
+                        -- rounded rectangle, fill if down
+
+                        if self.down then
+                            love.graphics.setColor(1, 1, 1, 0.5)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 25, 25)
+                        end
+
+                        love.graphics.setColor(1, 1, 1, 1)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 25, 25)
+                    end
+                },
+                ["confirm"] = {
+                    pressed = false,
+                    down = false,
+                    released = false,
+
+                    x = love.graphics.getWidth() - 225,
+                    y = love.graphics.getHeight() - 225,
                     w = 150,
                     h = 150,
 
@@ -194,33 +216,11 @@ return {
 
                         if self.down then
                             love.graphics.setColor(1, 1, 1, 0.5)
-                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 25, 25)
                         end
 
                         love.graphics.setColor(1, 1, 1, 1)
-                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
-                    end
-                },
-                ["confirm"] = {
-                    pressed = false,
-                    down = false,
-                    released = false,
-
-                    x = 900,
-                    y = 400,
-                    w = 300,
-                    h = 300,
-
-                    draw = function(self)
-                        -- rounded rectangle, fill if down
-
-                        if self.down then
-                            love.graphics.setColor(1, 1, 1, 0.5)
-                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
-                        end
-
-                        love.graphics.setColor(1, 1, 1, 1)
-                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 25, 25)
                     end
                 },
                 ["extB"] = {
@@ -230,19 +230,19 @@ return {
 
                     x = 90,
                     y = 90,
-                    w = 75,
-                    h = 75,
+                    w = 37.5,
+                    h = 37.5,
 
                     draw = function(self)
                         -- rounded rectangle, fill if down
 
                         if self.down then
                             love.graphics.setColor(1, 1, 1, 0.5)
-                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 25, 25)
                         end
 
                         love.graphics.setColor(1, 1, 1, 1)
-                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 50, 50)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 25, 25)
                     end
                 }
             }
