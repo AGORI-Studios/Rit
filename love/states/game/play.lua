@@ -700,6 +700,7 @@ return {
             end
         elseif musicTime > (audioFile:getDuration() * 1000) / songSpeed then 
             state.switch(resultsScreen, scoring, {songTitle, songDifficultyName}, false, replayHits, hitsTable)
+            return
         end
         for i = 1, #charthits do
             for j = 1, #charthits[i] do
@@ -977,7 +978,7 @@ return {
                     love.graphics.pop()
 
                     love.graphics.push()
-                        if settings.settings.downscroll then 
+                        if settings.settings.Game.downscroll then 
                             love.graphics.translate(0, push.getHeight() - 175)
                             love.graphics.scale(1, -1)
                         else
@@ -990,7 +991,7 @@ return {
                     love.graphics.pop()
 
                     love.graphics.push()
-                        if settings.settings.downscroll then 
+                        if settings.settings.Game.downscroll then 
                             love.graphics.translate(0, push.getHeight() - 175)
                             love.graphics.scale(1, -1)
                         else
@@ -1137,7 +1138,5 @@ return {
         end
 
         modifiers:clear()
-
-        mobileButtons = nil
     end,
 }
