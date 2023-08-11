@@ -985,6 +985,17 @@ return {
                             love.graphics.translate(0, 175)
                         end
                         love.graphics.translate(push.getWidth() / 2 - 175, 50)
+                        for i = 1, #charthits do
+                            for j = #charthits[i], 1, -1 do
+                                if math.abs(charthits[i][j][2]) <= 1100 then
+                                    if charthits[i][j][4] then -- hold
+                                        noteImgs[i][2]:draw(90 -(settings.settings.Game["note spacing"]*(#receptors/2-1)) + (settings.settings.Game["note spacing"] * (i-1)), charthits[i][j][2], notesize, noteImgs[i][2].scaleY * notesize * (settings.settings.Game.downscroll and -1 or 1))
+                                    elseif charthits[i][j][5] then -- hold end
+                                        noteImgs[i][3]:draw(90 -(settings.settings.Game["note spacing"]*(#receptors/2-1)) + (settings.settings.Game["note spacing"] * (i-1)), charthits[i][j][2]+50, notesize, -notesize)
+                                    end
+                                end
+                            end
+                        end
                         for i = 1, #receptors do
                             receptors[i][PRESSEDMOMENTS[i]]:draw(90 -(settings.settings.Game["note spacing"]*(#receptors/2-1)) + (settings.settings.Game["note spacing"] * (i-1)), strumlineY[1], notesize, notesize * (settings.settings.Game.downscroll and -1 or 1))
                         end 
@@ -1005,15 +1016,8 @@ return {
                             for j = #charthits[i], 1, -1 do
                                 if math.abs(charthits[i][j][2]) <= 1100 then
                                     -- if the note is actually on screen (even with scroll velocity modifiers)
-                                    if not charthits[i][j][5] then
-                                        
-                                        if charthits[i][j][4] then -- normal
-                                            noteImgs[i][2]:draw(90 -(settings.settings.Game["note spacing"]*(#receptors/2-1)) + (settings.settings.Game["note spacing"] * (i-1)), charthits[i][j][2], notesize, noteImgs[i][2].scaleY * notesize * (settings.settings.Game.downscroll and -1 or 1))
-                                        else -- hold
-                                            noteImgs[i][1]:draw(90 -(settings.settings.Game["note spacing"]*(#receptors/2-1)) + (settings.settings.Game["note spacing"] * (i-1)), charthits[i][j][2], notesize, notesize * (settings.settings.Game.downscroll and -1 or 1))
-                                        end
-                                    else -- end
-                                        noteImgs[i][3]:draw(90 -(settings.settings.Game["note spacing"]*(#receptors/2-1)) + (settings.settings.Game["note spacing"] * (i-1)), charthits[i][j][2]+50, notesize, -notesize)
+                                    if not charthits[i][j][5] and not charthits[i][j][4] then
+                                        noteImgs[i][1]:draw(90 -(settings.settings.Game["note spacing"]*(#receptors/2-1)) + (settings.settings.Game["note spacing"] * (i-1)), charthits[i][j][2], notesize, notesize * (settings.settings.Game.downscroll and -1 or 1))                                        
                                     end
                                 end
                             end
@@ -1069,11 +1073,11 @@ return {
                         scoreFormat = string.format("%07d", round(scoring.score))
                         love.graphics.setFont(accuracyFont)
                         graphics.setColor(uiTextColor)
-                        love.graphics.printf(scoring.score > 1000000 and 1000000 or scoreFormat, 0, 0, 960, "right")
-                        love.graphics.printf(((math.floor(scoring.ratingPercentLerp * 10000) / 100)) .. "%", 0, 45, 960, "right")
+                        love.graphics.printf(scoring.score > 1000000 and 1000000 or scoreFormat, skinJson.skin.ui.gameplay.score.position.x, skinJson.skin.ui.gameplay.score.position.y, 960, skinJson.skin.ui.gameplay.score.align)
+                        love.graphics.printf(((math.floor(scoring.ratingPercentLerp * 10000) / 100)) .. "%", skinJson.skin.ui.gameplay.accuracy.position.x, skinJson.skin.ui.gameplay.accuracy.position.y, 960, skinJson.skin.ui.gameplay.accuracy.align)
                         -- format scoring.scoreRating to 2 decimal places
                         scoreRatingFormat = string.format("%.2f", scoring.scoreRating)
-                        love.graphics.printf(scoreRatingFormat, 0, 90, 960, "right")
+                        love.graphics.printf(scoreRatingFormat, skinJson.skin.ui.gameplay.scoreRating.position.x, skinJson.skin.ui.gameplay.scoreRating.position.y, 960, skinJson.skin.ui.gameplay.scoreRating.align)
                         graphics.setColor(1, 1, 1, 1)
                         love.graphics.setFont(font)
                     end

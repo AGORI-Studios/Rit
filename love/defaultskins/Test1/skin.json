@@ -49,7 +49,40 @@
 	  "ui": {
 		"healthBarColor": [255, 255, 255],
 		"uiTextColor": [255, 255, 255],
-		"timeBarColor": [255, 255, 255]
+		"timeBarColor": [255, 255, 255],
+  
+		"gameplay": {
+		  "These are the positions of the UI elements.": "",
+		  "The position is relative to the center of the screen.": "",
+		  
+		  "score": {
+			"align": "right",
+			"position": {
+			  "x": 0,
+			  "y": 0
+			}
+		  },
+		  "accuracy": {
+			"align": "right",
+			"position": {
+			  "x": 0,
+			  "y": 45
+			}
+		  },
+		  "scoreRating": {
+			"align": "right",
+			"position": {
+			  "x": 0,
+			  "y": 90
+			}
+		  }
+		},
+  
+		"menu": {
+		  "mainmenu": {
+			"container": "ui/Menu/MainMenu/container.png"
+		  }
+		}
 	  },
   
 	  "menu": {
@@ -68,7 +101,7 @@
 		
 	  "hitsound": "hitsound.wav",
 	  "hitsound volume": 0.25,
-	  "note size": 0.3,
+	  "note size": 0.25,
 	  "antialiasing": true,
   
 	  "rating position": {
