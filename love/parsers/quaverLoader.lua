@@ -106,7 +106,7 @@ function quaverLoader.load(chart, folderPath, forDiff)
                     
                 local timingPoint = charthits[1] or 0
 
-                table.insert(chartEvents, {startTime, multiplier})
+                table.insert(chartEvents, {startTime/songSpeed, multiplier})
             end
         end
 
