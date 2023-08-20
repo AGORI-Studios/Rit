@@ -166,10 +166,10 @@ function graphics.newImage(path)
         end,
 
         draw = function(self, x, y, sx, sy)
-            if x == nil then x = self.x end
-            if y == nil then y = self.y end
-            if sx == nil then sx = self.scaleX end
-            if sy == nil then sy = self.scaleY end       
+            local x = x or self.x
+            local y = y or self.y
+            local sx = sx or self.scaleX
+            local sy = sy or self.scaleY
             
             graphics.setColor(self.r, self.g, self.b, self.a)
             if not self.sparrowSheet then

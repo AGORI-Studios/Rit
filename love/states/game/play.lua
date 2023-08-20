@@ -943,6 +943,10 @@ return {
         if key_pressed then key_pressed(key) end
     end,
 
+    keyreleased = function(self, key)
+        if key_released then key_released(key) end
+    end,
+
     draw = function(self)
         if musicTimeDo then
             love.graphics.setCanvas(gameCanvas)

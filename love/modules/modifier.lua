@@ -308,6 +308,34 @@ function setLaneScrollspeed(lane, speed)
         speedLane[lane] = speed
     end
 end
+-- modifier backups
+-- at the end of each song, replace the global functions with these
+modifiers.backups = {
+    doMod = doMod,
+    doModSimulated = doModSimulated,
+    applyMod = applyMod,
+    removeMod = removeMod,
+    createSprite = createSprite,
+    changeSpriteProperty = changeSpriteProperty,
+    animateSprite = animateSprite,
+    getSpriteProperty = getSpriteProperty,
+    newShader = newShader,
+    changeShaderProperty = changeShaderProperty,
+    applyShader = applyShader,
+    applySparrow = applySparrow,
+    addAnim = addAnim,
+    addAnimOffset = addAnimOffset,
+    changeAnimSpeed = changeAnimSpeed,
+    setCameraZoom = setCameraZoom,
+    setCameraPos = setCameraPos,
+    changeGameProperty = changeGameProperty,
+    setMusicPlaying = setMusicPlaying,
+    createRect = createRect,
+    changeRectProperty = changeRectProperty,
+    newCircle = newCircle,
+    changeCircleProperty = changeCircleProperty,
+    setLaneScrollspeed = setLaneScrollspeed
+}
 
 -- End globals
 
@@ -375,9 +403,14 @@ function modifiers:clear()
         modifiers[v] = nil
     end
 
+    for i, v in pairs(modifiers.backups) do
+        _G[i] = v
+    end
+
     create = nil
     update = nil
     key_pressed = nil
+    key_released = nil
     update = nil
     hit = nil
 end

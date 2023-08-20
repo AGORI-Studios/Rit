@@ -384,6 +384,10 @@ function love.keypressed(key)
     end
 end
 
+function love.keyreleased(key)
+    state.keyreleased(key)
+end
+
 function love.textinput(text)
     state.textinput(text)
     debug.textinput(text)
