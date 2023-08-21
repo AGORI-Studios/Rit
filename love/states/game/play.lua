@@ -60,7 +60,7 @@ function addJudgement(judgement, lane, hitTime)
 
     -- Determine scoring.scoreRating based of song rating and accuracy
     -- should be a relativly low number, so if a song has like a 30 rating, you can get a max of like 34-ish
-    scoring.scoreRating = songRating / math.pow((scoring.score / ((noteCounter + scoring["Miss"]) * scoring.scorePoints["Marvellous"]) * 100)/92, 6)
+    scoring.scoreRating = (songRating or 1) / math.pow((scoring.score / ((noteCounter + scoring["Miss"]) * scoring.scorePoints["Marvellous"]) * 100)/92, 6)
 
     table.insert(hitsTable.hits, {hitTime, musicTime})
 end
@@ -139,7 +139,7 @@ function addJudgement(judgement, lane, hitTime)
 
     -- Determine scoring.scoreRating based of song rating and accuracy
     -- should be a relativly low number, so if a song has like a 30 rating, you can get a max of like 34-ish
-    scoring.scoreRating = (scoring.score / ((noteCounter + scoring["Miss"]) * scoring.scorePoints["Marvellous"]) * 100) * (songRating / 100) * 1.05
+    scoring.scoreRating = (scoring.score / ((noteCounter + scoring["Miss"]) * scoring.scorePoints["Marvellous"]) * 100) * ((songRating or 1) / 100) * 1.05
 
     table.insert(hitsTable.hits, {hitTime, musicTime})
 end

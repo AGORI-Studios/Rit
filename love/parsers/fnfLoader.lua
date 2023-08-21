@@ -29,8 +29,8 @@ function fnfLoader.getDiff(chart)
     end
     bpmEvents = {}
     chartEvents = {}
-    -- ehhhh not rn
-    return "N/A"
+    -- can't return a diff for fnf charts as there is too players
+    return 1
 end
 
 function fnfLoader.load(chart, isPlayer, folderPath)
