@@ -183,6 +183,7 @@ function quaverLoader.load(chart, folderPath, forDiff)
     if not forDiff then
         Timer.after(2,
             function()
+                if create then create() end
                 state.switch(game)
                 musicTimeDo = true
             end
