@@ -153,9 +153,11 @@ function InitializePositionMarkers()
     -- long position
     local position = chartEvents[1][1] * InitialScrollVelocity * trackRounding
     table.insert(VelocityPositionMarkers, position)
-
     for i = 2, #chartEvents do
-        position = position + (chartEvents[i][1] - chartEvents[i - 1][1]) * chartEvents[i - 1][2] * trackRounding
+        position = position + (
+            chartEvents[i][1] - 
+            chartEvents[i - 1][1]
+        ) * (chartEvents[i - 1] and chartEvents[i - 1][2] or 0) * trackRounding
         table.insert(VelocityPositionMarkers, position)
     end
 end
