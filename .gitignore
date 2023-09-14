@@ -1,11 +1,3 @@
-# Rhythm game charts
-*.qua
-*.mp3
-*.ogg
-*.sm
-*.osu
-*.qp
-*.osz
 *.zip
 
 !love/defaultsongs/*
