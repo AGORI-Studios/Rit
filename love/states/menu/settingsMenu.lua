@@ -29,6 +29,9 @@ local inputList = {
     "back"
 }
 
+scrollSpeed = 50
+scrollDelay = 0.3
+
 return {
     enter = function(self)
         allSettings = {
@@ -303,12 +306,78 @@ return {
             end
         end
 
+        --[[ if inputs["confirm"].down then
+            if curOption == "" then
+                curOption = allSettings[curSetting]
+                curSetting = 1
+            elseif curOption == "Game" then
+                if type(settings.settings[curOption][gameSettings[curSetting) == "boolean" then
+                    settings.settings[curOption][gameSettings[curSetting = not settings.settings[curOption][gameSettings[curSetting
+                end
+                if gameSettings[curSetting] == "skin" then
+                    state.switch(skinSelect)
+                end
+            elseif curOption == "Graphics" then
+                if type(settings.settings[curOption][graphicsSettings[curSetting) == "boolean" then
+                    settings.settings[curOption][graphicsSettings[curSetting = not settings.settings[curOption][graphicsSettings[curSetting
+                end
+            elseif curOption == "Audio" then
+                if type(settings.settings[curOption][audioSettings[curSetting) == "boolean" then
+                    settings.settings[curOption][audioSettings[curSetting = not settings.settings[curOption][audioSettings[curSetting
+                end
+            end
+        elseif inputs["left"].down then
+            if curOption == "Game" then
+                if type(settings.settings[curOption][gameSettings[curSetting) == "number" then
+                    settings.settings[curOption][gameSettings[curSetting = settings.settings[curOption][gameSettings[curSetting - (
+                        gameSettings[curSetting] == "scroll speed" and 1
+                        or gameSettings[curSetting] == "lane cover" and 0.01
+                        or 1
+                    )
+                end
+            elseif curOption == "Graphics" then
+                if type(settings.settings[curOption][graphicsSettings[curSetting) == "number" then
+                    settings.settings[curOption][graphicsSettings[curSetting = settings.settings[curOption][graphicsSettings[curSetting - 1
+                end
+            elseif curOption == "Audio" then
+                if type(settings.settings[curOption][audioSettings[curSetting]) == "number" then
+                    settings.settings[curOption][audioSettings[curSetting] = settings.settings[curOption][audioSettings[curSetting] - 0.1
+                end
+            end
+        elseif inputs["right"].down then
+            if curOption == "Game" then
+                if type(settings.settings[curOption][gameSettings[curSetting]) == "number" then
+                    settings.settings[curOption][gameSettings[curSetting] = settings.settings[curOption][gameSettings[curSetting] + (
+                        gameSettings[curSetting] == "scroll speed" and 1
+                        or gameSettings[curSetting] == "lane cover" and 0.01
+                        or 1
+                    )
+                end
+            elseif curOption == "Graphics" then
+                if type(settings.settings[curOption][graphicsSettings[curSetting]) == "number" then
+                    settings.settings[curOption][graphicsSettings[curSetting] = settings.settings[curOption][graphicsSettings[curSetting] + 1
+                end
+            elseif curOption == "Audio" then
+                if type(settings.settings[curOption][audioSettings[curSetting]) == "number" then
+                    settings.settings[curOption][audioSettings[curSetting] = settings.settings[curOption][audioSettings[curSetting] + 0.1
+                end
+            end
+
+        elseif inputs["back"].pressed then
+            if curOption == "" then
+                state.switch(startMenu)
+            else
+                curOption = ""
+            end
+        end --]]
+
+        -- if button is pressed or down and scrollDelay was reached, then do the thing
+        print(scrollDelay)
         if inputs["confirm"].pressed then
             if curOption == "" then
                 curOption = allSettings[curSetting]
                 curSetting = 1
             elseif curOption == "Game" then
-                -- if the value is a boolean, then toggle it
                 if type(settings.settings[curOption][gameSettings[curSetting]]) == "boolean" then
                     settings.settings[curOption][gameSettings[curSetting]] = not settings.settings[curOption][gameSettings[curSetting]]
                 end
@@ -324,11 +393,12 @@ return {
                     settings.settings[curOption][audioSettings[curSetting]] = not settings.settings[curOption][audioSettings[curSetting]]
                 end
             end
-        elseif inputs["left"].pressed then
+            scrollDelay = 0
+        elseif inputs["left"].pressed or (inputs["left"].down and scrollDelay >= 0.1) then
             if curOption == "Game" then
                 if type(settings.settings[curOption][gameSettings[curSetting]]) == "number" then
                     settings.settings[curOption][gameSettings[curSetting]] = settings.settings[curOption][gameSettings[curSetting]] - (
-                        gameSettings[curSetting] == "scroll speed" and 1
+                        (gameSettings[curSetting] == "scroll speed" and input:down("extB")) and 5 or gameSettings[curSetting] == "scroll speed" and 1
                         or gameSettings[curSetting] == "lane cover" and 0.01
                         or 1
                     )
@@ -342,11 +412,12 @@ return {
                     settings.settings[curOption][audioSettings[curSetting]] = settings.settings[curOption][audioSettings[curSetting]] - 0.1
                 end
             end
-        elseif inputs["right"].pressed then
+            scrollDelay = 0
+        elseif inputs["right"].pressed or (inputs["right"].down and scrollDelay >= 0.1) then
             if curOption == "Game" then
                 if type(settings.settings[curOption][gameSettings[curSetting]]) == "number" then
                     settings.settings[curOption][gameSettings[curSetting]] = settings.settings[curOption][gameSettings[curSetting]] + (
-                        gameSettings[curSetting] == "scroll speed" and 1
+                        (gameSettings[curSetting] == "scroll speed" and input:down("extB")) and 5 or gameSettings[curSetting] == "scroll speed" and 1
                         or gameSettings[curSetting] == "lane cover" and 0.01
                         or 1
                     )
@@ -360,13 +431,25 @@ return {
                     settings.settings[curOption][audioSettings[curSetting]] = settings.settings[curOption][audioSettings[curSetting]] + 0.1
                 end
             end
-
+            scrollDelay = 0
         elseif inputs["back"].pressed then
             if curOption == "" then
                 state.switch(startMenu)
             else
+                if curOption == "Graphics" then
+                    if love.system.getOS() ~= "NX" then
+                        love.window.setMode(settings.settings["Graphics"]["width"], settings.settings["Graphics"]["height"], {
+                            fullscreen = settings.settings["Graphics"]["fullscreen"],
+                            vsync = settings.settings["Graphics"]["vsync"],
+                        })
+                    end
+                end
                 curOption = ""
             end
+        elseif not (inputs["confirm"].down or inputs["left"].down or inputs["right"].down) then
+            scrollDelay = 0
+        elseif (inputs["confirm"].down or inputs["left"].down or inputs["right"].down) then
+            scrollDelay = scrollDelay + dt
         end
 
         -- go through all possible settings, if its less than 0 then set it to 0
