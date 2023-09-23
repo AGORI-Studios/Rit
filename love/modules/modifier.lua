@@ -53,6 +53,8 @@ end
 modifiers.camera = {x=0,y=0,zoom=1}
 modifiers.gameProperties = {["receptorsVisible"]=true,["healthbarVisible"]=true,["scoreVisible"]=true,["timebarVisible"]=true}
 modifiers.musicPlaying = true
+modifiers.receptoralphas = {1,1,1,1}
+modifiers.notecolalphas = {1,1,1,1}
 
 function getReverseForCol(l)
     local val = 0
@@ -398,6 +400,8 @@ function modifiers:clear()
     modifiers.draws = {}
     modifiers.gameProperties = {["receptorsVisible"]=true,["healthbarVisible"]=true,["scoreVisible"]=true,["timebarVisible"]=true}
     modifiers.musicPlaying = true
+    modifiers.receptoralphas = {1,1,1,1}
+    modifiers.notecolalphas = {1,1,1,1}
 
     for _, v in pairs(modifiers.modList) do
         modifiers[v] = nil
