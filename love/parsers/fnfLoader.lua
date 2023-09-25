@@ -29,8 +29,8 @@ function fnfLoader.getDiff(chart)
     end
     bpmEvents = {}
     chartEvents = {}
-    -- ehhhh not rn
-    return "N/A"
+    -- can't return a diff for fnf charts as there is too players
+    return 1
 end
 
 function fnfLoader.load(chart, isPlayer, folderPath)
@@ -79,7 +79,7 @@ function fnfLoader.load(chart, isPlayer, folderPath)
                         if not table.find(fnfBlacklist, noteVer) then
                             table.insert(charthits[noteType+1], {noteTime, 0, noteType+1, false, false})
 
-                            for i = 1, noteLength, 95/2/speed do
+                            for i = 1, noteLength, 95/2 do
                                 if i + 95/2/speed < noteLength then
                                     charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, noteType+1, true}
                                 else
@@ -97,8 +97,8 @@ function fnfLoader.load(chart, isPlayer, folderPath)
                         if not table.find(fnfBlacklist, noteVer) then
                             table.insert(charthits[noteType-3], {noteTime, 0, noteType-3, false, false})
 
-                            for i = 1, noteLength, 95/2/speed do
-                                if i + 95/2/speed < noteLength then
+                            for i = 1, noteLength, 95/2 do
+                                if i + 95/2 < noteLength then
                                     charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, noteType-3, true}
                                 else
                                     charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, noteType-3, true, true}
@@ -117,8 +117,8 @@ function fnfLoader.load(chart, isPlayer, folderPath)
                         if not table.find(fnfBlacklist, noteVer) then
                             table.insert(charthits[noteType-3], {noteTime, 0, noteType-3, false, false})
 
-                            for i = 1, noteLength, noteImgs[noteType-3][2]:getHeight()/2/speed do
-                                if i + noteImgs[noteType-3][2]:getHeight()/2/speed < noteLength then
+                            for i = 1, noteLength, noteImgs[noteType-3][2]:getHeight()/2 do
+                                if i + noteImgs[noteType-3][2]:getHeight()/2 < noteLength then
                                     charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, noteType-3, true}
                                 else
                                     charthits[noteType-3][#charthits[noteType-3] + 1] = {noteTime+i, 0, noteType-3, true, true}
@@ -135,8 +135,8 @@ function fnfLoader.load(chart, isPlayer, folderPath)
                         if not table.find(fnfBlacklist, noteVer) then
                             table.insert(charthits[noteType+1], {noteTime, 0, noteType+1, false, false})
 
-                            for i = 1, noteLength, noteImgs[noteType+1][2]:getHeight()/2/speed do
-                                if i + noteImgs[noteType+1][2]:getHeight()/2/speed < noteLength then
+                            for i = 1, noteLength, noteImgs[noteType+1][2]:getHeight()/2 do
+                                if i + noteImgs[noteType+1][2]:getHeight()/2 < noteLength then
                                     charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, noteType+1, true}
                                 else
                                     charthits[noteType+1][#charthits[noteType+1] + 1] = {noteTime+i, 0, noteType+1, true, true}

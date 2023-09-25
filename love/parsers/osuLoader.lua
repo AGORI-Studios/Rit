@@ -137,8 +137,8 @@ function osuLoader.load(chart, folderPath, forDiff)
                         endtime = tonumber(endtime) or 0
                         length = endtime - startTime
                         if length ~= startTime then 
-                            for i = 1, length, noteImgs[lane+1][2]:getHeight()/2/speed do 
-                                if i + noteImgs[lane+1][2]:getHeight()/2/speed < length then 
+                            for i = 1, length, noteImgs[lane+1][2]:getHeight()/2 do 
+                                if i + noteImgs[lane+1][2]:getHeight()/2 < length then 
                                     charthits[lane+1][#charthits[lane+1] + 1] = {startTime+i, 0, lane, true}
                                 else
                                     charthits[lane+1][#charthits[lane+1] + 1] = {startTime+i, 0, lane, true, true}
@@ -150,21 +150,27 @@ function osuLoader.load(chart, folderPath, forDiff)
             end
         end
 
-        -- go through chartHits and remove all overlapping notes
-        for i = 1, 4 do 
-            table.sort(charthits[i], function(a, b) return a[1] < b[1] end)
+        -- go through the chart and remove all overlapping notes (Can't be hold or end)
+    end
+    for i = 1, 4 do
+        table.sort(charthits[i], function(a, b)
+            if a and b then
+                return a[1] < b[1]
+            else
+                return false
+            end
+        end)
 
-            local offset = 0
+        local offset = 0
 
-            for j = 2, #charthits[i] do 
-                local index = j - offset
+        for j = 2, #charthits[i] do 
+            local index = j - offset
 
-                if charthits[i][index] ~= nil and charthits[i][index+1] ~= nil then
-                    if (not charthits[i][index][4] and not charthits[i][index+1][4]) then
-                        if charthits[i][index+1][1] - charthits[i][index][1] < 0.1 then
-                            table.remove(charthits[i], index)
-                            offset = offset + 1
-                        end
+            if charthits[i][index] ~= nil and charthits[i][index+1] ~= nil then
+                if (not charthits[i][index][4] and not charthits[i][index+1][4]) then
+                    if charthits[i][index+1][1] - charthits[i][index][1] < 0.1 then
+                        table.remove(charthits[i], index)
+                        offset = offset + 1
                     end
                 end
             end

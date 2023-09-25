@@ -94,6 +94,13 @@ function string.splitAtFirst(str, index)
     return str:sub(1, index), str:sub(index + 1)
 end
 
+function string.split(str, sep)
+    local sep, fields = sep or ":", {}
+    local pattern = string.format("([^%s]+)", sep)
+    str:gsub(pattern, function(c) fields[#fields + 1] = c end)
+    return fields
+end
+
 function string.title(str)
     return str:gsub("(%a)([%w_']*)", function(first, rest)
         return first:upper() .. rest:lower()

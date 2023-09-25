@@ -348,6 +348,7 @@ end
 
 -- checks for changes in inputs
 function Player:update()
+	if debug.consoleTyping then return end
 	self:_setActiveDevice()
 	self:_updateControls()
 	self:_updatePairs()

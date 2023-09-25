@@ -1,0 +1,72 @@
+import java.nio.charset.StandardCharsets
+
+apply plugin: 'com.android.application'
+
+android {
+    namespace "org.love2d.android.executable"
+    compileSdk 33
+    buildToolsVersion '33.0.0'
+    ndkVersion '23.2.8568313'
+    defaultConfig {
+        applicationId "rit.agori.dev"
+        versionCode 1
+        versionName "1.0"
+        minSdkVersion 16
+        targetSdk 33
+        
+        def getAppName = {
+            def nameArray = project.properties["app.name_byte_array"]
+            def name = project.properties["app.name"]
+            if (name != null && nameArray != null) {
+                throw new Exception("Only define either `app.name` or `app.name_byte_array` in gradle.properties, but not both!")
+            }
+
+            if (name == null) {
+                def nameArraySplit = nameArray.split(",")
+                def nameBytes = new byte[nameArraySplit.length]
+                def count = 0
+                for (String s: nameArraySplit) {
+                    nameBytes[count++] = (byte) Integer.parseInt(s)
+                }
+                return new String(nameBytes, StandardCharsets.UTF_8)
+            }
+            return name
+        }
+
+        manifestPlaceholders = [
+            NAME:getAppName(),
+            ORIENTATION:project.properties["app.orientation"],
+        ]
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    flavorDimensions 'mode', 'recording'
+    productFlavors {
+        normal {
+            dimension 'mode'
+        }
+        embed {
+            dimension 'mode'
+        }
+        record {
+            dimension 'recording'
+        }
+        noRecord {
+            dimension 'recording'
+        }
+    }
+    lint {
+        abortOnError false
+    }
+}
+
+dependencies {
+    api 'androidx.multidex:multidex:2.0.1'
+    api fileTree(dir: 'libs', include: ['*.jar'])
+    api 'androidx.appcompat:appcompat:1.6.1'
+    api project(':love')
+}

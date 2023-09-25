@@ -19,6 +19,57 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ------------------------------------------------------------------------------]]
 
+musicPosValue = {1000}
+musicPitch = {1}
+function addJudgement(judgement, lane, hitTime)
+    scoring[judgement] = scoring[judgement] + 1
+    if judgement ~= "Miss" then
+        combo = combo + 1
+        if comboTimer then 
+            Timer.cancel(comboTimer)
+        end
+        comboSize.y = 1
+        comboTimer = Timer.tween(0.1, comboSize, {y = 1.85, x = 1.6}, "in-out-quad", function()
+            comboTimer = Timer.tween(0.1, comboSize, {y = 1.6,}, "in-out-quad")
+        end)
+    else
+        combo = 0
+    end
+    curJudgement = judgement
+
+    additionalScore = additionalScore + scoring.scorePoints[judgement]
+
+    if judgeTimer then 
+        Timer.cancel(judgeTimer)
+    end
+    ratingsize.x = 1
+    ratingsize.y = 1
+    judgeTimer = Timer.tween(0.1, ratingsize, {x = 1.08, y = 1.08}, "in-out-quad", function()
+        judgeTimer = Timer.tween(0.1, ratingsize, {x = 0.85, y = 0.85}, "in-out-quad")
+    end)
+
+    if waitTmr then 
+        Timer.cancel(waitTmr)
+    end
+
+    waitTmr = Timer.after(0.35, function()
+        Timer.tween(0.1, ratingsize, {x = 0, y = 0}, "in-out-quad")
+        Timer.tween(0.1, comboSize, {y = 0, x = 0}, "in-out-quad")
+    end)
+    game:calculateRating()
+
+    -- Determine scoring.scoreRating based of song rating and accuracy
+    -- should be a relativly low number, so if a song has like a 30 rating, you can get a max of like 34-ish
+    scoring.scoreRating = (songRating or 1) / math.pow((scoring.score / ((noteCounter + scoring["Miss"]) * scoring.scorePoints["Marvellous"]) * 100)/92, 6)
+
+    table.insert(hitsTable.hits, {hitTime, musicTime})
+end
+
+function getYAdjust(yoffset)
+    local yadj = 0
+    return yoffset + yadj
+end
+
 function resize(img, width, height)
     local scaleX = width / img:getWidth()
     local scaleY = height / img:getHeight()
@@ -35,15 +86,20 @@ local function pause()
     end
 end
 
+trackRounding = 100
+
 local died
+
 inputList = {
-    "one4",
-    "two4",
-    "three4",
-    "four4"
+    "gameLeft",
+    "gameDown",
+    "gameUp",
+    "gameRight"
 }
+
 musicPosValue = {1000}
 musicPitch = {1}
+
 function addJudgement(judgement, lane, hitTime)
     scoring[judgement] = scoring[judgement] + 1
     if judgement ~= "Miss" then
@@ -83,15 +139,180 @@ function addJudgement(judgement, lane, hitTime)
 
     -- Determine scoring.scoreRating based of song rating and accuracy
     -- should be a relativly low number, so if a song has like a 30 rating, you can get a max of like 34-ish
-    scoring.scoreRating = (scoring.score / ((noteCounter + scoring["Miss"]) * scoring.scorePoints["Marvellous"]) * 100) * (songRating / 100) * 1.05
+    scoring.scoreRating = (scoring.score / ((noteCounter + scoring["Miss"]) * scoring.scorePoints["Marvellous"]) * 100) * ((songRating or 1) / 100) * 1.05
 
     table.insert(hitsTable.hits, {hitTime, musicTime})
 end
 
-function getYAdjust(yoffset)
-    local yadj = 0
-    return yoffset + yadj
+-- // QUAVER SV STUFF \\ --
+function InitializePositionMarkers()
+    if #chartEvents == 0 then
+        return
+    end
+
+    -- long position
+    local position = chartEvents[1][1] * InitialScrollVelocity * trackRounding
+    table.insert(VelocityPositionMarkers, position)
+    for i = 2, #chartEvents do
+        position = position + (
+            chartEvents[i][1] - 
+            chartEvents[i - 1][1]
+        ) * (chartEvents[i - 1] and chartEvents[i - 1][2] or 0) * trackRounding
+        table.insert(VelocityPositionMarkers, position)
+    end
 end
+
+function UpdateCurrentTrackPosition()
+    CurrentAudioOffset = musicTime + 0 * songRate
+    CurrentVisualAudioOffset = CurrentAudioOffset + 0 * songRate
+    while currentSvIndex < #chartEvents and CurrentVisualAudioOffset >= chartEvents[currentSvIndex][1] do
+        currentSvIndex = currentSvIndex + 1
+    end
+
+    CurrentTrackPosition = GetPositionFromTime(CurrentVisualAudioOffset, currentSvIndex)
+end
+
+function GetPositionFromTime(time, index)
+    if settings.settings.Game["scroll velocity"] then
+        return (time * trackRounding)
+    end
+
+    if index == 1 then
+        return (time * InitialScrollVelocity * trackRounding)
+    end
+
+    index = index - 1
+
+    local curPos = VelocityPositionMarkers[index]
+    curPos = curPos + ((time - chartEvents[index][1]) * chartEvents[index][2] * trackRounding)
+    return curPos
+end
+
+function getPositionFromTime(time)
+    local _i = 1
+    for i = 1, #chartEvents do
+        if time < chartEvents[i][1] then
+            _i = i
+            break
+        end
+    end
+
+    return GetPositionFromTime(time, _i )
+end
+function IsSVNegative(time)
+    if settings.settings.Game["scroll velocity"] then
+        return false
+    end
+
+    local i_ = 1
+    -- find the sv index at time
+    for i = 1, #chartEvents do
+        if time >= chartEvents[i][1] then
+            i_ = i
+            break
+        end
+    end
+
+    i_ = i_ - 1
+
+    -- find index of the last non-zero SV
+    for i = i_, 1, -1 do
+        if chartEvents[i][2] ~= 0 then
+            i_ = i
+            break
+        end
+    end
+
+    -- if its -1 or 0
+    if i_ <= 0 then
+        return InitialScrollVelocity < 0
+    end
+
+    return chartEvents[i_][2] < 0
+end
+
+function normalizeSVs()
+
+end
+
+TimingTime = 0
+
+function GetSVDirectionChanges(startTime, endTime)
+    local changes = {}
+    if settings.settings.Game["scroll velocity"] then
+        return changes
+    end
+
+    local i_ = 1
+    -- find the sv index
+    for i = 1, #chartEvents do
+        if startTime < chartEvents[i][1] then
+            i_ = i
+            break
+        end
+    end
+
+    local forward = false
+    if (i <= 0) then
+        forward = InitialScrollVelocity > 0
+    else
+        forward = chartEvents[i_ - 1][2] > 0
+    end
+
+    -- loop over sv changes between start and end time
+    for i = i_, #chartEvents do
+        local multiplier = chartEvents[i][2]
+        if (multiplier == 0) then
+            break
+        elseif (forward == (multiplier >0)) then
+            -- direction didnt change
+            break
+        end
+        forward = multiplier > 0
+        table.insert(changes, {chartEvents[i][1], VelocityPositionMarkers[i]})
+    end
+
+    return changes
+end
+
+function initPositions() -- calculates all relevent positions
+    for i = 1, 4 do
+        for _, hitObject in ipairs(charthits[i]) do
+            hitObject.InitialTrackPosition = getPositionFromTime(hitObject[1])
+            hitObject.LatestTrackPosition = hitObject.InitialTrackPosition
+        end
+    end
+end
+
+function GetSpritePosition(offset, initialPos)
+    local sp
+    sp = -35 + ((initialPos - offset) * (speed) / trackRounding)
+    return sp
+end
+
+function UpdateSpritePositions(offset, curTime)
+    local spritePosition = 0.0
+
+    for i = 1, 4 do
+        for _, hitObject in ipairs(charthits[i]) do
+            spritePosition = GetSpritePosition(offset, hitObject.InitialTrackPosition) * modifiers.reverseScale
+            hitObject[2] = spritePosition
+        end
+    end
+end
+
+function getScrollSpeed()
+    local speed = settings.settings.Game["scroll speed"]
+    -- game is a 1080p window
+    local SkinScalingFactor = 1920 / 1366
+    local BaseToVirtualRatio = 1080 / love.graphics.getHeight()
+    local s = (speed / 10) / (20 * songRate) * SkinScalingFactor * BaseToVirtualRatio
+    return s
+end
+
+trackRounding = 100
+
+-- // END QUAVER SV STUFF \\ --
 
 return {
     enter = function(self)
@@ -116,28 +337,61 @@ return {
             scoreRating = 0,
         }
 
+        inputs = {
+            ["gameLeft"] = {
+                pressed = false,
+                down = false,
+                released = false
+            },
+        
+            ["gameDown"] = {
+                pressed = false,
+                down = false,
+                released = false
+            },
+        
+            ["gameUp"] = {
+                pressed = false,
+                down = false,
+                released = false
+            },
+        
+            ["gameRight"] = {
+                pressed = false,
+                down = false,
+                released = false
+            }
+        }
+
         replayHits = {}
         hitsTable = {}
     
         songRate = 1
     
-        musicTime = -settings.settings.Game["start time"] 
-        simulatedMusicTime = -settings.settings.Game["start time"]
+        musicTime = -2500
+        simulatedMusicTime = -2500
     
         PRESSEDMOMENTS = {
-            [1] = 1,
-            [2] = 1,
-            [3] = 1,
-            [4] = 1,
-            [5] = 1,
-            [6] = 1,
-            [7] = 1
+            1,
+            1,
+            1,
+            1,
         }
+
         lastReportedPlaytime = 0
         previousFrameTime = love.timer.getTime() * 1000
         simulatedPreviousFrameTime = love.timer.getTime() * 1000
         additionalScore = 0
         noteCounter = 0
+
+        VelocityPositionMarkers = {}
+        CurrentTrackPosition = 0
+        CurrentAudioOffset = 0
+        CurrentVisualAudioOffset = 0
+        currentSvIndex = 1
+        InitialScrollVelocity = 1
+
+        InitialScrollVelocity = InitialScrollVelocity or 1
     
         died = false
 
@@ -196,7 +450,7 @@ return {
             v = math.floor(v)
         end
 
-        --print(DiffCalc:CalculateDiff())
+        speed = getScrollSpeed()
 
         combo = 0
     
@@ -208,29 +462,7 @@ return {
         musicPosValue = {1000}
         musicPitch = {1}
 
-        if #receptors ~= 4 then 
-            inputList = {
-                "one7",
-                "two7",
-                "three7",
-                "four7",
-                "five7",
-                "six7",
-                "seven7"
-            }
-        else
-            -- 4k
-            inputList = {
-                "one4",
-                "two4",
-                "three4",
-                "four4"
-            }
-        end
-
         modifiers:load()
-        --modifiers:applyMod("tipsy", 1, 5)
-        --modifiers:applyMod("drunk", 1, 5)
         
         strumlineY = {-35}
         whereNotesHit = {-35}
@@ -244,6 +476,114 @@ return {
             voices:setVolume(settings.settings.Audio.music)
         end
 
+        InitializePositionMarkers()
+        UpdateCurrentTrackPosition()
+        initPositions()
+        UpdateSpritePositions(CurrentTrackPosition, CurrentVisualAudioOffset)
+
+        -- mobile buttons
+
+        if isMobile or __DEBUG__ then
+            buttonOrder = {
+                "gameLeft",
+                "gameDown",
+                "gameUp",
+                "gameRight"
+            }
+            mobileButtons = {
+                ["gameLeft"] = {
+                    pressed = false,
+                    down = false,
+                    released = false,
+
+                    x = 325,
+                    y = 550,
+                    w = 150,
+                    h = 150,
+
+                    draw = function(self)
+                        -- rounded rectangle, fill if down
+
+                        if self.down then
+                            love.graphics.setColor(1, 1, 1, 0.5)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                        end
+
+                        love.graphics.setColor(1, 1, 1, 1)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 25, 25)
+                    end
+                },
+                ["gameDown"] = {
+                    pressed = false,
+                    down = false,
+                    released = false,
+
+                    x = 490,
+                    y = 550,
+                    w = 150,
+                    h = 150,
+
+                    draw = function(self)
+                        if self.down then
+                            love.graphics.setColor(1, 1, 1, 0.5)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                        end
+
+                        love.graphics.setColor(1, 1, 1, 1)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 25, 25)
+                    end
+                },
+                ["gameUp"] = {
+                    pressed = false,
+                    down = false,
+                    released = false,
+
+                    x = 655,
+                    y = 550,
+                    w = 150,
+                    h = 150,
+
+                    draw = function(self)
+                        if self.down then
+                            love.graphics.setColor(1, 1, 1, 0.5)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                        end
+
+                        love.graphics.setColor(1, 1, 1, 1)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 25, 25)
+                    end
+                },
+                ["gameRight"] = {
+                    pressed = false,
+                    down = false,
+                    released = false,
+
+                    x = 820,
+                    y = 550,
+                    w = 150,
+                    h = 150,
+
+                    draw = function(self)
+                        if self.down then
+                            love.graphics.setColor(1, 1, 1, 0.5)
+                            love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 50, 50)
+                        end
+
+                        love.graphics.setColor(1, 1, 1, 1)
+                        love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 25, 25)
+                    end
+                },
+            }
+
+            -- in buttonOrder, set button.x to the middle of the screen
+            for i, v in ipairs(buttonOrder) do
+                mobileButtons[v].x = (love.graphics.getWidth() / 2) - (mobileButtons[v].w / 2) + ((i - 2) * 165) - 75
+                mobileButtons[v].y = love.graphics.getHeight() - 200 
+            end
+        end
+
+        --
+
         graphics.fadeIn(0.2)
     end,
 
@@ -255,6 +595,76 @@ return {
 			scoring.ratingPercent = 1
 		end
 	end,
+
+    touchpressed = function(self, id, x, y, dx, dy, pressure)
+        if mobileButtons then
+            for i, v in pairs(mobileButtons) do
+                if x > v.x and x < v.x + v.w and y > v.y and y < v.y + v.h then
+                    v.pressed = true
+                    v.down = true
+                end
+            end
+        end
+    end,
+
+    touchreleased = function(self, id, x, y, dx, dy, pressure)
+        if mobileButtons then
+            for i, v in pairs(mobileButtons) do
+                if x > v.x and x < v.x + v.w and y > v.y and y < v.y + v.h then
+                    v.released = true
+                    v.down = false
+                end
+            end
+        end
+    end,
+
+    touchmoved = function(self, id, x, y, dx, dy, pressure)
+        if mobileButtons then
+            for i, v in pairs(mobileButtons) do
+                -- if its no longer in the button, set it to false
+                if not (x > v.x and x < v.x + v.w and y > v.y and y < v.y + v.h) then
+                    v.pressed = false
+                    v.down = false
+                    v.released = true
+                end
+            end
+        end
+    end,
+
+    mousepressed = function(self, x, y, button)
+        if mobileButtons then
+            for i, v in pairs(mobileButtons) do
+                if x > v.x and x < v.x + v.w and y > v.y and y < v.y + v.h then
+                    v.pressed = true
+                    v.down = true
+                end
+            end
+        end 
+    end,
+
+    mousereleased = function(self, x, y, button)
+        if mobileButtons then
+            for i, v in pairs(mobileButtons) do
+                if x > v.x and x < v.x + v.w and y > v.y and y < v.y + v.h then
+                    v.released = true
+                    v.down = false
+                end
+            end
+        end
+    end,
+
+    mousemoved = function(self, x, y, dx, dy, istouch)
+        if mobileButtons then
+            for i, v in pairs(mobileButtons) do
+                -- if its no longer in the button, set it to false
+                if not (x > v.x and x < v.x + v.w and y > v.y and y < v.y + v.h) then
+                    v.pressed = false
+                    v.down = false
+                    v.released = true
+                end
+            end
+        end
+    end,
 
     update = function(self, dt)
         simulatedTime = love.timer.getTime()
@@ -292,20 +702,21 @@ return {
             end
         elseif musicTime > (audioFile:getDuration() * 1000) / songSpeed then 
             state.switch(resultsScreen, scoring, {songTitle, songDifficultyName}, false, replayHits, hitsTable)
+            return
         end
         for i = 1, #charthits do
             for j = 1, #charthits[i] do
                 if charthits[i][j] then
-                    if charthits[i][1][1] - musicTime <= -100 then 
-                        if not charthits[i][1][4] then
+                    if charthits[i][j][1] - musicTime < -200 then
+                        if not charthits[i][j][4] then
                             noteCounter = noteCounter + 1
                             if scoring.health < 0 then
                                 scoring.health = 0
                             end
                             scoring.health = scoring.health - 0.270
-                            addJudgement("Miss", i, math.abs(charthits[i][1][1] - musicTime))
+                            addJudgement("Miss", i, math.abs(charthits[i][j][1] - musicTime))
                         end
-                        table.remove(charthits[i], 1)
+                        table.remove(charthits[i], j)
                     end
                 end
             end
@@ -315,24 +726,12 @@ return {
         scoring.ratingPercentLerp = math.lerp(scoring.ratingPercentLerp, scoring.ratingPercent, 0.05)
         scoring.score = math.lerp(scoring.score, additionalScore, 0.05)
 
-        for i = 1, (mode == "Keys4" and 4 or 7) do
-            for _, hitObject in ipairs(charthits[i]) do
-                local xmod = sv
-                local scrollspeed = xmod
-                local off = receptors[i][1].offsetY
-                local defaulty = modifiers.defaultY[i]
-                local targTime = hitObject[1]
-                local ypos = getYAdjust(defaulty - (musicTime - targTime)) * scrollspeed * 0.6 - off
-                hitObject[2] = (whereNotesHit[1] + (-((musicTime - hitObject[1]) * 0.6 * speedLane[i]))) * modifiers.reverseScale
-
-                if hitObject[4] or hitObject[5] then
-                    local ypos2 = getYAdjust(defaulty - ((musicTime+0.1) - targTime)) * scrollspeed * 0.6 - off
-                end
-
-                hitObject[2] = ypos
-            end
+        if audioFile then
+            TimingTime = audioFile:tell("seconds")
+            UpdateCurrentTrackPosition()
+            UpdateSpritePositions(CurrentTrackPosition, CurrentVisualAudioOffset)
         end
-        
+
         presence = {
             details = (autoplay and "Autoplaying " or "Playing ")..songTitle.." - "..songDifficultyName..(not musicTimeDo and " - Paused" or ""), 
             state = "Score: "..string.format("%07d", round(scoring.score)).." - "..string.format("%.2f%%", ((math.floor(scoring.ratingPercentLerp * 10000) / 100))).." - "..combo..(combo == noteCounter and " FC" or " combo"),
@@ -340,30 +739,16 @@ return {
             largeImageText = "Rit"..(__DEBUG__ and " DEBUG MODE" or ""),
             startTimestamp = now
         }
-        
-        if chartEvents[1] then
-            if chartEvents[1][1] <= absMusicTime then
-                if settings.settings.Game["scroll velocities"] then 
-                    sv = chartEvents[1][2] 
-                    if sv == 1 then sv = speed end
-                    for i = 1, 4 do 
-                        noteImgs[i][2].scaleY = 1 * sv
-                    end
-                else
-                    sv = speed
-                end
-                table.remove(chartEvents, 1)
-            end
-        end
+
         if bpmEvents[1] then
             if bpmEvents[1][1] then
-                if bpmEvents[1][1] <= absMusicTime then
+                if bpmEvents[1][1] <= absMusicTime and bpmEvents[1][2] ~= nil then
                     beatHandler.setBPM(bpmEvents[1][2] * songSpeed)
                     table.remove(bpmEvents, 1)
                 end
             end
-            
         end
+
         beatHandler.update(dt)
 
         if input:pressed("pause") and not debug.consoleTyping then
@@ -383,9 +768,22 @@ return {
 
         for i = 1, #inputList do
             curInput = inputList[i]
+            if not isMobile and __DEBUG__ and mobileButtons then
+                inputs[curInput].pressed = input:pressed(curInput) or mobileButtons[curInput].pressed
+                inputs[curInput].down = input:down(curInput) or mobileButtons[curInput].down
+                inputs[curInput].released = input:released(curInput) or mobileButtons[curInput].released
+            elseif not isMobile then
+                inputs[curInput].pressed = input:pressed(curInput)
+                inputs[curInput].down = input:down(curInput)
+                inputs[curInput].released = input:released(curInput)
+            elseif isMobile then
+                inputs[curInput].pressed = mobileButtons[curInput].pressed
+                inputs[curInput].down = mobileButtons[curInput].down
+                inputs[curInput].released = mobileButtons[curInput].released
+            end
             notes = charthits[i]
             if not autoplay then
-                if input:pressed(curInput) and not debug.consoleTyping then
+                if inputs[curInput].pressed and not debug.consoleTyping then
                     table.insert(replayHits[i], {musicTime, 1})
                     if hitsoundCache[#hitsoundCache]:isPlaying() then
                         hitsoundCache[#hitsoundCache] = hitsoundCache[#hitsoundCache]:clone()
@@ -437,11 +835,11 @@ return {
                     end
                 end
 
-                if input:down(curInput) and not debug.consoleTyping then
+                if inputs[curInput].down and not debug.consoleTyping then
                     PRESSEDMOMENTS[i] = 2
                     if notes[1] then
                         if notes[1][4] then
-                            if notes[1][1] - musicTime <= -15 then
+                            if notes[1][1] - musicTime <= 0 then
                                 table.remove(notes, 1)
                             end
                         end
@@ -450,7 +848,7 @@ return {
                     PRESSEDMOMENTS[i] = 1
                 end
 
-                if input:released(curInput) and not debug.consoleTyping then
+                if inputs[curInput].released and not debug.consoleTyping then
                     if notes[1] then
                         if notes[1][4] then
                             while true do
@@ -528,10 +926,27 @@ return {
         for i,v in pairs(modifiers.graphics) do
             v:update(dt)
         end
+
+        if mobileButtons then 
+            -- set pressed and released to false to all of them
+            for i, v in pairs(mobileButtons) do
+                v.pressed = false
+                v.released = false
+            end
+        end
+
+        for i, v in pairs(inputs) do
+            v.pressed = false
+            v.released = false
+        end
     end,
 
     keypressed = function(self, key)
         if key_pressed then key_pressed(key) end
+    end,
+
+    keyreleased = function(self, key)
+        if key_released then key_released(key) end
     end,
 
     draw = function(self)
@@ -569,20 +984,31 @@ return {
                     love.graphics.pop()
 
                     love.graphics.push()
-                        if settings.settings.downscroll then 
+                        if settings.settings.Game.downscroll then 
                             love.graphics.translate(0, push.getHeight() - 175)
                             love.graphics.scale(1, -1)
                         else
                             love.graphics.translate(0, 175)
                         end
                         love.graphics.translate(push.getWidth() / 2 - 175, 50)
+                        for i = 1, #charthits do
+                            for j = #charthits[i], 1, -1 do
+                                if math.abs(charthits[i][j][2]) <= 1100 then
+                                    if charthits[i][j][4] then -- hold
+                                        noteImgs[i][2]:draw(90 -(settings.settings.Game["note spacing"]*(#receptors/2-1)) + (settings.settings.Game["note spacing"] * (i-1)), charthits[i][j][2], notesize, noteImgs[i][2].scaleY * notesize * (settings.settings.Game.downscroll and -1 or 1))
+                                    elseif charthits[i][j][5] then -- hold end
+                                        noteImgs[i][3]:draw(90 -(settings.settings.Game["note spacing"]*(#receptors/2-1)) + (settings.settings.Game["note spacing"] * (i-1)), charthits[i][j][2]+50, notesize, -notesize)
+                                    end
+                                end
+                            end
+                        end
                         for i = 1, #receptors do
                             receptors[i][PRESSEDMOMENTS[i]]:draw(90 -(settings.settings.Game["note spacing"]*(#receptors/2-1)) + (settings.settings.Game["note spacing"] * (i-1)), strumlineY[1], notesize, notesize * (settings.settings.Game.downscroll and -1 or 1))
                         end 
                     love.graphics.pop()
 
                     love.graphics.push()
-                        if settings.settings.downscroll then 
+                        if settings.settings.Game.downscroll then 
                             love.graphics.translate(0, push.getHeight() - 175)
                             love.graphics.scale(1, -1)
                         else
@@ -594,20 +1020,27 @@ return {
                         
                         for i = 1, #charthits do
                             for j = #charthits[i], 1, -1 do
-                                if math.abs((whereNotesHit[1] + (-((musicTime - charthits[i][j][1]) * 0.6 * speed)))) <= 2250 then
+                                if math.abs(charthits[i][j][2]) <= 1100 then
                                     -- if the note is actually on screen (even with scroll velocity modifiers)
-                                    if not charthits[i][j][5] then
-                                        
-                                        if charthits[i][j][4] then -- normal
-                                            noteImgs[i][2]:draw(90 -(settings.settings.Game["note spacing"]*(#receptors/2-1)) + (settings.settings.Game["note spacing"] * (i-1)), charthits[i][j][2], notesize, noteImgs[i][2].scaleY * notesize * (settings.settings.Game.downscroll and -1 or 1))
-                                        else -- hold
-                                            noteImgs[i][1]:draw(90 -(settings.settings.Game["note spacing"]*(#receptors/2-1)) + (settings.settings.Game["note spacing"] * (i-1)), charthits[i][j][2], notesize, notesize * (settings.settings.Game.downscroll and -1 or 1))
-                                        end
-                                    else -- end
-                                        noteImgs[i][3]:draw(90 -(settings.settings.Game["note spacing"]*(#receptors/2-1)) + (settings.settings.Game["note spacing"] * (i-1)), charthits[i][j][2]+50, notesize, -notesize)
+                                    if not charthits[i][j][5] and not charthits[i][j][4] then
+                                        noteImgs[i][1]:draw(90 -(settings.settings.Game["note spacing"]*(#receptors/2-1)) + (settings.settings.Game["note spacing"] * (i-1)), charthits[i][j][2], notesize, notesize * (settings.settings.Game.downscroll and -1 or 1))                                        
                                     end
                                 end
                             end
+                        end
+                    love.graphics.pop()
+
+                    love.graphics.push()
+                        if settings.settings.Game["lane cover"] > 0.001 then
+                            -- lane cover is given as a decimal, so we need to convert it to a percentage and draw a rectangle
+                            -- if its settings.settings.Game["downscroll"] == false then we need to draw it at the top of the screen, else bottom
+                            love.graphics.setColor(0, 0, 0)
+                            if settings.settings.Game.downscroll then
+                                love.graphics.rectangle("fill", 0, 0, push:getWidth(), push:getHeight() * settings.settings.Game["lane cover"])
+                            else
+                                love.graphics.rectangle("fill", 0, push:getHeight() - (push:getHeight() * settings.settings.Game["lane cover"]), push:getWidth(), push:getHeight() * settings.settings.Game["lane cover"])
+                            end
+                            love.graphics.setColor(1, 1, 1)
                         end
                     love.graphics.pop()
 
@@ -646,11 +1079,11 @@ return {
                         scoreFormat = string.format("%07d", round(scoring.score))
                         love.graphics.setFont(accuracyFont)
                         graphics.setColor(uiTextColor)
-                        love.graphics.printf(scoring.score > 1000000 and 1000000 or scoreFormat, 0, 0, 960, "right")
-                        love.graphics.printf(((math.floor(scoring.ratingPercentLerp * 10000) / 100)) .. "%", 0, 45, 960, "right")
+                        love.graphics.printf(scoring.score > 1000000 and 1000000 or scoreFormat, skinJson.skin.ui.gameplay.score.position.x, skinJson.skin.ui.gameplay.score.position.y, 960, skinJson.skin.ui.gameplay.score.align)
+                        love.graphics.printf(((math.floor(scoring.ratingPercentLerp * 10000) / 100)) .. "%", skinJson.skin.ui.gameplay.accuracy.position.x, skinJson.skin.ui.gameplay.accuracy.position.y, 960, skinJson.skin.ui.gameplay.accuracy.align)
                         -- format scoring.scoreRating to 2 decimal places
                         scoreRatingFormat = string.format("%.2f", scoring.scoreRating)
-                        love.graphics.printf(scoreRatingFormat, 0, 90, 960, "right")
+                        love.graphics.printf(scoreRatingFormat, skinJson.skin.ui.gameplay.scoreRating.position.x, skinJson.skin.ui.gameplay.scoreRating.position.y, 960, skinJson.skin.ui.gameplay.scoreRating.align)
                         graphics.setColor(1, 1, 1, 1)
                         love.graphics.setFont(font)
                     end
@@ -671,7 +1104,10 @@ return {
             -- resize canvas to strech to screen
             love.graphics.draw(gameCanvas, 0, 0, 0, push:getWidth() / gameCanvas:getWidth(), push:getHeight() / gameCanvas:getHeight())
             love.graphics.setShader()
+        end
 
+        if paused and not musicTimeDo then
+            -- pause menu... blehhhhhh
         end
     end,
 
@@ -681,8 +1117,7 @@ return {
     end,
 
     focus = function(self, f)
-        --debug.print("focus: " .. tostring(f))
-        if not f then
+        if not f and not settings.settings.Game["autoplay"] and settings.settings.Game["pause on lost focus"] then
             pause()
         end
     end,
@@ -713,5 +1148,5 @@ return {
         end
 
         modifiers:clear()
-    end
+    end,
 }

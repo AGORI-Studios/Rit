@@ -1,19 +1,41 @@
+--[[----------------------------------------------------------------------------
+
+This file is apart of Rit; a free and open sourced rhythm game made with LÖVE.
+
+Copyright (C) 2023 GuglioIsStupid
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------------]]
 sh = {}
 sh.baseSettings = {
     ["Game"] = {
         ["downscroll"] = true,
         ["underlay"] = true,
-        ["scroll speed"] = 1.0,
+        ["scroll speed"] = 70.0,
         ["scroll velocities"] = true,
         ["start time"] = 700,
         ["note spacing"] = 200,
         ["autoplay"] = false,
-        ["audio offset"] = 0
+        ["pause on focus lost"] = true,
+        ["audio offset"] = 0,
+        ["lane cover"] = 0.0 -- 0% of the screen
     },
     ["Graphics"] = {
         width = 1280,
         height = 720,
-        fullscroll = false,
+        fullscreen = false,
         vsync = false
     },
     ["Audio"] = {
@@ -22,13 +44,13 @@ sh.baseSettings = {
         sfx = 1.0
     },
     ["System"] = {
-        version = "2"
+        version = "5"
     },
 
     skin = "Circle Default" -- The skin chosen by the player.
 }
 
-gameVersion = "2"
+gameVersion = "5"
 
 function sh.saveSettings(base) 
     local saveStr = ""

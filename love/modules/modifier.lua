@@ -1,5 +1,23 @@
--- Hey! I see you investigating this file...
--- This file isn't exactly usedd *yet*, but it will be used in the future.
+--[[----------------------------------------------------------------------------
+
+This file is apart of Rit; a free and open sourced rhythm game made with LÖVE.
+
+Copyright (C) 2023 GuglioIsStupid
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------------]]
 
 local modifiers = {}
 
@@ -35,6 +53,8 @@ end
 modifiers.camera = {x=0,y=0,zoom=1}
 modifiers.gameProperties = {["receptorsVisible"]=true,["healthbarVisible"]=true,["scoreVisible"]=true,["timebarVisible"]=true}
 modifiers.musicPlaying = true
+modifiers.receptoralphas = {1,1,1,1}
+modifiers.notecolalphas = {1,1,1,1}
 
 function getReverseForCol(l)
     local val = 0
@@ -290,6 +310,34 @@ function setLaneScrollspeed(lane, speed)
         speedLane[lane] = speed
     end
 end
+-- modifier backups
+-- at the end of each song, replace the global functions with these
+modifiers.backups = {
+    doMod = doMod,
+    doModSimulated = doModSimulated,
+    applyMod = applyMod,
+    removeMod = removeMod,
+    createSprite = createSprite,
+    changeSpriteProperty = changeSpriteProperty,
+    animateSprite = animateSprite,
+    getSpriteProperty = getSpriteProperty,
+    newShader = newShader,
+    changeShaderProperty = changeShaderProperty,
+    applyShader = applyShader,
+    applySparrow = applySparrow,
+    addAnim = addAnim,
+    addAnimOffset = addAnimOffset,
+    changeAnimSpeed = changeAnimSpeed,
+    setCameraZoom = setCameraZoom,
+    setCameraPos = setCameraPos,
+    changeGameProperty = changeGameProperty,
+    setMusicPlaying = setMusicPlaying,
+    createRect = createRect,
+    changeRectProperty = changeRectProperty,
+    newCircle = newCircle,
+    changeCircleProperty = changeCircleProperty,
+    setLaneScrollspeed = setLaneScrollspeed
+}
 
 -- End globals
 
@@ -352,14 +400,21 @@ function modifiers:clear()
     modifiers.draws = {}
     modifiers.gameProperties = {["receptorsVisible"]=true,["healthbarVisible"]=true,["scoreVisible"]=true,["timebarVisible"]=true}
     modifiers.musicPlaying = true
+    modifiers.receptoralphas = {1,1,1,1}
+    modifiers.notecolalphas = {1,1,1,1}
 
     for _, v in pairs(modifiers.modList) do
         modifiers[v] = nil
     end
 
+    for i, v in pairs(modifiers.backups) do
+        _G[i] = v
+    end
+
     create = nil
     update = nil
     key_pressed = nil
+    key_released = nil
     update = nil
     hit = nil
 end

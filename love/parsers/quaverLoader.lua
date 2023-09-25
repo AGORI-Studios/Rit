@@ -63,6 +63,12 @@ function quaverLoader.load(chart, folderPath, forDiff)
                 bgFile = nil
             end)
         end
+        if line:find("InitialScrollVelocity: ") then
+            curLine = line
+            local InitialScrollVelocity = curLine
+            InitialScrollVelocity = InitialScrollVelocity:gsub("InitialScrollVelocity: ", "")
+            InitialScrollVelocity = tonumber(InitialScrollVelocity)
+        end
         if line:find("Mode: ") then
             modeLine = line
             mode = modeLine:gsub("Mode: ", "")
@@ -100,7 +106,7 @@ function quaverLoader.load(chart, folderPath, forDiff)
                     
                 local timingPoint = charthits[1] or 0
 
-                table.insert(chartEvents, {startTime, multiplier})
+                table.insert(chartEvents, {startTime/songSpeed, multiplier})
             end
         end
 
@@ -144,8 +150,8 @@ function quaverLoader.load(chart, folderPath, forDiff)
                 local length = tonumber(endTime) - startTime
                 endTime = tonumber(endTime)
                     
-                for i = 1, length, noteImgs[lane][2]:getHeight()/2/speed do
-                    if i + noteImgs[lane][2]:getHeight()/2/speed < length then
+                for i = 1, length, noteImgs[lane][2]:getHeight()/2 do
+                    if i + noteImgs[lane][2]:getHeight()/2 < length then
                         charthits[lane][#charthits[lane] + 1] = {startTime+i, 0, lane, true}
                     else
                         charthits[lane][#charthits[lane] + 1] = {startTime+i, 0, lane, true, true}
@@ -177,6 +183,7 @@ function quaverLoader.load(chart, folderPath, forDiff)
     if not forDiff then
         Timer.after(2,
             function()
+                if create then create() end
                 state.switch(game)
                 musicTimeDo = true
             end
