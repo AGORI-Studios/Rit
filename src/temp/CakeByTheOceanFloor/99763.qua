@@ -1,0 +1,216 @@
+AudioFile: audio.mp3
+SongPreviewTime: 40513
+BackgroundFile: cake_bg.png
+BannerFile: cake_bn.png
+MapId: 99763
+MapSetId: 22185
+Mode: Keys4
+Title: Cake By The Ocean (Cut Ver.)
+Artist: DNCE
+Source: DNCE
+Tags: english, lyrics, pop, svkona, melanie420, moca loca, cuckson, avel, reihynn
+Creator: cementchewer33
+DifficultyName: 4K Starter
+Description: Created at 1665857239000
+BPMDoesNotAffectScrollVelocity: true
+InitialScrollVelocity: 1
+EditorLayers: []
+CustomAudioSamples: []
+SoundEffects: []
+TimingPoints:
+- StartTime: 208.99546813964844
+  Bpm: 119
+SliderVelocities: []
+HitObjects:
+- StartTime: 208
+  Lane: 1
+  KeySounds: []
+- StartTime: 2225
+  Lane: 3
+  KeySounds: []
+- StartTime: 4242
+  Lane: 2
+  KeySounds: []
+- StartTime: 6259
+  Lane: 4
+  KeySounds: []
+- StartTime: 8276
+  Lane: 1
+  KeySounds: []
+- StartTime: 10293
+  Lane: 4
+  KeySounds: []
+- StartTime: 11301
+  Lane: 3
+  KeySounds: []
+- StartTime: 12309
+  Lane: 2
+  KeySounds: []
+- StartTime: 14326
+  Lane: 3
+  KeySounds: []
+- StartTime: 15335
+  Lane: 2
+  KeySounds: []
+- StartTime: 16343
+  Lane: 1
+  KeySounds: []
+- StartTime: 18360
+  Lane: 3
+  KeySounds: []
+- StartTime: 19368
+  Lane: 4
+  KeySounds: []
+- StartTime: 20377
+  Lane: 1
+  KeySounds: []
+- StartTime: 22393
+  Lane: 3
+  KeySounds: []
+- StartTime: 24410
+  Lane: 2
+  KeySounds: []
+- StartTime: 25419
+  Lane: 4
+  KeySounds: []
+- StartTime: 26427
+  Lane: 3
+  KeySounds: []
+- StartTime: 27435
+  Lane: 1
+  KeySounds: []
+- StartTime: 28444
+  Lane: 2
+  KeySounds: []
+- StartTime: 29452
+  Lane: 4
+  KeySounds: []
+- StartTime: 30461
+  Lane: 1
+  KeySounds: []
+- StartTime: 31469
+  Lane: 3
+  KeySounds: []
+- StartTime: 32477
+  Lane: 4
+  KeySounds: []
+- StartTime: 33486
+  Lane: 2
+  KeySounds: []
+- StartTime: 34494
+  Lane: 3
+  KeySounds: []
+- StartTime: 35503
+  Lane: 1
+  KeySounds: []
+- StartTime: 36511
+  Lane: 4
+  KeySounds: []
+- StartTime: 38528
+  Lane: 1
+  KeySounds: []
+- StartTime: 40545
+  Lane: 4
+  KeySounds: []
+- StartTime: 41553
+  Lane: 3
+  KeySounds: []
+- StartTime: 42561
+  Lane: 1
+  KeySounds: []
+- StartTime: 43570
+  Lane: 4
+  KeySounds: []
+- StartTime: 44578
+  Lane: 2
+  KeySounds: []
+- StartTime: 45587
+  Lane: 3
+  KeySounds: []
+- StartTime: 46595
+  Lane: 4
+  KeySounds: []
+- StartTime: 47603
+  Lane: 2
+  KeySounds: []
+- StartTime: 48612
+  Lane: 1
+  KeySounds: []
+- StartTime: 49620
+  Lane: 3
+  KeySounds: []
+- StartTime: 50629
+  Lane: 2
+  KeySounds: []
+- StartTime: 51637
+  Lane: 3
+  KeySounds: []
+- StartTime: 52141
+  Lane: 1
+  KeySounds: []
+- StartTime: 52645
+  Lane: 4
+  KeySounds: []
+- StartTime: 53654
+  Lane: 3
+  KeySounds: []
+- StartTime: 54662
+  Lane: 1
+  KeySounds: []
+- StartTime: 55671
+  Lane: 4
+  KeySounds: []
+- StartTime: 56679
+  Lane: 2
+  KeySounds: []
+- StartTime: 57687
+  Lane: 3
+  KeySounds: []
+- StartTime: 58696
+  Lane: 1
+  KeySounds: []
+- StartTime: 59704
+  Lane: 2
+  KeySounds: []
+- StartTime: 60713
+  Lane: 4
+  KeySounds: []
+- StartTime: 61721
+  Lane: 3
+  KeySounds: []
+- StartTime: 62730
+  Lane: 1
+  KeySounds: []
+- StartTime: 63738
+  Lane: 4
+  KeySounds: []
+- StartTime: 64746
+  Lane: 2
+  KeySounds: []
+- StartTime: 65755
+  Lane: 1
+  KeySounds: []
+- StartTime: 66763
+  Lane: 3
+  KeySounds: []
+- StartTime: 67772
+  Lane: 4
+  KeySounds: []
+- StartTime: 68276
+  Lane: 1
+  KeySounds: []
+- StartTime: 68780
+  Lane: 3
+  KeySounds: []
+- StartTime: 69788
+  Lane: 2
+  KeySounds: []
+- StartTime: 70797
+  Lane: 1
+  KeySounds: []
+- StartTime: 71805
+  Lane: 3
+  KeySounds: []
+- StartTime: 72814
+  Lane: 4
+  KeySounds: []

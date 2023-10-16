@@ -1,1 +1,0 @@
-Download LOVE2D 32x from https://love2d.org/ and extract it to here
