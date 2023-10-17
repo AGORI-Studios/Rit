@@ -26,6 +26,21 @@ Gameplay.chartType = ""
 
 local previousFrameTime -- used for keeping musicTime consistent
 
+local comboTimer = {}
+local judgeTimer = {}
+
+function Gameplay:preloadAssets()
+    for i = 0, 9 do
+        Cache:loadImage("defaultSkins/skinThrowbacks/combo/COMBO" .. i .. ".png")
+    end
+    Cache:loadImage("defaultSkins/skinThrowbacks/judgements/MISS.png")
+    Cache:loadImage("defaultSkins/skinThrowbacks/judgements/BAD.png")
+    Cache:loadImage("defaultSkins/skinThrowbacks/judgements/GOOD.png")
+    Cache:loadImage("defaultSkins/skinThrowbacks/judgements/GREAT.png")
+    Cache:loadImage("defaultSkins/skinThrowbacks/judgements/PERFECT.png")
+    Cache:loadImage("defaultSkins/skinThrowbacks/judgements/MARVELLOUS.png")
+end
+
 function Gameplay:reset()
     self.strumX = 525
     self.spawnTime = 1000
@@ -48,6 +63,59 @@ function Gameplay:reset()
     self.inputsArray = {false, false, false, false}
     self.hitsound = love.audio.newSource("defaultSkins/skinThrowbacks/hitsound.wav", "static")
     self.hitsound:setVolume(0.1)
+    self.judgement = nil
+    self.comboGroup = Group()
+    self.combo = 0
+
+    self:preloadAssets()
+
+    self.judgements = { -- Judgement 4 timings
+        {name="marvellous", img="defaultSkins/skinThrowbacks/judgements/MARVELLOUS.png", time=22},
+        {name="perfect", img="defaultSkins/skinThrowbacks/judgements/PERFECT.png", time=45},
+        {name="great", img="defaultSkins/skinThrowbacks/judgements/GREAT.png", time=90},
+        {name="good", img="defaultSkins/skinThrowbacks/judgements/GOOD.png", time=135},
+        {name="bad", img="defaultSkins/skinThrowbacks/judgements/BAD.png", time=180},
+        {name="miss", img="defaultSkins/skinThrowbacks/judgements/MISS.png", time=225}
+    }
+end
+
+function Gameplay:doJudgement(time)
+    local judgement = nil
+    for i, judge in ipairs(self.judgements) do
+        if time <= judge.time then
+            judgement = judge
+            break
+        end
+    end
+    if not judgement then judgement = self.judgements[#self.judgements] end -- default to miss
+    self:remove(self.judgement)
+    self.judgement = Sprite(75, 390, judgement.img)
+    if judgeTimer.y then Timer.cancel(judgeTimer.y) end
+    judgeTimer.y = Timer.tween(0.1, self.judgement, {y = 400}, "in-out-expo")
+    self.judgement.origin.x = self.judgement.width / 2 -- Always center x origin
+    self:add(self.judgement)
+
+    -- combo shits
+    self.comboGroup.members = {}
+    -- for the amount of digits in the combo, add a sprite
+    if judgement.name == "miss" then
+        self.combo = 0
+    end
+    for i = 1, #tostring(self.combo) do
+        if not comboTimer[i] then comboTimer[i] = {} end
+        local digit = tostring(self.combo):sub(i, i)
+        local sprite = Sprite(0, 0, "defaultSkins/skinThrowbacks/combo/COMBO" .. digit .. ".png")
+        local sprWidth = sprite.width * 1.25
+        sprite.x = 180 - (#tostring(self.combo) * sprWidth/2) + (i * sprWidth)
+        sprite.y = 460
+        sprite:setGraphicSize(math.floor(sprWidth))
+        sprite.scale.y = sprite.scale.y + 0.2
+        if comboTimer[i].scaleY then Timer.cancel(comboTimer[i].scaleY) end
+        comboTimer[i].scaleY = Timer.tween(0.1, sprite.scale, {y = sprite.scale.y - 0.2}, "in-out-expo")
+        sprite.origin.x = sprWidth / 2
+        sprite.origin.y = sprWidth / 2
+        self.comboGroup:add(sprite)
+    end
 end
 
 function Gameplay:add(member, pos)
@@ -90,12 +158,15 @@ function Gameplay:enter()
 
     self:generateBeatmap(self.chartVer, self.songPath, self.folderpath)
 
-    safeZoneOffset = (10 / 60) * 1000
+    safeZoneOffset = (15 / 60) * 1000
+    print("Safe zone offset: " .. safeZoneOffset)
 
     Timer.after(0.8, function()
         self.updateTime = true
         self.didTimer = true
     end)
+
+    self:add(self.comboGroup)
 end
 
 function Gameplay:generateStrums()
@@ -158,6 +229,7 @@ function Gameplay:update(dt)
                         ho:kill()
                         self.hitObjects:remove(ho)
                         ho:destroy()
+                        self:doJudgement(1000) -- miss
                     end
                 end
             end
@@ -229,7 +301,7 @@ function Gameplay:keyPressed(key)
                     end
 
                     if not notesStopped then
-                        self:goodNoteHit(epicNote)
+                        self:goodNoteHit(epicNote, math.abs(math.round(epicNote.time - lastTime)))
                     end
                     table.insert(pressNotes, epicNote)
                 end
@@ -271,13 +343,15 @@ function Gameplay:keysCheck()
     end
 end
 
-function Gameplay:goodNoteHit(note)
+function Gameplay:goodNoteHit(note, time)
     if not note.wasGoodHit then
         note.wasGoodHit = true
         self.hitsound:clone():play()
         --self.health = self.health + note.hitHealth
 
         if not note.isSustainNote then
+            self.combo = self.combo + 1
+            self:doJudgement(time)
             note:kill()
             self.hitObjects:remove(note)
             note:destroy()
