@@ -42,18 +42,22 @@ function StartMenu:update(dt)
     if time > (60/menuBPM) * 1000 then
         local curBeat = math.floor((time2/1000) / (60/menuBPM))
         if curBeat % 2 == 0 then
-            logo:setScale(1.1)
+            logo:setScale(1.05)
         end
         time = 0
     end
 
+    local mx, my = love.mouse.getPosition()
+
+    -- Logo parallax
+    logo.x = push.getWidth() / 1.2 + (-mx / 50)
+    logo.y = push.getHeight() / 1.45 + (-my / 50)
+
     if logo.scale.x > 1 then 
-        logo:setScale(logo.scale.x - (dt * ((menuBPM/60))) * 0.3)
+        logo:setScale(logo.scale.x - (dt * ((menuBPM/60))) * 0.1)
     end
 
-    if input:pressed("confirm") then
-        switchState(states.menu.SongMenu)
-    end
+    if input:pressed("confirm") then state.switch(states.menu.SongMenu) end
 end
 
 function StartMenu:draw()
@@ -61,6 +65,7 @@ function StartMenu:draw()
         love.graphics.scale(0.35, 0.35)
         love.graphics.setColor(1, 1, 1)
         logo:draw()
+
     love.graphics.pop()
 end
 

@@ -19,187 +19,212 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ------------------------------------------------------------------------------]]
 local smLoader = {}
-local chart = nil
-local sm = {}
-local header = {}
-local bpm = {}
-
-local parsingBpm, parsingStop, parsingNotes, parsingNotesMetaData = false, false, false, false
-
-local function newChart()
-    local _chart = {
-        measure = 0,
-        offset = 0,
-        mode = 0,
-        notes = {},
-        linesPerMeasure = {},
-        metaData = {},
-    }
-    chart = _chart
-    table.insert(sm.charts, _chart)
-end
-
-local function processLine(line)
-    if parsingBpm then
-        --
-        return
-    end
-    if parsingStop then
-        --
-        return
-    end
-    if line:find("^#NOTES") then
-        parsingNotes = true
-        parsingNotesMetaData = true
-        newChart()
-    elseif parsingNotesMetaData then
-        table.insert(chart.metaData, line:match("^(.-):.*$"))
-        if #chart.metaData == 5 then
-            parsingNotesMetaData = false
-        end
-    elseif self.parsingNotes and not line:find(",") and line:find("//") then
-        return
-    elseif self.parsingNotes and line:find("^[^,^;]+$") then
-        parsingNotesMetaData = false
-        processNotesLine(line)
-    elseif self.parsingNotes and line:find("^;.*$") then
-        parsingNotes = false
-    elseif line:find("#%S+:.*") then
-        processHeaderLine(line)
-    end
-end
-
-local function processHeaderLine(line)
-    local key, value = line:match("^#(%S+):(.*);$")
-    if not key then
-        key, value = line:match("^#(%S+)%s(.*)$")
-    end
-    key = key:upper()
-    header[key] = value
-
-    if key == "BPMS" then
-        processBPM(value)
-        if not line:find(";") then
-            parsingBpm = true
-        end
-    end
-end
-
-local function processBPM(line)
-    local tempValues = line:gsub(";", ""):split(",")
-    for _, tempoValue in ipairs(tempoValues) do
-        local beat, temp = tempoValue:match("^(.+)=(.+)$")
-        if beat and tempo then
-            table.insert(bpm, {
-                beat = tonumber(beat),
-                tempo = tonumber(tempo),
-            })
-        end
-    end
-end
-
-local function processNotesLine(line)
-    if tonumber(line) then
-        chart.mode = math.max(chart.mode, #line)
-    end
-    for i = 1, #line do
-        local noteType = line:sub(i,i)
-        if noteType ~= "0" then
-            table.insert(chart.notes, {
-                type = noteType,
-                measure = chart.measure,
-                offset = chart.offset,
-                line = i,
-            })
-        end
-    end
-    chart.offset = chart.offset + 1
-    chart.linesPerMeasure[chart.measure] = (chart.linesPerMeasure[chart.measure] or 0) + 1
-end
 
 function smLoader.load(chart, folderPath, forDiff)
     curChart = "stepmania"
 
-    sm = {
-        header = {},
-        bpm = {},
-        stop = {},
-        charts = {}
-    }
-
-    metaData = {
-        format = "stepmania",
-
-    }
-
-    local chart = love.filesystem.read(chart)
-    for _, line in ipairs(chart:split("\n")) do
-        processLine(line)
-    end
+    local readingNotes = false
+    local readingBPMS = false
+    local bpmIndex = 1
     
-    -- make it work like the other loaders
-    local chart = sm.charts[1]
-    local notes = chart.notes
-    local linesPerMeasure = chart.linesPerMeasure
-    local metaData = chart.metaData
+    local diffIndex = 1
+    local beat = 0
+    local measureIndex = 0
 
     local meta = {
-        format = "stepmania",
-        title = metaData[1],
-        artist = metaData[2],
-        source = metaData[3],
-        tags = metaData[4],
-        name = metaData[5],
-        creator = metaData[6],
-        audioPath = header["MUSIC"],
-        backgroundFile = header["BACKGROUND"],
-        previewTime = header["OFFSET"] or 0,
-        noteCount = 0,
-        length = 0,
-        bpm = 0,
-        inputMode = chart.mode
+        bpms = {},
+        difficulties = {},
+        songName = "",
+        audioPath = "",
     }
+    local measure = {}
 
-    audioFile = love.audio.newSource(folderPath .. "/" .. meta.audioPath, "stream")
+    for line in love.filesystem.lines(chart) do
+        local cont = true
 
-    for i = 1, #bpm do
-        -- if its the first one, set meta.bpm to the bpm of the first timing point
-        local timingPoint = bpm[i]
-        if i == 1 then
-            meta.bpm = timingPoint.tempo
-            bpm = meta.bpm
-            crochet = (60/bpm)*1000
-            stepCrochet = crochet/4
+        if cont then
+            if not readingNotes then
+                line = line:gsub(";", "")
+                local stuff = line:split(":")
+                if #stuff < 2 then
+                    stuff = {line:gsub(":", "")}
+                end
+
+                if readingBPMS then
+                    if line:find("#") or line:find(";") then
+                        readingBPMS = false
+                    end
+                end
+
+                if not readingBPMS then
+                    if stuff[1] == "#BPMS" then
+                        --readingBPMS = true
+                        --if (stuff.size() != 1)
+                        if #stuff ~= 1 then
+                            bpmSeg = stuff[2]:split(",")
+                            if #bpmSeg ~= 0 then
+                                --for (int ii = 0; ii < bpmSeg.size(); ii += 2)
+                                for ii = 1, #bpmSeg, 2 do
+                                    local seg = {
+                                        --std::stod(Chart::split(bpmSeg[ii], '=')[0]);
+                                        startBeat = bpmSeg[ii]:split("=")[1],
+                                        endBeat = math.huge,
+                                        length = math.huge,
+                                        bpm = bpmSeg[ii]:split("=")[2],
+                                        startTime = 0
+                                    }
+
+                                    if bpmIndex ~= 1 then
+                                        --meta.bpms.push_back(seg);
+                                        local prevSeg = meta.bpms[bpmIndex - 1]
+                                        prevSeg.endBeat = seg.startBeat
+                                        prevSeg.length = ((prevSeg.endBeat - prevSeg.startBeat) / (prevSeg.bpm / 60)) * 1000
+                                        seg.startTime = prevSeg.startTime + prevSeg.length
+                                    end
+
+                                    table.insert(meta.bpms, seg)
+                                    bpmIndex = bpmIndex + 1
+                                end
+                            end
+                        end
+                    end
+                    if stuff[1]:find("#NOTES") then
+                        readingNotes = true
+                        local diff = {
+                            charter = "n/a",
+                            name = "n/a",
+                            notes = {},
+                        }
+                        table.insert(meta.difficulties, diff)
+                    end
+
+                    if stuff[1] == "#TITLE" then
+                        meta.songName = stuff[2]
+                    end
+                    if stuff[1] == "#MUSIC" then
+                        meta.audioPath = folderPath .. "/" .. stuff[2]
+                        audioFile = love.audio.newSource(meta.audioPath, "stream")
+                    end
+                end
+            else
+                local line = line:gsub(";", "")
+                local stuff = line:split(":")
+                if line:find(":") and #stuff > 1 then
+                    stuff[1] = stuff[1]:gsub(":", "")
+                    stuff[1] = stuff[1]:gsub(" ", "")
+
+                    if diffIndex == 2 then
+                        meta.difficulties[diffIndex].charter = stuff[1]
+                    elseif diffIndex == 3 then
+                        meta.difficulties[diffIndex].name = stuff[1]
+                    end
+                    diffIndex = diffIndex + 1
+                else
+                    diffIndex = 1
+
+                    if line:find(",") and line:find(";") then
+                        --measure->push_back(iss.str());
+                        table.insert(measure, line)
+                    else
+                        local lengthInRows = 192 / #measure
+                        local rowIndex = 1
+
+                        for i = 1, #measure do
+                            local noteRow = (measureIndex * 192) + (lengthInRows * rowIndex)
+                            beat = noteRow / 48
+
+                            for n = 1, #measure[i] do
+                                local thing = measure[i]:sub(n, n)
+
+                                if thing == "0" then
+                                    goto continue
+                                end
+
+                                local note = {
+                                    beat = beat,
+                                    -- convert beat to ms
+                                    time = ((beat / meta.bpms[1].bpm) * 60) * 1000,
+                                    lane = n,
+                                }
+                                if thing ~= "M" then -- mine
+                                    if thing == "1" then
+                                        note.type = "normal"
+                                    elseif thing == "2" then
+                                        note.type = "hold"
+                                    elseif thing == "3" then
+                                        note.type = "tail"
+                                    elseif thing == "4" then
+                                        note.type = "head"
+                                    end
+                                end
+
+                                meta.difficulties[1].notes[noteRow] = note
+                            end
+
+                            ::continue::
+                            rowIndex = rowIndex + 1
+                        end
+
+                        measure = {}
+                        measureIndex = measureIndex + 1
+                    end
+                end
+            end
         end
     end
 
-    for i = 1, #notes do
-        local note = notes[i]
-        local startTime = note.offset
-        local endTime = note.endTime or 0
-        local lane = note.line
-
-        local length = endTime - startTime
-
-        local hasSustain = length ~= startTime
-
-        local ho = HitObject(startTime, lane, nil, false)
-        table.insert(states.game.Gameplay.unspawnNotes, ho)
-
-        length = math.floor(length / stepCrochet)
-
-        if length > 0 then
-            for sustain = 0, length do
-                local oldHo = states.game.Gameplay.unspawnNotes[#states.game.Gameplay.unspawnNotes]
-
-                local slider = HitObject(startTime + (stepCrochet*sustain), lane, oldHo, true)
-                table.insert(states.game.Gameplay.unspawnNotes, slider)
+    -- create our notes
+    for _, diff in ipairs(meta.difficulties) do
+        for _, note in ipairs(diff.notes) do
+            if note.type == "normal" then
+                local ho = HitObject(note.time, note.lane, nil, false)
+                table.insert(states.game.Gameplay.unspawnNotes, ho)
+            elseif note.type == "hold" then
+                local ho = HitObject(note.time, note.lane, nil, true)
+                table.insert(states.game.Gameplay.unspawnNotes, ho)
+            elseif note.type == "head" then
+                local ho = HitObject(note.time, note.lane, nil, true)
+                table.insert(states.game.Gameplay.unspawnNotes, ho)
+            elseif note.type == "tail" then
+                local ho = HitObject(note.time, note.lane, nil, true)
+                table.insert(states.game.Gameplay.unspawnNotes, ho)
             end
         end
     end
 
     return meta
+end
 
+function smLoader.getDifficulties(chart)
+    -- just returns a list of all the difficulties (names)
+
+    local diffs = {}
+    local songName = ""
+
+    local lines = {}
+    for line in love.filesystem.lines(chart) do
+        table.insert(lines, line)
+    end
+    local lineIndex = 1
+
+    for line in love.filesystem.lines(chart) do
+
+        if line:find("#TITLE:") then
+            line = line:gsub("#TITLE:", ""):gsub(";", "")
+            songName = line
+        end
+        if line:find("#NOTES") then
+            local diff = lines[lineIndex + 3]:split(":")[1]
+            table.insert(diffs, {
+                name = diff:trim(),
+                songName = songName,
+            })
+        end
+
+        lineIndex = lineIndex + 1
+    end
+
+    return diffs
 end
 
 return smLoader

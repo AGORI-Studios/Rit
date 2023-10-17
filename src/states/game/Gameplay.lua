@@ -291,6 +291,8 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath)
         quaverLoader.load(songPath, folderPath)
     elseif chartType == "osu!" then
         osuLoader.load(songPath, folderPath)
+    elseif chartType == "Stepmania" then
+        smLoader.load(songPath, folderPath)
     end
 
     table.sort(self.unspawnNotes, function(a, b)

@@ -76,6 +76,7 @@ function love.load()
     -- Parsers
     quaverLoader = require("modules.Parsers.quaverLoader")
     osuLoader = require("modules.Parsers.osuLoader")
+    smLoader = require("modules.Parsers.stepmaniaLoader")
 
     cache = {
         images = {},

@@ -90,6 +90,33 @@ function loadDefaultSongs()
                                 ratingColour = {1,1,1},
                             }
                         end
+                        -- With how stupid I am, stepmania is probably going to be the last thing I add
+                    --[[ elseif song:sub(-3) == ".sm" then -- for stepmania, we have to call "smLoader.getDifficulties(chart)"
+                        diffs = smLoader.getDifficulties("defaultSongs/" .. file .. "/" .. song)
+                        -- has a table in a table (holds name and songName)
+
+                        for _, diff in ipairs(diffs) do
+                            local alreadyInList = false
+                            for _, song in ipairs(songList) do
+                                if song.title == diff.songName and song.difficultyName == diff.name then
+                                    alreadyInList = true
+                                end
+                            end
+
+                            if not alreadyInList then
+                                songList[#songList+1] = {
+                                    filename = v,
+                                    title = diff.songName,
+                                    difficultyName = diff.name,
+                                    BackgroundFile = diff.BackgroundFile,
+                                    path = "defaultSongs/" .. file .. "/" .. song,
+                                    folderPath = "defaultSongs/" .. file,
+                                    type = "Stepmania",
+                                    rating = "",
+                                    ratingColour = {1,1,1},
+                                }
+                            end
+                        end ]]
                     end
                 end
             end
