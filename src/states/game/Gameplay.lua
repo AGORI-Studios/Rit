@@ -24,6 +24,8 @@ Gameplay.members = {}
 
 Gameplay.chartType = ""
 
+local previousFrameTime -- used for keeping musicTime consistent
+
 function Gameplay:reset()
     self.strumX = 525
     self.spawnTime = 1000
@@ -44,6 +46,8 @@ function Gameplay:reset()
     self.objectKillOffset = 350
     self.keysArray = {"gameLeft", "gameDown", "gameUp", "gameRight"}
     self.inputsArray = {false, false, false, false}
+    self.hitsound = love.audio.newSource("defaultSkins/skinThrowbacks/hitsound.wav", "static")
+    self.hitsound:setVolume(0.1)
 end
 
 function Gameplay:add(member, pos)
@@ -82,14 +86,13 @@ function Gameplay:enter()
     self:add(self.hitObjects)
     self:generateStrums()
 
-    musicTime = 0
+    musicTime = -1000
 
     self:generateBeatmap(self.chartVer, self.songPath, self.folderpath)
 
     safeZoneOffset = (10 / 60) * 1000
 
-    Timer.after(2, function()
-        audioFile:play()
+    Timer.after(0.8, function()
         self.updateTime = true
         self.didTimer = true
     end)
@@ -109,7 +112,13 @@ end
 
 function Gameplay:update(dt)
     if self.updateTime then
-        musicTime = musicTime + 1000 * dt
+        -- use previousFrameTime to get musicTime (love.timer.getTime is pft)
+        musicTime = musicTime + (love.timer.getTime() * 1000) - (previousFrameTime or (love.timer.getTime()*1000))
+        previousFrameTime = love.timer.getTime() * 1000
+        if musicTime >= 0 and not audioFile:isPlaying() then
+            audioFile:play()
+            audioFile:seek(musicTime / 1000) -- safe measure to keep it lined up
+        end
     end
 
     for i, member in ipairs(self.members) do
@@ -265,7 +274,7 @@ end
 function Gameplay:goodNoteHit(note)
     if not note.wasGoodHit then
         note.wasGoodHit = true
-
+        self.hitsound:clone():play()
         --self.health = self.health + note.hitHealth
 
         if not note.isSustainNote then
