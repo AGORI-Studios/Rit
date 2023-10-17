@@ -5,14 +5,21 @@ StrumObject.data = 1
 StrumObject.direction = 90
 StrumObject.sustainReduce = true
 
+local StrumTypes = {
+    "left",
+    "down",
+    "up",
+    "right"
+}
+
 function StrumObject:new(x, y, data)
     self.super.new(self, x, y)
     self.data = data
 
     --self:load("defaultSkins/Circle Default/note.png")
     self.anims = {
-        "defaultSkins/Circle Default/receptor-unpressed.png",
-        "defaultSkins/Circle Default/receptor-pressed.png"
+        skin:format(SkinJSON[StrumTypes[data] .. " receptor unpressed"]),
+        skin:format(SkinJSON[StrumTypes[data] .. " receptor pressed"])
     }
 
     Cache:loadImage(self.anims[1], self.anims[2])

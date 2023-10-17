@@ -10,7 +10,7 @@ HitObject.noteWasHit = false
 HitObject.prevNote = nil
 HitObject.nextNote = nil
 
-HitObject.spanwed = false
+HitObject.spawned = false
 
 HitObject.tail = {}
 HitObject.parent = nil
@@ -33,6 +33,13 @@ HitObject.missHealth = 0.475
 HitObject.distance = 2000
 HitObject.correctionOffset = 0
 
+local HitTypes = {
+    "left",
+    "down",
+    "up",
+    "right"
+}
+
 function HitObject:new(time, data, prevNote, sustainNote)
     self.super.new(self)
     local sustainNote = sustainNote or false
@@ -51,7 +58,7 @@ function HitObject:new(time, data, prevNote, sustainNote)
     self.time = time
     self.data = data
 
-    self:load("defaultSkins/Circle Default/note.png")
+    self:load(skin:format(SkinJSON[HitTypes[data] .. " note"]))
     self:setGraphicSize(math.floor(self.width * 0.925))
 
     self.x = self.x + (self.width * 0.925+4) * (data-1)
@@ -63,7 +70,7 @@ function HitObject:new(time, data, prevNote, sustainNote)
     if self.isSustainNote and self.prevNote then
         self.offsetX = self.offsetX + (self.width * 0.925)/2
 
-        self:load("defaultSkins/Circle Default/note-end.png")
+        self:load(skin:format(SkinJSON[HitTypes[data] .. " note hold end"]))
         self:updateHitbox()
         self.offsetX = self.offsetX - (self.width)/2
         self.flipY = true
@@ -71,7 +78,7 @@ function HitObject:new(time, data, prevNote, sustainNote)
 
         if self.prevNote.isSustainNote then
             self.prevNote.flipY = false
-            self.prevNote:load("defaultSkins/Circle Default/note-hold.png")
+            self.prevNote:load(skin:format(SkinJSON[HitTypes[data] .. " note hold"]))
             self.prevNote.scale.y = ((stepCrochet/100) * (0.475)) * speed
             self.offsetY = 0
         end
@@ -123,7 +130,7 @@ end
 function HitObject:clipToStrum(strum)
     local center = strum.y + (self.width * 0.925)/1.75
     local vert = center - self.y
-    if self.isSustainNote and (self.wasGoodHit) then
+    if self.isSustainNote and ((self.wasGoodHit or (self.prevNote.wasGoodHit and not self.canBeHit))) then
         local rect = self.clipRect
         if not rect then
             rect = {x = 0, y = 0, width = (self.frameWidth), height = (self.frameHeight)}

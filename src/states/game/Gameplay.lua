@@ -269,6 +269,7 @@ function Gameplay:update(dt)
 end
 
 function Gameplay:keyPressed(key)
+    self.hitsound:clone():play()
     if self.updateTime then
         if #self.hitObjects.members > 0 then
             local lastTime = musicTime
@@ -335,7 +336,7 @@ function Gameplay:keysCheck()
     if self.updateTime then
         if #self.holdHitObjects.members > 0 then
             for i, note in ipairs(self.holdHitObjects.members) do
-                if not note.tooLate and not note.wasGoodHit and note.isSustainNote and self.inputsArray[note.data] then
+                if note.canBeHit and not note.tooLate and note.prevNote.wasGoodHit and not note.wasGoodHit and note.isSustainNote and self.inputsArray[note.data] then
                     self:goodNoteHit(note)
                 end
             end
@@ -346,7 +347,6 @@ end
 function Gameplay:goodNoteHit(note, time)
     if not note.wasGoodHit then
         note.wasGoodHit = true
-        self.hitsound:clone():play()
         --self.health = self.health + note.hitHealth
 
         if not note.isSustainNote then

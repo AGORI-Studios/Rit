@@ -22,8 +22,21 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 fade = 1
 isLoading = false
 
+util = require("modules.util")
+Try(
+    function()
+        if not __DEBUG__ then
+            Steam = require("luasteam") -- TEMP: Use spacewar appid until I make a real steam page.
+        end
+    end,
+    function()
+        print("Couldn't load Steamworks.")
+    end
+)
+local SteamUserID
+
 function love.load()
-    speed = 2.5
+    speed = 2.8
     -- Libraries 
     Object = require("lib.Classic")
     Timer = require("lib.Timer")
@@ -66,8 +79,8 @@ function love.load()
     Cache = require("modules.Classes.Cache")
     Point = require("modules.Classes.Point")
     Sprite = require("modules.Classes.Sprite")
-    util = require("modules.util")
     require("modules.Game.songs")
+    skin = require("modules.Game.skin")
 
     -- Objects
     StrumObject = require("modules.Objects.game.StrumObject")
@@ -112,6 +125,16 @@ function love.load()
     push.setupScreen(1920, 1080, {fullscreen = false, resizable = true, upscale = "normal"})
     
     state.switch(states.menu.StartMenu)
+
+    if Steam then
+        Steam.init()
+
+        if Steam then
+            SteamUserID = tostring(Steam.user.getSteamID())
+        end
+    end
+
+    SkinJSON = json(love.filesystem.read(skin:format("skin.json")))
 end
 
 function switchState(newState, t, middleFunc)
@@ -148,6 +171,17 @@ function love.draw()
         "Music Time: " .. (musicTime or "N/A") .. "\n" ..
         "Draw Calls: " .. love.graphics.getStats().drawcalls .. "\n" ..
         "Memory: " .. math.floor(collectgarbage("count")) .. "KB\n" ..
-        "Graphics Memory: " .. math.floor(love.graphics.getStats().texturememory/1024/1024) .. "MB\n"
+        "Graphics Memory: " .. math.floor(love.graphics.getStats().texturememory/1024/1024) .. "MB\n" ..
+        "Steam: " .. (Steam and "true" or "false") .. "\n" ..
+        (Steam and "Steam ID: " .. SteamUserID .. "\n" or "")
     )
 end
+
+function love.quit()
+    if Steam then
+        Steam.shutdown()
+    end
+end
+
+-- Steam API initializations
+

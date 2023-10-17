@@ -19,21 +19,21 @@ Sprite.clipRect = nil
 
 Sprite.x, Sprite.y = 0, 0
 
-Stencil = {
+local Stencil = {
     sprite = {},
     x = 0,
-    y = 0,
-    func = function()
-        if Stencil.sprite then
-            love.graphics.push()
-                love.graphics.translate(Stencil.x + Stencil.clipRect.x + Stencil.clipRect.width / 2, Stencil.y + Stencil.clipRect.y + Stencil.clipRect.height / 2)
-                love.graphics.rotate(math.rad(Stencil.angle or 0))
-                love.graphics.translate(-Stencil.clipRect.width / 2, -Stencil.clipRect.height / 2)
-                love.graphics.rectangle("fill", -Stencil.clipRect.width /2, -Stencil.clipRect.height / 2, Stencil.clipRect.width, Stencil.clipRect.height)
-            love.graphics.pop()
-        end
-    end
+    y = 0
 }
+local function stencilFunc()
+    if Stencil.sprite then
+        love.graphics.push()
+            love.graphics.translate(Stencil.x + Stencil.clipRect.x + Stencil.clipRect.width / 2, Stencil.y + Stencil.clipRect.y + Stencil.clipRect.height / 2)
+            love.graphics.rotate(math.rad(Stencil.angle or 0))
+            love.graphics.translate(-Stencil.clipRect.width / 2, -Stencil.clipRect.height / 2)
+            love.graphics.rectangle("fill", -Stencil.clipRect.width /2, -Stencil.clipRect.height / 2, Stencil.clipRect.width, Stencil.clipRect.height)
+        love.graphics.pop()
+    end
+end
 
 function Sprite:new(x, y, graphic)
     self.x, self.y = x or 0, y or 0
@@ -229,7 +229,7 @@ function Sprite:draw()
                     clipRect = self.clipRect,
                     func = Stencil.func
                 }
-                love.graphics.stencil(Stencil.func, "replace", 1, false)
+                love.graphics.stencil(stencilFunc, "replace", 1, false)
             end
             love.graphics.draw(self.graphic, x, y, angle, sx, sy, ox, oy, self.shear.x, self.shear.y)
         love.graphics.pop()

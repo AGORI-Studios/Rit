@@ -16,4 +16,23 @@ function string.trim(self)
     return self:gsub("^%s*(.-)%s*$", "%1")
 end
 
+function Try(f, catch_f)
+    local status, exception = pcall(f)
+    if not status then
+        catch_f(exception)
+    end
+end
+
+function love.system.getProcessorArchitecture()
+    if jit then
+        if jit.arch == "x86" then
+            return "32"
+        elseif jit.arch == "x64" then
+            return "64"
+        end
+    else
+        return "32"
+    end
+end
+
 return util
