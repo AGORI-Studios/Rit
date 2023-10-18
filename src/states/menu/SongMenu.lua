@@ -98,6 +98,7 @@ function SongMenu:draw()
         end
         love.graphics.print(v.title .. " - " .. v.difficultyName or "", 0, (i - 1) * (fontHeight("default", v.title)+6), 0, 2, 2)
     end
+    love.graphics.setColor(1, 1, 1, 1)
     love.graphics.pop()
 end
 
