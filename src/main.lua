@@ -153,13 +153,13 @@ function love.load()
     if Steam then
         local steam_init = Steam.init()
 
-        if not steam_init then
+        if not steam_init then -- If steam_init is false, then Steamworks failed to initialize (Steam isn't running?)
             print("Steamworks failed to initialize.")
             Steam = nil
         end
     end
     if Steam then
-        SteamUserID = Steam.user.getSteamID()
+        SteamUserID = tostring(Steam.user.getSteamID())
     end
 
 
