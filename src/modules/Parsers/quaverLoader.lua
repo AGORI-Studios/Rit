@@ -83,6 +83,9 @@ function quaverLoader.load(chart, folderPath, forDiff)
             end
         end
     end
+
+    __title = meta.title
+    __diffName = meta.name
 end
 
 return quaverLoader

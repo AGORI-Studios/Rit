@@ -19,6 +19,7 @@ Gameplay.songHits = 0
 Gameplay.songMisses = 0
 
 Gameplay.songName = ""
+Gameplay.difficultyName = ""
 
 Gameplay.members = {}
 
@@ -56,6 +57,7 @@ function Gameplay:reset()
     self.songHits = 0
     self.songMisses = 0
     self.songName = ""
+    self.difficultyName = ""
     self.members = {}
     self.didTimer = false
     self.objectKillOffset = 350
@@ -381,6 +383,18 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath)
     table.sort(self.unspawnNotes, function(a, b)
         return a.time < b.time
     end)
+
+    self.songName = __title or "N/A"
+    self.difficultyName = __diffName or "N/A"
+
+    if discordRPC then
+        discordRPC.presence = {
+            details = "Playing a song",
+            state = self.songName .. " - " .. self.difficultyName,
+            largeImageKey = "totallyreallogo",
+            largeImageText = "Rit" .. (__DEBUG__ and " DEBUG MODE" or "")
+        }
+    end
 end
 
 return Gameplay

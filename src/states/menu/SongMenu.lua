@@ -29,6 +29,15 @@ local songSelectScrollOffset = 0
 
 function SongMenu:enter()
     loadDefaultSongs()
+
+    if discordRPC then
+        discordRPC.presence = {
+            details = "In the menu",
+            state = "Selecting a song",
+            largeImageKey = "totallyreallogo",
+            largeImageText = "Rit" .. (__DEBUG__ and " DEBUG MODE" or "")
+        }
+    end
 end
 
 function SongMenu:selectSongDifficulty(_, chartVer)

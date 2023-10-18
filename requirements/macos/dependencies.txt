@@ -1,0 +1,2 @@
+LÖVE 11.4 for macOS: ./love.zip
+	Extract it, and copy the "love.app" directory to .

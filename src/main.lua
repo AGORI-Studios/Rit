@@ -23,6 +23,18 @@ fade = 1
 isLoading = false
 
 util = require("modules.util")
+
+local curOS = love.system.getOS()
+if curOS == "Windows" then -- Modify package.cpath to load the correct DLLs
+    local arch = love.system.getProcessorArchitecture() or "32"
+    package.cpath = package.cpath .. ";./lib/win" .. arch .. "/?.dll"
+elseif curOS == "Linux" then
+    local arch = love.system.getProcessorArchitecture() or "32"
+    package.cpath = package.cpath .. ";./lib/linux" .. arch .. "/?.so"
+elseif curOS == "OS X" then
+    package.cpath = package.cpath .. ";./lib/MacOS?.dylib;./lib/MacOS/?.so"
+end
+
 Try(
     function()
         if not __DEBUG__ then
@@ -30,7 +42,18 @@ Try(
         end
     end,
     function()
+        Steam = nil
         print("Couldn't load Steamworks.")
+    end
+)
+Try(
+    function()
+        discordRPC = require "lib.discordRPC"
+        discordRPC.nextPresenceUpdate = 0
+    end,
+    function()
+        discordRPC = nil
+        print("Couldn't load Discord RPC.")
     end
 )
 local SteamUserID
@@ -38,8 +61,8 @@ local SteamUserID
 function love.load()
     speed = 2.8
     -- Libraries 
-    Object = require("lib.Classic")
-    Timer = require("lib.Timer")
+    Object = require("lib.classic")
+    Timer = require("lib.timer")
     input = (require "lib.baton").new({
         controls = {
             gameLeft = { "axis:triggerleft+", "axis:leftx-", "axis:rightx-", "button:dpleft", "button:x", "key:d" },
@@ -135,6 +158,10 @@ function love.load()
     end
 
     SkinJSON = json(love.filesystem.read(skin:format("skin.json")))
+
+    if discordRPC then
+        discordRPC.initialize("785717724906913843", true)
+    end
 end
 
 function switchState(newState, t, middleFunc)
@@ -153,6 +180,16 @@ function love.update(dt)
     Timer.update(dt)
     if not isLoading then state.update(dt) end
     input:update()
+
+    if discordRPC then
+        if love.timer.getTime() or 0 > discordRPC.nextPresenceUpdate then
+            if discordRPC.presence then
+                discordRPC.updatePresence(discordRPC.presence)
+            end
+            discordRPC.nextPresenceUpdate = love.timer.getTime() + 2.0
+        end
+        discordRPC.runCallbacks()
+    end
 end
 
 function love.resize(w,h)
@@ -180,6 +217,9 @@ end
 function love.quit()
     if Steam then
         Steam.shutdown()
+    end
+    if discordRPC then
+        discordRPC.shutdown()
     end
 end
 

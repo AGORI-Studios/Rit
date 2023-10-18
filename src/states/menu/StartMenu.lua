@@ -33,6 +33,15 @@ function StartMenu:enter()
 
     logo.y = push.getHeight() / 1.45
     logo.x = push.getWidth() / 1.2
+    
+    if discordRPC then
+        discordRPC.presence = {
+            details = "In the menu",
+            state = "",
+            largeImageKey = "totallyreallogo",
+            largeImageText = "Rit" .. (__DEBUG__ and " DEBUG MODE" or "")
+        }
+    end
 end
 
 function StartMenu:update(dt)

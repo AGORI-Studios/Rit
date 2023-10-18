@@ -48,14 +48,15 @@ function osuLoader.processLine(line)
             -- empty line
         elseif currentBlockName == "General" then
             osuLoader.processGeneral(line)
-        elseif trimmed:find("^%a+:.*$") then
-            -- metadata
         elseif currentBlockName == "Events" then
             -- events
         elseif currentBlockName == "TimingPoints" then
             -- timing points
         elseif currentBlockName == "HitObjects" then
             osuLoader.addHitObject(line)
+        elseif currentBlockName == "Metadata" then
+            print("Metadata")
+            osuLoader.processMetadata(line)
         end
     end
 end
@@ -65,7 +66,18 @@ function osuLoader.processGeneral(line)
     if key == "AudioFilename" then
         local value = value:trim()
         audioFile = love.audio.newSource(folderPath .. "/" .. value, "stream")
-
+    end
+end
+function osuLoader.processMetadata(line)
+    local key, value = line:match("^(%a+):%s?(.*)")
+    if key == "Title" then
+        __title = value
+    elseif key == "Artist" then
+        __artist = value
+    elseif key == "Creator" then
+        __creator = value
+    elseif key == "Version" then
+        __diffName = value
     end
 end
 
