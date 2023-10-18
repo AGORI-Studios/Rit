@@ -51,7 +51,7 @@ macos: lovefile
 
 dist:
 	mkdir build/dist
-	zip -9 -r build/dist/$(GameName)-win32.zip build/$(GameName)-win32
-	zip -9 -r build/dist/$(GameName)-win64.zip build/$(GameName)-win64
-	zip -9 -r build/dist/$(GameName)-macos.zip build/$(GameName)-macos
+	cd build/$(GameName)-win32 && zip -9 -r ../../build/dist/$(GameName)-win32.zip *
+	cd build/$(GameName)-win64 && zip -9 -r ../../build/dist/$(GameName)-win64.zip *
+	cd build/$(GameName)-macos && zip -9 -r ../../build/dist/$(GameName)-macos.zip *
 	cp build/$(GameName)-lovefile/$(GameName).love build/dist/$(GameName).love

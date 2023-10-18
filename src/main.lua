@@ -23,6 +23,7 @@ fade = 1
 isLoading = false
 
 util = require("modules.util")
+ffi = require("ffi")
 
 local curOS = love.system.getOS()
 if curOS == "Windows" then -- Modify package.cpath to load the correct DLLs
@@ -150,12 +151,17 @@ function love.load()
     state.switch(states.menu.StartMenu)
 
     if Steam then
-        Steam.init()
+        local steam_init = Steam.init()
 
-        if Steam then
-            SteamUserID = tostring(Steam.user.getSteamID())
+        if not steam_init then
+            print("Steamworks failed to initialize.")
+            Steam = nil
         end
     end
+    if Steam then
+        SteamUserID = Steam.user.getSteamID()
+    end
+
 
     SkinJSON = json(love.filesystem.read(skin:format("skin.json")))
 
