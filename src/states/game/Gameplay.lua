@@ -2,7 +2,7 @@ local Gameplay = state()
 
 Gameplay.strumX = 525
 
-Gameplay.spawnTime = 2000
+Gameplay.spawnTime = 3000
 
 Gameplay.hitObjects = Group()
 Gameplay.unspawnNotes = {}
@@ -376,6 +376,9 @@ function Gameplay:update(dt)
                         ho.visible = false
                         ho:kill()
                         self.holdHitObjects:remove(ho)
+                        if self.sliderVelocities[self.currentSvIndex] then
+                            ho:changeHoldScale(self.sliderVelocities[self.currentSvIndex].multiplier)
+                        end
                         ho:destroy()
                     end
                 end

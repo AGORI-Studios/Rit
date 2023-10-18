@@ -102,29 +102,11 @@ function HitObject:update(dt)
     end
 end
 
-function HitObject:followStrum(strum, fakeCrocet)
-    local strumX, strumY = strum.x, strum.y
-    local strumAngle = strum.angle
-    local strumAlpha = strum.alpha
-    local strumDirection = strum.direction
-
-    self.distance = (0.45 * (musicTime - self.time) * speed)
-    
-    local angleDir = strumDirection * math.pi/180
-
-    if copyAngle then
-        self.angle = math.rad(strumAngle - 90 + strumAngle + self.offsetAngle)
+function HitObject:changeHoldScale(multiplier)
+    if self.isSustainNote then
+        print("changing scale")
+        self.scale.y = (((stepCrochet/100) * (0.475)) * (speed * multiplier))
     end
-
-    if copyAlpha then
-        self.alpha = strumAlpha * self.multAlpha
-    end
-
-    if copyX then
-        self.x = strumX + math.cos(angleDir) * self.distance
-    end
-
-    self.y = strumY + self.offsetY + self.correctionOffset + math.sin(angleDir) * -self.distance
 end
 
 function HitObject:clipToStrum(strum)
