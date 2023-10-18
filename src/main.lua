@@ -162,7 +162,6 @@ function love.load()
         SteamUserID = tostring(Steam.user.getSteamID())
     end
 
-
     SkinJSON = json(love.filesystem.read(skin:format("skin.json")))
 
     if discordRPC then
