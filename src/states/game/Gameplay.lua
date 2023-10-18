@@ -6,6 +6,7 @@ Gameplay.spawnTime = 1000
 
 Gameplay.hitObjects = Group()
 Gameplay.unspawnNotes = {}
+Gameplay.sliderVelocities = {}
 
 Gameplay.strumLineObjects = Group()
 
@@ -24,6 +25,10 @@ Gameplay.difficultyName = ""
 Gameplay.members = {}
 
 Gameplay.chartType = ""
+
+Gameplay.trackRounding = 100
+Gameplay.initialScrollVelocity = 1
+Gameplay.velocityPositionMakers = {}
 
 local previousFrameTime -- used for keeping musicTime consistent
 
@@ -48,6 +53,7 @@ function Gameplay:reset()
     self.hitObjects = Group()
     self.holdHitObjects = Group()
     self.unspawnNotes = {}
+    self.sliderVelocities = {}
     self.strumLineObjects = Group()
     self.songPercent = 0
     self.updateTime = false
@@ -68,6 +74,9 @@ function Gameplay:reset()
     self.judgement = nil
     self.comboGroup = Group()
     self.combo = 0
+    self.initialScrollVelocity = 1
+    self.velocityPositionMakers = {}
+    self.currentSvIndex = 1
 
     self:preloadAssets()
 
@@ -120,6 +129,113 @@ function Gameplay:doJudgement(time)
     end
 end
 
+-- // Slider Velocity Functions (Quaver)  \\ --
+function Gameplay:initializePositionMarkers()
+    if #self.sliderVelocities == 0 then return end
+
+    local position = self.sliderVelocities[1].startTime 
+                    * self.initialScrollVelocity 
+                    * self.trackRounding
+    
+    table.insert(self.velocityPositionMakers, position)
+    for i = 2, #self.sliderVelocities do
+        local velocity = self.sliderVelocities[i]
+        position = position + (
+            velocity.startTime - 
+            self.sliderVelocities[i - 1].startTime
+        ) * (self.sliderVelocities[i - 1] and self.sliderVelocities[i - 1].multiplier or 0) 
+            * self.trackRounding
+        table.insert(self.velocityPositionMakers, position)
+    end
+end
+
+function Gameplay:updateCurrentTrackPosition()
+    while self.currentSvIndex < #self.sliderVelocities and musicTime >= self.sliderVelocities[self.currentSvIndex].startTime do
+        self.currentSvIndex = self.currentSvIndex + 1
+    end
+
+    self.currentTrackPosition = self:GetPositionFromTime(musicTime, self.currentSvIndex)
+end
+
+function Gameplay:GetPositionFromTime(time, index)
+    if index == 1 then
+        return time * self.initialScrollVelocity * self.trackRounding
+    end
+    index = index - 1
+    local curPos = self.velocityPositionMakers[index]
+    curPos = curPos + ((time - self.sliderVelocities[index].startTime) * (self.sliderVelocities[index].multiplier or 0) * self.trackRounding)
+    return curPos
+end
+
+function Gameplay:getPositionFromTime(time)
+    local _i = 1
+    for i = 1, #self.sliderVelocities do
+        if time < self.sliderVelocities[i].startTime then
+            _i = i
+            break
+        end
+    end
+
+    return self:GetPositionFromTime(time, _i)
+end
+
+function Gameplay:isSVNegative(time)
+    local i_ = 1
+    for i = 1, #self.sliderVelocities do
+        if time >= self.sliderVelocities[i].startTime then
+            i_ = i
+            break
+        end
+    end
+
+    i_ = i_ - 1
+
+    for i = i_, 1, -1 do
+        if self.sliderVelocities[i].multiplier ~= 0 then
+            i_ = i
+            break
+        end
+    end
+
+    if i_ <= 0 then
+        return self.initialScrollVelocity < 0
+    end
+
+    return self.sliderVelocities[i_].multiplier < 0
+end
+
+function Gameplay:initPositions()
+    --[[ for _, hitObject in ipairs(self.hitObjects.members) do
+        hitObject.initialTrackPosition = self:getPositionFromTime(hitObject.time)
+        hitObject.latestTrackPosition = hitObject.initialTrackPosition
+    end
+    for _, sliderObject in ipairs(self.holdHitObjects.members) do
+        sliderObject.initialTrackPosition = self:getPositionFromTime(sliderObject.time)
+        sliderObject.latestTrackPosition = sliderObject.initialTrackPosition
+    end ]]
+    for _, hitObject in ipairs(self.unspawnNotes) do
+        hitObject.initialTrackPosition = self:getPositionFromTime(hitObject.time)
+        hitObject.latestTrackPosition = hitObject.initialTrackPosition
+    end
+end
+
+function Gameplay:getSpritePosition(offset, initialPos)
+    return 50 + (((initialPos or 0) - offset) * speed / self.trackRounding)
+end
+
+function Gameplay:updateSpritePositions(offset, curTime)
+    local spritePosition = 0
+
+    for _, hitObject in ipairs(self.hitObjects.members) do
+        spritePosition = self:getSpritePosition(offset, hitObject.initialTrackPosition)
+        hitObject.y = spritePosition
+    end
+    for _, sliderObject in ipairs(self.holdHitObjects.members) do
+        spritePosition = self:getSpritePosition(offset, sliderObject.initialTrackPosition)
+        sliderObject.y = spritePosition
+    end
+end
+
 function Gameplay:add(member, pos)
     local pos = pos or -1
     if pos == -1 then
@@ -160,8 +276,12 @@ function Gameplay:enter()
 
     self:generateBeatmap(self.chartVer, self.songPath, self.folderpath)
 
+    self:initializePositionMarkers()
+    self:updateCurrentTrackPosition()
+    self:initPositions()
+    self:updateSpritePositions(self.currentTrackPosition, musicTime)
+
     safeZoneOffset = (15 / 60) * 1000
-    print("Safe zone offset: " .. safeZoneOffset)
 
     Timer.after(0.8, function()
         self.updateTime = true
@@ -192,6 +312,8 @@ function Gameplay:update(dt)
             audioFile:play()
             audioFile:seek(musicTime / 1000) -- safe measure to keep it lined up
         end
+        self:updateCurrentTrackPosition()
+        self:updateSpritePositions(self.currentTrackPosition, musicTime)
     end
 
     for i, member in ipairs(self.members) do
@@ -203,6 +325,8 @@ function Gameplay:update(dt)
     if self.unspawnNotes[1] then
         local time = self.spawnTime
         if speed < 1 then time = time / speed end
+        -- change speed with slider velocity
+        time = time / (self.sliderVelocities[self.currentSvIndex].multiplier == 0 and 1 or self.sliderVelocities[self.currentSvIndex].multiplier)
 
         while #self.unspawnNotes > 0 and self.unspawnNotes[1].time - musicTime < time do
             local ho = table.remove(self.unspawnNotes, 1)
@@ -223,7 +347,7 @@ function Gameplay:update(dt)
                 local fakeCrocet = (60 / bpm) * 1000
                 for i, ho in ipairs(self.hitObjects.members) do
                     local strum = self.strumLineObjects.members[ho.data]
-                    ho:followStrum(strum, fakeCrocet)
+                    --ho:followStrum(strum, fakeCrocet)
 
                     if musicTime - ho.time > self.objectKillOffset then
                         ho.active = false
@@ -242,7 +366,7 @@ function Gameplay:update(dt)
                 local fakeCrocet = (60 / bpm) * 1000
                 for i, ho in ipairs(self.holdHitObjects.members) do
                     local strum = self.strumLineObjects.members[ho.data]
-                    ho:followStrum(strum, fakeCrocet)
+                    --ho:followStrum(strum, fakeCrocet)
                     ho:clipToStrum(strum)
 
                     if musicTime - ho.time > self.objectKillOffset then

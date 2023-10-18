@@ -59,7 +59,7 @@ Try(
 local SteamUserID
 
 function love.load()
-    speed = 2.8
+    speed = 1.95
     -- Libraries 
     Object = require("lib.classic")
     Timer = require("lib.timer")

@@ -56,6 +56,16 @@ function quaverLoader.load(chart, folderPath, forDiff)
         end
     end
 
+    states.game.Gameplay.initialScrollVelocity = chart.InitialScrollVelocity or 1
+
+    for i = 1, #chart.SliderVelocities do
+        local sliderVelocity = chart.SliderVelocities[i]
+        local startTime = sliderVelocity.StartTime
+        local multiplier = sliderVelocity.Multiplier
+
+        table.insert(states.game.Gameplay.sliderVelocities, {startTime = startTime, multiplier = multiplier or 0})
+    end
+
     for i = 1, #chart.HitObjects do
         local hitObject = chart.HitObjects[i]
         local startTime = hitObject.StartTime
