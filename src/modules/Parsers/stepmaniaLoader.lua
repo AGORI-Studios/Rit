@@ -18,6 +18,9 @@ You sHitObjectuld have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ------------------------------------------------------------------------------]]
+
+-- https://github.com/Kade-github/Vs-Tricky-Avg4k/blob/main/Average4k/SMFile.cpp
+
 local smLoader = {}
 
 function smLoader.load(chart, folderPath, forDiff)
@@ -30,6 +33,10 @@ function smLoader.load(chart, folderPath, forDiff)
     local diffIndex = 1
     local beat = 0
     local measureIndex = 0
+
+    local curBPM = 0
+
+    local lastNote = nil
 
     local meta = {
         bpms = {},
@@ -53,6 +60,28 @@ function smLoader.load(chart, folderPath, forDiff)
                 if readingBPMS then
                     if line:find("#") or line:find(";") then
                         readingBPMS = false
+                    else
+                        --stuff[0].erase(std::remove(stuff[0].begin(), stuff[0].end(), ','), stuff[0].end());
+                        stuff[1]:gsub(",", "")
+                        bpmSeg = stuff[1]:split("=")
+                        local seg = {
+                            startBeat = bpmSeg[1],
+                            endBeat = math.huge,
+                            length = math.huge,
+                            bpm = bpmSeg[2],
+                            startTime = 0
+                        }
+                        seg.startTime = 0
+
+                        if bpmIndex ~= 1 then
+                            prevSeg = meta.bpms[bpmIndex - 1]
+                            prevSeg.endBeat = seg.startBeat
+                            prevSeg.length = ((prevSeg.endBeat - prevSeg.startBeat) / (prevSeg.bpm / 60)) * 1000
+                            seg.startTime = prevSeg.startTime + prevSeg.length
+                        end
+
+                        table.insert(meta.bpms, seg)
+                        bpmIndex = bpmIndex + 1
                     end
                 end
 
@@ -122,8 +151,12 @@ function smLoader.load(chart, folderPath, forDiff)
                 else
                     diffIndex = 1
 
-                    if line:find(",") and line:find(";") then
-                        --measure->push_back(iss.str());
+                    --[[
+                        if (iss.str().find(",") == std::string::npos && iss.str().find(";") == std::string::npos)
+                        measure->push_back(iss.str());
+                    else {
+                    ]]
+                    if not line:find(",") and not line:find(";") then
                         table.insert(measure, line)
                     else
                         local lengthInRows = 192 / #measure
@@ -132,11 +165,10 @@ function smLoader.load(chart, folderPath, forDiff)
                         for i = 1, #measure do
                             local noteRow = (measureIndex * 192) + (lengthInRows * rowIndex)
                             beat = noteRow / 48
-
-                            for n = 1, #measure[i] do
-                                local thing = measure[i]:sub(n, n)
-
-                                if thing == "0" then
+                            -- for all characters in the measure
+                            local chars = measure[i]:splitAllCharacters()
+                            for n, char in ipairs(chars) do
+                                if char == "0" or not tonumber(char) then
                                     goto continue
                                 end
 
@@ -145,20 +177,22 @@ function smLoader.load(chart, folderPath, forDiff)
                                     -- convert beat to ms
                                     time = ((beat / meta.bpms[1].bpm) * 60) * 1000,
                                     lane = n,
+                                    lastNote = lastNote,
                                 }
-                                if thing ~= "M" then -- mine
-                                    if thing == "1" then
+                                if char ~= "M" then -- mine
+                                    if char == "1" then
                                         note.type = "normal"
-                                    elseif thing == "2" then
+                                    elseif char == "2" then
                                         note.type = "hold"
-                                    elseif thing == "3" then
+                                    elseif char == "3" then
                                         note.type = "tail"
-                                    elseif thing == "4" then
+                                    elseif char == "4" then
                                         note.type = "head"
                                     end
                                 end
 
-                                meta.difficulties[1].notes[noteRow] = note
+                                meta.difficulties[1].notes[tostring(noteRow) .. tostring(n)] = note
+                                lastNote = note
                             end
 
                             ::continue::
@@ -175,18 +209,29 @@ function smLoader.load(chart, folderPath, forDiff)
 
     -- create our notes
     for _, diff in ipairs(meta.difficulties) do
-        for _, note in ipairs(diff.notes) do
+        for i, note in pairs(diff.notes) do
+            -- get the current bpm from the bpm start time
+            for _, newBPM in ipairs(meta.bpms) do
+                if newBPM.startTime <= note.time then
+                    bpm = newBPM.bpm
+                end
+            end
+
+            local lastNote = note.lastNote
+
+            crochet = (60/bpm)*1000
+            stepCrochet = crochet/4
             if note.type == "normal" then
                 local ho = HitObject(note.time, note.lane, nil, false)
                 table.insert(states.game.Gameplay.unspawnNotes, ho)
             elseif note.type == "hold" then
-                local ho = HitObject(note.time, note.lane, nil, true)
+                local ho = HitObject(note.time, note.lane, lastNote, true)
                 table.insert(states.game.Gameplay.unspawnNotes, ho)
             elseif note.type == "head" then
-                local ho = HitObject(note.time, note.lane, nil, true)
+                local ho = HitObject(note.time, note.lane, lastNote, true)
                 table.insert(states.game.Gameplay.unspawnNotes, ho)
             elseif note.type == "tail" then
-                local ho = HitObject(note.time, note.lane, nil, true)
+                local ho = HitObject(note.time, note.lane, lastNote, true)
                 table.insert(states.game.Gameplay.unspawnNotes, ho)
             end
         end

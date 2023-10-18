@@ -12,6 +12,14 @@ function string.split(self, sep)
     return fields
 end
 
+function string.splitAllCharacters(self)
+    local fields = {}
+    for c in self:gmatch"." do
+        fields[#fields+1] = c
+    end
+    return fields
+end
+
 function string.trim(self)
     return self:gsub("^%s*(.-)%s*$", "%1")
 end
@@ -34,5 +42,20 @@ function love.system.getProcessorArchitecture()
         return "32"
     end
 end
+
+-- set metatable of all tables to print the full table when __tostring is called
+setmetatable(_G, {
+    __index = function(self, key)
+        return rawget(self, key)
+    end,
+    __tostring = function(self)
+        local str = "{"
+        for k, v in pairs(self) do
+            str = str .. k .. " = " .. tostring(v) .. ", "
+        end
+        str = str .. "}"
+        return str
+    end
+})
 
 return util
