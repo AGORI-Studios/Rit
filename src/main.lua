@@ -222,6 +222,3 @@ function love.quit()
         discordRPC.shutdown()
     end
 end
-
--- Steam API initializations
-
