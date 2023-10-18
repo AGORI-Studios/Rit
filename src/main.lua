@@ -38,7 +38,7 @@ end
 Try(
     function()
         if not __DEBUG__ then
-            Steam = require("luasteam") -- TEMP: Use spacewar appid until I make a real steam page.
+            Steam = require("luasteam")
         end
     end,
     function()

@@ -55,7 +55,6 @@ function osuLoader.processLine(line)
         elseif currentBlockName == "HitObjects" then
             osuLoader.addHitObject(line)
         elseif currentBlockName == "Metadata" then
-            print("Metadata")
             osuLoader.processMetadata(line)
         end
     end
