@@ -91,6 +91,8 @@ function Gameplay:reset()
         {name="bad", img="defaultSkins/skinThrowbacks/judgements/BAD.png", time=180},
         {name="miss", img="defaultSkins/skinThrowbacks/judgements/MISS.png", time=225}
     }
+
+    musicTime = 0
 end
 
 function Gameplay:doJudgement(time)
@@ -149,6 +151,12 @@ function Gameplay:initializePositionMarkers()
         ) * (self.sliderVelocities[i - 1] and self.sliderVelocities[i - 1].multiplier or 0) 
             * self.trackRounding
         table.insert(self.velocityPositionMakers, position)
+    end
+end
+
+function Gameplay:changeHoldScale()
+    for _, slider in ipairs(self.holdHitObjects) do
+        slider:changeHoldScale(self.sliderVelocities[self.currentSvIndex].multiplier)
     end
 end
 
@@ -227,7 +235,7 @@ function Gameplay:updateSpritePositions(offset, curTime)
     end
     for _, sliderObject in ipairs(self.holdHitObjects.members) do
         spritePosition = self:getSpritePosition(offset, sliderObject.initialTrackPosition)
-        sliderObject.y = spritePosition
+        sliderObject.y = spritePosition + sliderObject.correctionOffset
     end
 end
 
@@ -275,6 +283,7 @@ function Gameplay:enter()
     self:updateCurrentTrackPosition()
     self:initPositions()
     self:updateSpritePositions(self.currentTrackPosition, musicTime)
+    self:addObjectsToGroups()
 
     safeZoneOffset = (15 / 60) * 1000
 
@@ -284,6 +293,17 @@ function Gameplay:enter()
     end)
 
     self:add(self.comboGroup)
+end
+
+function Gameplay:addObjectsToGroups()
+    for i, ho in ipairs(self.unspawnNotes) do
+        if ho.isSustainNote then
+            self.holdHitObjects:add(ho)
+        else
+            self.hitObjects:add(ho)
+        end
+        ho.spawned = true
+    end
 end
 
 function Gameplay:generateStrums()
@@ -320,13 +340,11 @@ function Gameplay:update(dt)
         end
     end
 
-    if self.unspawnNotes[1] then
+    self:changeHoldScale()
+
+    --[[ if self.unspawnNotes[1] then
         local time = self.spawnTime
         if speed < 1 then time = time / speed end
-        -- change speed with slider velocity
-        --[[ if self.sliderVelocities[self.currentSvIndex] then
-            time = time / (self.sliderVelocities[self.currentSvIndex].multiplier == 0 and 1 or self.sliderVelocities[self.currentSvIndex].multiplier)
-        end ]]
 
         while #self.unspawnNotes > 0 and self.unspawnNotes[1].time - musicTime < time do
             local ho = table.remove(self.unspawnNotes, 1)
@@ -338,7 +356,7 @@ function Gameplay:update(dt)
             end
             ho.spawned = true
         end
-    end
+    end ]]
 
     if self.didTimer and self.updateTime then
         self:keysCheck()
@@ -374,9 +392,6 @@ function Gameplay:update(dt)
                         ho.visible = false
                         ho:kill()
                         self.holdHitObjects:remove(ho)
-                        if self.sliderVelocities[self.currentSvIndex] then
-                            ho:changeHoldScale(self.sliderVelocities[self.currentSvIndex].multiplier)
-                        end
                         ho:destroy()
                     end
                 end

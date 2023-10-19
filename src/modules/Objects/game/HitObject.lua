@@ -102,9 +102,11 @@ function HitObject:update(dt)
     end
 end
 
-function HitObject:changeHoldScale(multiplier)
+function HitObject:changeHoldScale(multiplier) -- fuck dude.,,.,, my couch
     if self.isSustainNote then
-        self.scale.y = (((stepCrochet/100) * (0.475)) * (speed * multiplier))
+        self.scale.y = self.scale.y * multiplier
+        self.correctionOffset = (((self.height) * 0.925)/2) / multiplier
+        self:updateHitbox()
     end
 end
 
@@ -128,6 +130,12 @@ function HitObject:clipToStrum(strum)
         end
 
         self.clipRect = rect
+    end
+end
+
+function HitObject:draw()
+    if self.y < 1080 and self.y > -(self.height * self.scale.y) then
+        self.super.draw(self)
     end
 end
 
