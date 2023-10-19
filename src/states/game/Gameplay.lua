@@ -208,14 +208,6 @@ function Gameplay:isSVNegative(time)
 end
 
 function Gameplay:initPositions()
-    --[[ for _, hitObject in ipairs(self.hitObjects.members) do
-        hitObject.initialTrackPosition = self:getPositionFromTime(hitObject.time)
-        hitObject.latestTrackPosition = hitObject.initialTrackPosition
-    end
-    for _, sliderObject in ipairs(self.holdHitObjects.members) do
-        sliderObject.initialTrackPosition = self:getPositionFromTime(sliderObject.time)
-        sliderObject.latestTrackPosition = sliderObject.initialTrackPosition
-    end ]]
     for _, hitObject in ipairs(self.unspawnNotes) do
         hitObject.initialTrackPosition = self:getPositionFromTime(hitObject.time)
         hitObject.latestTrackPosition = hitObject.initialTrackPosition
