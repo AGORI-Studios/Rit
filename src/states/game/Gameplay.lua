@@ -30,6 +30,8 @@ Gameplay.trackRounding = 100
 Gameplay.initialScrollVelocity = 1
 Gameplay.velocityPositionMakers = {}
 
+Gameplay.songDuration = 0
+
 local previousFrameTime -- used for keeping musicTime consistent
 
 local comboTimer = {}
@@ -77,6 +79,7 @@ function Gameplay:reset()
     self.initialScrollVelocity = 1
     self.velocityPositionMakers = {}
     self.currentSvIndex = 1
+    self.songDuration = 0
 
     self:preloadAssets()
 
@@ -308,7 +311,7 @@ function Gameplay:update(dt)
         -- use previousFrameTime to get musicTime (love.timer.getTime is pft)
         musicTime = musicTime + (love.timer.getTime() * 1000) - (previousFrameTime or (love.timer.getTime()*1000))
         previousFrameTime = love.timer.getTime() * 1000
-        if musicTime >= 0 and not audioFile:isPlaying() then
+        if musicTime >= 0 and not audioFile:isPlaying() and musicTime < self.songDuration then
             audioFile:play()
             audioFile:seek(musicTime / 1000) -- safe measure to keep it lined up
         end
@@ -516,6 +519,7 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath)
 
     self.songName = __title or "N/A"
     self.difficultyName = __diffName or "N/A"
+    self.songDuration = audioFile:getDuration() * 1000
 
     if discordRPC then
         discordRPC.presence = {
