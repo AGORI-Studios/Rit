@@ -500,13 +500,14 @@ function Gameplay:draw()
 end
 
 function Gameplay:generateBeatmap(chartType, songPath, folderPath)
-    print(chartType, songPath, folderPath)
     if chartType == "Quaver" then
         quaverLoader.load(songPath, folderPath)
     elseif chartType == "osu!" then
         osuLoader.load(songPath, folderPath)
     elseif chartType == "Stepmania" then
         smLoader.load(songPath, folderPath)
+    elseif chartType == "Malody" then
+        malodyLoader.load(songPath, folderPath)
     end
 
     table.sort(self.unspawnNotes, function(a, b)

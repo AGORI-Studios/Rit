@@ -114,6 +114,7 @@ function love.load()
     quaverLoader = require("modules.Parsers.quaverLoader")
     osuLoader = require("modules.Parsers.osuLoader")
     smLoader = require("modules.Parsers.stepmaniaLoader")
+    malodyLoader = require("modules.Parsers.malodyLoader")
 
     cache = {
         images = {},
@@ -164,7 +165,7 @@ function love.load()
 
     SkinJSON = json(love.filesystem.read(skin:format("skin.json")))
 
-    
+
     if discordRPC then
         discordRPC.initialize("785717724906913843", true)
     end

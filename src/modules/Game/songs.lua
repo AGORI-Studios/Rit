@@ -90,6 +90,30 @@ function loadDefaultSongs()
                                 ratingColour = {1,1,1},
                             }
                         end
+                    elseif song:sub(-3) == ".mc" then
+                        local fileData = json(lf.read("defaultSongs/" .. file .. "/" .. song))
+                        local title = fileData.meta.song.title
+                        local difficultyName = fileData.meta.version
+                        local BackgroundFile = fileData.meta.background
+                        local alreadyInList = false
+                        for _, song in ipairs(songList) do
+                            if song.title == title and song.difficultyName == difficultyName then
+                                alreadyInList = true
+                            end
+                        end
+                        if not alreadyInList then
+                            songList[#songList+1] = {
+                                filename = v,
+                                title = title,
+                                difficultyName = difficultyName,
+                                BackgroundFile = BackgroundFile,
+                                path = "defaultSongs/" .. file .. "/" .. song,
+                                folderPath = "defaultSongs/" .. file,
+                                type = "Malody",
+                                rating = "",
+                                ratingColour = {1,1,1},
+                            }
+                        end
                         -- With how stupid I am, stepmania is probably going to be the last thing I add
                     --[[ elseif song:sub(-3) == ".sm" then -- for stepmania, we have to call "smLoader.getDifficulties(chart)"
                         diffs = smLoader.getDifficulties("defaultSongs/" .. file .. "/" .. song)
