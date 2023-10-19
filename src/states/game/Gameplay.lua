@@ -314,6 +314,9 @@ function Gameplay:update(dt)
         if musicTime >= 0 and not audioFile:isPlaying() and musicTime < self.songDuration then
             audioFile:play()
             audioFile:seek(musicTime / 1000) -- safe measure to keep it lined up
+        elseif musicTime > self.songDuration and not audioFile:isPlaying() then
+            state.switch(states.menu.SongMenu)
+            return
         end
         self:updateCurrentTrackPosition()
         self:updateSpritePositions(self.currentTrackPosition, musicTime)
