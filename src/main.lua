@@ -165,7 +165,6 @@ function love.load()
 
     SkinJSON = json(love.filesystem.read(skin:format("skin.json")))
 
-
     if discordRPC then
         discordRPC.initialize("785717724906913843", true)
     end
