@@ -34,7 +34,7 @@ local substate = nil -- Current substate
 local function nop() end -- Called when there is no function to call from the current state
 
 local function switch(newstate, ...) -- (local) Switches to a new state/substate, returns the new state
-    if current and current.exit then current:exit() end
+    if current and current.exit then current:exit() end -- Call the exit function if it exists
     last = current
     current = newstate
     if current.enter then current:enter(...) end
@@ -51,28 +51,28 @@ end
 function state.current() return current end -- Returns the current state
 function state.last() return last end -- Returns the last state
 function state.killSubstate(...) -- Kills the current substate and calls current:substateReturn, returns nothing
-    if substate and substate.exit then substate:exit() end
+    if substate and substate.exit then substate:exit() end -- Call the exit function if it exists
     substate = nil
-    current:substateReturn(...)
+    current:substateReturn(...) -- Call the substate return function if it exists
     return
 end 
 function state.currentSubstate() return substate end -- Returns the current substate
 
 function state.returnToLast() -- Returns to the last state, returns the new state
-    assert(last, "Called state.return with no last state")
-    switch(last)
+    assert(last, "Called state.return with no last state") -- Make sure there is a last state
+    switch(last) -- Switch to the last state
     return current
 end
 
 function state.substate(newstate, ...) -- Switches to a new substate, returns the new substate
     assert(newstate, "Called state.substate with no state")
     assert(type(newstate) == "table", "Called state.substate with invalid state") -- Make sure the state is valid
-    substate = newstate
+    substate = newstate -- Set the substate
     if substate.enter then substate:enter(...) end -- Call the enter function if it exists
     return substate
 end
 
-function new() -- Creates a new state, returns a table, simply used for nicer syntax
+local function new() -- Creates a new state, returns a table, simply used for nicer syntax
     return setmetatable({}, {})
 end
 
@@ -83,8 +83,8 @@ setmetatable(state, { -- Allows you to call state functions as if they were glob
         return function(...)
             local args = {...} -- Allows us to pass arguments to the function
             local function f() -- Allows us to call both current and substate
-                if current and current[func] then current[func](current, unpack(args)) end
-                if substate and substate[func] then substate[func](substate, unpack(args)) end
+                if current and current[func] then current[func](current, unpack(args)) end -- Call current state
+                if substate and substate[func] then substate[func](substate, unpack(args)) end -- Call substate
             end
             return f()
         end
