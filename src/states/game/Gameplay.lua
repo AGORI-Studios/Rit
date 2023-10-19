@@ -332,9 +332,9 @@ function Gameplay:update(dt)
         local time = self.spawnTime
         if speed < 1 then time = time / speed end
         -- change speed with slider velocity
-        if self.sliderVelocities[self.currentSvIndex] then
+        --[[ if self.sliderVelocities[self.currentSvIndex] then
             time = time / (self.sliderVelocities[self.currentSvIndex].multiplier == 0 and 1 or self.sliderVelocities[self.currentSvIndex].multiplier)
-        end
+        end ]]
 
         while #self.unspawnNotes > 0 and self.unspawnNotes[1].time - musicTime < time do
             local ho = table.remove(self.unspawnNotes, 1)

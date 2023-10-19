@@ -21,7 +21,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 local quaverLoader = {}
 
 function quaverLoader.load(chart, folderPath, forDiff)
-
     curChart = "Quaver"
 
     local chart = tinyyaml.parse(love.filesystem.read(chart):gsub("\r\n", "\n"))
@@ -43,6 +42,7 @@ function quaverLoader.load(chart, folderPath, forDiff)
         inputMode = chart.Mode
     }
 
+    --audioFile = love.audio.newSource(folderPath .. "/" .. meta.audioPath, "stream")
     audioFile = love.audio.newSource(folderPath .. "/" .. meta.audioPath, "stream")
 
     for i = 1, #chart.TimingPoints do
@@ -72,6 +72,7 @@ function quaverLoader.load(chart, folderPath, forDiff)
         local endTime = hitObject.EndTime or 0
         local lane = hitObject.Lane
 
+        if not startTime then goto continue end
         local length = endTime - startTime
 
         local hasSustain = length ~= startTime
@@ -92,6 +93,7 @@ function quaverLoader.load(chart, folderPath, forDiff)
                 oldHo:updateHitbox()
             end
         end
+        ::continue::
     end
 
     __title = meta.title

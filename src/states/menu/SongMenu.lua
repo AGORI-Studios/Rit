@@ -28,8 +28,10 @@ local curSongSelected = 1
 local songSelectScrollOffset = 0
 
 function SongMenu:enter()
-    loadDefaultSongs()
-
+    if #songList == 0 then
+        loadSongs("defaultSongs")
+        loadSongs("songs") -- broken rn,,,, WHY DOES PURPLE ALWAYS PLAY?? IT LOADS THE CHARTS
+    end
     if discordRPC then
         discordRPC.presence = {
             details = "In the menu",
@@ -41,9 +43,12 @@ function SongMenu:enter()
 end
 
 function SongMenu:selectSongDifficulty(_, chartVer)
+    love.filesystem.unmount("song")
     chartver = chartVer
     folderpath = songList[curSongSelected].folderPath
     songPath = songList[curSongSelected].path
+    filename = songList[curSongSelected].filename
+    love.filesystem.mount("songs/" .. filename, "song")
     if chartver ~= "FNF" then
         states.game.Gameplay.chartVer = chartver
         states.game.Gameplay.songPath = songPath

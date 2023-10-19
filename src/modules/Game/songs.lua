@@ -20,27 +20,23 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ------------------------------------------------------------------------------]]
 local lf = love.filesystem -- i use this a lot so i just made it a variable
 songList = {}
-function loadDefaultSongs()
-    print("Loading default songs...")
-    songList = {}
-    
+function loadSongs(path)
     if not lf.getInfo("songs") then
         lf.createDirectory("songs")
         love.window.showMessageBox("Songs folder created!",
         "songs folder has been created at " .. lf.getSaveDirectory() .. "/songs", "info")
     end
    
-    --for all files in defaultSongs/
-    for _, file in ipairs(lf.getDirectoryItems("defaultSongs")) do
+    for _, file in ipairs(lf.getDirectoryItems(path)) do
         --print("Checking " .. file)
-        if lf.getInfo("defaultSongs/" .. file).type == "directory" then
+        if lf.getInfo(path .."/" .. file).type == "directory" then
             --print("Found folder " .. file)
-            for _, song in ipairs(lf.getDirectoryItems("defaultSongs/" .. file)) do
+            for _, song in ipairs(lf.getDirectoryItems(path .."/" .. file)) do
                 --print("Checking " .. song)
-                if lf.getInfo("defaultSongs/" .. file .. "/" .. song).type == "file" then
+                if lf.getInfo(path .."/" .. file .. "/" .. song).type == "file" then
                     --print("Found song " .. song)
                     if song:sub(-4) == ".qua" then
-                        local fileData = lf.read("defaultSongs/" .. file .. "/" .. song)
+                        local fileData = lf.read(path .."/" .. file .. "/" .. song)
                         local title = fileData:match("Title:(.-)\r?\n")
                         local difficultyName = fileData:match("DifficultyName:(.-)\r?\n")
                         local BackgroundFile = fileData:match("BackgroundFile:(.-)\r?\n")
@@ -54,12 +50,12 @@ function loadDefaultSongs()
                             end
                             if not alreadyInList then
                                 songList[#songList+1] = {
-                                    filename = v,
+                                    filename = file,
                                     title = title,
                                     difficultyName = difficultyName,
                                     BackgroundFile = BackgroundFile,
-                                    path = "defaultSongs/" .. file .. "/" .. song,
-                                    folderPath = "defaultSongs/" .. file,
+                                    path = path .."/" .. file .. "/" .. song,
+                                    folderPath = path .."/" .. file,
                                     type = "Quaver",
                                     rating = "",
                                     ratingColour = {1,1,1},
@@ -67,7 +63,7 @@ function loadDefaultSongs()
                             end
                         end
                     elseif song:sub(-4) == ".osu" then
-                        local fileData = lf.read("defaultSongs/" .. file .. "/" .. song)
+                        local fileData = lf.read(path .."/" .. file .. "/" .. song)
                         local title = fileData:match("Title:(.-)\r?\n")
                         local difficultyName = fileData:match("Version:(.-)\r?\n")
                         local BackgroundFile = fileData:match("0,0,(.-)\r?\n")
@@ -79,19 +75,19 @@ function loadDefaultSongs()
                         end
                         if not alreadyInList then
                             songList[#songList+1] = {
-                                filename = v,
+                                filename = file,
                                 title = title,
                                 difficultyName = difficultyName,
                                 BackgroundFile = BackgroundFile,
-                                path = "defaultSongs/" .. file .. "/" .. song,
-                                folderPath = "defaultSongs/" .. file,
+                                path = path .."/" .. file .. "/" .. song,
+                                folderPath = path .."/" .. file,
                                 type = "osu!",
                                 rating = "",
                                 ratingColour = {1,1,1},
                             }
                         end
                     elseif song:sub(-3) == ".mc" then
-                        local fileData = json(lf.read("defaultSongs/" .. file .. "/" .. song))
+                        local fileData = json(lf.read(path .."/" .. file .. "/" .. song))
                         local title = fileData.meta.song.title
                         local difficultyName = fileData.meta.version
                         local BackgroundFile = fileData.meta.background
@@ -103,20 +99,20 @@ function loadDefaultSongs()
                         end
                         if not alreadyInList then
                             songList[#songList+1] = {
-                                filename = v,
+                                filename = file,
                                 title = title,
                                 difficultyName = difficultyName,
                                 BackgroundFile = BackgroundFile,
-                                path = "defaultSongs/" .. file .. "/" .. song,
-                                folderPath = "defaultSongs/" .. file,
+                                path = path .."/" .. file .. "/" .. song,
+                                folderPath = path .."/" .. file,
                                 type = "Malody",
                                 rating = "",
                                 ratingColour = {1,1,1},
                             }
                         end
                         -- With how stupid I am, stepmania is probably going to be the last thing I add
-                    --[[ elseif song:sub(-3) == ".sm" then -- for stepmania, we have to call "smLoader.getDifficulties(chart)"
-                        diffs = smLoader.getDifficulties("defaultSongs/" .. file .. "/" .. song)
+                    elseif song:sub(-3) == ".sm" then -- for stepmania, we have to call "smLoader.getDifficulties(chart)"
+                        diffs = smLoader.getDifficulties(path .."/" .. file .. "/" .. song)
                         -- has a table in a table (holds name and songName)
 
                         for _, diff in ipairs(diffs) do
@@ -129,21 +125,79 @@ function loadDefaultSongs()
 
                             if not alreadyInList then
                                 songList[#songList+1] = {
-                                    filename = v,
+                                    filename = file,
                                     title = diff.songName,
                                     difficultyName = diff.name,
                                     BackgroundFile = diff.BackgroundFile,
-                                    path = "defaultSongs/" .. file .. "/" .. song,
-                                    folderPath = "defaultSongs/" .. file,
+                                    path = path .."/" .. file .. "/" .. song,
+                                    folderPath = path .."/" .. file,
                                     type = "Stepmania",
                                     rating = "",
                                     ratingColour = {1,1,1},
                                 }
                             end
-                        end ]]
+                        end 
                     end
                 end
             end
+        elseif lf.getInfo(path .."/" .. file).type == "file" then
+            lf.mount(path .."/" .. file, "song")
+            -- for all files in song/
+            for _, song in ipairs(love.filesystem.getDirectoryItems("song")) do
+                if song:sub(-4) == ".qua" then
+                    local fileData = lf.read("song/" .. song)
+                    local title = fileData:match("Title:(.-)\r?\n")
+                    local difficultyName = fileData:match("DifficultyName:(.-)\r?\n")
+                    local BackgroundFile = fileData:match("BackgroundFile:(.-)\r?\n")
+                    local mode = fileData:match("Mode:(.-)\r?\n"):gsub("^%s*(.-)%s*$", "%1")
+                    if mode == "Keys4" then
+                        local alreadyInList = false
+                        for _, song in ipairs(songList) do
+                            if song.title == title and song.difficultyName == difficultyName then
+                                alreadyInList = true
+                            end
+                        end
+                        if not alreadyInList then
+                            songList[#songList+1] = {
+                                filename = file,
+                                title = title,
+                                difficultyName = difficultyName,
+                                BackgroundFile = BackgroundFile,
+                                path = "song/" .. song,
+                                folderPath = "song",
+                                type = "Quaver",
+                                rating = "",
+                                ratingColour = {1,1,1},
+                            }
+                        end
+                    end
+                elseif song:sub(-4) == ".osu" then
+                    local fileData = lf.read("song/" .. song)
+                    local title = fileData:match("Title:(.-)\r?\n")
+                    local difficultyName = fileData:match("Version:(.-)\r?\n")
+                    local BackgroundFile = fileData:match("0,0,(.-)\r?\n")
+                    local alreadyInList = false
+                    for _, song in ipairs(songList) do
+                        if song.title == title and song.difficultyName == difficultyName then
+                            alreadyInList = true
+                        end
+                    end
+                    if not alreadyInList then
+                        songList[#songList+1] = {
+                            filename = file,
+                            title = title,
+                            difficultyName = difficultyName,
+                            BackgroundFile = BackgroundFile,
+                            path = "song/" .. song,
+                            folderPath = "song",
+                            type = "osu!",
+                            rating = "",
+                            ratingColour = {1,1,1},
+                        }
+                    end
+                end
+            end
+            love.filesystem.unmount(path .."/" .. file)
         end
     end
 

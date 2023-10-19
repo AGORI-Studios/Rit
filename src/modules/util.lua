@@ -24,6 +24,14 @@ function string.trim(self)
     return self:gsub("^%s*(.-)%s*$", "%1")
 end
 
+function string.startsWith(self, start)
+    return self:sub(1, #start) == start
+end
+
+function string.endsWith(self, ending)
+    return ending == "" or self:sub(-#ending) == ending
+end
+
 function Try(f, catch_f)
     local status, exception = pcall(f)
     if not status then
@@ -42,20 +50,5 @@ function love.system.getProcessorArchitecture()
         return "32"
     end
 end
-
--- set metatable of all tables to print the full table when __tostring is called
-setmetatable(_G, {
-    __index = function(self, key)
-        return rawget(self, key)
-    end,
-    __tostring = function(self)
-        local str = "{"
-        for k, v in pairs(self) do
-            str = str .. k .. " = " .. tostring(v) .. ", "
-        end
-        str = str .. "}"
-        return str
-    end
-})
 
 return util

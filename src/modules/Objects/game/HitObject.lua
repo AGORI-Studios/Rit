@@ -104,7 +104,6 @@ end
 
 function HitObject:changeHoldScale(multiplier)
     if self.isSustainNote then
-        print("changing scale")
         self.scale.y = (((stepCrochet/100) * (0.475)) * (speed * multiplier))
     end
 end
