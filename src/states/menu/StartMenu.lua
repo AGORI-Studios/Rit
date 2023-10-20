@@ -36,7 +36,7 @@ function StartMenu:enter()
     
     if discordRPC then
         discordRPC.presence = {
-            details = "In the menu",A
+            details = "In the menu",
             state = "",
             largeImageKey = "totallyreallogo",
             largeImageText = "Rit" .. (__DEBUG__ and " DEBUG MODE" or "")
