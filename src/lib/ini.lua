@@ -18,9 +18,9 @@ end
 local function convert(str)
     if tonumber(str) then
         return tonumber(str)
-    elseif str == "true" then
+    elseif str:lower() == "true" then
         return true
-    elseif str == "false" then
+    elseif str:lower() == "false" then
         return false
     else
         return str
