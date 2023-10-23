@@ -62,7 +62,7 @@ local SteamUserID
 function love.load()
     speed = 1.95
     -- Libraries 
-    Object = require("lib.classic")
+    Object = require("lib.class")
     Timer = require("lib.timer")
     input = (require "lib.baton").new({
         controls = {
@@ -97,6 +97,7 @@ function love.load()
     lume = require("lib.lume")
     state = require("lib.state")
     tinyyaml = require("lib.tinyyaml")
+    ini = require("lib.ini")
 
     -- Classes
     Group = require("modules.Classes.Group")
@@ -163,7 +164,7 @@ function love.load()
         SteamUserID = tostring(Steam.user.getSteamID())
     end
 
-    SkinJSON = json(love.filesystem.read(skin:format("skin.json")))
+    skinData = ini.parse(love.filesystem.read(skin:format("skin.ini")))
 
     if discordRPC then
         discordRPC.initialize("785717724906913843", true)

@@ -1,94 +1,87 @@
---[[
-    AUTHOR: Fivos Moutavelis (https://github.com/FivosM).
-    LICENSE: CC0 1.0 Universal (https://creativecommons.org/publicdomain/zero/1.0/legalcode).
-    Attribution is not required but always appreciated.
-]]--
+local ini = {
+    _NAME = "Ini",
+    _VERSION = "1.0.0",
+    _DESCRIPTION = "A simple ini parser",
+    _CREATOR = "GuglioIsStupid",
+    _LICENSE = [[
+        MIT LICENSE
+    ]]
+}
 
-local ini = {}
+local function split(str, sep)
+    local sep, fields = sep or ":", {}
+    local pattern = string.format("([^%s]+)", sep)
+    str:gsub(pattern, function(c) fields[#fields + 1] = c end)
+    return fields
+end
 
-function ini.load( filePath )
-    local fileInfo = love.filesystem.getInfo( filePath )
-    if fileInfo and fileInfo.type == "file" then
-        local iniTable = {}
-        local currentSection = "default"
-        for line in love.filesystem.lines( filePath ) do
-            -- Returns a string if the line is a comment
-            local isComment = string.match( line, "^%s*;.*$")
-            if line ~= "" and isComment == nil then
-                -- Get section name (if section)
-                local section = string.match( line, "%[%s*(.*)%s*%]" )
-                if section ~= nil then
-                    currentSection = section
-                    iniTable[section] = {}
-                else
-                    -- Get variable name and value
-                    local variableName, variableValue = string.match( line, "^%s*(.*[^%s])%s*=%s*(.*[^%s])%s*$" )
-                    if variableName and variableValue then
-                        iniTable[currentSection][variableName] = variableValue
-                    end
+local function convert(str)
+    if tonumber(str) then
+        return tonumber(str)
+    elseif str == "true" then
+        return true
+    elseif str == "false" then
+        return false
+    else
+        return str
+    end
+end
+
+function ini.parse(ini)
+    -- is it a file or str
+    local str
+
+    if love.filesystem.getInfo(ini) then
+        str = love.filesystem.read(ini)
+    else
+        str = ini
+    end
+
+    -- assert str to see if its nil or nah
+    assert(str, "No ini file or string provided")
+
+    local lines = split(str, "\n")
+
+    local data = {}
+    local currentSection = nil
+
+    for i, line in ipairs(lines) do
+        local comment = string.match(line, "^%s*;(.*)")
+        if line ~= "" and not comment then
+            local sec = string.match(line, "^%s*%[(.*)%]")
+            if sec ~= nil then
+                currentSection = sec
+                data[currentSection] = {}
+            else
+                local name, value = string.match(line, "^%s*(.-)%s*=%s*(.-)%s*$")
+                if name and value then
+                    data[currentSection][name] = convert(value)
                 end
             end
         end
-        return iniTable
     end
-    return nil
+
+    return data
 end
 
-function ini.save( iniTable, file )
-    if iniTable then
-        local writeString = ""
-        for sectionName, sectionValue in pairs( iniTable ) do
-            writeString = writeString .. "[" .. sectionName .. "]" .. "\r\n"
-            for variableName, variableValue in pairs( sectionValue ) do
-                writeString = writeString .. variableName .. " = " .. variableValue .. "\r\n"
+function ini.save(tab, fileName)
+    if table then
+        local str = ""
+        for name, value in pairs(tab) do
+            str = str .. "[" .. name .. "]\n"
+            for k, v in pairs(value) do
+                str = str .. k .. " = " .. tostring(v) .. "\n"
             end
+
+            str = str .. "\n"
         end
-        local success, message = love.filesystem.write( file, writeString )
-        if not success then
-            return message
+        local ok, err = love.filesystem.write(fileName, str)
+        if not ok then
+            return false, err
         end
-        return 1
+        return true, "File saved"
     end
-    return nil
-end
-
-function ini.readKey( iniTable, sectionName, keyName )
-    return iniTable[sectionName][keyName]
-end
-
-function ini.addSection( iniTable, newSectionName )
-    iniTable[newSectionName] = {}
-    return 1
-end
-
-function ini.addKey( iniTable, sectionName, keyName, keyValue )
-    iniTable[sectionName][keyName] = keyValue
-    return 1
-end
-
-function ini.sectionExists( iniTable, sectionName )
-    if iniTable[sectionName] then
-        return 1
-    end
-    return 0
-end
-
-function ini.keyExists( iniTable, sectionName, keyName )
-    if iniTable[sectionName][keyName] then
-        return 1
-    end
-    return 0
-end
-
-function ini.deleteSection( iniTable, sectionName )
-    iniTable[sectionName] = nil
-    return 1
-end
-
-function ini.deleteKey( iniTable, sectionName, keyName )
-    iniTable[sectionName][keyName] = nil
-    return 1
+    return false, "No table provided"
 end
 
 return ini
-

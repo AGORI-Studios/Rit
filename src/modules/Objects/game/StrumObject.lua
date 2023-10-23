@@ -18,8 +18,8 @@ function StrumObject:new(x, y, data)
 
     --self:load("defaultSkins/Circle Default/note.png")
     self.anims = {
-        skin:format(SkinJSON[StrumTypes[data] .. " receptor unpressed"]),
-        skin:format(SkinJSON[StrumTypes[data] .. " receptor pressed"])
+        skin:format(skinData["NoteAssets"][StrumTypes[data] .. "_receptor_unpressed"]),
+        skin:format(skinData["NoteAssets"][StrumTypes[data] .. "_receptor_pressed"])
     }
 
     Cache:loadImage(self.anims[1], self.anims[2])

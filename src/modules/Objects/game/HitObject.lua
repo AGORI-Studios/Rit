@@ -58,7 +58,7 @@ function HitObject:new(time, data, prevNote, sustainNote)
     self.time = time
     self.data = data
 
-    self:load(skin:format(SkinJSON[HitTypes[data] .. " note"]))
+    self:load(skin:format(skinData["NoteAssets"][HitTypes[data] .. "_note"]))
     self:setGraphicSize(math.floor(self.width * 0.925))
 
     self.x = self.x + (self.width * 0.925+4) * (data-1)
@@ -70,7 +70,7 @@ function HitObject:new(time, data, prevNote, sustainNote)
     if self.isSustainNote and self.prevNote then
         self.offsetX = self.offsetX + (self.width * 0.925)/2
 
-        self:load(skin:format(SkinJSON[HitTypes[data] .. " note hold end"]))
+        self:load(skin:format(skinData["NoteAssets"][HitTypes[data] .. "_hold_end"]))
         self:updateHitbox()
         self.offsetX = self.offsetX - (self.width)/2
         self.flipY = true
@@ -78,7 +78,7 @@ function HitObject:new(time, data, prevNote, sustainNote)
 
         if self.prevNote.isSustainNote then
             self.prevNote.flipY = false
-            self.prevNote:load(skin:format(SkinJSON[HitTypes[data] .. " note hold"]))
+            self.prevNote:load(skin:format(skinData["NoteAssets"][HitTypes[data] .. "_hold"]))
             self.prevNote.scale.y = ((stepCrochet/100) * (0.475)) * speed
             self.offsetY = 0
         end
