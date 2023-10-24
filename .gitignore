@@ -17,3 +17,5 @@ requirements/macos/*
 !requirements/macos/libsteam_api.dylib
 !requirements/macos/libluasteam.so
 !requirements/macos/libdiscord-rpc.dylib
+
+.env
