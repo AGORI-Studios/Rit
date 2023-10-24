@@ -33,12 +33,6 @@ local last = nil -- Last state
 local substate = nil -- Current substate
 local function nop() end -- Called when there is no function to call from the current state
 
---@name switch
---@description Switches to a new state, returns the new state
---@param newstate table
---@param ... any
---@return table
---@private
 local function switch(newstate, ...)
     if current and current.exit then current:exit() end 
     last = current
@@ -107,10 +101,6 @@ function state.substate(newstate, ...)
     return substate
 end
 
---@name new
---@description Creates a new state, returns a table, simply used for nicer syntax
---@return table
---@private
 local function new()
     return setmetatable({}, {})
 end

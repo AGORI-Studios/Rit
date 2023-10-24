@@ -22,7 +22,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 fade = 1
 isLoading = false
 
-util = require("modules.util")
+util = require("modules.Utilities")
 ffi = require("ffi")
 
 local curOS = love.system.getOS()
@@ -104,32 +104,32 @@ function love.load()
     Cache = require("modules.Classes.Cache")
     Point = require("modules.Classes.Point")
     Sprite = require("modules.Classes.Sprite")
-    require("modules.Game.songs")
-    skin = require("modules.Game.skin")
+    require("modules.Game.SongHandler")
+    skin = require("modules.Game.SkinHandler")
 
     -- Objects
     StrumObject = require("modules.Objects.game.StrumObject")
     HitObject = require("modules.Objects.game.HitObject")
 
     -- Parsers
-    quaverLoader = require("modules.Parsers.quaverLoader")
-    osuLoader = require("modules.Parsers.osuLoader")
-    smLoader = require("modules.Parsers.stepmaniaLoader")
-    malodyLoader = require("modules.Parsers.malodyLoader")
+    quaverLoader = require("modules.Parsers.Quaver")
+    osuLoader = require("modules.Parsers.Osu")
+    smLoader = require("modules.Parsers.Stepmania")
+    malodyLoader = require("modules.Parsers.Malody")
 
-    Cache.font["default"] = love.graphics.newFont("assets/fonts/Dosis-SemiBold.ttf", 16)
-    
+    Cache.members.font["default"] = love.graphics.newFont("assets/fonts/Dosis-SemiBold.ttf", 16)
+
     function setFont(font)
         local font = font or "default"
-        love.graphics.setFont(Cache.fonts[font])
+        love.graphics.setFont(Cache.members.fonts[font])
     end
     function fontWidth(font, text)
         local font, text = font or "default", text or "A"
-        return Cache.font[font]:getWidth(text)
+        return Cache.members.font[font]:getWidth(text)
     end
     function fontHeight(font, text)
         local font, text = font or "default", text or "A"
-        return Cache.font[font]:getHeight(text)
+        return Cache.members.font[font]:getHeight(text)
     end
     
     -- States
