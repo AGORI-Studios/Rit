@@ -293,6 +293,8 @@ function Gameplay:enter()
     end)
 
     self:add(self.comboGroup)
+
+    previousFrameTime = love.timer.getTime() * 1000
 end
 
 function Gameplay:addObjectsToGroups()
