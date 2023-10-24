@@ -41,6 +41,7 @@ function loadSongs(path)
                         local difficultyName = fileData:match("DifficultyName:(.-)\r?\n")
                         local BackgroundFile = fileData:match("BackgroundFile:(.-)\r?\n")
                         local mode = fileData:match("Mode:(.-)\r?\n"):gsub("^%s*(.-)%s*$", "%1")
+                        local Creator = fileData:match("Creator:(.-)\r?\n")
                         if mode == "Keys4" then
                             local alreadyInList = false
                             for _, song in ipairs(songList) do
@@ -49,7 +50,8 @@ function loadSongs(path)
                                 end
                             end
                             if not alreadyInList then
-                                songList[#songList+1] = {
+                                songList[title] = songList[title] or {}
+                                songList[title][difficultyName] = {
                                     filename = file,
                                     title = title,
                                     difficultyName = difficultyName,
@@ -59,7 +61,9 @@ function loadSongs(path)
                                     type = "Quaver",
                                     rating = "",
                                     ratingColour = {1,1,1},
+                                    creator = Creator,
                                 }
+                                songList[title].type = "Quaver"
                             end
                         end
                     elseif song:sub(-4) == ".osu" then
@@ -74,7 +78,8 @@ function loadSongs(path)
                             end
                         end
                         if not alreadyInList then
-                            songList[#songList+1] = {
+                            songList[title] = songList[title] or {}
+                            songList[title][difficultyName] = {
                                 filename = file,
                                 title = title,
                                 difficultyName = difficultyName,
@@ -85,6 +90,7 @@ function loadSongs(path)
                                 rating = "",
                                 ratingColour = {1,1,1},
                             }
+                            songList[title].type = "osu!"
                         end
                     elseif song:sub(-3) == ".mc" then
                         local fileData = json(lf.read(path .."/" .. file .. "/" .. song))
@@ -98,7 +104,8 @@ function loadSongs(path)
                             end
                         end
                         if not alreadyInList then
-                            songList[#songList+1] = {
+                            songList[title] = songList[title] or {}
+                            songList[title][difficultyName] = {
                                 filename = file,
                                 title = title,
                                 difficultyName = difficultyName,
@@ -110,8 +117,9 @@ function loadSongs(path)
                                 ratingColour = {1,1,1},
                             }
                         end
+                        songList[title].type = "Malody"
                         -- With how stupid I am, stepmania is probably going to be the last thing I add
-                    elseif song:sub(-3) == ".sm" then -- for stepmania, we have to call "smLoader.getDifficulties(chart)"
+                    --[[ elseif song:sub(-3) == ".sm" then -- for stepmania, we have to call "smLoader.getDifficulties(chart)"
                         diffs = smLoader.getDifficulties(path .."/" .. file .. "/" .. song)
                         -- has a table in a table (holds name and songName)
 
@@ -124,7 +132,8 @@ function loadSongs(path)
                             end
 
                             if not alreadyInList then
-                                songList[#songList+1] = {
+                                songList[diff.songName] = songList[diff.songName] or {}
+                                songList[diff.songName][diff.name] = {
                                     filename = file,
                                     title = diff.songName,
                                     difficultyName = diff.name,
@@ -136,7 +145,7 @@ function loadSongs(path)
                                     ratingColour = {1,1,1},
                                 }
                             end
-                        end 
+                        end --]]
                     end
                 end
             end
@@ -150,6 +159,7 @@ function loadSongs(path)
                     local difficultyName = fileData:match("DifficultyName:(.-)\r?\n")
                     local BackgroundFile = fileData:match("BackgroundFile:(.-)\r?\n")
                     local mode = fileData:match("Mode:(.-)\r?\n"):gsub("^%s*(.-)%s*$", "%1")
+                    local Creator = fileData:match("Creator:(.-)\r?\n")
                     if mode == "Keys4" then
                         local alreadyInList = false
                         for _, song in ipairs(songList) do
@@ -158,7 +168,8 @@ function loadSongs(path)
                             end
                         end
                         if not alreadyInList then
-                            songList[#songList+1] = {
+                            songList[title] = songList[title] or {}
+                            songList[title][difficultyName] = {
                                 filename = file,
                                 title = title,
                                 difficultyName = difficultyName,
@@ -168,7 +179,9 @@ function loadSongs(path)
                                 type = "Quaver",
                                 rating = "",
                                 ratingColour = {1,1,1},
+                                creator = Creator,
                             }
+                            songList[title].type = "Quaver"
                         end
                     end
                 elseif song:sub(-4) == ".osu" then
@@ -183,7 +196,8 @@ function loadSongs(path)
                         end
                     end
                     if not alreadyInList then
-                        songList[#songList+1] = {
+                        songList[title] = songList[title] or {}
+                        songList[title][difficultyName] = {
                             filename = file,
                             title = title,
                             difficultyName = difficultyName,
@@ -194,6 +208,7 @@ function loadSongs(path)
                             rating = "",
                             ratingColour = {1,1,1},
                         }
+                        songList[title].type = "osu!"
                     end
                 end
             end

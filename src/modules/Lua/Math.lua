@@ -96,3 +96,14 @@ end
 function math.lerp(a, b, t)
     return a + (b - a) * t
 end
+
+--@name math.fpsLerp
+--@description Linearly interpolates between two numbers, taking into account the time between frames
+--@param a number
+--@param b number
+--@param t number
+--@param dt number
+--@return number
+function math.fpsLerp(a, b, t, dt)
+    return math.lerp(a, b, 1 - math.exp(-t * dt))
+end

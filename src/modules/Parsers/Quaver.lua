@@ -21,6 +21,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 local quaverLoader = {}
 
 function quaverLoader.load(chart, folderPath, forDiff)
+    print(chart)
     curChart = "Quaver"
 
     local chart = tinyyaml.parse(love.filesystem.read(chart):gsub("\r\n", "\n"))

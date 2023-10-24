@@ -201,6 +201,17 @@ function Sprite:destroy()
     self.animPaused = false
 end
 
+function Sprite:isHovered(x, y)
+    local x = x or love.mouse.getX()
+    local y = y or love.mouse.getY()
+
+    -- account for the offset
+    x = x - self.offset.x
+    y = y - self.offset.y
+
+    return x >= self.x and x <= self.x + self.width and y >= self.y and y <= self.y + self.height
+end
+
 function Sprite:draw()
     if self.exists and self.alive and self.visible and self.graphic then
         local frame = self:getCurrentFrame()

@@ -110,6 +110,7 @@ function love.load()
     -- Objects
     StrumObject = require("modules.Objects.game.StrumObject")
     HitObject = require("modules.Objects.game.HitObject")
+    SongButton = require("modules.Objects.menu.SongButton")
 
     -- Parsers
     quaverLoader = require("modules.Parsers.Quaver")
@@ -117,11 +118,17 @@ function love.load()
     smLoader = require("modules.Parsers.Stepmania")
     malodyLoader = require("modules.Parsers.Malody")
 
-    Cache.members.font["default"] = love.graphics.newFont("assets/fonts/Dosis-SemiBold.ttf", 16)
+    --Cache.members.font["default"] = love.graphics.newFont("assets/fonts/Dosis-SemiBold.ttf", 16)
+    Cache.members.font["default"] = love.graphics.newFont("assets/fonts/TT-Interphases-Pro-Trial-Light.ttf", 16)
+    Cache.members.font["defaultBold"] = love.graphics.newFont("assets/fonts/TT-Interphases-Pro-Trial-Medium.ttf", 16)
+    Cache.members.font["menu"] = love.graphics.newFont("assets/fonts/TT-Interphases-Pro-Trial-Light.ttf", 32)
+    Cache.members.font["menuBold"] = love.graphics.newFont("assets/fonts/TT-Interphases-Pro-Trial-Medium.ttf", 22)
+    Cache.members.font["menuBig"] = love.graphics.newFont("assets/fonts/TT-Interphases-Pro-Trial-Light.ttf", 64)
+    Cache.members.font["menuBigBold"] = love.graphics.newFont("assets/fonts/TT-Interphases-Pro-Trial-Medium.ttf", 64)
 
     function setFont(font)
         local font = font or "default"
-        love.graphics.setFont(Cache.members.fonts[font])
+        love.graphics.setFont(Cache.members.font[font])
     end
     function fontWidth(font, text)
         local font, text = font or "default", text or "A"
@@ -209,6 +216,14 @@ end
 function love.resize(w,h)
     push.resize(w,h)
     state.resize(w,h)
+end
+
+function love.wheelmoved(x, y)
+    state.wheelmoved(x, y)
+end
+
+function love.mousepressed(x, y, b)
+    state.mousepressed(x, y, b)
 end
 
 function love.draw()
