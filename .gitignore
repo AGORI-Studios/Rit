@@ -19,3 +19,4 @@ requirements/macos/*
 !requirements/macos/libdiscord-rpc.dylib
 
 .env
+Keys.lua
