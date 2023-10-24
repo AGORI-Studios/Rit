@@ -33,46 +33,85 @@ local last = nil -- Last state
 local substate = nil -- Current substate
 local function nop() end -- Called when there is no function to call from the current state
 
-local function switch(newstate, ...) -- (local) Switches to a new state/substate, returns the new state
-    if current and current.exit then current:exit() end -- Call the exit function if it exists
+--@name switch
+--@description Switches to a new state, returns the new state
+--@param newstate table
+--@param ... any
+--@return table
+--@private
+local function switch(newstate, ...)
+    if current and current.exit then current:exit() end 
     last = current
     current = newstate
     if current.enter then current:enter(...) end
     return current
 end
 
-function state.switch(newstate, ...) -- Switches to a new state, returns the new state
+--@name state.switch
+--@description Switches to a new state, returns the new state
+--@param newstate table
+--@param ... any
+--@return table
+function state.switch(newstate, ...)
     assert(newstate, "Called state.switch with no state")
     assert(type(newstate) == "table", "Called state.switch with invalid state")
     switch(newstate, ...)
     return current
 end
 
-function state.current() return current end -- Returns the current state
-function state.last() return last end -- Returns the last state
-function state.killSubstate(...) -- Kills the current substate and calls current:substateReturn, returns nothing
-    if substate and substate.exit then substate:exit() end -- Call the exit function if it exists
+--@name state.current
+--@description Returns the current state
+--@return table
+function state.current() return current end
+
+--@name state.last
+--@description Returns the last state
+--@return table
+function state.last() return last end
+
+--@name state.killSubstate
+--@description Kills the current substate and calls current:substateReturn, returns nothing
+--@param ... any
+function state.killSubstate(...)
+    if substate and substate.exit then substate:exit() end
     substate = nil
-    current:substateReturn(...) -- Call the substate return function if it exists
+    current:substateReturn(...)
     return
 end 
-function state.currentSubstate() return substate end -- Returns the current substate
 
-function state.returnToLast() -- Returns to the last state, returns the new state
-    assert(last, "Called state.return with no last state") -- Make sure there is a last state
-    switch(last) -- Switch to the last state
+--@name state.currentSubstate
+--@description Returns the current substate
+--@return table
+function state.currentSubstate() return substate end
+
+
+--@name state.returnToLast
+--@description Returns to the last state, returns the new state
+--@return table
+function state.returnToLast()
+    assert(last, "Called state.return with no last state")
+    switch(last)
     return current
 end
 
-function state.substate(newstate, ...) -- Switches to a new substate, returns the new substate
+--@name state.substate
+--@description Switches to a new substate, returns the new substate
+--@param newstate table
+--@param ... any
+--@return table
+function state.substate(newstate, ...)
     assert(newstate, "Called state.substate with no state")
-    assert(type(newstate) == "table", "Called state.substate with invalid state") -- Make sure the state is valid
+    assert(type(newstate) == "table", "Called state.substate with invalid state") 
     substate = newstate -- Set the substate
-    if substate.enter then substate:enter(...) end -- Call the enter function if it exists
+    if substate.enter then substate:enter(...) end
     return substate
 end
 
-local function new() -- Creates a new state, returns a table, simply used for nicer syntax
+--@name new
+--@description Creates a new state, returns a table, simply used for nicer syntax
+--@return table
+--@private
+local function new()
     return setmetatable({}, {})
 end
 
