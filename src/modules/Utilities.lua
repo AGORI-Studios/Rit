@@ -1,54 +1,37 @@
-local util = {}
-
-function math.round(num, numDecimalPlaces)
-    local mult = 10^(numDecimalPlaces or 0)
-    return math.floor(num * mult + 0.5) / mult
-end
-
-function string.split(self, sep)
-    local sep, fields = sep or ":", {}
-    local pattern = string.format("([^%s]+)", sep)
-    self:gsub(pattern, function(c) fields[#fields+1] = c end)
-    return fields
-end
-
-function string.splitAllCharacters(self)
-    local fields = {}
-    for c in self:gmatch"." do
-        fields[#fields+1] = c
+for i, module in ipairs(love.filesystem.getDirectoryItems("modules/Lua")) do
+    if module:sub(-4) == ".lua" then
+        require("modules.Lua." .. module:sub(1, -5))
     end
-    return fields
+end
+for i, module in ipairs(love.filesystem.getDirectoryItems("modules/Love")) do
+    if module:sub(-4) == ".lua" then
+        require("modules.Love." .. module:sub(1, -5))
+    end
 end
 
-function string.trim(self)
-    return self:gsub("^%s*(.-)%s*$", "%1")
-end
-
-function string.startsWith(self, start)
-    return self:sub(1, #start) == start
-end
-
-function string.endsWith(self, ending)
-    return ending == "" or self:sub(-#ending) == ending
-end
-
+--@name Try
+--@description Tries to run a function, and if it fails, runs another function
+--@param f function
+--@param catch_f function
+--@return nil
 function Try(f, catch_f)
     local status, exception = pcall(f)
     if not status then
         catch_f(exception)
     end
+    return nil
 end
 
-function love.system.getProcessorArchitecture()
-    if jit then
-        if jit.arch == "x86" then
-            return "32"
-        elseif jit.arch == "x64" then
-            return "64"
-        end
-    else
-        return "32"
+--@name switch
+--@description calls a function based on a value
+--@param value any
+--@param cases table
+--@return any
+function Switch(value, cases) -- similar to the case statement in C
+    if cases[value] then
+        return cases[value]()
+    elseif cases.default then
+        return cases.default()
     end
+    return value
 end
-
-return util

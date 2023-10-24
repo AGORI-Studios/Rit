@@ -22,7 +22,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 fade = 1
 isLoading = false
 
-util = require("modules.Utilities")
+require("modules.Utilities")
 ffi = require("ffi")
 
 local curOS = love.system.getOS()
@@ -49,7 +49,7 @@ Try(
 )
 Try(
     function()
-        discordRPC = require "lib.discordRPC"
+        discordRPC = require("lib.discordRPC")
         discordRPC.nextPresenceUpdate = 0
     end,
     function()
@@ -202,7 +202,6 @@ end
 
 function love.draw()
     push:start()
-    love.graphics.setColor(1, 1, 1)
     state.draw()
     push:finish()
 
