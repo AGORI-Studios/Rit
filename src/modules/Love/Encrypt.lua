@@ -15,5 +15,3 @@ end
 function love.encrypt.decode(str)
     
 end
-local ss = love.encrypt.encode("Hello, World!")
-print(ss, love.encrypt.decode(ss))
