@@ -117,23 +117,19 @@ function love.load()
     smLoader = require("modules.Parsers.stepmaniaLoader")
     malodyLoader = require("modules.Parsers.malodyLoader")
 
-    cache = {
-        images = {},
-        sprites = {},
-        fonts = {},
-        sounds = {},
-        music = {}
-    }
-
-    cache.fonts["default"] = love.graphics.newFont("assets/fonts/Dosis-SemiBold.ttf", 16)
+    Cache.font["default"] = love.graphics.newFont("assets/fonts/Dosis-SemiBold.ttf", 16)
+    
     function setFont(font)
-        love.graphics.setFont(cache.fonts[font])
+        local font = font or "default"
+        love.graphics.setFont(Cache.fonts[font])
     end
     function fontWidth(font, text)
-        return cache.fonts[font]:getWidth(text)
+        local font, text = font or "default", text or "A"
+        return Cache.font[font]:getWidth(text)
     end
     function fontHeight(font, text)
-        return cache.fonts[font]:getHeight(text)
+        local font, text = font or "default", text or "A"
+        return Cache.font[font]:getHeight(text)
     end
     
     -- States
