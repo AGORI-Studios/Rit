@@ -142,6 +142,11 @@ function love.load()
             SongMenu = require("states.menu.SongMenu"),
         },
     }
+    substates = {
+        game = {
+            Pause = require("substates.game.Pause"),
+        }
+    }
 
     --love.window.setMode(1280, 720, {fullscreen = false, resizable = true})
     push.setupScreen(1920, 1080, {fullscreen = false, resizable = true, upscale = "normal"})
