@@ -279,7 +279,10 @@ function SongMenu:draw()
         -- draw rect (line) with all types
         love.graphics.setColor(1, 1, 1, 1)
         for i, type in ipairs(allTypes) do
+            love.graphics.setColor(240/255, 181/255, 114/255)
             love.graphics.rectangle("fill", 0, 8 + -36 * (-i + 2), categoryOpen.width-45, 36, 5, 5)
+            love.graphics.setColor(241/255, 165/255, 114/255)
+            love.graphics.rectangle("line", 0, 8 + -36 * (-i + 2), categoryOpen.width-45, 36, 5, 5)
             love.graphics.setColor(0, 0, 0)
             love.graphics.printf(type, -180, 0 + -36 * (-i + 2), categoryOpen.width-45, "center", 0, 1.5, 1.5)
             love.graphics.setColor(1, 1, 1)
