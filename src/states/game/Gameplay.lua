@@ -541,4 +541,8 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath)
     end
 end
 
+function Gameplay:exit()
+    musicTime = 0
+end
+
 return Gameplay
