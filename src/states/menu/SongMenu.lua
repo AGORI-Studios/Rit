@@ -25,6 +25,7 @@ local curButton = nil
 local lastCurSelected = 1
 local inCat = false
 local showCat = true
+local inSidebar = false
 
 local allTypes = {
     "Quaver",
@@ -40,6 +41,7 @@ function SongMenu:enter()
     lastCurSelected = 1
     showCat = true
     inCat = false
+    inSidebar = false
     songButton = Sprite(0, 0, "assets/images/ui/menu/songBtn.png")
     statsBox = Sprite(900, 125, "assets/images/ui/menu/statsBox.png")
     diffButton = Sprite(0, songButton.height-55, "assets/images/ui/menu/diffBtn.png")
@@ -189,6 +191,10 @@ function SongMenu:mousepressed(x, y, b)
             state.switch(states.menu.StartMenu)
         elseif bars:isHovered(x, y) then
             shakeObject(bars)
+            --[[ inSidebar = not inSidebar
+
+            if inSidebar then
+            end ]]
         end
 
         y = y - lerpedSongPos

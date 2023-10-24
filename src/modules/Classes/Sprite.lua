@@ -209,7 +209,11 @@ function Sprite:isHovered(x, y)
     x = x - self.offset.x
     y = y - self.offset.y
 
-    return x >= self.x and x <= self.x + self.width and y >= self.y and y <= self.y + self.height
+    local width, height = self:getFrameDimensions()
+    width = width * self.scale.x
+    height = height * self.scale.y
+
+    return x >= self.x and x <= self.x + width and y >= self.y and y <= self.y + height
 end
 
 function Sprite:draw()
