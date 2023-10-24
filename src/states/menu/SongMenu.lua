@@ -91,6 +91,12 @@ function SongMenu:update(dt)
     end
 end
 
+function SongMenu:keypressed(key)
+    if key == "d" then
+        downscroll = not downscroll
+    end
+end
+
 function SongMenu:draw()
     -- for all in songList 
     love.graphics.push()
@@ -105,6 +111,8 @@ function SongMenu:draw()
     end
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.pop()
+
+    love.graphics.printf("Press d to toggle downscroll: ".. (downscroll and "on" or "off"), 0, 0, 1920/2, "right", 0, 2, 2)
 end
 
 return SongMenu

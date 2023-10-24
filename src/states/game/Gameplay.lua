@@ -31,6 +31,7 @@ Gameplay.initialScrollVelocity = 1
 Gameplay.velocityPositionMakers = {}
 
 Gameplay.songDuration = 0
+Gameplay.escapeTimer = 0 -- how long the back button has been held for
 
 local previousFrameTime -- used for keeping musicTime consistent
 
@@ -93,6 +94,8 @@ function Gameplay:reset()
     }
 
     musicTime = 0
+
+    self.escapeTimer = 0
 end
 
 function Gameplay:doJudgement(time)
@@ -223,7 +226,12 @@ function Gameplay:initPositions()
 end
 
 function Gameplay:getSpritePosition(offset, initialPos)
-    return 50 + (((initialPos or 0) - offset) * speed / self.trackRounding)
+   -- return strumY + (((initialPos or 0) - offset) * speed / self.trackRounding)
+    if not downscroll then
+        return strumY + (((initialPos or 0) - offset) * speed / self.trackRounding)
+    else
+        return strumY - (((initialPos or 0) - offset) * speed / self.trackRounding)
+    end
 end
 
 function Gameplay:updateSpritePositions(offset, curTime)
@@ -266,6 +274,7 @@ function Gameplay:clear()
 end
 
 function Gameplay:enter()
+    strumY = not downscroll and 50 or 825
     self:reset()
 
     self.inputsArray = {false, false, false, false}
@@ -310,7 +319,6 @@ end
 
 function Gameplay:generateStrums()
     local strumX = self.strumX
-    local strumY = 50
 
     for i = 1, 4 do
         local strum = StrumObject(strumX, strumY, i)
@@ -328,7 +336,8 @@ function Gameplay:update(dt)
         if musicTime >= 0 and not audioFile:isPlaying() and musicTime < self.songDuration then
             audioFile:play()
             audioFile:seek(musicTime / 1000) -- safe measure to keep it lined up
-        elseif musicTime > self.songDuration and not audioFile:isPlaying() then
+        elseif (musicTime > self.songDuration and not audioFile:isPlaying()) or self.escapeTimer > 1 then
+            audioFile:stop()
             state.switch(states.menu.SongMenu)
             return
         end
@@ -340,6 +349,12 @@ function Gameplay:update(dt)
         if member.update then
             member:update(dt)
         end
+    end
+
+    if input:down("back") then
+        self.escapeTimer = self.escapeTimer + (dt * 1.87)
+    else
+        self.escapeTimer = 0
     end
 
     self:changeHoldScale()
@@ -512,6 +527,10 @@ function Gameplay:draw()
             member:draw()
         end
     end
+
+    love.graphics.setColor(0,0,0, self.escapeTimer)
+    love.graphics.rectangle("fill", 0, 0, 1920, 1080)
+    love.graphics.setColor(1,1,1,1)
 end
 
 function Gameplay:generateBeatmap(chartType, songPath, folderPath)

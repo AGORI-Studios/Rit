@@ -78,10 +78,10 @@ function love.load()
             right = { "key:right", "button:dpright", "axis:leftx+" },
 
             confirm = { "key:return", "button:a" },
-            back = { "key:escape", "button:b" },
+            back = { "key:escape", "button:back" },
 
             pause = { "key:return", "button:start" },
-            restart = { "key:r", "button:b" },
+            --restart = { "key:r", "button:b" },
 
             -- Misc
             extB = { "button:back" },
@@ -131,6 +131,8 @@ function love.load()
         local font, text = font or "default", text or "A"
         return Cache.members.font[font]:getHeight(text)
     end
+
+    downscroll = true -- press "d" on menu to toggle
     
     -- States
     states = {
@@ -198,6 +200,10 @@ function love.update(dt)
         end
         discordRPC.runCallbacks()
     end
+end
+
+function love.keypressed(key)
+    state.keypressed(key)
 end
 
 function love.resize(w,h)

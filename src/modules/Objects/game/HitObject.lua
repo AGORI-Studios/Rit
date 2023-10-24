@@ -73,7 +73,7 @@ function HitObject:new(time, data, prevNote, sustainNote)
         self:load(skin:format(skinData["NoteAssets"][HitTypes[data] .. "_hold_end"]))
         self:updateHitbox()
         self.offsetX = self.offsetX - (self.width)/2
-        self.flipY = true
+        self.flipY = not downscroll
         self.offsetY = 2
 
         if self.prevNote.isSustainNote then
@@ -119,7 +119,11 @@ function HitObject:clipToStrum(strum)
             rect = {x = 0, y = 0, width = (self.frameWidth), height = (self.frameHeight)}
         end
 
-        if self.y + self.offset.y <= center then
+        if downscroll and self.y - self.offset.y * self.scale.y + self.height >= center then
+            rect.width = self:getFrameWidth() * self.scale.x
+            rect.height = (center - self.y) / self.scale.y
+            rect.y = self:getFrameHeight() - rect.height
+        elseif not downscroll and self.y + self.offset.y <= center then
             rect.y = vert
             rect.width = self:getFrameWidth() * self.scale.x
             rect.height = self:getFrameHeight() * self.scale.y
