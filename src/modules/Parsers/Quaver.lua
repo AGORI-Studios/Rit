@@ -90,7 +90,6 @@ function quaverLoader.load(chart, folderPath, forDiff)
                 local slider = HitObject(startTime + (stepCrochet*sustain), lane, oldHo, true)
                 table.insert(ho.tail, slider)
                 table.insert(states.game.Gameplay.unspawnNotes, slider)
-                slider.correctionOffset = (ho.height * 0.925)/2
                 oldHo:updateHitbox()
                 slider.offset.y = slider.offset.y + 25
             end

@@ -95,13 +95,14 @@ function HitObject:new(time, data, prevNote, sustainNote)
         self:updateHitbox()
         self.offsetX = self.offsetX - (self.width)/2
         self.flipY = not downscroll
-        self.offsetY = 2
+        self.correctionOffset = downscroll and 67 or 58
 
         if self.prevNote.isSustainNote then
             self.prevNote.flipY = false
             self.prevNote:load(skin:format(skinData["NoteAssets"][HitTypes[data] .. "_hold"]))
-            self.prevNote.scale.y = ((stepCrochet/100) * (0.475)) * speed
+            self.prevNote.scale.y = ((stepCrochet/100) * (1.0525)) * speed
             self.offsetY = 0
+            self.prevNote.correctionOffset = downscroll and 0 or 35
         end
     end
 
@@ -125,8 +126,8 @@ end
 
 function HitObject:changeHoldScale(multiplier) -- fuck dude.,,.,, my couch
     if self.isSustainNote then
-        self.scale.y = self.scale.y * multiplier
-        self.correctionOffset = (((self.height) * 0.925)/2) / multiplier
+        self.scale.y = ((stepCrochet/100) * (1.0525)) * (speed * multiplier)
+        self.correctionOffset = downscroll and 0 and 35 * multiplier
         self:updateHitbox()
     end
 end
