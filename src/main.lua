@@ -229,7 +229,6 @@ function love.filedropped(file)
         if fname:sub(-3) ~= ".qp" and fname:sub(-3) ~= "osz" then return end
 
         local dir = love.filesystem.getSaveDirectory() .. "/songs/" .. fname
-        print(dir)
         local f = io.open(dir, "w")
         f:write(file:read())
         f:close()

@@ -1,24 +1,3 @@
---[[----------------------------------------------------------------------------
-
-This file is apart of Rit; a free and open sourced rhythm game made with LÖVE.
-
-Copyright (C) 2023 GuglioIsStupid
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-------------------------------------------------------------------------------]]
-
 love.ease = {}
 
 function love.ease.linear(t, b, c, d)
@@ -44,10 +23,126 @@ function love.ease.inOutQuad(t, b, c, d)
     end
 end
 
-function love.ease.outInQuad(t, b, c, d)
-    if t < d / 2 then
-        return love.ease.outQuad(t * 2, b, c / 2, d)
+function love.ease.inCubic(t, b, c, d)
+    t = t / d
+    return c * t * t * t + b
+end
+
+function love.ease.outCubic(t, b, c, d)
+    t = t / d - 1
+    return c * (t * t * t + 1) + b
+end
+
+function love.ease.inOutCubic(t, b, c, d)
+    t = t / d * 2
+    if t < 1 then
+        return c / 2 * t * t * t + b
     else
-        return love.ease.inQuad((t * 2) - d, b + c / 2, c / 2, d)
+        t = t - 2
+        return c / 2 * (t * t * t + 2) + b
+    end
+end
+
+function love.ease.inQuart(t, b, c, d)
+    t = t / d
+    return c * t * t * t * t + b
+end
+
+function love.ease.outQuart(t, b, c, d)
+    t = t / d - 1
+    return -c * (t * t * t * t - 1) + b
+end
+
+function love.ease.inOutQuart(t, b, c, d)
+    t = t / d * 2
+    if t < 1 then
+        return c / 2 * t * t * t * t + b
+    else
+        t = t - 2
+        return -c / 2 * (t * t * t * t - 2) + b
+    end
+end
+
+function love.ease.inQuint(t, b, c, d)
+    t = t / d
+    return c * t * t * t * t * t + b
+end
+
+function love.ease.outQuint(t, b, c, d)
+    t = t / d - 1
+    return c * (t * t * t * t * t + 1) + b
+end
+
+function love.ease.inOutQuint(t, b, c, d)
+    t = t / d * 2
+    if t < 1 then
+        return c / 2 * t * t * t * t * t + b
+    else
+        t = t - 2
+        return c / 2 * (t * t * t * t * t + 2) + b
+    end
+end
+
+function love.ease.inSine(t, b, c, d)
+    return -c * math.cos(t / d * (math.pi / 2)) + c + b
+end
+
+function love.ease.outSine(t, b, c, d)
+    return c * math.sin(t / d * (math.pi / 2)) + b
+end
+
+function love.ease.inOutSine(t, b, c, d)
+    return -c / 2 * (math.cos(math.pi * t / d) - 1) + b
+end
+
+function love.ease.inExpo(t, b, c, d)
+    if t == 0 then
+        return b
+    else
+        return c * 2 ^ (10 * (t / d - 1)) + b - c * 0.001
+    end
+end
+
+function love.ease.outExpo(t, b, c, d)
+    if t == d then
+        return b + c
+    else
+        return c * 1.001 * (-2 ^ (-10 * t / d) + 1) + b
+    end
+end
+
+function love.ease.inOutExpo(t, b, c, d)
+    if t == 0 then
+        return b
+    elseif t == d then
+        return b + c
+    else
+        t = t / d * 2
+        if t < 1 then
+            return c / 2 * 2 ^ (10 * (t - 1)) + b - c * 0.0005
+        else
+            t = t - 1
+            return c / 2 * 1.0005 * (-2 ^ (-10 * t) + 2) + b
+        end
+    end
+end
+
+function love.ease.inCirc(t, b, c, d)
+    t = t / d
+    return(-c * (math.sqrt(1 - t * t) - 1) + b)
+end
+
+function love.ease.outCirc(t, b, c, d)
+    t = t / d - 1
+    return(c * math.sqrt(1 - t * t) + b)
+end
+
+function love.ease.inOutCirc(t, b, c, d)
+    t = t / d * 2
+    if t < 1 then
+        return -c / 2 * (math.sqrt(1 - t * t) - 1) + b
+    else
+        t = t - 2
+        return c / 2 * (math.sqrt(1 - t * t) + 1) + b
     end
 end
