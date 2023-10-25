@@ -134,7 +134,7 @@ end
 
 function HitObject:clipToStrum(strum)
     local center = strum.y + (self.width * 0.925)/1.75
-    local vert = center - self.y
+    local vert = center - self.y - self.correctionOffset
     if self.isSustainNote and ((self.wasGoodHit or (self.prevNote.wasGoodHit and not self.canBeHit))) then
         local rect = self.clipRect
         if not rect then
