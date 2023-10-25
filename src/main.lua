@@ -20,6 +20,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ------------------------------------------------------------------------------]]
 
 fade = 1
+masterVolume = 50
+lerpedMasterVolume = 50
 isLoading = false
 
 require("modules.Utilities")
@@ -197,6 +199,8 @@ function love.update(dt)
     Timer.update(dt)
     if not isLoading then state.update(dt) end
     input:update()
+    lerpedMasterVolume = math.fpsLerp(lerpedMasterVolume, masterVolume, 10, love.timer.getDelta())
+    love.audio.setVolume(lerpedMasterVolume/100)
 
     if discordRPC then
         if love.timer.getTime() or 0 > discordRPC.nextPresenceUpdate then
@@ -246,6 +250,11 @@ end
 
 function love.wheelmoved(x, y)
     state.wheelmoved(x, y)
+
+    if love.keyboard.isDown("lalt") then
+        masterVolume = masterVolume + y * 5
+    end
+    masterVolume = math.clamp(masterVolume, 0, 100)
 end
 
 function love.mousepressed(x, y, b)
@@ -264,7 +273,8 @@ function love.draw()
         "Memory: " .. math.floor(collectgarbage("count")) .. "KB\n" ..
         "Graphics Memory: " .. math.floor(love.graphics.getStats().texturememory/1024/1024) .. "MB\n" ..
         "Steam: " .. (Steam and "true" or "false") .. "\n" ..
-        (Steam and "Steam ID: " .. SteamUserID .. "\n" or "")
+        (Steam and "Steam ID: " .. SteamUserID .. "\n" or "") ..
+        "Volume: " .. math.round(lerpedMasterVolume, 2)
     )
 end
 

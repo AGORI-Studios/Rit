@@ -20,3 +20,23 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ------------------------------------------------------------------------------]]
 
 local Pause = state()
+
+local options = {
+    "Resume",
+    "Restart",
+    "Leave song",
+}
+
+function Pause:enter()
+
+end
+
+function Pause:update(dt)
+
+end
+
+function Pause:exit()
+
+end
+
+return Pause
