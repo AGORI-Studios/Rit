@@ -30,7 +30,7 @@ local inSidebar = false
 local allTypes = {
     "Quaver",
     "osu!",
-    "Malody",
+    "Malody"
 }
 
 function SongMenu:enter()
@@ -60,10 +60,8 @@ function SongMenu:enter()
     bars:setScale(1.5)
     gear:setScale(1.5)
     home:setScale(1.5)
-    if #songList == 0 then
-        loadSongs("defaultSongs")
-        loadSongs("songs")
-    end
+    loadSongs("defaultSongs")
+    loadSongs("songs")
     if discordRPC then
         discordRPC.presence = {
             details = "In the menu",
@@ -99,7 +97,6 @@ function SongMenu:enter()
         local btn = SongButton(y, diffs, bmType, songName)
 
         table.insert(songButtons[bmType], btn)
-        table.insert(songButtons["All"], btn)
     end
 end
 
@@ -203,7 +200,7 @@ function SongMenu:mousepressed(x, y, b)
             inCat = not inCat
         end
 
-        if showCat then
+        if showCat and inCat then
             for i, type in ipairs(allTypes) do
                 if y > 8 + -36 * (-i + 2) and y < 8 + -36 * (-i + 2) + 36 then
                     curSongType = type
