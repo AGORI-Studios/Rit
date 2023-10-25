@@ -246,6 +246,12 @@ function SongMenu:mousepressed(x, y, b)
     end
 end
 
+function SongMenu:keypressed(key)
+    if key == "d" then
+        downscroll = not downscroll
+    end
+end
+
 function SongMenu:draw()
     bg:draw()
     --[[ for i, ball in ipairs(balls) do
@@ -327,6 +333,7 @@ function SongMenu:draw()
     setFont("menuBold")
     love.graphics.printf("Placeholder", 700, 8, 1080/2, "right", 0, 2, 2) -- Steam name
     setFont("default")
+    love.graphics.printf("Press d to toggle downscroll: ".. (downscroll and "on" or "off"), 0, 1040, 1920/2, "right", 0, 2, 2)
 end
 
 return SongMenu
