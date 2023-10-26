@@ -143,7 +143,7 @@ function HitObject:clipToStrum(strum)
 
         if downscroll and self.y - self.offset.y * self.scale.y + self.height >= center then
             rect.width = self:getFrameWidth() * self.scale.x
-            rect.height = (center - self.y) / self.scale.y
+            rect.height = (center - self.y) / self.scale.y * 1.3
             rect.y = self:getFrameHeight() - rect.height
         elseif not downscroll and self.y + self.offset.y <= center then
             rect.y = vert

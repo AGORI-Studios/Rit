@@ -5,18 +5,21 @@ requirements/win64/*
 !requirements/win64/steam_api64.dll
 !requirements/win64/luasteam.dll
 !requirements/win64/discord-rpc.dll
+!requirements/win64/https.dll
 
 requirements/win32/*
 !requirements/win32/dependencies.txt
 !requirements/win32/steam_api.dll
 !requirements/win32/luasteam.dll
 !requirements/win32/discord-rpc.dll
+!requirements/win32/https.dll
 
 requirements/macos/*
 !requirements/macos/dependencies.txt
 !requirements/macos/libsteam_api.dylib
-!requirements/macos/libluasteam.so
+!requirements/macos/luasteam.so
 !requirements/macos/libdiscord-rpc.dylib
+!requirements/macos/https.so
 
 .env
 Keys.lua

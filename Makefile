@@ -1,7 +1,7 @@
 # if no arguments are passed, run all
 default: all
 
-all: clean desktop
+all: clean win64 #win32 macos
 
 desktop: lovefile win32 win64 macos dist
 
@@ -24,6 +24,7 @@ win32: lovefile
 	cp requirements/win32/luasteam.dll build/$(GameName)-win32
 	cp requirements/win32/steam_api.dll build/$(GameName)-win32
 	cp requirements/steam_appid.txt build/$(GameName)-win32
+	cp requirements/win32/https.dll build/$(GameName)-win32
 	cat build/$(GameName)-win32/love.exe build/$(GameName)-lovefile/$(GameName).love > build/$(GameName)-win32/$(GameName).exe
 	rm build/$(GameName)-win32/love.exe
 	rm build/$(GameName)-win32/lovec.exe
@@ -35,6 +36,7 @@ win64: lovefile
 	cp requirements/win64/luasteam.dll build/$(GameName)-win64
 	cp requirements/win64/steam_api64.dll build/$(GameName)-win64
 	cp requirements/steam_appid.txt build/$(GameName)-win64
+	cp requirements/win64/https.dll build/$(GameName)-win64
 	cat build/$(GameName)-win64/love.exe build/$(GameName)-lovefile/$(GameName).love > build/$(GameName)-win64/$(GameName).exe
 	rm build/$(GameName)-win64/love.exe
 	rm build/$(GameName)-win64/lovec.exe
@@ -46,6 +48,7 @@ macos: lovefile
 	cp requirements/macos/luasteam.so build/$(GameName)-macos/love.app/Contents/MacOS
 	cp requirements/macos/libsteam_api.dylib build/$(GameName)-macos/love.app/Contents/MacOS
 	cp requirements/steam_appid.txt build/$(GameName)-macos/love.app/Contents/MacOS
+	cp requirements/macos/https.so build/$(GameName)-macos/love.app/Contents/MacOS
 	mv build/$(GameName)-macos/love.app build/$(GameName)-macos/$(GameName).app
 	cp build/$(GameName)-lovefile/$(GameName).love build/$(GameName)-macos/$(GameName).app/Contents/Resources/
 
