@@ -62,7 +62,6 @@ Try(
 Try(
     function()
         https = require("https") -- https://github.com/love2d/lua-https
-        print("Loaded https.")
     end,
     function()
         https = nil
