@@ -4,6 +4,7 @@ default: all
 all: clean win64 #win32 macos
 
 desktop: lovefile win32 win64 macos dist
+linux: lovefile
 
 # define GameName = "GameName"
 GameName = "Rit"
