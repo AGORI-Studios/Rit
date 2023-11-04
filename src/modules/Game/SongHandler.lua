@@ -42,29 +42,28 @@ function loadSongs(path)
                         local BackgroundFile = fileData:match("BackgroundFile:(.-)\r?\n")
                         local mode = fileData:match("Mode:(.-)\r?\n"):gsub("^%s*(.-)%s*$", "%1")
                         local Creator = fileData:match("Creator:(.-)\r?\n")
-                        if mode == "Keys4" then
-                            local alreadyInList = false
-                            for _, song in ipairs(songList) do
-                                if song.title == title and song.difficultyName == difficultyName then
-                                    alreadyInList = true
-                                end
+                        local alreadyInList = false
+                        for _, song in ipairs(songList) do
+                            if song.title == title and song.difficultyName == difficultyName then
+                                alreadyInList = true
                             end
-                            if not alreadyInList then
-                                songList[title] = songList[title] or {}
-                                songList[title][difficultyName] = {
-                                    filename = file,
-                                    title = title,
-                                    difficultyName = difficultyName,
-                                    BackgroundFile = BackgroundFile,
-                                    path = path .."/" .. file .. "/" .. song,
-                                    folderPath = path .."/" .. file,
-                                    type = "Quaver",
-                                    rating = "",
-                                    ratingColour = {1,1,1},
-                                    creator = Creator,
-                                }
-                                songList[title].type = "Quaver"
-                            end
+                        end
+                        if not alreadyInList then
+                            songList[title] = songList[title] or {}
+                            songList[title][difficultyName] = {
+                                filename = file,
+                                title = title,
+                                difficultyName = difficultyName,
+                                BackgroundFile = BackgroundFile,
+                                path = path .."/" .. file .. "/" .. song,
+                                folderPath = path .."/" .. file,
+                                type = "Quaver",
+                                rating = "",
+                                ratingColour = {1,1,1},
+                                creator = Creator,
+                                mode = mode:match("%d+")
+                            }
+                            songList[title].type = "Quaver"
                         end
                     elseif song:sub(-4) == ".osu" then
                         local fileData = lf.read(path .."/" .. file .. "/" .. song)
@@ -160,29 +159,28 @@ function loadSongs(path)
                     local BackgroundFile = fileData:match("BackgroundFile:(.-)\r?\n")
                     local mode = fileData:match("Mode:(.-)\r?\n"):gsub("^%s*(.-)%s*$", "%1")
                     local Creator = fileData:match("Creator:(.-)\r?\n")
-                    if mode == "Keys4" then
-                        local alreadyInList = false
-                        for _, song in ipairs(songList) do
-                            if song.title == title and song.difficultyName == difficultyName then
-                                alreadyInList = true
-                            end
+                    local alreadyInList = false
+                    for _, song in ipairs(songList) do
+                        if song.title == title and song.difficultyName == difficultyName then
+                            alreadyInList = true
                         end
-                        if not alreadyInList then
-                            songList[title] = songList[title] or {}
-                            songList[title][difficultyName] = {
-                                filename = file,
-                                title = title,
-                                difficultyName = difficultyName,
-                                BackgroundFile = BackgroundFile,
-                                path = "song/" .. song,
-                                folderPath = "song",
-                                type = "Quaver",
-                                rating = "",
-                                ratingColour = {1,1,1},
-                                creator = Creator,
-                            }
-                            songList[title].type = "Quaver"
-                        end
+                    end
+                    if not alreadyInList then
+                        songList[title] = songList[title] or {}
+                        songList[title][difficultyName] = {
+                            filename = file,
+                            title = title,
+                            difficultyName = difficultyName,
+                            BackgroundFile = BackgroundFile,
+                            path = "song/" .. song,
+                            folderPath = "song",
+                            type = "Quaver",
+                            rating = "",
+                            ratingColour = {1,1,1},
+                            creator = Creator,
+                            mode = mode:match("%d+")
+                       }
+                        songList[title].type = "Quaver"
                     end
                 elseif song:sub(-4) == ".osu" then
                     local fileData = lf.read("song/" .. song)

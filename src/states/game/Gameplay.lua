@@ -53,6 +53,7 @@ Gameplay.velocityPositionMakers = {}
 
 Gameplay.songDuration = 0
 Gameplay.escapeTimer = 0 -- how long the back button has been held for
+Gameplay.health = 0.5
 
 local previousFrameTime -- used for keeping musicTime consistent
 
@@ -91,7 +92,6 @@ function Gameplay:reset()
     self.members = {}
     self.didTimer = false
     self.objectKillOffset = 350
-    self.keysArray = {"gameLeft", "gameDown", "gameUp", "gameRight"}
     self.inputsArray = {false, false, false, false}
     self.hitsound = love.audio.newSource("defaultSkins/skinThrowbacks/hitsound.wav", "static")
     self.hitsound:setVolume(0.1)
@@ -102,6 +102,8 @@ function Gameplay:reset()
     self.velocityPositionMakers = {}
     self.currentSvIndex = 1
     self.songDuration = 0
+    self.health = 0.5
+    self.mode = 4 -- amount of keys
 
     self:preloadAssets()
 
@@ -303,11 +305,12 @@ function Gameplay:enter()
     self:add(self.strumLineObjects)
     self:add(self.holdHitObjects)
     self:add(self.hitObjects)
+
+    self:generateBeatmap(self.chartVer, self.songPath, self.folderpath)
+    self.mode = tonumber(self.mode)
     self:generateStrums()
 
     musicTime = -1000
-
-    self:generateBeatmap(self.chartVer, self.songPath, self.folderpath)
 
     self:initializePositionMarkers()
     self:updateCurrentTrackPosition()
@@ -339,10 +342,14 @@ function Gameplay:addObjectsToGroups()
 end
 
 function Gameplay:generateStrums()
-    local strumX = self.strumX
-
-    for i = 1, 4 do
-        local strum = StrumObject(strumX, strumY, i)
+    -- strumX works with 4 keys by default, modify it for self.mode
+    self.strumX = self.strumX - ((self.mode - 4.5) * 100)
+    -- update hitobjects x position
+    for i, ho in ipairs(self.unspawnNotes) do
+        ho.x = self.strumX + 25 + (__NOTE_OBJECT_WIDTH * 0.925+4) * (ho.data-1) + ho.offsetX
+    end
+    for i = 1, self.mode do
+        local strum = StrumObject(self.strumX, strumY, i)
 
         self.strumLineObjects:add(strum)
         strum:postAddToGroup()
@@ -412,6 +419,7 @@ function Gameplay:update(dt)
                         self.hitObjects:remove(ho)
                         ho:destroy()
                         self:doJudgement(1000) -- miss
+                        self.health = self.health - 0.18
                     end
                 end
             end
@@ -437,14 +445,14 @@ function Gameplay:update(dt)
         end
     end
 
-    for i = 1, 4 do
-        if input:pressed(self.keysArray[i]) then
+    for i = 1, self.mode do
+        if input:pressed(self.mode .. "k_game" .. i) then
             self:keyPressed(i)
         end
-        if input:down(self.keysArray[i]) then
+        if input:down(self.mode .. "k_game" .. i) then
             self:keyDown(i)
         end
-        if input:released(self.keysArray[i]) then
+        if input:released(self.mode .. "k_game" .. i) then
             self:keyReleased(i)
         end
     end
@@ -494,13 +502,11 @@ function Gameplay:keyPressed(key)
 end
 
 function Gameplay:keyDown(key)
-    local inputname = self.keysArray[key]
     self.inputsArray[key] = true
     self.strumLineObjects.members[key]:playAnim("pressed")
 end
 
 function Gameplay:keyReleased(key)
-    local inputname = self.keysArray[key]
     self.inputsArray[key] = false
 
     self.strumLineObjects.members[key]:playAnim("unpressed")
@@ -509,10 +515,15 @@ end
 function Gameplay:keysCheck()
     local holdArray, pressArray, releaseArray = {}, {}, {}
 
-    for i, key in ipairs(self.keysArray) do
-        table.insert(holdArray, input:down(key))
-        table.insert(pressArray, input:pressed(key))
-        table.insert(releaseArray, input:released(key))
+    --[[ for i, key in ipairs(self.mode) do
+        table.insert(holdArray, input:down(self.mode .. "k_game" .. key))
+        table.insert(pressArray, input:pressed(self.mode .. "k_game" .. key))
+        table.insert(releaseArray, input:released(self.mode .. "k_game" .. key))
+    end ]]
+    for i = 1, self.mode do
+        table.insert(holdArray, input:down(self.mode .. "k_game" .. i))
+        table.insert(pressArray, input:pressed(self.mode .. "k_game" .. i))
+        table.insert(releaseArray, input:released(self.mode .. "k_game" .. i))
     end
 
     if self.updateTime then
@@ -529,7 +540,7 @@ end
 function Gameplay:goodNoteHit(note, time)
     if not note.wasGoodHit then
         note.wasGoodHit = true
-        --self.health = self.health + note.hitHealth
+        self.health = self.health + 0.035
 
         if not note.isSustainNote then
             self.combo = self.combo + 1
@@ -555,6 +566,7 @@ function Gameplay:draw()
 end
 
 function Gameplay:generateBeatmap(chartType, songPath, folderPath)
+    self.mode = 4
     if chartType == "Quaver" then
         quaverLoader.load(songPath, folderPath)
     elseif chartType == "osu!" then

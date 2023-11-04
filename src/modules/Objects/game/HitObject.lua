@@ -54,14 +54,16 @@ HitObject.missHealth = 0.475
 HitObject.distance = 2000
 HitObject.correctionOffset = 0
 
-local HitTypes = {
-    "left",
-    "down",
-    "up",
-    "right"
+--[[ local HitTypes = {
+    ["4"] = {
+        "left",
+        "down",
+        "up",
+        "right"
+    }
 }
-
-function HitObject:new(time, data, prevNote, sustainNote)
+ ]]
+function HitObject:new(time, data, prevNote, sustainNote) 
     self.super.new(self)
     local sustainNote = sustainNote or false
 
@@ -79,8 +81,16 @@ function HitObject:new(time, data, prevNote, sustainNote)
     self.time = time
     self.data = data
 
-    self:load(skin:format(skinData["NoteAssets"][HitTypes[data] .. "_note"]))
+    -- assets are like [mode]k_data
+    if skinData["NoteAssets"][tostring(states.game.Gameplay.mode) .. "k_" .. data .. "_note"] then
+        self:load(skin:format(skinData["NoteAssets"][tostring(states.game.Gameplay.mode) .. "k_" .. data .. "_note"]))
+    else
+        -- default to left
+        self:load(skin:format(skinData["NoteAssets"]["1k_1_note"]))
+    end
+
     self:setGraphicSize(math.floor(self.width * 0.925))
+    _G.__NOTE_OBJECT_WIDTH = self.width
 
     self.x = self.x + (self.width * 0.925+4) * (data-1)
 
@@ -91,7 +101,13 @@ function HitObject:new(time, data, prevNote, sustainNote)
     if self.isSustainNote and self.prevNote then
         self.offsetX = self.offsetX + (self.width * 0.925)/2
 
-        self:load(skin:format(skinData["NoteAssets"][HitTypes[data] .. "_hold_end"]))
+        --self:load(skin:format(skinData["NoteAssets"][HitTypes[data] .. "_hold_end"]))
+        if skinData["NoteAssets"][HitTypes[tostring(states.game.Gameplay.mode)][data] .. "_hold_end"] then
+            self:load(skin:format(skinData["NoteAssets"][HitTypes[tostring(states.game.Gameplay.mode)][data] .. "_hold_end"]))
+        else
+            -- default to left
+            self:load(skin:format(skinData["NoteAssets"]["left_hold_end"]))
+        end
         self:updateHitbox()
         self.offsetX = self.offsetX - (self.width)/2
         self.flipY = not downscroll
@@ -99,7 +115,13 @@ function HitObject:new(time, data, prevNote, sustainNote)
 
         if self.prevNote.isSustainNote then
             self.prevNote.flipY = false
-            self.prevNote:load(skin:format(skinData["NoteAssets"][HitTypes[data] .. "_hold"]))
+            --self.prevNote:load(skin:format(skinData["NoteAssets"][HitTypes[data] .. "_hold"]))
+            if skinData["NoteAssets"][HitTypes[tostring(states.game.Gameplay.mode)][data] .. "_hold"] then
+                self.prevNote:load(skin:format(skinData["NoteAssets"][HitTypes[tostring(states.game.Gameplay.mode)][data] .. "_hold"]))
+            else
+                -- default to left
+                self.prevNote:load(skin:format(skinData["NoteAssets"]["left_hold"]))
+            end
             self.prevNote.scale.y = ((stepCrochet/100) * (1.0525)) * speed
             self.offsetY = 0
             self.prevNote.correctionOffset = downscroll and 0 or 35

@@ -27,21 +27,42 @@ StrumObject.direction = 90
 StrumObject.sustainReduce = true
 
 local StrumTypes = {
-    "left",
-    "down",
-    "up",
-    "right"
+    ["4"] = {
+        "left",
+        "down",
+        "up",
+        "right"
+    },
+    ["7"] = {
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8"
+    }
 }
 
 function StrumObject:new(x, y, data)
     self.super.new(self, x, y)
     self.data = data
 
-    --self:load("defaultSkins/Circle Default/note.png")
-    self.anims = {
-        skin:format(skinData["NoteAssets"][StrumTypes[data] .. "_receptor_unpressed"]),
-        skin:format(skinData["NoteAssets"][StrumTypes[data] .. "_receptor_pressed"])
-    }
+    self.anims = {}
+    if skinData["NoteAssets"][tostring(states.game.Gameplay.mode) .. "k_" .. data .. "_receptor_unpressed"] then
+        self.anims[1] = skin:format(skinData["NoteAssets"][tostring(states.game.Gameplay.mode) .. "k_" .. data .. "_receptor_unpressed"])
+    else
+        -- default to left
+        self.anims[1] = skin:format(skinData["NoteAssets"]["1k_1_receptor_unpressed"])
+    end
+    if skinData["NoteAssets"][tostring(states.game.Gameplay.mode) .. "k_" .. data .. "_receptor_pressed"] then
+        self.anims[2] = skin:format(skinData["NoteAssets"][tostring(states.game.Gameplay.mode) .. "k_" .. data .. "_receptor_pressed"])
+    else
+        -- default to left
+        self.anims[2] = skin:format(skinData["NoteAssets"]["1k_1_receptor_pressed"])
+    end
+    
 
     Cache:loadImage(self.anims[1], self.anims[2])
 

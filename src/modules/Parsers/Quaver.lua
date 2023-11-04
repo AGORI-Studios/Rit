@@ -40,8 +40,9 @@ function quaverLoader.load(chart, folderPath, forDiff)
         noteCount = 0,
         length = 0,
         bpm = 0,
-        inputMode = chart.Mode
+        inputMode = chart.Mode:gsub("Keys", ""),
     }
+    states.game.Gameplay.mode = meta.inputMode
 
     --audioFile = love.audio.newSource(folderPath .. "/" .. meta.audioPath, "stream")
     audioFile = love.audio.newSource(folderPath .. "/" .. meta.audioPath, "stream")

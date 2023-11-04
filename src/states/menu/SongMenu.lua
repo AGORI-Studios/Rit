@@ -158,6 +158,7 @@ function SongMenu:update(dt)
             local chartver = diff.chartVer
             local folderpath = diff.folderPath
             local filename = diff.filename
+            local mode = diff.mode
             love.filesystem.mount("songs/" .. filename, "song")
             if chartver ~= "FNF" then
                 states.game.Gameplay.chartVer = chartver

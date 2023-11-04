@@ -71,38 +71,12 @@ Try(
 local SteamUserID
 
 function love.load()
+    __NOTE_OBJECT_WIDTH = 0
     speed = 1.95
     -- Libraries 
     Object = require("lib.class")
     Timer = require("lib.timer")
-    input = (require "lib.baton").new({
-        controls = {
-            gameLeft = { "axis:triggerleft+", "axis:leftx-", "axis:rightx-", "button:dpleft", "button:x", "key:d" },
-            gameDown = { "axis:lefty+", "axis:righty+", "button:leftshoulder", "button:dpdown", "button:a", "key:f" },
-            gameUp = { "axis:lefty-", "axis:righty-", "button:rightshoulder", "button:dpup", "button:y", "key:j" },
-            gameRight = { "axis:triggerright+", "axis:leftx+", "axis:rightx+", "button:dpright", "button:b", "key:k" },
-
-            -- UI
-            up = { "key:up", "button:dpup", "axis:lefty-" },
-            down = { "key:down", "button:dpdown", "axis:lefty+" },
-            left = { "key:left", "button:dpleft", "axis:leftx-" },
-            right = { "key:right", "button:dpright", "axis:leftx+" },
-
-            confirm = { "key:return", "button:a" },
-            back = { "key:escape", "button:back" },
-
-            pause = { "key:return", "button:start" },
-            --restart = { "key:r", "button:b" },
-
-            -- Misc
-            extB = { "button:back" },
-            volUp = { "button:rightshoulder" },
-            volDown = { "button:leftshoulder" },
-
-            quit = { "key:escape", "button:back" }
-        },
-        joystick = love.joystick.getJoysticks()[1]
-    })
+    
     json = require("lib.json").decode
     push = require("lib.push")
     lume = require("lib.lume")
@@ -117,6 +91,7 @@ function love.load()
     Sprite = require("modules.Classes.Sprite")
     require("modules.Game.SongHandler")
     skin = require("modules.Game.SkinHandler")
+    require("modules.Game.Input")
 
     -- Objects
     StrumObject = require("modules.Objects.game.StrumObject")

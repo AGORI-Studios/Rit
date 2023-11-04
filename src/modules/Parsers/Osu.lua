@@ -56,7 +56,16 @@ function osuLoader.processLine(line)
             osuLoader.addHitObject(line)
         elseif currentBlockName == "Metadata" then
             osuLoader.processMetadata(line)
+        elseif currentBlockName == "Difficulty" then
+            osuLoader.processDifficulty(line)
         end
+    end
+end
+
+function osuLoader.processDifficulty(line)
+    local key, value = line:match("^(%a+):%s?(.*)")
+    if key == "CircleSize" then
+        states.game.Gameplay.mode = tonumber(value)
     end
 end
 
@@ -87,7 +96,7 @@ function osuLoader.addHitObject(line)
     note.x = tonumber(split[1])
     note.y = tonumber(split[2])
     note.startTime = tonumber(split[3])
-    note.data = math.max(1, math.min(4, math.floor(note.x/512*4+1)))
+    note.data = math.max(1, math.min(states.game.Gameplay.mode, math.floor(note.x/512*states.game.Gameplay.mode+1)))
 
     note.endTime = tonumber(split[6])
 
