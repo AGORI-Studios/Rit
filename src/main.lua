@@ -92,6 +92,7 @@ function love.load()
     require("modules.Game.SongHandler")
     skin = require("modules.Game.SkinHandler")
     require("modules.Game.Input")
+    Modscript = require("modules.Game.Modscript")
 
     -- Objects
     StrumObject = require("modules.Objects.game.StrumObject")
@@ -248,6 +249,12 @@ function love.draw()
     push:start()
     state.draw()
     push:finish()
+
+    for i, spr in ipairs(Modscript.funcs.sprites) do
+        if spr.drawWithoutRes then
+            spr:draw()
+        end
+    end
 
     love.graphics.print(
         "FPS: " .. love.timer.getFPS() .. "\n" ..

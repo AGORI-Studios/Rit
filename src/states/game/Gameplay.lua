@@ -554,9 +554,21 @@ function Gameplay:goodNoteHit(note, time)
 end
 
 function Gameplay:draw()
+    for i, spr in pairs(Modscript.vars.sprites) do
+        if not spr.drawWithoutRes and not spr.drawOverNotes then
+            spr:draw()
+        end
+    end
+
     for i, member in ipairs(self.members) do
         if member.draw then
             member:draw()
+        end
+    end
+
+    for i, spr in pairs(Modscript.vars.sprites) do
+        if not spr.drawWithoutRes and spr.drawOverNotes then
+            spr:draw()
         end
     end
 
@@ -575,6 +587,14 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath)
         smLoader.load(songPath, folderPath)
     elseif chartType == "Malody" then
         malodyLoader.load(songPath, folderPath)
+    end
+
+    self.M_folderPath = folderPath -- used for mod scripting
+    Modscript.vars = {sprites={}} -- reset modscript vars
+
+    local modPath = folderPath .. "/mod/mod.lua"
+    if love.filesystem.getInfo(modPath) then
+        Modscript:load(modPath)
     end
 
     table.sort(self.unspawnNotes, function(a, b)
