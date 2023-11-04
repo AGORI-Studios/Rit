@@ -54,15 +54,6 @@ HitObject.missHealth = 0.475
 HitObject.distance = 2000
 HitObject.correctionOffset = 0
 
---[[ local HitTypes = {
-    ["4"] = {
-        "left",
-        "down",
-        "up",
-        "right"
-    }
-}
- ]]
 function HitObject:new(time, data, prevNote, sustainNote) 
     self.super.new(self)
     local sustainNote = sustainNote or false
@@ -101,12 +92,11 @@ function HitObject:new(time, data, prevNote, sustainNote)
     if self.isSustainNote and self.prevNote then
         self.offsetX = self.offsetX + (self.width * 0.925)/2
 
-        --self:load(skin:format(skinData["NoteAssets"][HitTypes[data] .. "_hold_end"]))
-        if skinData["NoteAssets"][HitTypes[tostring(states.game.Gameplay.mode)][data] .. "_hold_end"] then
-            self:load(skin:format(skinData["NoteAssets"][HitTypes[tostring(states.game.Gameplay.mode)][data] .. "_hold_end"]))
+        if skinData["NoteAssets"][tostring(states.game.Gameplay.mode) .. "k_" .. data .. "_hold_end"] then
+            self:load(skin:format(skinData["NoteAssets"][tostring(states.game.Gameplay.mode) .. "k_" .. data .. "_hold_end"]))
         else
             -- default to left
-            self:load(skin:format(skinData["NoteAssets"]["left_hold_end"]))
+            self:load(skin:format(skinData["NoteAssets"]["1k_1_hold_end"]))
         end
         self:updateHitbox()
         self.offsetX = self.offsetX - (self.width)/2
@@ -115,12 +105,11 @@ function HitObject:new(time, data, prevNote, sustainNote)
 
         if self.prevNote.isSustainNote then
             self.prevNote.flipY = false
-            --self.prevNote:load(skin:format(skinData["NoteAssets"][HitTypes[data] .. "_hold"]))
-            if skinData["NoteAssets"][HitTypes[tostring(states.game.Gameplay.mode)][data] .. "_hold"] then
-                self.prevNote:load(skin:format(skinData["NoteAssets"][HitTypes[tostring(states.game.Gameplay.mode)][data] .. "_hold"]))
+            if skinData["NoteAssets"][tostring(states.game.Gameplay.mode) .. "k_" .. data .. "_hold"] then
+                self.prevNote:load(skin:format(skinData["NoteAssets"][tostring(states.game.Gameplay.mode) .. "k_" .. data .. "_hold"]))
             else
                 -- default to left
-                self.prevNote:load(skin:format(skinData["NoteAssets"]["left_hold"]))
+                self.prevNote:load(skin:format(skinData["NoteAssets"]["1k_1_hold"]))
             end
             self.prevNote.scale.y = ((stepCrochet/100) * (1.0525)) * speed
             self.offsetY = 0
