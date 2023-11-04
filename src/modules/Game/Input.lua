@@ -9,10 +9,10 @@ input = (require "lib.baton").new({
         ["3k_game2"] = { "key:f" },
         ["3k_game3"] = { "key:j" },
 
-        ["4k_1"] = { "axis:triggerleft+", "axis:leftx-", "axis:rightx-", "button:dpleft", "button:x", "key:d" },
-        ["4k_2"] = { "axis:lefty+", "axis:righty+", "button:leftshoulder", "button:dpdown", "button:a", "key:f" },
-        ["4k_3"] = { "axis:lefty-", "axis:righty-", "button:rightshoulder", "button:dpup", "button:y", "key:j" },
-        ["4k_4"] = { "axis:triggerright+", "axis:leftx+", "axis:rightx+", "button:dpright", "button:b", "key:k" },
+        ["4k_game1"] = { "axis:triggerleft+", "axis:leftx-", "axis:rightx-", "button:dpleft", "button:x", "key:d" },
+        ["4k_game2"] = { "axis:lefty+", "axis:righty+", "button:leftshoulder", "button:dpdown", "button:a", "key:f" },
+        ["4k_game3"] = { "axis:lefty-", "axis:righty-", "button:rightshoulder", "button:dpup", "button:y", "key:j" },
+        ["4k_game4"] = { "axis:triggerright+", "axis:leftx+", "axis:rightx+", "button:dpright", "button:b", "key:k" },
 
         ["5k_game1"] = { "key:s" },
         ["5k_game2"] = { "key:d" },
