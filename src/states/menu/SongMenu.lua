@@ -51,7 +51,8 @@ local inSidebar = false
 local allTypes = {
     "Quaver",
     "osu!",
-    "Malody"
+    "Malody",
+    "Rit"
 }
 
 function SongMenu:enter()
@@ -96,6 +97,7 @@ function SongMenu:enter()
         ["osu!"] = {},
         ["Quaver"] = {},
         ["Malody"] = {},
+        ["Rit"] = {},
         ["All"] = {}
     }
 
@@ -113,6 +115,7 @@ function SongMenu:enter()
                 bmType = diff
             end
         end
+        print(bmType)
         local y = #songButtons[bmType] * songButton.height * 1.1
 
         local btn = SongButton(y, diffs, bmType, songName)

@@ -91,6 +91,32 @@ function loadSongs(path)
                             }
                             songList[title].type = "osu!"
                         end
+                    elseif song:sub(-5) == ".ritc" then
+                        local fileData = lf.read(path .."/" .. file .. "/" .. song)
+                        local title = fileData:match("SongTitle:(.-)\r?\n")
+                        local difficultyName = fileData:match("SongDiff:(.-)\r?\n")
+                        local BackgroundFile = fileData:match("Background:(.-)\r?\n")
+                        local alreadyInList = false
+                        for _, song in ipairs(songList) do
+                            if song.title == title and song.difficultyName == difficultyName then
+                                alreadyInList = true
+                            end
+                        end
+                        if not alreadyInList then
+                            songList[title] = songList[title] or {}
+                            songList[title][difficultyName] = {
+                                filename = file,
+                                title = title,
+                                difficultyName = difficultyName,
+                                BackgroundFile = BackgroundFile,
+                                path = path .."/" .. file .. "/" .. song,
+                                folderPath = path .."/" .. file,
+                                type = "Rit",
+                                rating = "",
+                                ratingColour = {1,1,1},
+                            }
+                            songList[title].type = "Rit"
+                        end
                     elseif song:sub(-3) == ".mc" then
                         local fileData = json(lf.read(path .."/" .. file .. "/" .. song))
                         local title = fileData.meta.song.title

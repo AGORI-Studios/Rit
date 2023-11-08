@@ -104,6 +104,7 @@ function love.load()
     osuLoader = require("modules.Parsers.Osu")
     smLoader = require("modules.Parsers.Stepmania")
     malodyLoader = require("modules.Parsers.Malody")
+    ritLoader = require("modules.Parsers.Rit")
 
     --Cache.members.font["default"] = love.graphics.newFont("assets/fonts/Dosis-SemiBold.ttf", 16)
     Cache.members.font["default"] = love.graphics.newFont("assets/fonts/TT-Interphases-Pro-Trial-Light.ttf", 16)

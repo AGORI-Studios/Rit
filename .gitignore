@@ -23,3 +23,6 @@ requirements/macos/*
 
 .env
 Keys.lua
+
+tools/QuaToRitc/*
+!tools/QuaToRitc/Convert.py
