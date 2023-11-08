@@ -277,4 +277,22 @@ function Sprite:draw()
     end
 end
 
+function Sprite:screenCenter(XY)
+    local doX, doY = true, true
+
+    if type(XY) == "string" then
+        doX = XY:find("x") ~= nil
+        doY = XY:find("y") ~= nil
+    end
+
+    if doX then
+        self.x = (push:getWidth() / 2) - (self.width / 2)
+    end
+    if doY then
+        self.y = (push:getHeight() / 2) - (self.height / 2)
+    end
+
+    return self
+end
+
 return Sprite

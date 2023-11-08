@@ -30,6 +30,7 @@ function StartMenu:enter()
     --logo = Image("assets/images/ui/menu/logo.png")
     logo = Sprite(0, 0, "assets/images/ui/menu/logo.png")
     logo:centerOrigin()
+    logo.scale = Point(2, 2)
 
     twitterLogo = Sprite(1780, 950, "assets/images/ui/icons/twitter.png")
     kofiLogo = Sprite(1780, 825, "assets/images/ui/icons/ko-fi.png")
@@ -41,8 +42,8 @@ function StartMenu:enter()
 
     logo.alignment = "center"
 
-    logo.y = push.getHeight() / 1.45
-    logo.x = push.getWidth() / 1.2
+    logo.y = push.getHeight() / 0.9
+    logo.x = push.getWidth() / 1.5
     
     if discordRPC then
         discordRPC.presence = {
@@ -61,7 +62,7 @@ function StartMenu:update(dt)
     if time > (60/menuBPM) * 1000 then
         local curBeat = math.floor((time2/1000) / (60/menuBPM))
         if curBeat % 2 == 0 then
-            logo:setScale(1.05)
+            logo:setScale(2.05)
         end
         time = 0
     end
@@ -69,10 +70,10 @@ function StartMenu:update(dt)
     local mx, my = love.mouse.getPosition()
 
     -- Logo parallax
-    logo.x = push.getWidth() / 1.2 + (-mx / 50)
-    logo.y = push.getHeight() / 1.45 + (-my / 50)
+    logo.x = push.getWidth() / 0.9 + (-mx / 50)
+    logo.y = push.getHeight() / 1 + (-my / 50)
 
-    if logo.scale.x > 1 then 
+    if logo.scale.x > 2 then 
         logo:setScale(logo.scale.x - (dt * ((menuBPM/60))) * 0.1)
     end
 
