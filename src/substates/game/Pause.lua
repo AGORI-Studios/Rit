@@ -24,7 +24,7 @@ local Pause = state()
 local options = {
     "Resume",
     "Restart",
-    "Leave song",
+    "Leave",
 }
 
 function Pause:enter()
