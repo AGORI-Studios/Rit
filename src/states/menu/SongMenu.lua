@@ -208,7 +208,7 @@ function SongMenu:mousepressed(x, y, b)
     local x, y = push.toGame(x-10, y)
     if b == 1 then
         if gear:isHovered(x, y) then
-            shakeObject(gear)
+            love.system.openURL("file://" .. love.filesystem.getSaveDirectory() .. "/")
         elseif home:isHovered(x, y) then
             state.switch(states.menu.StartMenu)
         elseif bars:isHovered(x, y) then
