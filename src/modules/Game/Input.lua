@@ -1,3 +1,4 @@
+
 input = (require "lib.baton").new({
     controls = {
         ["1k_game1"] = {"key:space"},
@@ -6,7 +7,7 @@ input = (require "lib.baton").new({
         ["2k_game2"] = { "key:j" },
 
         ["3k_game1"] = { "key:d" },
-        ["3k_game2"] = { "key:f" },
+        ["3k_game2"] = { "key:space" },
         ["3k_game3"] = { "key:j" },
 
         ["4k_game1"] = { "axis:triggerleft+", "axis:leftx-", "axis:rightx-", "button:dpleft", "button:x", "key:d" },
@@ -14,11 +15,11 @@ input = (require "lib.baton").new({
         ["4k_game3"] = { "axis:lefty-", "axis:righty-", "button:rightshoulder", "button:dpup", "button:y", "key:j" },
         ["4k_game4"] = { "axis:triggerright+", "axis:leftx+", "axis:rightx+", "button:dpright", "button:b", "key:k" },
 
-        ["5k_game1"] = { "key:s" },
-        ["5k_game2"] = { "key:d" },
+        ["5k_game1"] = { "key:d" },
+        ["5k_game2"] = { "key:f" },
         ["5k_game3"] = { "key:space" },
-        ["5k_game4"] = { "key:f" },
-        ["5k_game5"] = { "key:j" },
+        ["5k_game4"] = { "key:j" },
+        ["5k_game5"] = { "key:k" },
 
         ["6k_game1"] = { "key:s" },
         ["6k_game2"] = { "key:d" },
@@ -86,3 +87,106 @@ input = (require "lib.baton").new({
     },
     joystick = love.joystick.getJoysticks()[1]
 })
+
+local defaultBinds = {
+    ["1k"] = {
+        input1 = "space"
+    },
+    ["2k"] = {
+        input1 = "f",
+        input2 = "j"
+    },
+    ["3k"] = {
+        input1 = "d",
+        input2 = "space",
+        input3 = "j",
+    },
+    ["4k"] = {
+        input1 = "d",
+        input2 = "f",
+        input3 = "j",
+        input4 = "k",
+    },
+    ["5k"] = {
+        input1 = "d",
+        input2 = "f",
+        input3 = "space",
+        input4 = "j",
+        input5 = "k",
+    },
+    ["6k"] = {
+        input1 = "s",
+        input2 = "d",
+        input3 = "f",
+        input4 = "j",
+        input5 = "k",
+        input6 = "l",
+    },
+    ["7k"] = {
+        input1 = "s",
+        input2 = "d",
+        input3 = "f",
+        input4 = "space",
+        input5 = "j",
+        input6 = "k",
+        input7 = "l",
+    },
+    ["8k"] = {
+        input1 = "a",
+        input2 = "s",
+        input3 = "d",
+        input4 = "f",
+        input5 = "j",
+        input6 = "k",
+        input7 = "l",
+        input8 = ";",
+    },
+    ["9k"] = {
+        input1 = "a",
+        input2 = "s",
+        input3 = "d",
+        input4 = "f",
+        input5 = "space",
+        input6 = "j",
+        input7 = "k",
+        input8 = "l",
+        input9 = ";",
+    },
+    ["10k"] = {
+        input1 = "a",
+        input2 = "s",
+        input3 = "d",
+        input4 = "f",
+        input5 = "v",
+        input6 = "n",
+        input7 = "j",
+        input8 = "k",
+        input9 = "l",
+        input10 = ";",
+    },
+}
+
+if not love.filesystem.getInfo("keybinds_config.ini") then
+    ini.save(defaultBinds, "keybinds_config.ini")
+else
+    local binds = ini.parse("keybinds_config.ini")
+    for i, v in pairs(binds) do
+        for i2, v2 in pairs(v) do
+            local i2 = i2:gsub("input", "")
+            print(i .. "_game" .. i2, "key:" .. v2)
+            if i ~= "4k" then
+                input:rebindControl(i .. "_game" .. i2, {"key:" .. v2})
+            else
+                if i2 == "1" then
+                    input:rebindControl(i .. "_game" .. i2, {"axis:triggerleft+", "axis:leftx-", "axis:rightx-", "button:dpleft", "button:x", "key:" .. v2})
+                elseif i2 == "2" then
+                    input:rebindControl(i .. "_game" .. i2, {"axis:lefty+", "axis:righty+", "button:leftshoulder", "button:dpdown", "button:a", "key:" .. v2})
+                elseif i2 == "3" then
+                    input:rebindControl(i .. "_game" .. i2, {"axis:lefty-", "axis:righty-", "button:rightshoulder", "button:dpup", "button:y", "key:" .. v2})
+                elseif i2 == "4" then
+                    input:rebindControl(i .. "_game" .. i2, {"axis:triggerright+", "axis:leftx+", "axis:rightx+", "button:dpright", "button:b", "key:" .. v2})
+                end
+            end
+        end
+    end
+end

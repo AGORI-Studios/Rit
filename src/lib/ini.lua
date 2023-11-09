@@ -65,23 +65,30 @@ function ini.parse(ini)
 end
 
 function ini.save(tab, fileName)
-    if table then
-        local str = ""
-        for name, value in pairs(tab) do
-            str = str .. "[" .. name .. "]\n"
-            for k, v in pairs(value) do
-                str = str .. k .. " = " .. tostring(v) .. "\n"
-            end
-
-            str = str .. "\n"
-        end
-        local ok, err = love.filesystem.write(fileName, str)
-        if not ok then
-            return false, err
-        end
-        return true, "File saved"
+    -- sort 0-Z
+    
+    local newTab = {}
+    for k, v in pairs(tab) do
+        table.insert(newTab, k)
     end
-    return false, "No table provided"
+    table.sort(newTab, function(a, b) return a < b end)
+
+    local str = ""
+
+    for i, section in ipairs(newTab) do
+        str = str .. "[" .. section .. "]\n"
+        local newTab2 = {}
+        for k, v in pairs(tab[section]) do
+            table.insert(newTab2, k)
+        end
+        table.sort(newTab2, function(a, b) return a < b end)
+        for i, name in ipairs(newTab2) do
+            str = str .. name .. " = " .. tostring(tab[section][name]) .. "\n"
+        end
+        str = str .. "\n"
+    end
+
+    love.filesystem.write(fileName, str)
 end
 
 return ini

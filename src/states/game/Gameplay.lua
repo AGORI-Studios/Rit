@@ -346,7 +346,7 @@ function Gameplay:generateStrums()
     self.strumX = self.strumX - ((self.mode - 4.5) * 100)
     -- update hitobjects x position
     for i, ho in ipairs(self.unspawnNotes) do
-        ho.x = self.strumX + 25 + (__NOTE_OBJECT_WIDTH * 0.925+4) * (ho.data-1) + ho.offsetX
+        ho.x = self.strumX + ((ho.data - 1) * (__NOTE_OBJECT_WIDTH * 0.925)) + 32
     end
     for i = 1, self.mode do
         local strum = StrumObject(self.strumX, strumY, i)

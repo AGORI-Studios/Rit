@@ -43,7 +43,7 @@ function StartMenu:enter()
     logo.alignment = "center"
 
     logo.y = push.getHeight() / 0.9
-    logo.x = push.getWidth() / 1.5
+    logo.x = push.getWidth() / 1
     
     if discordRPC then
         discordRPC.presence = {
