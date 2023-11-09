@@ -83,6 +83,7 @@ function love.load()
     state = require("lib.state")
     tinyyaml = require("lib.tinyyaml")
     ini = require("lib.ini")
+    threadLoader = require("lib.loveloader")
 
     -- Classes
     Group = require("modules.Classes.Group")
@@ -138,6 +139,10 @@ function love.load()
             StartMenu = require("states.menu.StartMenu"),
             SongMenu = require("states.menu.SongMenu"),
         },
+        screens = {
+            PreloaderScreen = require("states.screen.PreloaderScreen"),
+            SplashScreen = require("states.screen.SplashScreen"),
+        }
     }
     substates = {
         game = {
@@ -147,8 +152,6 @@ function love.load()
 
     --love.window.setMode(1280, 720, {fullscreen = false, resizable = true})
     push.setupScreen(1920, 1080, {fullscreen = false, resizable = true, upscale = "normal"})
-    
-    state.switch(states.menu.StartMenu)
 
     if Steam then
         local steam_init = Steam.init()
@@ -167,6 +170,8 @@ function love.load()
     if discordRPC then
         discordRPC.initialize("785717724906913843", true)
     end
+
+    state.switch(states.screens.PreloaderScreen)
 end
 
 function switchState(newState, t, middleFunc)
@@ -181,6 +186,7 @@ function switchState(newState, t, middleFunc)
 end
 
 function love.update(dt)
+    threadLoader.update()
     local dt = math.min(dt, 1/30) -- cap dt to 30fps
     Timer.update(dt)
     if not isLoading then state.update(dt) end
