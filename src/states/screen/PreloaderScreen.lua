@@ -22,6 +22,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 local PreloaderScreen = state()
 local doneLoading = false
 local fade = 0
+local allNoteImgs = {}
 
 function PreloaderScreen:enter()
     threadLoader.newImage(self, "logo", "assets/images/ui/menu/logo.png")
@@ -45,12 +46,53 @@ function PreloaderScreen:enter()
     for i = 1, 10 do
         -- 1k to 10k
         for j = 1, i do
-            threadLoader.newImage(self, i .. "k_" .. j .. "_note", skin:format(skinData["NoteAssets"][tostring(i) .. "k_" .. j .. "_note"]))
+            local inAllNoteImgsNOTE = false
+            local inAllNoteImgsHOLD = false
+            local inAllNoteImgsHOLD_END = false
+            local inAllNoteImgsRECEPTOR_UNPRESSED = false
+            local inAllNoteImgsRECEPTOR_PRESSED = false
+
+            local nPath = skin:format(skinData["NoteAssets"][tostring(i) .. "k_" .. j .. "_note"])
+            local hePath = skin:format(skinData["NoteAssets"][tostring(i) .. "k_" .. j .. "_hold_end"])
+            local hPath = skin:format(skinData["NoteAssets"][tostring(i) .. "k_" .. j .. "_hold"])
+            local rupPath = skin:format(skinData["NoteAssets"][tostring(i) .. "k_" .. j .. "_receptor_unpressed"])
+            local rpPath = skin:format(skinData["NoteAssets"][tostring(i) .. "k_" .. j .. "_receptor_pressed"])
+
+            for k, v in pairs(allNoteImgs) do
+                if v == nPath then inAllNoteImgsNOTE = true end
+                if v == hePath then inAllNoteImgsHOLD_END = true end
+                if v == hPath then inAllNoteImgsHOLD = true end
+                if v == rupPath then inAllNoteImgsRECEPTOR_UNPRESSED = true end
+                if v == rpPath then inAllNoteImgsRECEPTOR_PRESSED = true end
+            end
+
+            --[[ threadLoader.newImage(self, i .. "k_" .. j .. "_note", skin:format(skinData["NoteAssets"][tostring(i) .. "k_" .. j .. "_note"]))
             threadLoader.newImage(self, i .. "k_" .. j .. "_hold_end", skin:format(skinData["NoteAssets"][tostring(i) .. "k_" .. j .. "_hold_end"]))
             threadLoader.newImage(self, i .. "k_" .. j .. "_hold", skin:format(skinData["NoteAssets"][tostring(i) .. "k_" .. j .. "_hold"]))
 
             threadLoader.newImage(self, i .. "k_" .. j .. "_note", skin:format(skinData["NoteAssets"][tostring(i) .. "k_" .. j .. "_receptor_unpressed"]))
-            threadLoader.newImage(self, i .. "k_" .. j .. "_hold_end", skin:format(skinData["NoteAssets"][tostring(i) .. "k_" .. j .. "_receptor_pressed"]))
+            threadLoader.newImage(self, i .. "k_" .. j .. "_hold_end", skin:format(skinData["NoteAssets"][tostring(i) .. "k_" .. j .. "_receptor_pressed"])) ]]
+
+            if not inAllNoteImgsNOTE then
+                table.insert(allNoteImgs, nPath)
+                threadLoader.newImage(self, i .. "k_" .. j .. "_note", nPath)
+            end
+            if not inAllNoteImgsHOLD_END then
+                table.insert(allNoteImgs, hePath)
+                threadLoader.newImage(self, i .. "k_" .. j .. "_hold_end", hePath)
+            end
+            if not inAllNoteImgsHOLD then 
+                table.insert(allNoteImgs, hPath)
+                threadLoader.newImage(self, i .. "k_" .. j .. "_hold", hPath)
+            end
+            if not inAllNoteImgsRECEPTOR_UNPRESSED then
+                table.insert(allNoteImgs, rupPath)
+                threadLoader.newImage(self, i .. "k_" .. j .. "_note", rupPath)
+            end
+            if not inAllNoteImgsRECEPTOR_PRESSED then
+                table.insert(allNoteImgs, rpPath)
+                threadLoader.newImage(self, i .. "k_" .. j .. "_hold_end", rpPath)
+            end
         end
     end
     threadLoader.start(function()
@@ -64,9 +106,9 @@ function PreloaderScreen:enter()
 end
 
 function PreloaderScreen:update(dt)
-    --- out exponential easing
     if doneLoading then 
-        fade = math.min(1, fade + dt * 2)
+        -- exponential fade out
+        fade = math.min(fade + dt * 1.82, 1)
     end
 end
 
@@ -75,7 +117,7 @@ function PreloaderScreen:draw()
     if threadLoader.resourceCount ~= 0 then percent = threadLoader.loadedCount / threadLoader.resourceCount end
     love.graphics.printf(
         (not doneLoading and "Precaching Resources..." or "Loaded!") ..
-        "\n"..threadLoader.loadedCount.."/"..threadLoader.resourceCount..
+        threadLoader.loadedCount .. "/" .. threadLoader.resourceCount ..
         "\n"..math.floor(percent * 100).."%", 
         0, push:getHeight()/2-100, push:getWidth()/2, "center", 0, 2, 2
     )
