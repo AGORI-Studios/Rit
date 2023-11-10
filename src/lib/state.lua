@@ -69,7 +69,7 @@ function state.last() return last end
 function state.killSubstate(...)
     if substate and substate.exit then substate:exit() end
     substate = nil
-    current:substateReturn(...)
+    if current.substateReturn then current:substateReturn(...) end
     return
 end 
 

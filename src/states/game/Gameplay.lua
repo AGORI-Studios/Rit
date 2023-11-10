@@ -55,8 +55,6 @@ Gameplay.songDuration = 0
 Gameplay.escapeTimer = 0 -- how long the back button has been held for
 Gameplay.health = 0.5
 
-local previousFrameTime -- used for keeping musicTime consistent
-
 local comboTimer = {}
 local judgeTimer = {}
 
@@ -357,6 +355,7 @@ function Gameplay:generateStrums()
 end
 
 function Gameplay:update(dt)
+    if self.inPause then return end
     if self.updateTime then
         -- use previousFrameTime to get musicTime (love.timer.getTime is pft)
         musicTime = musicTime + (love.timer.getTime() * 1000) - (previousFrameTime or (love.timer.getTime()*1000))
@@ -364,9 +363,11 @@ function Gameplay:update(dt)
         if musicTime >= 0 and not audioFile:isPlaying() and musicTime < self.songDuration then
             audioFile:play()
             audioFile:seek(musicTime / 1000) -- safe measure to keep it lined up
-        elseif (musicTime > self.songDuration and not audioFile:isPlaying()) or self.escapeTimer > 1 then
-            audioFile:stop()
-            state.switch(states.menu.SongMenu)
+        elseif (musicTime > self.songDuration and not audioFile:isPlaying()) or self.escapeTimer >= 0.7 then
+            state.substate(substates.game.Pause)
+            self.inPause = true
+            audioFile:pause()
+            self.updateTime = false
             return
         end
         self:updateCurrentTrackPosition()
@@ -386,22 +387,6 @@ function Gameplay:update(dt)
     end
 
     self:changeHoldScale()
-
-    --[[ if self.unspawnNotes[1] then
-        local time = self.spawnTime
-        if speed < 1 then time = time / speed end
-
-        while #self.unspawnNotes > 0 and self.unspawnNotes[1].time - musicTime < time do
-            local ho = table.remove(self.unspawnNotes, 1)
-
-            if ho.isSustainNote then
-                self.holdHitObjects:add(ho)
-            else
-                self.hitObjects:add(ho)
-            end
-            ho.spawned = true
-        end
-    end ]]
 
     if self.didTimer and self.updateTime then
         self:keysCheck()
@@ -551,6 +536,12 @@ function Gameplay:goodNoteHit(note, time)
             note = nil
         end
     end
+end
+
+function Gameplay:substateReturn()
+    self.inPause = false
+    audioFile:play()
+    self.updateTime = true
 end
 
 function Gameplay:draw()
