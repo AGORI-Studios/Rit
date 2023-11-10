@@ -3,6 +3,20 @@ Modscript.vars = {}
 local chunkMeta = {__index = _G}
 
 Modscript.funcs = require "modules.Game.Helpers.ModscriptFunctions"
+Modscript.BaseModifier = require "modules.Game.Helpers.Modifiers.BaseModifier" 
+
+-- modifiers
+Modscript.modifiers = {}
+function Modscript:loadModifiers()
+    for i, file in ipairs(love.filesystem.getDirectoryItems("modules/Game/Helpers/Modifiers")) do
+        if file:sub(-4) == ".lua" then
+            local name = file:sub(1, -5)
+            if name ~= "BaseModifier" then
+                Modscript.modifiers[name] = require("modules.Game.Helpers.Modifiers." .. name)
+            end
+        end
+    end 
+end
 
 function Modscript:set(name, value)
     self.vars[name] = value
@@ -66,6 +80,9 @@ function Modscript:load(script)
     )
 
     self:call("Start")
+
+    self.modifiers = {}
+    self:loadModifiers()
 end
 
 function Modscript:call(func, args)

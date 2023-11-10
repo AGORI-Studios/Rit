@@ -23,6 +23,10 @@ fade = 1
 masterVolume = 50
 lerpedMasterVolume = 50
 isLoading = false
+__DEBUG__ = not love.filesystem.isFused()
+if not __DEBUG__ then 
+    function print() end -- disable print if not in debug mode, allows for better performance
+end
 
 require("modules.Utilities")
 ffi = require("ffi")
@@ -150,7 +154,6 @@ function love.load()
         }
     }
 
-    --love.window.setMode(1280, 720, {fullscreen = false, resizable = true})
     push.setupScreen(1920, 1080, {fullscreen = false, resizable = true, upscale = "normal"})
 
     if Steam then
@@ -265,10 +268,14 @@ function love.draw()
 
     love.graphics.print(
         "FPS: " .. love.timer.getFPS() .. "\n" ..
-        "Music Time: " .. (musicTime or "N/A") .. "\n" ..
-        "Draw Calls: " .. love.graphics.getStats().drawcalls .. "\n" ..
-        "Memory: " .. math.floor(collectgarbage("count")) .. "KB\n" ..
-        "Graphics Memory: " .. math.floor(love.graphics.getStats().texturememory/1024/1024) .. "MB\n" ..
+
+        (__DEBUG__ and 
+            ("Music Time: " .. (musicTime or "N/A") .. "\n" ..
+            "Draw Calls: " .. love.graphics.getStats().drawcalls .. "\n" ..
+            "Memory: " .. math.floor(collectgarbage("count")) .. "KB\n" ..
+            "Graphics Memory: " .. math.floor(love.graphics.getStats().texturememory/1024/1024) .. "MB\n") or ""
+        ) ..
+       
         "Steam: " .. (Steam and "true" or "false") .. "\n" ..
         (Steam and "Steam ID: " .. SteamUserID .. "\n" or "") ..
         "Volume: " .. math.round(lerpedMasterVolume, 2)
