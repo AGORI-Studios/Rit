@@ -100,25 +100,8 @@ function osuLoader.addHitObject(line)
 
     note.endTime = tonumber(split[6])
 
-    local ho = HitObject(note.startTime, note.data, nil, false)
+    local ho = HitObject(note.startTime, note.data, note.endTime)
     table.insert(states.game.Gameplay.unspawnNotes, ho)
-
-    if note.endTime then
-        local length = note.endTime - note.startTime
-        length = math.floor(length / stepCrochet)
-
-        if length > 0 then
-            for sustain = 0, length do
-                local oldHo = states.game.Gameplay.unspawnNotes[#states.game.Gameplay.unspawnNotes]
-
-                local slider = HitObject(note.startTime + (stepCrochet*sustain), note.data, oldHo, true)
-                table.insert(ho.tail, slider)
-                table.insert(states.game.Gameplay.unspawnNotes, slider)
-                slider.correctionOffset = (ho.height * 0.925)/2
-                oldHo:updateHitbox()
-            end
-        end
-    end
 end
 
 return osuLoader

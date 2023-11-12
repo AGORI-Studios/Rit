@@ -74,7 +74,6 @@ function Gameplay:reset()
     self.strumX = 525
     self.spawnTime = 1000
     self.hitObjects = Group()
-    self.holdHitObjects = Group()
     self.unspawnNotes = {}
     self.sliderVelocities = {}
     self.strumLineObjects = Group()
@@ -178,12 +177,6 @@ function Gameplay:initializePositionMarkers()
     end
 end
 
-function Gameplay:changeHoldScale()
-    for _, slider in ipairs(self.holdHitObjects) do
-        slider:changeHoldScale(self.sliderVelocities[self.currentSvIndex].multiplier)
-    end
-end
-
 function Gameplay:updateCurrentTrackPosition()
     while self.currentSvIndex < #self.sliderVelocities and musicTime >= self.sliderVelocities[self.currentSvIndex].startTime do
         self.currentSvIndex = self.currentSvIndex + 1
@@ -243,15 +236,17 @@ function Gameplay:initPositions()
     for _, hitObject in ipairs(self.unspawnNotes) do
         hitObject.initialTrackPosition = self:getPositionFromTime(hitObject.time)
         hitObject.latestTrackPosition = hitObject.initialTrackPosition
+        if hitObject.endTime then
+            hitObject.endTrackPosition = self:getPositionFromTime(hitObject.endTime)
+        end
     end
 end
 
 function Gameplay:getSpritePosition(offset, initialPos)
-   -- return strumY + (((initialPos or 0) - offset) * speed / self.trackRounding)
-    if not downscroll then
-        return strumY + (((initialPos or 0) - offset) * speed / self.trackRounding)
+    if not Settings.options["General"].downscroll then
+        return strumY + (((initialPos or 0) - offset) * Settings.options["General"].scrollspeed / self.trackRounding)
     else
-        return strumY - (((initialPos or 0) - offset) * speed / self.trackRounding)
+        return strumY - (((initialPos or 0) - offset) * Settings.options["General"].scrollspeed / self.trackRounding)
     end
 end
 
@@ -260,11 +255,25 @@ function Gameplay:updateSpritePositions(offset, curTime)
 
     for _, hitObject in ipairs(self.hitObjects.members) do
         spritePosition = self:getSpritePosition(offset, hitObject.initialTrackPosition)
+        if not hitObject.moveWithScroll then
+            -- go to strumY (it's a hold)
+            spritePosition = strumY
+        end
         hitObject.y = spritePosition
-    end
-    for _, sliderObject in ipairs(self.holdHitObjects.members) do
-        spritePosition = self:getSpritePosition(offset, sliderObject.initialTrackPosition)
-        sliderObject.y = spritePosition + sliderObject.correctionOffset
+        if #hitObject.children > 0 then
+            hitObject.children[1].y = spritePosition + hitObject.height/2
+            hitObject.children[2].y = spritePosition + hitObject.height/2
+
+            hitObject.endY = self:getSpritePosition(offset, hitObject.endTrackPosition)
+            local pixelDistance = hitObject.endY - hitObject.children[1].y + hitObject.children[2].height-- the distance of start and end we need
+            hitObject.children[1].scale.y = (pixelDistance / hitObject.children[1].height)
+
+            if Settings.options["General"].downscroll then
+                hitObject.children[2].y = hitObject.children[2].y + pixelDistance - hitObject.children[2].height
+            else
+                hitObject.children[2].y = hitObject.children[2].y + pixelDistance + hitObject.children[2].height
+            end
+        end
     end
 end
 
@@ -295,13 +304,12 @@ function Gameplay:clear()
 end
 
 function Gameplay:enter()
-    strumY = not downscroll and 50 or 825
+    strumY = not Settings.options["General"].downscroll and 50 or 825
     self:reset()
 
     self.inputsArray = {false, false, false, false}
 
     self:add(self.strumLineObjects)
-    self:add(self.holdHitObjects)
     self:add(self.hitObjects)
 
     self:generateBeatmap(self.chartVer, self.songPath, self.folderpath)
@@ -330,11 +338,7 @@ end
 
 function Gameplay:addObjectsToGroups()
     for i, ho in ipairs(self.unspawnNotes) do
-        if ho.isSustainNote then
-            self.holdHitObjects:add(ho)
-        else
-            self.hitObjects:add(ho)
-        end
+        self.hitObjects:add(ho)
         ho.spawned = true
     end
 end
@@ -345,6 +349,10 @@ function Gameplay:generateStrums()
     -- update hitobjects x position
     for i, ho in ipairs(self.unspawnNotes) do
         ho.x = self.strumX + ((ho.data - 1) * (__NOTE_OBJECT_WIDTH * 0.925)) + 32
+        if #ho.children > 0 then
+            ho.children[1].x = self.strumX + ((ho.data - 1) * (__NOTE_OBJECT_WIDTH * 0.925)) + 32
+            ho.children[2].x = self.strumX + ((ho.data - 1) * (__NOTE_OBJECT_WIDTH * 0.925)) + 32
+        end
     end
     for i = 1, self.mode do
         local strum = StrumObject(self.strumX, strumY, i)
@@ -363,7 +371,10 @@ function Gameplay:update(dt)
         if musicTime >= 0 and not audioFile:isPlaying() and musicTime < self.songDuration then
             audioFile:play()
             audioFile:seek(musicTime / 1000) -- safe measure to keep it lined up
-        elseif (musicTime > self.songDuration and not audioFile:isPlaying()) or self.escapeTimer >= 0.7 then
+        elseif (musicTime > self.songDuration and not audioFile:isPlaying()) then
+            state.switch(states.menu.SongMenu)
+            return
+        elseif self.escapeTimer >= 0.7 then
             state.substate(substates.game.Pause)
             self.inPause = true
             audioFile:pause()
@@ -386,18 +397,14 @@ function Gameplay:update(dt)
         self.escapeTimer = 0
     end
 
-    self:changeHoldScale()
-
     if self.didTimer and self.updateTime then
-        self:keysCheck()
         if #self.hitObjects.members > 0 then
             if self.didTimer then
                 local fakeCrocet = (60 / bpm) * 1000
                 for i, ho in ipairs(self.hitObjects.members) do
                     local strum = self.strumLineObjects.members[ho.data]
-                    --ho:followStrum(strum, fakeCrocet)
 
-                    if musicTime - ho.time > self.objectKillOffset then
+                    if musicTime - ho.time > self.objectKillOffset and not ho.wasGoodHit then
                         ho.active = false
                         ho.visible = false
                         ho:kill()
@@ -405,25 +412,6 @@ function Gameplay:update(dt)
                         ho:destroy()
                         self:doJudgement(1000) -- miss
                         self.health = self.health - 0.18
-                    end
-                end
-            end
-        end
-
-        if #self.holdHitObjects.members > 0 then
-            if self.didTimer then
-                local fakeCrocet = (60 / bpm) * 1000
-                for i, ho in ipairs(self.holdHitObjects.members) do
-                    local strum = self.strumLineObjects.members[ho.data]
-                    --ho:followStrum(strum, fakeCrocet)
-                    ho:clipToStrum(strum)
-
-                    if musicTime - ho.time > self.objectKillOffset then
-                        ho.active = false
-                        ho.visible = false
-                        ho:kill()
-                        self.holdHitObjects:remove(ho)
-                        ho:destroy()
                     end
                 end
             end
@@ -488,6 +476,19 @@ end
 
 function Gameplay:keyDown(key)
     self.inputsArray[key] = true
+
+    for i, ho in ipairs(self.hitObjects.members) do
+        if ho.data == key and not ho.moveWithScroll then -- HOLD NOTE
+            -- if in a distance of 15ms, then remove note
+            if ho.endTime - musicTime <= -15 then
+                ho:kill()
+                ho:destroy()
+                self.hitObjects:remove(ho)
+                break
+            end
+        end
+    end
+
     self.strumLineObjects.members[key]:playAnim("pressed")
 end
 
@@ -495,29 +496,13 @@ function Gameplay:keyReleased(key)
     self.inputsArray[key] = false
 
     self.strumLineObjects.members[key]:playAnim("unpressed")
-end
 
-function Gameplay:keysCheck()
-    local holdArray, pressArray, releaseArray = {}, {}, {}
-
-    --[[ for i, key in ipairs(self.mode) do
-        table.insert(holdArray, input:down(self.mode .. "k_game" .. key))
-        table.insert(pressArray, input:pressed(self.mode .. "k_game" .. key))
-        table.insert(releaseArray, input:released(self.mode .. "k_game" .. key))
-    end ]]
-    for i = 1, self.mode do
-        table.insert(holdArray, input:down(self.mode .. "k_game" .. i))
-        table.insert(pressArray, input:pressed(self.mode .. "k_game" .. i))
-        table.insert(releaseArray, input:released(self.mode .. "k_game" .. i))
-    end
-
-    if self.updateTime then
-        if #self.holdHitObjects.members > 0 then
-            for i, note in ipairs(self.holdHitObjects.members) do
-                if note.canBeHit and not note.tooLate and note.prevNote.wasGoodHit and not note.wasGoodHit and note.isSustainNote and self.inputsArray[note.data] then
-                    self:goodNoteHit(note)
-                end
-            end
+    for i, ho in ipairs(self.hitObjects.members) do
+        if ho.data == key and not ho.moveWithScroll then
+            ho:kill()
+            ho:destroy()
+            self.hitObjects:remove(ho)
+            break
         end
     end
 end
@@ -530,10 +515,11 @@ function Gameplay:goodNoteHit(note, time)
         if not note.isSustainNote then
             self.combo = self.combo + 1
             self:doJudgement(time)
-            note:kill()
-            self.hitObjects:remove(note)
-            note:destroy()
-            note = nil
+            if #note.children > 0 then
+                note.moveWithScroll = false
+            else
+                note.visible = false
+            end
         end
     end
 end

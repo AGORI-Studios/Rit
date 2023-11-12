@@ -23,27 +23,6 @@ local StrumObject = Sprite:extend()
 
 StrumObject.resetAnim = 0
 StrumObject.data = 1
-StrumObject.direction = 90
-StrumObject.sustainReduce = true
-
-local StrumTypes = {
-    ["4"] = {
-        "left",
-        "down",
-        "up",
-        "right"
-    },
-    ["7"] = {
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8"
-    }
-}
 
 function StrumObject:new(x, y, data)
     self.super.new(self, x, y)

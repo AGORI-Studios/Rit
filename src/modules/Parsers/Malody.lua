@@ -50,15 +50,11 @@ function malodyLoader.load(chart_, folderPath, forDiff)
     local meta = chart.meta
 
     if meta.mode ~= 0 then
-        print('Only "Key" Malody charts are supported.')
-        state.switch(states.menu.SongMenu)
-        return
+        states.game.Gameplay.mode = meta.mode
     end
 
     if (meta.mode_ext.column and meta.mode_ext.column ~= 4) then
-        print('Only 4K Malody charts are supported.')
-        state.switch(states.menu.SongMenu)
-        return
+        states.game.Gameplay.mode = meta.mode_ext.column
     end
 
     -- if theres only 1 timing point, then create 1 more (copy of the first one)
@@ -80,26 +76,7 @@ function malodyLoader.load(chart_, folderPath, forDiff)
             local endTime = note.beatEnd and getMilliSeconds(getBeat(note.beatEnd), 0) or 0
             local lane = note.column + 1
 
-            local length = endTime - startTime
-
-            local hasSustain = length ~= startTime
-
-            local ho = HitObject(startTime, lane, nil, false)
-            table.insert(states.game.Gameplay.unspawnNotes, ho)
-
-            length = math.floor(length / stepCrochet)
-
-            if length > 0 then
-                for sustain = 0, length do
-                    local oldHo = states.game.Gameplay.unspawnNotes[#states.game.Gameplay.unspawnNotes]
-
-                    local slider = HitObject(startTime + (stepCrochet * sustain), lane, oldHo, true)
-                    table.insert(ho.tail, slider)
-                    table.insert(states.game.Gameplay.unspawnNotes, slider)
-                    slider.correctionOffset = (ho.height * 0.925) / 2
-                    oldHo:updateHitbox()
-                end
-            end
+            local ho = HitObject(startTime, lane, endTime)
         else
             audioFile = love.audio.newSource(folderPath .. "/" .. note.sound, "stream")
         end

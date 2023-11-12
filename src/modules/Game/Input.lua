@@ -173,7 +173,6 @@ else
     for i, v in pairs(binds) do
         for i2, v2 in pairs(v) do
             local i2 = i2:gsub("input", "")
-            print(i .. "_game" .. i2, "key:" .. v2)
             if i ~= "4k" then
                 input:rebindControl(i .. "_game" .. i2, {"key:" .. v2})
             else

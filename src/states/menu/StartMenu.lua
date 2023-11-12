@@ -27,6 +27,12 @@ local menuBPM = 120
 local timers = {}
 
 function StartMenu:enter()
+    balls = {}
+    bg = Sprite(0, 0, "assets/images/ui/menu/BGsongList.png")
+    for i = 1, 5 do
+        balls[i] = Sprite(love.math.random(0, 1600), love.math.random(0, 720), "assets/images/ui/menu/BGball" .. i .. ".png")
+        balls[i].ogX, balls[i].ogY = love.math.random(0, 1920), love.math.random(0, 1080)
+    end
     --logo = Image("assets/images/ui/menu/logo.png")
     logo = Sprite(0, 0, "assets/images/ui/menu/logo.png")
     logo:centerOrigin()
@@ -70,8 +76,16 @@ function StartMenu:update(dt)
     local mx, my = love.mouse.getPosition()
 
     -- Logo parallax
-    logo.x = push.getWidth() / 0.9 + (-mx / 50)
-    logo.y = push.getHeight() / 1 + (-my / 50)
+    local px, py = (-mx / 50), (-my / 50)
+    logo.x = push.getWidth() / 0.9 + px
+    logo.y = push:getHeight() + py
+
+    bg.x, bg.y = px * 0.025, py * 0.025
+
+    for i = 1, #balls do
+        balls[i].x = balls[i].ogX + px * 0.09 + (0.05 * i * 5)
+        balls[i].y = balls[i].ogY + py * 0.09 + (0.05 * i * 5)
+    end
 
     if logo.scale.x > 2 then 
         logo:setScale(logo.scale.x - (dt * ((menuBPM/60))) * 0.1)
@@ -94,6 +108,10 @@ function StartMenu:mousepressed(x, y, b)
 end
 
 function StartMenu:draw()
+    bg:draw()
+    for i = 1, #balls do
+        balls[i]:draw()
+    end
     love.graphics.push()
         love.graphics.scale(0.35, 0.35)
         love.graphics.setColor(1, 1, 1)

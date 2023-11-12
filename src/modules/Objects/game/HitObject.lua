@@ -28,9 +28,6 @@ HitObject.tooLate = false
 HitObject.wasGoodHit = false
 HitObject.noteWasHit = false
 
-HitObject.prevNote = nil
-HitObject.nextNote = nil
-
 HitObject.spawned = false
 
 HitObject.tail = {}
@@ -54,15 +51,13 @@ HitObject.missHealth = 0.475
 HitObject.distance = 2000
 HitObject.correctionOffset = 0
 
-function HitObject:new(time, data, prevNote, sustainNote) 
+HitObject.children = {}
+HitObject.moveWithScroll = true
+
+function HitObject:new(time, data, endTime, sustainNote) 
     self.super.new(self)
     local sustainNote = sustainNote or false
 
-    if not prevNote then
-        prevNote = self
-    end
-
-    self.prevNote = prevNote
     self.isSustainNote = sustainNote
     self.moves = false
 
@@ -70,7 +65,11 @@ function HitObject:new(time, data, prevNote, sustainNote)
     self.y = -2000
 
     self.time = time
+    self.endTime = endTime
     self.data = data
+
+    self.children = {}
+    self.moveWithScroll = true
 
     -- assets are like [mode]k_data
     if skinData["NoteAssets"][tostring(states.game.Gameplay.mode) .. "k_" .. data .. "_note"] then
@@ -85,39 +84,27 @@ function HitObject:new(time, data, prevNote, sustainNote)
 
     self.x = self.x + (self.width * 0.925+4) * (data-1)
 
-    if self.prevNote then
-        self.prevNote.nextNote = self
-    end
+    if self.endTime and self.endTime > self.time then
+        local holdObj = Sprite():load(skin:format(skinData["NoteAssets"][tostring(states.game.Gameplay.mode) .. "k_" .. data .. "_hold"]))
+        holdObj.endTime = self.endTime
 
-    if self.isSustainNote and self.prevNote then
-        self.offsetX = self.offsetX + (self.width * 0.925)/2
+        table.insert(self.children, holdObj)
 
-        if skinData["NoteAssets"][tostring(states.game.Gameplay.mode) .. "k_" .. data .. "_hold_end"] then
-            self:load(skin:format(skinData["NoteAssets"][tostring(states.game.Gameplay.mode) .. "k_" .. data .. "_hold_end"]))
-        else
-            -- default to left
-            self:load(skin:format(skinData["NoteAssets"]["1k_1_hold_end"]))
+        local endObj = Sprite():load(skin:format(skinData["NoteAssets"][tostring(states.game.Gameplay.mode) .. "k_" .. data .. "_hold_end"]))
+        holdObj.endTime = self.endTime
+        if not Settings.options["General"].downscroll then
+            endObj.scale.y = -1
         end
-        self:updateHitbox()
-        self.offsetX = self.offsetX - (self.width)/2
-        self.flipY = not downscroll
-        self.correctionOffset = downscroll and 67 or 58
 
-        if self.prevNote.isSustainNote then
-            self.prevNote.flipY = false
-            if skinData["NoteAssets"][tostring(states.game.Gameplay.mode) .. "k_" .. data .. "_hold"] then
-                self.prevNote:load(skin:format(skinData["NoteAssets"][tostring(states.game.Gameplay.mode) .. "k_" .. data .. "_hold"]))
-            else
-                -- default to left
-                self.prevNote:load(skin:format(skinData["NoteAssets"]["1k_1_hold"]))
-            end
-            self.prevNote.scale.y = ((stepCrochet/100) * (1.0525)) * speed
-            self.offsetY = 0
-            self.prevNote.correctionOffset = downscroll and 0 or 35
-        end
+        table.insert(self.children, endObj)
     end
 
     self.x = self.x + self.offsetX
+
+    if #self.children > 0 then
+        self.children[1].x = self.x + self.children[1].width/4.5
+        self.children[2].x = self.x + self.children[1].width/4.5
+    end
 
     return self
 end
@@ -135,43 +122,11 @@ function HitObject:update(dt)
     end
 end
 
-function HitObject:changeHoldScale(multiplier) -- fuck dude.,,.,, my couch
-    if self.isSustainNote then
-        self.scale.y = ((stepCrochet/100) * (1.0525)) * (speed * multiplier)
-        self.correctionOffset = downscroll and 0 and 35 * multiplier
-        self:updateHitbox()
-    end
-end
-
-function HitObject:clipToStrum(strum)
-    local center = strum.y + (self.width * 0.925)/1.75
-    local vert = center - self.y - self.correctionOffset
-    if self.isSustainNote and ((self.wasGoodHit or (self.prevNote.wasGoodHit and not self.canBeHit))) then
-        local rect = self.clipRect
-        if not rect then
-            rect = {x = 0, y = 0, width = (self.frameWidth), height = (self.frameHeight)}
-        end
-
-        if downscroll and self.y - self.offset.y * self.scale.y + self.height >= center then
-            rect.width = self:getFrameWidth() * self.scale.x
-            rect.height = (center - self.y) / self.scale.y * 1.3
-            rect.y = self:getFrameHeight() - rect.height
-        elseif not downscroll and self.y + self.offset.y <= center then
-            rect.y = vert
-            rect.width = self:getFrameWidth() * self.scale.x
-            rect.height = self:getFrameHeight() * self.scale.y
-        else
-            rect.y = 0
-            rect.width = self:getFrameWidth() * self.scale.x
-            rect.height = self:getFrameHeight() * self.scale.y * 1.3
-        end
-
-        self.clipRect = rect
-    end
-end
-
 function HitObject:draw()
     if self.y < 1080 and self.y > -(self.height * self.scale.y) then
+        for i, child in ipairs(self.children) do
+            child:draw()
+        end
         self.super.draw(self)
     end
 end

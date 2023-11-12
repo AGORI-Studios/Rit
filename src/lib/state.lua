@@ -32,6 +32,7 @@ local current = nil -- Current state
 local last = nil -- Last state
 local substate = nil -- Current substate
 local function nop() end -- Called when there is no function to call from the current state
+state.inSubstate = false
 
 local function switch(newstate, ...)
     if current and current.exit then current:exit() end 
@@ -69,6 +70,7 @@ function state.last() return last end
 function state.killSubstate(...)
     if substate and substate.exit then substate:exit() end
     substate = nil
+    state.inSubstate = false
     if current.substateReturn then current:substateReturn(...) end
     return
 end 
@@ -97,6 +99,7 @@ function state.substate(newstate, ...)
     assert(newstate, "Called state.substate with no state")
     assert(type(newstate) == "table", "Called state.substate with invalid state") 
     substate = newstate -- Set the substate
+    state.inSubstate = true
     if substate.enter then substate:enter(...) end
     return substate
 end

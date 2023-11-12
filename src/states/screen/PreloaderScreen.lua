@@ -66,13 +66,6 @@ function PreloaderScreen:enter()
                 if v == rpPath then inAllNoteImgsRECEPTOR_PRESSED = true end
             end
 
-            --[[ threadLoader.newImage(self, i .. "k_" .. j .. "_note", skin:format(skinData["NoteAssets"][tostring(i) .. "k_" .. j .. "_note"]))
-            threadLoader.newImage(self, i .. "k_" .. j .. "_hold_end", skin:format(skinData["NoteAssets"][tostring(i) .. "k_" .. j .. "_hold_end"]))
-            threadLoader.newImage(self, i .. "k_" .. j .. "_hold", skin:format(skinData["NoteAssets"][tostring(i) .. "k_" .. j .. "_hold"]))
-
-            threadLoader.newImage(self, i .. "k_" .. j .. "_note", skin:format(skinData["NoteAssets"][tostring(i) .. "k_" .. j .. "_receptor_unpressed"]))
-            threadLoader.newImage(self, i .. "k_" .. j .. "_hold_end", skin:format(skinData["NoteAssets"][tostring(i) .. "k_" .. j .. "_receptor_pressed"])) ]]
-
             if not inAllNoteImgsNOTE then
                 table.insert(allNoteImgs, nPath)
                 threadLoader.newImage(self, i .. "k_" .. j .. "_note", nPath)
@@ -116,8 +109,8 @@ function PreloaderScreen:draw()
     local percent = 0
     if threadLoader.resourceCount ~= 0 then percent = threadLoader.loadedCount / threadLoader.resourceCount end
     love.graphics.printf(
-        (not doneLoading and "Precaching Resources..." or "Loaded!") ..
-        threadLoader.loadedCount .. "/" .. threadLoader.resourceCount ..
+        (not doneLoading and ("Precaching Resources..." .. threadLoader.loadedCount .. "/" .. threadLoader.resourceCount) 
+            or "Loaded!") ..
         "\n"..math.floor(percent * 100).."%", 
         0, push:getHeight()/2-100, push:getWidth()/2, "center", 0, 2, 2
     )

@@ -42,12 +42,14 @@ function Pause:update(dt)
 
     if input:pressed("confirm") then
         if self.selection == 1 then
-            states.game.Gameplay.inPause = false
+            
         elseif self.selection == 2 then
             state.switch(states.game.Gameplay)
         elseif self.selection == 3 then
             state.switch(states.menu.SongMenu)
         end
+        states.game.Gameplay.inPause = false
+        states.game.Gameplay.updateTime = true
         previousFrameTime = love.timer.getTime() * 1000
         states.game.Gameplay.escapeTimer = 0
         state.killSubstate()

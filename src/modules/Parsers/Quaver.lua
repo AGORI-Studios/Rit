@@ -21,7 +21,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 local quaverLoader = {}
 
 function quaverLoader.load(chart, folderPath, forDiff)
-    print(chart)
     curChart = "Quaver"
 
     local chart = tinyyaml.parse(love.filesystem.read(chart):gsub("\r\n", "\n"))
@@ -64,8 +63,9 @@ function quaverLoader.load(chart, folderPath, forDiff)
         local sliderVelocity = chart.SliderVelocities[i]
         local startTime = sliderVelocity.StartTime
         local multiplier = sliderVelocity.Multiplier
-
+        if not startTime then goto continue end
         table.insert(states.game.Gameplay.sliderVelocities, {startTime = startTime, multiplier = multiplier or 0})
+        ::continue::
     end
 
     for i = 1, #chart.HitObjects do
@@ -75,26 +75,9 @@ function quaverLoader.load(chart, folderPath, forDiff)
         local lane = hitObject.Lane
 
         if not startTime then goto continue end
-        local length = endTime - startTime
 
-        local hasSustain = length ~= startTime
-
-        local ho = HitObject(startTime, lane, nil, false)
+        local ho = HitObject(startTime, lane, endTime)
         table.insert(states.game.Gameplay.unspawnNotes, ho)
-
-        length = math.floor(length / stepCrochet)
-
-        if length > 0 then
-            for sustain = 0, length do
-                local oldHo = states.game.Gameplay.unspawnNotes[#states.game.Gameplay.unspawnNotes]
-
-                local slider = HitObject(startTime + (stepCrochet*sustain), lane, oldHo, true)
-                table.insert(ho.tail, slider)
-                table.insert(states.game.Gameplay.unspawnNotes, slider)
-                oldHo:updateHitbox()
-                slider.offset.y = slider.offset.y + 25
-            end
-        end
         ::continue::
     end
 

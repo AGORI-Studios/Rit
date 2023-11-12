@@ -76,7 +76,6 @@ local SteamUserID
 
 function love.load()
     __NOTE_OBJECT_WIDTH = 0
-    speed = 1.95
     -- Libraries 
     Object = require("lib.class")
     Timer = require("lib.timer")
@@ -98,6 +97,8 @@ function love.load()
     skin = require("modules.Game.SkinHandler")
     require("modules.Game.Input")
     Modscript = require("modules.Game.Modscript")
+    Settings = require("modules.Game.Settings")
+    Settings.loadOptions()
 
     -- Objects
     StrumObject = require("modules.Objects.game.StrumObject")
@@ -133,8 +134,6 @@ function love.load()
         local font, text = font or "default", text or "A"
         return Cache.members.font[font]:getHeight(text)
     end
-
-    downscroll = true -- press "d" on menu to toggle
     
     -- States
     states = {
@@ -153,6 +152,9 @@ function love.load()
     substates = {
         game = {
             Pause = require("substates.game.Pause"),
+        },
+        menu = {
+            Options = require("substates.menu.Options")
         }
     }
 
@@ -291,4 +293,6 @@ function love.quit()
     if discordRPC then
         discordRPC.shutdown()
     end
+
+    Settings.saveOptions()
 end

@@ -25,6 +25,7 @@ local songButtons = {
     ["osu!"] = {},
     ["Quaver"] = {},
     ["Malody"] = {},
+    ["Rit"] = {},
     ["All"] = {}
 }
 
@@ -38,7 +39,7 @@ end
 
 local curSelected = 1
 local balls = {}
-local curSongType = "Quaver"
+local curSongType = "All"
 local curTab = "songs" -- songs or diffs
 local lerpedSongPos = 0
 local transitioning = false
@@ -49,6 +50,7 @@ local showCat = true
 local inSidebar = false
 
 local allTypes = {
+    "All",
     "Quaver",
     "osu!",
     "Malody",
@@ -120,10 +122,15 @@ function SongMenu:enter()
         local btn = SongButton(y, diffs, bmType, songName)
 
         table.insert(songButtons[bmType], btn)
+
+        y = #songButtons["All"] * songButton.height * 1.1
+        local allBtn = SongButton(y, diffs, bmType, songName)
+        table.insert(songButtons["All"], allBtn)
     end
 end
 
 function SongMenu:update(dt)
+    if state.inSubstate then return end
     if curTab == "songs" then
         curSelected = math.clamp(curSelected, 1, #songButtons[curSongType])
         lerpedSongPos = math.fpsLerp(lerpedSongPos, (-(curSelected - 2.5)) * songButton.height * 1.1, 25, dt)
@@ -200,22 +207,21 @@ function SongMenu:update(dt)
 end
 
 function SongMenu:wheelmoved(x, y)
+    if state.inSubstate then return end
     curSelected = curSelected - y
 end
 
 function SongMenu:mousepressed(x, y, b)
+    if state.inSubstate then return end
     local x, y = push.toGame(x-10, y)
     if b == 1 then
         if gear:isHovered(x, y) then
-            love.system.openURL("file://" .. love.filesystem.getSaveDirectory() .. "/")
+            state.substate(substates.menu.Options)
         elseif home:isHovered(x, y) then
             state.switch(states.menu.StartMenu)
         elseif bars:isHovered(x, y) then
+            --state.substate(substates.menu.Options)
             shakeObject(bars)
-            --[[ inSidebar = not inSidebar
-
-            if inSidebar then
-            end ]]
         end
 
         y = y - lerpedSongPos
@@ -250,9 +256,6 @@ function SongMenu:mousepressed(x, y, b)
 end
 
 function SongMenu:keypressed(key)
-    if key == "d" then
-        downscroll = not downscroll
-    end
 end
 
 function SongMenu:draw()
@@ -336,7 +339,6 @@ function SongMenu:draw()
     setFont("menuBold")
     love.graphics.printf("Placeholder", 700, 8, 1080/2, "right", 0, 2, 2) -- Steam name
     setFont("default")
-    love.graphics.printf("Press d to toggle downscroll: ".. (downscroll and "on" or "off"), 0, 1040, 1920/2, "right", 0, 2, 2)
 end
 
 return SongMenu

@@ -78,27 +78,9 @@ function ritLoader.addHitObject(line)
     local lane = tonumber(info[3])
 
     if not startTime then goto continue end
-    local hasSustain = true
 
-    hasSustain = endTime > 0 and endTime ~= startTime
-    local length = endTime - startTime
-
-    local ho = HitObject(startTime, lane, nil, false)
+    local ho = HitObject(startTime, lane, endTime)
     table.insert(states.game.Gameplay.unspawnNotes, ho)
-
-    length = math.floor(length / stepCrochet)
-
-    if length > 0 and hasSustain then
-        for sustain = 0, length do
-            local oldHo = states.game.Gameplay.unspawnNotes[#states.game.Gameplay.unspawnNotes]
-
-            local slider = HitObject(startTime + (stepCrochet*sustain), lane, oldHo, true)
-            table.insert(ho.tail, slider)
-            table.insert(states.game.Gameplay.unspawnNotes, slider)
-            oldHo:updateHitbox()
-            slider.offset.y = slider.offset.y + 25
-        end
-    end
 
     ::continue::
 end
