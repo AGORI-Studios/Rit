@@ -30,12 +30,6 @@ function Options:mousepressed(x, y, id)
                 Settings.options["General"].downscroll = not Settings.options["General"].downscroll
             end
 
-            --[[
-                love.graphics.setColor(1,0,0)
-        love.graphics.rectangle("fill", 700, 156, 30, 30, 5, 5)
-        love.graphics.setColor(0,1,0)
-        love.graphics.rectangle("fill", 740, 156, 30, 30, 5, 5)
-            ]]
             if mx >= 700 and mx <= 730 and my >= 156 and my <= 186 then
                 Settings.options["General"].scrollspeed = Settings.options["General"].scrollspeed - 0.05
             elseif mx >= 740 and mx <= 770 and my >= 156 and my <= 186 then
