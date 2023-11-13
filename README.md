@@ -1,4 +1,4 @@
-# Rit (Rewrite branch)
+# Rit
 
 # How to run (Uncompiled)
 - Install [LÖVE](https://love2d.org/)
@@ -54,10 +54,10 @@
 
 # Credits
 - [Getsaa](https://twitter.com/GetsaaNG) - Menu design, UI design, and art
+- [LÖVE](https://love2d.org/) - Game Framework
 - [Quaver](https://store.steampowered.com/app/980610/Quaver/) - Inspiration
 - [osu!](https://osu.ppy.sh/) - Inspiration
 - [Average4k](https://twitter.com/Average4k) - Inspiration
-- [LÖVE](https://love2d.org/) - Game Framework
 
 # License
 - [GNU License](/LICENSE)
