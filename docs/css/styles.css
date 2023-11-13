@@ -1,0 +1,211 @@
+body {
+  background: linear-gradient(45deg, #ff7220 0%, rgb(249, 137, 72) 100%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    height: 10vh;
+}
+
+.screenshots {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.screenshots .screenshot {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: screenshot 1s linear;
+}
+.title {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.title .title-text {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.title .title-text h1 {
+    font-size: 4rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: 0.5rem;
+    animation: title 1s linear;
+}
+
+.description {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.description .description-text {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.description .description-text p {
+    font-size: 1.5rem;
+    font-weight: 400;
+    text-align: center;
+    letter-spacing: 0.1rem;
+    animation: description 1s linear;
+}
+
+.download {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 10vh;
+}
+
+.download .download-text {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.download .download-text a {
+    position: relative;
+    width: 20rem;
+    height: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border-radius: 2.5rem;
+    text-decoration: none;
+    color: #ff7220;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    animation: description 1s linear;
+    left: 5%;
+}
+
+.download .download-text a:hover {
+    background: #ff7220;
+    color: #fff;
+}
+
+.kofi {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.kofi .kofi-text {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.kofi .kofi-text a {
+    position: relative;
+    width: 20rem;
+    height: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ff7220;
+    border-radius: 2.5rem;
+    text-decoration: none;
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    animation: description 1s linear;
+}
+
+.kofi .kofi-text a:hover {
+    background: #fff;
+    color: #ff7220;
+}
+
+.footer {
+    position: relative;
+    width: 100%;
+    height: 10vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer .footer-text {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes screenshot {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes title {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes description {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
