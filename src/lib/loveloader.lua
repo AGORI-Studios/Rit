@@ -114,7 +114,7 @@ local resourceKinds = {
 local CHANNEL_PREFIX = "loader_"
 
 local loaded = ...
-if loaded == true then
+if loaded then
   local requestParams, resource
   local done = false
 
@@ -148,9 +148,9 @@ else
   end
 
   local function newResource(kind, holder, key, ...)
-    pending[#pending + 1] = {
+    table.insert(pending, {
       kind = kind, holder = holder, key = key, requestParams = {...}
-    }
+    })
   end
 
   local function getResourceFromThreadIfAvailable()
