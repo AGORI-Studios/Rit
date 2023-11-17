@@ -31,17 +31,6 @@ end
 require("modules.Utilities")
 ffi = require("ffi")
 
-local curOS = love.system.getOS()
-if curOS == "Windows" then -- Modify package.cpath to load the correct DLLs
-    local arch = love.system.getProcessorArchitecture() or "32"
-    package.cpath = package.cpath .. ";./lib/win" .. arch .. "/?.dll"
-elseif curOS == "Linux" then
-    local arch = love.system.getProcessorArchitecture() or "32"
-    package.cpath = package.cpath .. ";./lib/linux" .. arch .. "/?.so"
-elseif curOS == "OS X" then
-    package.cpath = package.cpath .. ";./lib/MacOS?.dylib;./lib/MacOS/?.so"
-end
-
 Try(
     function()
         if not __DEBUG__ then
@@ -163,17 +152,17 @@ function love.load()
 
     push.setupScreen(1920, 1080, {fullscreen = false, resizable = true, upscale = "normal"})
 
-    --if Steam then
-    --    local steam_init = Steam.init()
---
-    --    if not steam_init then -- If steam_init is false, then Steamworks failed to initialize (Steam isn't running?)
-    --        print("Steamworks failed to initialize.")
-    --        Steam = nil
-    --    end
-    --end
-    --if Steam then
-    --    SteamUserID = tostring(Steam.user.getSteamID())
-    --end
+    if Steam then
+        local steam_init = Steam.init()
+
+        if not steam_init then -- If steam_init is false, then Steamworks failed to initialize (Steam isn't running?)
+            print("Steamworks failed to initialize.")
+            Steam = nil
+        end
+    end
+    if Steam then
+        SteamUserID = tostring(Steam.user.getSteamID())
+    end
 
     skinData = ini.parse(love.filesystem.read(skin:format("skin.ini")))
 
