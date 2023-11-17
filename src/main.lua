@@ -46,6 +46,8 @@ Try(
     function()
         if not __DEBUG__ then
             Steam = require("luasteam")
+        else
+            Steam = nil
         end
     end,
     function()
@@ -72,6 +74,7 @@ Try(
         print("Couldn't load https.")
     end
 )
+
 local SteamUserID
 
 function love.load()
@@ -160,17 +163,17 @@ function love.load()
 
     push.setupScreen(1920, 1080, {fullscreen = false, resizable = true, upscale = "normal"})
 
-    if Steam then
-        local steam_init = Steam.init()
-
-        if not steam_init then -- If steam_init is false, then Steamworks failed to initialize (Steam isn't running?)
-            print("Steamworks failed to initialize.")
-            Steam = nil
-        end
-    end
-    if Steam then
-        SteamUserID = tostring(Steam.user.getSteamID())
-    end
+    --if Steam then
+    --    local steam_init = Steam.init()
+--
+    --    if not steam_init then -- If steam_init is false, then Steamworks failed to initialize (Steam isn't running?)
+    --        print("Steamworks failed to initialize.")
+    --        Steam = nil
+    --    end
+    --end
+    --if Steam then
+    --    SteamUserID = tostring(Steam.user.getSteamID())
+    --end
 
     skinData = ini.parse(love.filesystem.read(skin:format("skin.ini")))
 
