@@ -36,9 +36,6 @@ Gameplay.updateTime = false
 Gameplay.endingSong = false
 Gameplay.starting = false
 
-Gameplay.songScore = 0
-Gameplay.songHits = 0
-Gameplay.songMisses = 0
 
 Gameplay.songName = ""
 Gameplay.difficultyName = ""
@@ -54,6 +51,16 @@ Gameplay.velocityPositionMakers = {}
 Gameplay.songDuration = 0
 Gameplay.escapeTimer = 0 -- how long the back button has been held for
 Gameplay.health = 0.5
+
+Gameplay.maxScore = 1000000 -- 1 million max score
+Gameplay.score = 0
+Gameplay.rating = 0
+Gameplay.accuracy = 0
+Gameplay.misses = 0
+Gameplay.hits = 0
+Gameplay.noteScore = 0
+
+local lerpedScore = 0
 
 local comboTimer = {}
 local judgeTimer = {}
@@ -83,7 +90,6 @@ function Gameplay:reset()
     self.starting = false
     self.songScore = 0
     self.songHits = 0
-    self.songMisses = 0
     self.songName = ""
     self.difficultyName = ""
     self.members = {}
@@ -101,16 +107,21 @@ function Gameplay:reset()
     self.songDuration = 0
     self.health = 0.5
     self.mode = 4 -- amount of keys
+    self.maxScore = 1000000 -- 1 million max score
+    self.score = 0
+    self.rating = 0
+    self.accuracy = 0
+    self.noteScore = 0
 
     self:preloadAssets()
 
     self.judgements = { -- Judgement 4 timings
-        {name="marvellous", img="defaultSkins/skinThrowbacks/judgements/MARVELLOUS.png", time=22},
-        {name="perfect", img="defaultSkins/skinThrowbacks/judgements/PERFECT.png", time=45},
-        {name="great", img="defaultSkins/skinThrowbacks/judgements/GREAT.png", time=90},
-        {name="good", img="defaultSkins/skinThrowbacks/judgements/GOOD.png", time=135},
-        {name="bad", img="defaultSkins/skinThrowbacks/judgements/BAD.png", time=180},
-        {name="miss", img="defaultSkins/skinThrowbacks/judgements/MISS.png", time=225}
+        {name="marvellous", img="defaultSkins/skinThrowbacks/judgements/MARVELLOUS.png", time=22, scoreMultiplier=1},
+        {name="perfect", img="defaultSkins/skinThrowbacks/judgements/PERFECT.png", time=45, scoreMultiplier=0.9},
+        {name="great", img="defaultSkins/skinThrowbacks/judgements/GREAT.png", time=90, scoreMultiplier=0.7},
+        {name="good", img="defaultSkins/skinThrowbacks/judgements/GOOD.png", time=135, scoreMultiplier=0.55},
+        {name="bad", img="defaultSkins/skinThrowbacks/judgements/BAD.png", time=180, scoreMultiplier=0.3},
+        {name="miss", img="defaultSkins/skinThrowbacks/judgements/MISS.png", time=225, scoreMultiplier=0},
     }
 
     musicTime = 0
@@ -120,6 +131,7 @@ end
 
 function Gameplay:doJudgement(time)
     local judgement = nil
+    local index = 1
     for i, judge in ipairs(self.judgements) do
         if time <= judge.time then
             judgement = judge
@@ -127,6 +139,13 @@ function Gameplay:doJudgement(time)
         end
     end
     if not judgement then judgement = self.judgements[#self.judgements] end -- default to miss
+
+    local score = self.noteScore * judgement.scoreMultiplier
+
+    self.score = self.score + score
+    -- accuracy based off of current score and hits + misses score
+    self.accuracy = (self.score / (self.noteScore * self.hits)) * 100
+
     self:remove(self.judgement)
     self.judgement = Sprite(75, 390, judgement.img)
     if judgeTimer.y then Timer.cancel(judgeTimer.y) end
@@ -139,6 +158,7 @@ function Gameplay:doJudgement(time)
     -- for the amount of digits in the combo, add a sprite
     if judgement.name == "miss" then
         self.combo = 0
+        self.misses = self.misses + 1
     end
     for i = 1, #tostring(self.combo) do
         if not comboTimer[i] then comboTimer[i] = {} end
@@ -514,6 +534,7 @@ function Gameplay:goodNoteHit(note, time)
 
         if not note.isSustainNote then
             self.combo = self.combo + 1
+            self.hits = self.hits + 1
             self:doJudgement(time)
             if #note.children > 0 then
                 note.moveWithScroll = false
@@ -552,6 +573,14 @@ function Gameplay:draw()
     love.graphics.setColor(0,0,0, self.escapeTimer)
     love.graphics.rectangle("fill", 0, 0, 1920, 1080)
     love.graphics.setColor(1,1,1,1)
+
+    lerpedScore = math.lerp(lerpedScore, self.score, 0.05)
+
+    local lastFont = love.graphics.getFont()
+    love.graphics.setFont(Cache.members.font["menuBold"])
+    love.graphics.printf("Score: " .. math.floor(lerpedScore), 0, 0, 960, "right", 0, 2, 2)
+    love.graphics.printf("Accuracy: " .. math.floor(self.accuracy) .. "%", 0, 50, 960, "right", 0, 2, 2)
+    love.graphics.setFont(lastFont)
 end
 
 function Gameplay:generateBeatmap(chartType, songPath, folderPath)
@@ -592,6 +621,9 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath)
             largeImageText = "Rit" .. (__DEBUG__ and " DEBUG MODE" or "")
         }
     end
+
+    -- detirmine noteScore (1m max score and how many notes)
+    self.noteScore = self.maxScore / #self.unspawnNotes
 end
 
 function Gameplay:exit()

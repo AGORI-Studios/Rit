@@ -33,11 +33,8 @@ ffi = require("ffi")
 
 Try(
     function()
-        if not __DEBUG__ then
-            Steam = require("luasteam")
-        else
-            Steam = nil
-        end
+        --Steam = require("luasteam")
+        Steam = require("lib.sworks.main")
     end,
     function()
         Steam = nil
@@ -63,8 +60,15 @@ Try(
         print("Couldn't load https.")
     end
 )
-
-local SteamUserID
+Try(
+    function()
+        imgui = require("imgui")
+    end,
+    function()
+        imgui = nil
+        print("Couldn't load imgui.")
+    end
+)
 
 function love.load()
     __NOTE_OBJECT_WIDTH = 0
@@ -139,6 +143,7 @@ function love.load()
         screens = {
             PreloaderScreen = require("states.screen.PreloaderScreen"),
             SplashScreen = require("states.screen.SplashScreen"),
+            MapEditorScreen = require("states.screen.MapEditorScreen"),
         }
     }
     substates = {
@@ -161,7 +166,21 @@ function love.load()
         end
     end
     if Steam then
-        SteamUserID = tostring(Steam.user.getSteamID())
+        if not Steam.init() or not Steam.isRunning() then
+            print("Steam is not running.")
+            Steam = nil
+        else
+            SteamUser = Steam.getUser()
+            SteamUserName = SteamUser:getName()
+            local SteamUserImgSteamData, width, height = SteamUser:getAvatar("small")
+            if SteamUserImgSteamData then
+                SteamUserAvatarSmall = love.graphics.newImage(love.image.newImageData(width, height, "rgba8", SteamUserImgSteamData))
+            end
+            local SteamUserImgSteamData, width, height = SteamUser:getAvatar("large")
+            if SteamUserImgSteamData then
+                SteamUserAvatarLarge = love.graphics.newImage(love.image.newImageData(width, height, "rgba8", SteamUserImgSteamData))
+            end
+        end
     end
 
     skinData = ini.parse(love.filesystem.read(skin:format("skin.ini")))
@@ -252,7 +271,7 @@ function love.draw()
         ) ..
        
         "Steam: " .. (Steam and "true" or "false") .. "\n" ..
-        (Steam and "Steam ID: " .. SteamUserID .. "\n" or "") ..
+        (Steam and "Steam User: " .. SteamUserName .. "\n" or "") ..
         "Volume: " .. math.round(lerpedMasterVolume, 2)
     )
 end

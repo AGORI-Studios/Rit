@@ -51,10 +51,10 @@ local inSidebar = false
 
 local allTypes = {
     "All",
+    "Rit",
     "Quaver",
     "osu!",
-    "Malody",
-    "Rit"
+    "Malody"
 }
 
 function SongMenu:enter()
@@ -337,7 +337,9 @@ function SongMenu:draw()
     home:draw()
     bars:draw()
     setFont("menuBold")
-    love.graphics.printf("Placeholder", 700, 8, 1080/2, "right", 0, 2, 2) -- Steam name
+    love.graphics.printf(SteamUserName, 700, 8, 1080/2, "right", 0, 2, 2) -- Steam name
+    -- draw SteamUserAvatarSmall to the left of the name, change the x because of the alignment
+    love.graphics.draw(SteamUserAvatarSmall, 700 + 1080 - (fontWidth("menuBold", SteamUserName) + 200) - 64, 5, 0, 64/SteamUserAvatarSmall:getWidth(), 64/SteamUserAvatarSmall:getHeight())
     setFont("default")
 end
 
