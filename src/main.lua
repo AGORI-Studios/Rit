@@ -95,6 +95,7 @@ function love.load()
     Modscript = require("modules.Game.Modscript")
     Settings = require("modules.Game.Settings")
     Settings.loadOptions()
+    VersionChecker = require("modules.VersionChecker")
 
     -- Objects
     StrumObject = require("modules.Objects.game.StrumObject")
