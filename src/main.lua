@@ -205,28 +205,7 @@ function love.update(dt)
 end
 
 function love.filedropped(file)
-    if state.current() == states.menu.SongMenu then
-        -- copy file to savedir/songs
-        local fname = file:getFilename()
-        local sp
-        if love.system.getOS() == "Windows" then
-            sp = "\\"
-        else
-            sp = "/"
-        end
-        fname = fname:split(sp)[#fname:split(sp)]
-
-        -- if file ends with .qp or .osz
-        if fname:sub(-3) ~= ".qp" and fname:sub(-3) ~= "osz" then return end
-
-        local dir = love.filesystem.getSaveDirectory() .. "/songs/" .. fname
-        local f = io.open(dir, "w")
-        f:write(file:read())
-        f:close()
-
-        songList = {}
-        state.switch(states.menu.SongMenu)
-    end
+    
 end
 
 function love.keypressed(key)

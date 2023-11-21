@@ -38,14 +38,9 @@ local resourceKinds = {
     requestKey  = "imagePath",
     resourceKey = "imageData",
     constructor = function (path)
-      if love.image.isCompressed(path) then
-        return path
-      else
-        return path
-      end
+      return path
     end,
     postProcess = function(data)
-      --return love.graphics.newImage(data)
       return Cache:loadImage(data)
     end
   },
@@ -114,7 +109,7 @@ local resourceKinds = {
 local CHANNEL_PREFIX = "loader_"
 
 local loaded = ...
-if loaded then
+if loaded == true then
   local requestParams, resource
   local done = false
 
@@ -148,9 +143,9 @@ else
   end
 
   local function newResource(kind, holder, key, ...)
-    table.insert(pending, {
+    pending[#pending + 1] = {
       kind = kind, holder = holder, key = key, requestParams = {...}
-    })
+    }
   end
 
   local function getResourceFromThreadIfAvailable()
