@@ -1,6 +1,4 @@
 local Modscript = {}
-Modscript.vars = {}
-local chunkMeta = {__index = _G}
 
 Modscript.funcs = require "modules.Game.Helpers.ModscriptFunctions"
 Modscript.BaseModifier = require "modules.Game.Helpers.Modifiers.BaseModifier" 
@@ -19,23 +17,19 @@ function Modscript:loadModifiers()
 end
 
 function Modscript:set(name, value)
-    self.vars[name] = value
+    _G[name] = value
 end
 
 function Modscript:load(script)
     print("Loading modscript " .. script)
-    local chunk
     Try(
         function()
-            chunk = love.filesystem.load(script)
+            chunk = love.filesystem.load(script)()
         end,
         function()
             return false
         end
     )
-
-    setfenv(chunk, setmetatable(Modscript.vars, chunkMeta))
-    thing = chunk()
 
     self:set(
         "CreateSprite",
@@ -86,24 +80,9 @@ function Modscript:load(script)
 end
 
 function Modscript:call(func, args)
-    local args = args or {}
-    if self.closed then
-        return
+    if _G[func] then
+        return _G[func](unpack(args or {}) or {})
     end
-
-    self.lastCalled = func
-
-    Try(
-        function()
-            if not self.vars then return end
-            if not self.vars[func] then return end
-
-            self.vars[func](unpack(args))
-        end,
-        function()
-            print("Error in modscript function " .. func)
-        end
-    )
 end
 
 return Modscript

@@ -552,7 +552,7 @@ function Gameplay:substateReturn()
 end
 
 function Gameplay:draw()
-    for i, spr in pairs(Modscript.vars.sprites) do
+    for i, spr in pairs(Modscript.funcs.sprites) do
         if not spr.drawWithoutRes and not spr.drawOverNotes then
             spr:draw()
         end
@@ -564,7 +564,7 @@ function Gameplay:draw()
         end
     end
 
-    for i, spr in pairs(Modscript.vars.sprites) do
+    for i, spr in pairs(Modscript.funcs.sprites) do
         if not spr.drawWithoutRes and spr.drawOverNotes then
             spr:draw()
         end
