@@ -6,7 +6,6 @@ function MSFuncs:createSprite(name, path, x, y)
     spr.name = name
     spr.drawWithoutRes = false -- draws within push handling
     self.sprites[name] = spr
-    --table.insert(self.sprites, spr)
     return spr
 end
 

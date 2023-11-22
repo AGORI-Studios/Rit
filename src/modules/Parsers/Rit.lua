@@ -95,7 +95,7 @@ function ritLoader.processMetadata(line)
         states.game.Gameplay.mode = tonumber(value)
     elseif key == "AudioFile" then
         local value = value:trim()
-        audioFile = love.audio.newSource(folderPath .. "/" .. value, "stream")
+        states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. value, 1, true, "stream")
     end
 end
 

@@ -44,7 +44,8 @@ function quaverLoader.load(chart, folderPath, forDiff)
     states.game.Gameplay.mode = meta.inputMode
 
     --audioFile = love.audio.newSource(folderPath .. "/" .. meta.audioPath, "stream")
-    audioFile = love.audio.newSource(folderPath .. "/" .. meta.audioPath, "stream")
+    --audioFile = love.audio.newSource(folderPath .. "/" .. meta.audioPath, "stream")
+    states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. meta.audioPath, 1, true, "stream")
 
     for i = 1, #chart.TimingPoints do
         -- if its the first one, set meta.bpm to the bpm of the first timing point
@@ -56,6 +57,7 @@ function quaverLoader.load(chart, folderPath, forDiff)
             stepCrochet = crochet/4
         end
     end
+    states.game.Gameplay.soundManager:setBPM("music", bpm)
 
     states.game.Gameplay.initialScrollVelocity = chart.InitialScrollVelocity or 1
 
