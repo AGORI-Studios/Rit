@@ -337,9 +337,9 @@ function SongMenu:draw()
     home:draw()
     bars:draw()
     setFont("menuBold")
-    love.graphics.printf(SteamUserName, 700, 8, 1080/2, "right", 0, 2, 2) -- Steam name
-    -- draw SteamUserAvatarSmall to the left of the name, change the x because of the alignment
-    love.graphics.draw(SteamUserAvatarSmall, 700 + 1080 - (fontWidth("menuBold", SteamUserName) + 200) - 64, 5, 0, 64/SteamUserAvatarSmall:getWidth(), 64/SteamUserAvatarSmall:getHeight())
+    love.graphics.printf(SteamUserName, 180, 8, 1080/2, "left", 0, 2, 2) -- Steam name
+    -- draw SteamUserAvatarSmall to the right of the name
+    love.graphics.draw(SteamUserAvatarSmall, 180 + (fontWidth("menuBold", SteamUserName)*2) + 10, 3, 0, 2, 2)
     setFont("default")
 end
 

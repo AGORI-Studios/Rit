@@ -60,15 +60,8 @@ Try(
         print("Couldn't load https.")
     end
 )
-Try(
-    function()
-        imgui = require("imgui")
-    end,
-    function()
-        imgui = nil
-        print("Couldn't load imgui.")
-    end
-)
+
+require("imgui")
 
 function love.load()
     __NOTE_OBJECT_WIDTH = 0
@@ -83,6 +76,7 @@ function love.load()
     tinyyaml = require("lib.tinyyaml")
     ini = require("lib.ini")
     threadLoader = require("lib.loveloader")
+    lovefs = require("lib.lovefs.lovefs")
 
     -- Classes
     Group = require("modules.Classes.Group")
@@ -230,6 +224,12 @@ end
 
 function love.keypressed(key)
     state.keypressed(key)
+
+    if __DEBUG__ then
+        if key == "f7" then
+            state.switch(states.screens.MapEditorScreen)
+        end
+    end
 end
 
 function love.resize(w,h)
