@@ -1,5 +1,6 @@
 local Drunk = Modscript.BaseModifier:extend()
 Drunk.amount = 0
+Drunk.name = "Drunk"
 
 function Drunk:enable(amount)
     self.super.enable(self, amount)
@@ -13,13 +14,10 @@ end
 function Drunk:update(dt, beat)
     if not self.enabled then return end
 
-    for i = 1, 4 do
-        local xpos = 0
+    for i = 1, states.game.Gameplay.mode do
+        local xpos = self.amount * (math.cos(musicTime*0.001+i*(0.2)+1*(0.2))*__NOTE_OBJECT_WIDTH*0.5)
 
-        xpos = xpos + self.amount * (math.cos(musicTime*0.001+i*(0.2)+1*(0.2))*receptors[i][1]:getWidth()*0.5)
-
-        receptors[i][1].offset.x = xpos
-        receptors[i][2].offset.x = xpos
+        states.game.Gameplay.noteoffsets[i].x = xpos
     end
 end
 

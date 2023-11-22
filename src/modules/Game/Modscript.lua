@@ -6,19 +6,21 @@ Modscript.BaseModifier = require "modules.Game.Helpers.Modifiers.BaseModifier"
 -- modifiers
 Modscript.modifiers = {}
 function Modscript:loadModifiers()
-    for i, file in ipairs(love.filesystem.getDirectoryItems("modules/Game/Helpers/Modifiers")) do
-        if file:sub(-4) == ".lua" then
-            local name = file:sub(1, -5)
-            if name ~= "BaseModifier" then
-                Modscript.modifiers[name] = require("modules.Game.Helpers.Modifiers." .. name)
-            end
+    local files = love.filesystem.getDirectoryItems("modules/Game/Helpers/Modifiers")
+    for i, v in pairs(files) do
+        if v ~= "BaseModifier.lua" then
+            local modifier = require("modules.Game.Helpers.Modifiers." .. v:sub(1, -5))
+            self.modifiers[modifier.name] = modifier
         end
-    end 
+    end
 end
 
 function Modscript:set(name, value)
     _G[name] = value
 end
+
+local modlist = {}
+local enabledMods = {}
 
 function Modscript:load(script)
     print("Loading modscript " .. script)
@@ -73,10 +75,36 @@ function Modscript:load(script)
         self.funcs.sprites
     )
 
-    self:call("Start")
+    self:set(
+        "SetMod",
+        function(modifier, beat, amount)
+            print(modifier, beat, amount, self.modifiers[modifier])
+            if self.modifiers[modifier] then
+                self.modifiers[modifier]:enable(amount, beat)
+                table.insert(modlist, {modifier, amount, beat})
+            end
+        end
+    )
 
     self.modifiers = {}
     self:loadModifiers()
+
+    self:call("Start")
+end
+
+function Modscript:update(beat)
+    for i, v in pairs(modlist) do
+        print(v[3], beat)
+        if beat >= v[3] then
+            self.modifiers[v[1]]:enable(v[2])
+            table.insert(enabledMods, self.modifiers[v[1]])
+            table.remove(modlist, i)
+        end
+    end
+
+    for i, v in pairs(enabledMods) do
+        v:update(dt, beat)
+    end
 end
 
 function Modscript:call(func, args)

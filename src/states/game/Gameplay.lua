@@ -114,6 +114,8 @@ function Gameplay:reset()
     self.noteScore = 0
     self.soundManager = SoundManager()
 
+    self.noteoffsets = {}
+
     self:preloadAssets()
 
     self.judgements = { -- Judgement 4 timings
@@ -377,6 +379,7 @@ function Gameplay:generateStrums()
         end
     end
     for i = 1, self.mode do
+        self.noteoffsets[i] = {x=0, y=0}
         local strum = StrumObject(self.strumX, strumY, i)
 
         self.strumLineObjects:add(strum)
@@ -408,6 +411,12 @@ function Gameplay:update(dt)
         self:updateSpritePositions(self.currentTrackPosition, musicTime)
     end
 
+    Modscript:update(self.soundManager:getBeat("music"))
+
+    for i = 1, self.mode do
+        self.strumLineObjects.members[i].offset = self.noteoffsets[i]
+    end
+
     for i, member in ipairs(self.members) do
         if member.update then
             member:update(dt)
@@ -425,6 +434,7 @@ function Gameplay:update(dt)
             if self.didTimer then
                 local fakeCrocet = (60 / bpm) * 1000
                 for i, ho in ipairs(self.hitObjects.members) do
+                    ho.offset = self.noteoffsets[ho.data]
                     local strum = self.strumLineObjects.members[ho.data]
 
                     if musicTime - ho.time > self.objectKillOffset and not ho.wasGoodHit then

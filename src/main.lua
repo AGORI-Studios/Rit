@@ -151,7 +151,7 @@ function love.load()
         }
     }
 
-    push.setupScreen(1920, 1080, {fullscreen = false, resizable = true, upscale = "normal"})
+    push.setupScreen(1920, 1080, {fullscreen = false, resizable = true, upscale = "normal", canvas=true})
 
     if Steam then
         local steam_init = Steam.init()
