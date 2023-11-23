@@ -51,6 +51,9 @@
 - [timer.lua](/src/lib/timer.lua)
 - [tinyyaml.lua](/src/lib/tinyyaml.lua)
 - [xml.lua](/src/lib/xml.lua)
+- [loveloader.lua](/src/lib/loveloader.lua)
+- [sworks](/src/lib/sworks/)
+- [lovefs](/src/lib/lovefs/)
 
 # Credits
 - [Getsaa](https://twitter.com/GetsaaNG) - Menu design, UI design, and art
@@ -64,7 +67,7 @@
 
 # Contact
 - [AGORI Discord](https://discord.gg/8RrzKnNtKW) / [GuglioIsStupid Discord](https://discord.gg/ehY5gMMPW8)
-- [AGORI Twitter](https://twitter.com/AGORIStudios) / [GuglioIsStupid Twitter](https://twitter.com/GuglioIs2Stupid)
+- [AGORI Twitter](https://twitter.com/AGORIStudios) / [GuglioIsStupid Twitter](https://twitter.com/Saavvuu)
 
 # Useful links
 - [Quaver](https://quavergame.com/)
