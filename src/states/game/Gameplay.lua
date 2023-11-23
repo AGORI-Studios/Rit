@@ -112,6 +112,9 @@ function Gameplay:reset()
     self.rating = 0
     self.accuracy = 0
     self.noteScore = 0
+    self.soundManager = SoundManager()
+
+    self.noteoffsets = {}
 
     self:preloadAssets()
 
@@ -143,8 +146,7 @@ function Gameplay:doJudgement(time)
     local score = self.noteScore * judgement.scoreMultiplier
 
     self.score = self.score + score
-    -- accuracy based off of current score and hits + misses score
-    self.accuracy = (self.score / (self.noteScore * self.hits)) * 100
+    self.accuracy = (self.hits / (self.hits + self.misses)) * 100
 
     self:remove(self.judgement)
     self.judgement = Sprite(75, 390, judgement.img)
@@ -177,7 +179,7 @@ function Gameplay:doJudgement(time)
     end
 end
 
--- // Slider Velocity Functions (Quaver)  \\ --
+-- // Slider Velocity Functions (Quaver) \\ --
 function Gameplay:initializePositionMarkers()
     if #self.sliderVelocities == 0 then return end
 
@@ -297,6 +299,8 @@ function Gameplay:updateSpritePositions(offset, curTime)
     end
 end
 
+-- // End of Slider Velocity Functions (Quaver) \\ --
+
 function Gameplay:add(member, pos)
     local pos = pos or -1
     if pos == -1 then
@@ -375,6 +379,7 @@ function Gameplay:generateStrums()
         end
     end
     for i = 1, self.mode do
+        self.noteoffsets[i] = {x=0, y=0}
         local strum = StrumObject(self.strumX, strumY, i)
 
         self.strumLineObjects:add(strum)
@@ -387,22 +392,29 @@ function Gameplay:update(dt)
     if self.updateTime then
         -- use previousFrameTime to get musicTime (love.timer.getTime is pft)
         musicTime = musicTime + (love.timer.getTime() * 1000) - (previousFrameTime or (love.timer.getTime()*1000))
+        self.soundManager:update(dt)
         previousFrameTime = love.timer.getTime() * 1000
-        if musicTime >= 0 and not audioFile:isPlaying() and musicTime < self.songDuration then
-            audioFile:play()
-            audioFile:seek(musicTime / 1000) -- safe measure to keep it lined up
-        elseif (musicTime > self.songDuration and not audioFile:isPlaying()) then
+        if musicTime >= 0 and not self.soundManager:isPlaying("music") and musicTime < self.songDuration then
+            self.soundManager:play("music")
+            self.soundManager:seek("music", musicTime / 1000) -- safe measure to keep it lined up
+        elseif (musicTime > self.songDuration and not self.soundManager:isPlaying("music")) then
             state.switch(states.menu.SongMenu)
             return
         elseif self.escapeTimer >= 0.7 then
             state.substate(substates.game.Pause)
             self.inPause = true
-            audioFile:pause()
+            self.soundManager:pause("music")
             self.updateTime = false
             return
         end
         self:updateCurrentTrackPosition()
         self:updateSpritePositions(self.currentTrackPosition, musicTime)
+    end
+
+    Modscript:update(self.soundManager:getBeat("music"))
+
+    for i = 1, self.mode do
+        self.strumLineObjects.members[i].offset = self.noteoffsets[i]
     end
 
     for i, member in ipairs(self.members) do
@@ -422,6 +434,7 @@ function Gameplay:update(dt)
             if self.didTimer then
                 local fakeCrocet = (60 / bpm) * 1000
                 for i, ho in ipairs(self.hitObjects.members) do
+                    ho.offset = self.noteoffsets[ho.data]
                     local strum = self.strumLineObjects.members[ho.data]
 
                     if musicTime - ho.time > self.objectKillOffset and not ho.wasGoodHit then
@@ -547,7 +560,7 @@ end
 
 function Gameplay:substateReturn()
     self.inPause = false
-    audioFile:play()
+    self.soundManager:play("music")
     self.updateTime = true
 end
 
@@ -611,7 +624,7 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath)
 
     self.songName = __title or "N/A"
     self.difficultyName = __diffName or "N/A"
-    self.songDuration = audioFile:getDuration() * 1000
+    self.songDuration = self.soundManager:getDuration("music") * 1000
 
     if discordRPC then
         discordRPC.presence = {
@@ -624,6 +637,10 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath)
 
     -- detirmine noteScore (1m max score and how many notes)
     self.noteScore = self.maxScore / #self.unspawnNotes
+
+    self.soundManager:setBeatCallback("music", function(beat)
+        Modscript:call("OnBeat", {beat})
+    end)
 end
 
 function Gameplay:exit()

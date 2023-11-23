@@ -78,7 +78,8 @@ function malodyLoader.load(chart_, folderPath, forDiff)
 
             local ho = HitObject(startTime, lane, endTime)
         else
-            audioFile = love.audio.newSource(folderPath .. "/" .. note.sound, "stream")
+            states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. note.sound, 1, false)
+            states.game.Gameplay.soundManager:setBPM("music", bpm)
         end
     end
 
