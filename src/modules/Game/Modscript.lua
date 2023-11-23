@@ -40,6 +40,14 @@ function Modscript:load(script)
     )
 
     self:set(
+        "SetSpriteFrames",
+        function(name, xmlPath)
+            local NewPath = states.game.Gameplay.M_folderPath .. "/mod/" .. xmlPath
+            return self.funcs:setSpriteFrames(name, NewPath)
+        end
+    )
+
+    self:set(
         "SetSpriteProperty",
         function(name, property, value)
             return self.funcs:setSpriteProperty(name, property, value)

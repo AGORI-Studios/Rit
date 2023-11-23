@@ -20,6 +20,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ------------------------------------------------------------------------------]]
 
 local Sprite = Object:extend()
+local ton = tonumber
 
 Sprite.frame = 1
 Sprite.frameWidth = 0
@@ -40,11 +41,42 @@ Sprite.clipRect = nil
 
 Sprite.x, Sprite.y = 0, 0
 
+
+local function NewFrame(FrameName, X, Y, W, H, Sw, Sh, Ox, Oy, Ow, Oh)
+    local Aw, Ah = X + W, Y + H
+    local frame = {
+        name = FrameName,
+        quad = love.graphics.newQuad(X, Y, Aw > Sw and W - (Aw - Sw) or W, Ah > Sh and H - (Ah - Sh) or H, Sw, Sh),
+        width = Ow or W,
+        height = Oh or H,
+        offset = {x = Ox or 0, y = Oy or 0}
+    }
+    return frame
+end
+
+local function GetFrames(graphic, xmldata)
+    local frames = {graphic = graphic, frames = {}}
+    local sw, sh = graphic:getDimensions()
+    for i, frame in ipairs(xmldata) do
+        if frame.tag == "SubTexture" then
+            local name = frame.attr.name
+            local x, y = frame.attr.x, frame.attr.y
+            local w, h = frame.attr.width, frame.attr.height
+            local frameX, frameY = frame.attr.frameX, frame.attr.frameY
+            local frameW, frameH = frame.attr.frameWidth, frame.attr.frameHeight
+            table.insert(frames.frames, NewFrame(name, ton(x), ton(y), ton(w), ton(h), ton(sw), ton(sh), ton(frameX), ton(frameY), ton(frameW), ton(frameH)))
+        end
+    end
+
+    return frames
+end
+
 local Stencil = {
     sprite = {},
     x = 0,
     y = 0
 }
+
 local function stencilFunc()
     if Stencil.sprite then
         love.graphics.push()
@@ -106,6 +138,37 @@ function Sprite:load(graphic, animated, frameWidth, frameHeight)
     return self
 end
 
+function Sprite:setFrames(xmlPath)
+    local data = xml.parse(xmlPath)
+    local frames = GetFrames(self.graphic, data)
+
+    self.frames = frames.frames
+    self.width, self.height = self:getFrameDimensions()
+    self:centerOrigin()
+end
+
+function Sprite:addAnimation(name, prefix, framerate, looped)
+    local framerate = framerate or 30
+    local looped = looped or true
+
+    local anim = {
+        name = name,
+        prefix = prefix,
+        framerate = framerate,
+        looped = looped,
+        frames = {}
+    }
+
+    for _, f in ipairs(self.frames) do
+        if f.name:startsWith(prefix) then
+            table.insert(anim.frames, f)
+        end
+    end
+
+    if not self.animations then self.animations = {} end
+    self.animations[name] = anim
+end
+
 function Sprite:getMidpoint()
     return Point(self.x + self.width / 2, self.y + self.height / 2)
 end
@@ -114,6 +177,10 @@ function Sprite:update(dt)
 end
 
 function Sprite:play()
+    self.curAnim = self.animations[anim]
+    self.indexFrame = 1
+    self.animFinished = false
+    self.animPaused = false
 end
 
 function Sprite:getFrameWidth()

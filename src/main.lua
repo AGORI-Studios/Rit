@@ -83,6 +83,7 @@ function love.load()
     tinyyaml = require("lib.tinyyaml")
     ini = require("lib.ini")
     threadLoader = require("lib.loveloader")
+    xml = require("lib.xml")
 
     -- Classes
     Group = require("modules.Classes.Group")
