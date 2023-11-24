@@ -61,8 +61,6 @@ Try(
     end
 )
 
-require("imgui")
-
 function love.load()
     __NOTE_OBJECT_WIDTH = 0
     -- Libraries 
