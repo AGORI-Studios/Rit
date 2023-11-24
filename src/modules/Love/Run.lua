@@ -1,4 +1,4 @@
-love._FPSCap = 1000
+love._FPSCap = 300
 love._unfocusedFPSCap = 15
 function love.run()
     love.graphics.present()
