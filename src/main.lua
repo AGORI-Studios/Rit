@@ -33,7 +33,6 @@ ffi = require("ffi")
 
 Try(
     function()
-        --Steam = require("luasteam")
         Steam = require("lib.sworks.main")
     end,
     function()

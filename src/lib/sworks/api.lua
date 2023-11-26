@@ -55,11 +55,19 @@ function api.Init()
       return raw
     end })
   end
-  
-  if not api.lib.SteamAPI_Init() then
-    api.Fail(3)
-    return false
-  end
+  local shouldReturn = Try(
+    function()
+      if not api.lib.SteamAPI_Init() then
+        api.Fail(3)
+        return false
+      end
+    end,
+    function()
+      api.Fail(3)
+      return false
+    end
+  )
+  if not shouldReturn then return false end
   
   local function ISteam(prefix, inst)
     local q = {}

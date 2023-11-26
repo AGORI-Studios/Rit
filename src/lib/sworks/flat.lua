@@ -1708,11 +1708,12 @@ unsigned long long strtoull(const char*, char** endptr, int);
 ]])
 
 local file
+
 if ffi.os =="Linux" then
-  file = "./libsteam_api.so"
+	file = "libsteam_api.so"
 elseif ffi.os == "OSX" then
-  file = "./libsteam_api.dylib"
+	file = "libsteam_api.dylib"
 else
-  file = (x64) and "./steam_api64.dll" or "./steam_api.dll"
+	file = x64 and "steam_api64.dll" or "steam_api.dll"
 end
 return ffi.load(file)

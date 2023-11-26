@@ -36,11 +36,12 @@ end
 --@param catch_f function
 --@return nil
 function Try(f, catch_f)
-    local status, exception = pcall(f)
-    if not status then
-        catch_f(exception)
+    local returnedValue = pcall(f)
+    if not returnedValue then
+        catch_f()
     end
-    return nil
+
+    return returnedValue
 end
 
 --@name switch
