@@ -272,10 +272,6 @@ function Gameplay:getSpritePosition(offset, initialPos)
     end
 end
 
---[[
-    Modscript.modifiers = {}
-    Modscript:loadModifiers()
-]]
 
 function Gameplay:updateSpritePositions(offset, curTime)
     local spritePosition = 0
@@ -284,7 +280,7 @@ function Gameplay:updateSpritePositions(offset, curTime)
         spritePosition = self:getSpritePosition(offset, hitObject.initialTrackPosition)
         if not hitObject.moveWithScroll then
             -- go to strumY (it's a hold)
-            spritePosition = strumY * Modscript:getReverse()
+            spritePosition = strumY
         end
         hitObject.y = spritePosition
         if #hitObject.children > 0 then
@@ -296,19 +292,9 @@ function Gameplay:updateSpritePositions(offset, curTime)
             hitObject.children[1].scale.y = (pixelDistance / hitObject.children[1].height)
 
             if Settings.options["General"].downscroll then
-                --hitObject.children[2].y = hitObject.children[2].y + pixelDistance - hitObject.children[2].height
-                if Modscript:getReverse() == -1 then -- upscroll
-                    hitObject.children[2].y = hitObject.children[2].y + pixelDistance - hitObject.children[2].height
-                else
-                    hitObject.children[2].y = hitObject.children[2].y + pixelDistance + hitObject.children[2].height
-                end
+                hitObject.children[2].y = hitObject.children[2].y + pixelDistance - hitObject.children[2].height
             else
-                --hitObject.children[2].y = hitObject.children[2].y + pixelDistance + hitObject.children[2].height
-                if Modscript:getReverse() == -1 then -- downscroll
-                    hitObject.children[2].y = hitObject.children[2].y + pixelDistance + hitObject.children[2].height
-                else
-                    hitObject.children[2].y = hitObject.children[2].y + pixelDistance - hitObject.children[2].height
-                end
+                hitObject.children[2].y = hitObject.children[2].y + pixelDistance + hitObject.children[2].height
             end
         end
     end
@@ -343,6 +329,8 @@ function Gameplay:clear()
 end
 
 function Gameplay:enter()
+    Modscript.modifiers = {}
+    Modscript:loadModifiers()
     strumY = not Settings.options["General"].downscroll and 50 or 825
     self:reset()
 
@@ -438,7 +426,7 @@ function Gameplay:update(dt)
         end
     end
 
-    if input:isDown("back") then
+    if input:down("back") then
         self.escapeTimer = self.escapeTimer + (dt * 1.87)
     else
         self.escapeTimer = 0
@@ -467,10 +455,10 @@ function Gameplay:update(dt)
     end
 
     for i = 1, self.mode do
-        if input:isPressed(self.mode .. "k_game" .. i) then
+        if input:pressed(self.mode .. "k_game" .. i) then
             self:keyPressed(i)
         end
-        if input:isDown(self.mode .. "k_game" .. i) then
+        if input:down(self.mode .. "k_game" .. i) then
             self:keyDown(i)
         end
         if input:released(self.mode .. "k_game" .. i) then
