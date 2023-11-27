@@ -196,7 +196,7 @@ function love.update(dt)
     local dt = math.min(dt, 1/30) -- cap dt to 30fps
     Timer.update(dt)
     if not isLoading then state.update(dt) end
-    input:update()
+    input:Update()
     lerpedMasterVolume = math.fpsLerp(lerpedMasterVolume, masterVolume, 10, love.timer.getDelta())
     love.audio.setVolume(lerpedMasterVolume/100)
 
@@ -244,7 +244,7 @@ function love.mousepressed(x, y, b)
 end
 
 function toGameScreen(x, y)
-    -- converts our mouse position to the game screen (canvas)
+    -- converts our mouse position to the game screen (canvas) with the correct ratio
     local ratio = 1
     ratio = math.min(__WINDOW_WIDTH/__inits.__GAME_WIDTH, __WINDOW_HEIGHT/__inits.__GAME_HEIGHT)
     local x, y = x - __WINDOW_WIDTH/2, y - __WINDOW_HEIGHT/2
@@ -264,6 +264,7 @@ function love.draw()
     local ratio = 1
     ratio = math.min(love.graphics.getWidth()/__inits.__GAME_WIDTH, love.graphics.getHeight()/__inits.__GAME_HEIGHT)
     love.graphics.setColor(1,1,1,1)
+    -- draw game screen with the calculated ratio and center it on the screen
     love.graphics.draw(gameScreen, love.graphics.getWidth()/2, love.graphics.getHeight()/2, 0, ratio, ratio, __inits.__GAME_WIDTH/2, __inits.__GAME_HEIGHT/2)
 
     for i, spr in ipairs(Modscript.funcs.sprites) do
@@ -272,22 +273,27 @@ function love.draw()
         end
     end
 
+    -- info
     love.graphics.print(
         "FPS: " .. love.timer.getFPS() .. "\n" ..
 
+        -- // debug info
         (__DEBUG__ and 
+        
             ("Music Time: " .. (musicTime or "N/A") .. "\n" ..
             "Draw Calls: " .. love.graphics.getStats().drawcalls .. "\n" ..
             "Memory: " .. math.floor(collectgarbage("count")) .. "KB\n" ..
-            "Graphics Memory: " .. math.floor(love.graphics.getStats().texturememory/1024/1024) .. "MB\n") or ""
+            "Graphics Memory: " .. math.floor(love.graphics.getStats().texturememory/1024/1024) .. "MB\n") 
+
+            or ""
         ) ..
+        -- //
        
         "Steam: " .. (Steam and "true" or "false") .. "\n" ..
         (Steam and "Steam User: " .. SteamUserName .. "\n" or "") ..
         "Volume: " .. math.round(lerpedMasterVolume, 2)
     )
 end
-
 function love.quit()
     if Steam then
         Steam.shutdown()

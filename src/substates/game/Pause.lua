@@ -32,15 +32,15 @@ function Pause:enter()
 end
 
 function Pause:update(dt)
-    if input:pressed("up") then
+    if input:isPressed("up") then
         self.selection = self.selection - 1
-    elseif input:pressed("down") then
+    elseif input:isPressed("down") then
         self.selection = self.selection + 1
     end
 
     self.selection = math.clamp(self.selection, 1, #options)
 
-    if input:pressed("confirm") then
+    if input:isPressed("confirm") then
         if self.selection == 1 then
             
         elseif self.selection == 2 then

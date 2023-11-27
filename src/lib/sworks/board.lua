@@ -150,7 +150,7 @@ local filters = { global = 0, user = 1, friends = 2 }
 -- @tparam[opt] number index2 Ending offset used for pagination
 -- @tparam[opt] function func Callback function triggered when the entries are downloaded
 -- @see Board:onDownload
-function Board:download(what, i, j, func)
+function Board:isDownload(what, i, j, func)
   local filter = filters[what or "global"] or 0
   assert(filter)
   
@@ -198,6 +198,6 @@ end
 --- Callback triggered after entries are downloaded from the leaderboard.
 -- @tparam table entries Table of leaderboard entries
 -- @tparam number count Total number of entries
--- @see Board:download
+-- @see Board:isDownload
 function Board:onDownload(entries, count)
 end

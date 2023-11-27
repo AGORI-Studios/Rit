@@ -39,9 +39,9 @@
 - [env.lua](/src/lib/env.lua)
 - [ini.lua](/src/lib/ini.lua)
 - [state.lua](/src/lib/state.lua)
+- [input.lua](/src/lib/input.lua)
 
 # Libraries Used (Not by me) 
-- [baton.lua](/src/lib/baton.lua)
 - [complex.lua](/src/lib/complex.lua)
 - [discordRPC.lua](/src/lib/discordRPC.lua)
 - [json.lua](/src/lib/json.lua)

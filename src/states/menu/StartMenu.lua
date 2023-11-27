@@ -91,7 +91,7 @@ function StartMenu:update(dt)
         logo:setScale(logo.scale.x - (dt * ((menuBPM/60))) * 0.1)
     end
 
-    if input:pressed("confirm") then state.switch(states.menu.SongMenu) end
+    if input:isPressed("confirm") then state.switch(states.menu.SongMenu) end
 end
 
 function StartMenu:mousepressed(x, y, b)

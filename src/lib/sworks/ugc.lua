@@ -92,7 +92,7 @@ end
 -- the workshop item will be downloaded and cached temporarily.
 -- @treturn boolean True if the download was started
 -- @see UGC:getDownloadInfo
-function UGC:download()
+function UGC:isDownload()
   return api.UGC.DownloadItem(self.handle, true)
 end
 
@@ -101,7 +101,7 @@ local total = ffi.new("uint64[1]")
 --- Get info about the pending download of a workshop item.
 -- @treturn number Downloaded bytes
 -- @treturn number Total bytes
--- @see UGC:download
+-- @see UGC:isDownload
 function UGC:getDownloadInfo()
   if api.UGC.GetItemDownloadInfo(self.handle, download, total) then
     return tonumber(download[0]), tonumber(total[0])
