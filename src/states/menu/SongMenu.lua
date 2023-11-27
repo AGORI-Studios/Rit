@@ -213,7 +213,7 @@ end
 
 function SongMenu:mousepressed(x, y, b)
     if state.inSubstate then return end
-    local x, y = push.toGame(x-10, y)
+    local x, y = toGameScreen(x-10, y)
     if b == 1 then
         if gear:isHovered(x, y) then
             state.substate(substates.menu.Options)

@@ -24,7 +24,7 @@ end
 
 function Options:mousepressed(x, y, id)
     if id == 1 then
-        local mx, my = push.toGame(x, y)
+        local mx, my = toGameScreen(x, y)
         if curOptionsTab == "General" then
             if mx >= 600 and mx <= 660 and my >= 120 and my <= 150 then
                 Settings.options["General"].downscroll = not Settings.options["General"].downscroll
@@ -44,7 +44,7 @@ function Options:mousepressed(x, y, id)
             love.system.openURL("file://" .. love.filesystem.getSaveDirectory() .. "/")
         end
 
-        if mx >= push:getWidth()-200 and mx <= push:getWidth()-100 and my >= 100 and my <= 150 then
+        if mx >= __inits.__GAME_WIDTH-200 and mx <= __inits.__GAME_HEIGHT-100 and my >= 100 and my <= 150 then
             state.killSubstate()
         end
     end
@@ -53,13 +53,13 @@ end
 function Options:draw()
     love.graphics.setFont(Cache.members.font["defaultBold"])
     love.graphics.setColor(0,0,0,0.5)
-    love.graphics.rectangle("fill",0,0,push:getWidth(),push:getHeight())
+    love.graphics.rectangle("fill",0,0,__inits.__GAME_WIDTH,__inits.__GAME_HEIGHT)
     love.graphics.setColor(1,1,1)
     love.graphics.print("Temporary Settings Menu", 300, 0, 0, 2, 2)
     love.graphics.setColor(0.25,0.25,0.25,1)
-    love.graphics.rectangle("fill", 100, 100, push:getWidth()-200, push:getHeight()-200, 5, 5)
+    love.graphics.rectangle("fill", 100, 100, __inits.__GAME_WIDTH-200, __inits.__GAME_HEIGHT-200, 5, 5)
     love.graphics.setColor(0,0,0,1)
-    love.graphics.line(400,100,400,push:getHeight()-100)
+    love.graphics.line(400,100,400,__inits.__GAME_HEIGHT-100)
     love.graphics.setColor(1,1,1,1)
 
     -- tab buttons
@@ -93,13 +93,13 @@ function Options:draw()
         love.graphics.rectangle("fill", 740, 156, 30, 30, 5, 5)
     end
     love.graphics.setColor(1,1,1,reminderFade)
-    love.graphics.printf("Please edit keybinds_config.ini to modify\nyour keybinds.", 0, push:getHeight()/2-100, push:getWidth()/2, "center", 0, 2, 2)
+    love.graphics.printf("Please edit keybinds_config.ini to modify\nyour keybinds.", 0, __inits.__GAME_HEIGHT/2-100, __inits.__GAME_WIDTH/2, "center", 0, 2, 2)
     love.graphics.setColor(1,1,1,1)
 
     love.graphics.setFont(Cache.members.font["default"])
 
     love.graphics.setColor(1,0,0)
-    love.graphics.rectangle("fill", push:getWidth()-200, 100, 100, 50, 5, 5)
+    love.graphics.rectangle("fill", __inits.__GAME_WIDTH-200, 100, 100, 50, 5, 5)
     love.graphics.setColor(1,1,1)
 end
 

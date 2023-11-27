@@ -59,7 +59,7 @@ end
 function Pause:draw() 
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.setFont(Cache.members.font["menuBig"])
-    love.graphics.printf("Paused", 0, 100, push:getWidth(), "center")
+    love.graphics.printf("Paused", 0, 100, __inits.__GAME_WIDTH, "center")
 
     love.graphics.setFont(Cache.members.font["menuMedium"])
     for i, v in ipairs(options) do
@@ -68,7 +68,7 @@ function Pause:draw()
         else
             love.graphics.setColor(0.5, 0.5, 0.5, 1)
         end
-        love.graphics.printf(v, 0, 200 + (i * 50), push:getWidth(), "center")
+        love.graphics.printf(v, 0, 200 + (i * 50), __inits.__GAME_WIDTH, "center")
     end
 
     love.graphics.setColor(1, 1, 1, 1)

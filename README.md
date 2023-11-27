@@ -46,7 +46,6 @@
 - [discordRPC.lua](/src/lib/discordRPC.lua)
 - [json.lua](/src/lib/json.lua)
 - [luafft.lua](/src/lib/luafft.lua)
-- [push.lua](/src/lib/push.lua)
 - [lume.lua](/src/lib/lume.lua)
 - [timer.lua](/src/lib/timer.lua)
 - [tinyyaml.lua](/src/lib/tinyyaml.lua)

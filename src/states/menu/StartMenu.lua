@@ -48,8 +48,8 @@ function StartMenu:enter()
 
     logo.alignment = "center"
 
-    logo.y = push.getHeight() / 0.9
-    logo.x = push.getWidth() / 1
+    logo.y =__inits.__GAME_HEIGHT / 0.9
+    logo.x =__inits.__GAME_WIDTH / 1
     
     if discordRPC then
         discordRPC.presence = {
@@ -77,8 +77,8 @@ function StartMenu:update(dt)
 
     -- Logo parallax
     local px, py = (-mx / 50), (-my / 50)
-    logo.x = push.getWidth() / 0.9 + px
-    logo.y = push:getHeight() + py
+    logo.x =__inits.__GAME_WIDTH / 0.9 + px
+    logo.y =__inits.__GAME_HEIGHT + py
 
     bg.x, bg.y = px * 0.025, py * 0.025
 
@@ -95,7 +95,7 @@ function StartMenu:update(dt)
 end
 
 function StartMenu:mousepressed(x, y, b)
-    local x, y = push.toGame(x, y)
+    local x, y = toGameScreen(x, y)
     if b == 1 then
         if twitterLogo:isHovered(x, y) then
             love.system.openURL("https://twitter.com/GuglioIs2Stupid")

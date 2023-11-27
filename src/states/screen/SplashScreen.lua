@@ -29,9 +29,9 @@ local positions = {
 }
 
 function SplashScreen:enter()
-    Timer.tween(1, positions[1], {y = push:getHeight()/2-100}, "in-expo")
+    Timer.tween(1, positions[1], {y =__inits.__GAME_WIDTH/2-100}, "in-expo")
     Timer.after(1.5, function()
-        Timer.tween(1, positions[2], {y = push:getHeight()/2}, "in-expo")
+        Timer.tween(1, positions[2], {y =__inits.__GAME_HEIGHT/2}, "in-expo")
 
         Timer.after(1.5, function()
             Timer.tween(0.75, fade, {0}, "out-quad", function()
@@ -50,14 +50,14 @@ function SplashScreen:draw()
     love.graphics.printf(
         "Rit.",
         positions[1].x, positions[1].y,
-        push:getWidth()/3,
+       __inits.__GAME_WIDTH/3,
         "center",
         0, 3, 3
     )
     love.graphics.printf(
         "A game by AGORI Studios.",
         positions[2].x, positions[2].y,
-        push:getWidth()/3,
+       __inits.__GAME_HEIGHT/3,
         "center",
         0, 3, 3
     )

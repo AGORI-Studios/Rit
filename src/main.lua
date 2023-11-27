@@ -60,6 +60,9 @@ Try(
     end
 )
 
+__inits = require("init")
+__WINDOW_WIDTH, __WINDOW_HEIGHT = __inits.__WINDOW_WIDTH, __inits.__WINDOW_HEIGHT
+
 function love.load()
     __NOTE_OBJECT_WIDTH = 0
     -- Libraries 
@@ -67,7 +70,6 @@ function love.load()
     Timer = require("lib.timer")
     
     json = require("lib.json").decode
-    push = require("lib.push")
     lume = require("lib.lume")
     state = require("lib.state")
     tinyyaml = require("lib.tinyyaml")
@@ -149,16 +151,6 @@ function love.load()
         }
     }
 
-    push.setupScreen(1920, 1080, {fullscreen = false, resizable = true, upscale = "normal", canvas=true})
-
-    if Steam then
-        local steam_init = Steam.init()
-
-        if not steam_init then -- If steam_init is false, then Steamworks failed to initialize (Steam isn't running?)
-            print("Steamworks failed to initialize.")
-            Steam = nil
-        end
-    end
     if Steam then
         if not Steam.init() or not Steam.isRunning() then
             print("Steam is not running.")
@@ -175,13 +167,15 @@ function love.load()
                 SteamUserAvatarLarge = love.graphics.newImage(love.image.newImageData(width, height, "rgba8", SteamUserImgSteamData))
             end
         end
-    end
+    end 
 
     skinData = ini.parse(love.filesystem.read(skin:format("skin.ini")))
 
     if discordRPC then
         discordRPC.initialize("785717724906913843", true)
     end
+
+    gameScreen = love.graphics.newCanvas(__inits.__GAME_WIDTH, __inits.__GAME_HEIGHT)
 
     state.switch(states.screens.PreloaderScreen)
 end
@@ -232,7 +226,7 @@ function love.keypressed(key)
 end
 
 function love.resize(w,h)
-    push.resize(w,h)
+    __WINDOW_WIDTH, __WINDOW_HEIGHT = w, h
     state.resize(w,h)
 end
 
@@ -249,10 +243,28 @@ function love.mousepressed(x, y, b)
     state.mousepressed(x, y, b)
 end
 
+function toGameScreen(x, y)
+    -- converts our mouse position to the game screen (canvas)
+    local ratio = 1
+    ratio = math.min(__WINDOW_WIDTH/__inits.__GAME_WIDTH, __WINDOW_HEIGHT/__inits.__GAME_HEIGHT)
+    local x, y = x - __WINDOW_WIDTH/2, y - __WINDOW_HEIGHT/2
+    x, y = x / ratio, y / ratio
+    x, y = x + __inits.__GAME_WIDTH/2, y + __inits.__GAME_HEIGHT/2
+
+    return x, y
+end
+
 function love.draw()
-    push:start()
+    love.graphics.setCanvas(gameScreen)
+    love.graphics.clear(0,0,0,1)
     state.draw()
-    push:finish()
+    love.graphics.setCanvas()
+
+    -- ratio
+    local ratio = 1
+    ratio = math.min(love.graphics.getWidth()/__inits.__GAME_WIDTH, love.graphics.getHeight()/__inits.__GAME_HEIGHT)
+    love.graphics.setColor(1,1,1,1)
+    love.graphics.draw(gameScreen, love.graphics.getWidth()/2, love.graphics.getHeight()/2, 0, ratio, ratio, __inits.__GAME_WIDTH/2, __inits.__GAME_HEIGHT/2)
 
     for i, spr in ipairs(Modscript.funcs.sprites) do
         if spr.drawWithoutRes then
