@@ -68,9 +68,7 @@ function love.load()
     -- Libraries 
     Object = require("lib.class")
     Timer = require("lib.timer")
-    
     json = require("lib.json").decode
-    lume = require("lib.lume")
     state = require("lib.state")
     tinyyaml = require("lib.tinyyaml")
     ini = require("lib.ini")
@@ -195,8 +193,8 @@ function love.update(dt)
     threadLoader.update()
     local dt = math.min(dt, 1/30) -- cap dt to 30fps
     Timer.update(dt)
+    input:update()
     if not isLoading then state.update(dt) end
-    input:Update()
     lerpedMasterVolume = math.fpsLerp(lerpedMasterVolume, masterVolume, 10, love.timer.getDelta())
     love.audio.setVolume(lerpedMasterVolume/100)
 

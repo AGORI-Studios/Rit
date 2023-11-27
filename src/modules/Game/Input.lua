@@ -1,6 +1,6 @@
---[[ 
-input = (require "lib.input").new({
-    input = {
+
+input = (require "lib.baton").new({
+    controls = {
         ["1k_game1"] = {"key:space"},
 
         ["2k_game1"] = { "key:f" },
@@ -10,10 +10,10 @@ input = (require "lib.input").new({
         ["3k_game2"] = { "key:space" },
         ["3k_game3"] = { "key:j" },
 
-        ["4k_game1"] = { "key:d" },
-        ["4k_game2"] = { "key:f" },
-        ["4k_game3"] = { "key:j" },
-        ["4k_game4"] = { "key:k" },
+        ["4k_game1"] = { "axis:triggerleft+", "axis:leftx-", "axis:rightx-", "button:dpleft", "button:x", "key:d" },
+        ["4k_game2"] = { "axis:lefty+", "axis:righty+", "button:leftshoulder", "button:dpdown", "button:a", "key:f" },
+        ["4k_game3"] = { "axis:lefty-", "axis:righty-", "button:rightshoulder", "button:dpup", "button:y", "key:j" },
+        ["4k_game4"] = { "axis:triggerright+", "axis:leftx+", "axis:rightx+", "button:dpright", "button:b", "key:k" },
 
         ["5k_game1"] = { "key:d" },
         ["5k_game2"] = { "key:f" },
@@ -86,29 +86,9 @@ input = (require "lib.input").new({
         quit = { "key:escape", "button:back" }
     },
     joystick = love.joystick.getJoysticks()[1]
-}) ]]
+})
 
-local defaultBinds__UI = {
-    up = { "key:up" },
-    down = { "key:down" },
-    left = { "key:left" },
-    right = { "key:right" },
-
-    confirm = { "key:return" },
-    back = { "key:escape" },
-
-    pause = { "key:return" },
-    --restart = { "key:r" },
-
-    -- Misc
-    extB = { "key:escape" },
-    volUp = { "key:pageup" },
-    volDown = { "key:pagedown" },
-
-    quit = { "key:escape" }
-}
-
-local defaultBinds__GAME = {
+local defaultBinds = {
     ["1k"] = {
         input1 = "space"
     },
@@ -186,31 +166,26 @@ local defaultBinds__GAME = {
     },
 }
 
-local inputtab = {inputs = {}}
-
-for i, v in pairs(defaultBinds__UI) do
-    inputtab.inputs[i] = v
-end
-
-for i, v in pairs(defaultBinds__GAME) do
-    for i2, v2 in pairs(v) do
-        inputtab.inputs[i .. "_game" .. i2:gsub("input", "")] = {"key:" .. v2}
-    end
-end
-
-inputtab.joystick = love.joystick.getJoysticks()[1]
-
-input = (require "lib.input").Init(inputtab)
-
 if not love.filesystem.getInfo("keybinds_config.ini") then
-    ini.save(defaultBinds__GAME, "keybinds_config.ini")
+    ini.save(defaultBinds, "keybinds_config.ini")
 else
     local binds = ini.parse("keybinds_config.ini")
     for i, v in pairs(binds) do
         for i2, v2 in pairs(v) do
             local i2 = i2:gsub("input", "")
-
-            input:rebindControl(i .. "_game" .. i2, {"key:" .. v2})
+            if i ~= "4k" then
+                input:rebindControl(i .. "_game" .. i2, {"key:" .. v2})
+            else
+                if i2 == "1" then
+                    input:rebindControl(i .. "_game" .. i2, {"axis:triggerleft+", "axis:leftx-", "axis:rightx-", "button:dpleft", "button:x", "key:" .. v2})
+                elseif i2 == "2" then
+                    input:rebindControl(i .. "_game" .. i2, {"axis:lefty+", "axis:righty+", "button:leftshoulder", "button:dpdown", "button:a", "key:" .. v2})
+                elseif i2 == "3" then
+                    input:rebindControl(i .. "_game" .. i2, {"axis:lefty-", "axis:righty-", "button:rightshoulder", "button:dpup", "button:y", "key:" .. v2})
+                elseif i2 == "4" then
+                    input:rebindControl(i .. "_game" .. i2, {"axis:triggerright+", "axis:leftx+", "axis:rightx+", "button:dpright", "button:b", "key:" .. v2})
+                end
+            end
         end
     end
 end

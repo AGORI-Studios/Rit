@@ -272,6 +272,11 @@ function Gameplay:getSpritePosition(offset, initialPos)
     end
 end
 
+--[[
+    Modscript.modifiers = {}
+    Modscript:loadModifiers()
+]]
+
 function Gameplay:updateSpritePositions(offset, curTime)
     local spritePosition = 0
 
@@ -279,7 +284,7 @@ function Gameplay:updateSpritePositions(offset, curTime)
         spritePosition = self:getSpritePosition(offset, hitObject.initialTrackPosition)
         if not hitObject.moveWithScroll then
             -- go to strumY (it's a hold)
-            spritePosition = strumY
+            spritePosition = strumY * Modscript:getReverse()
         end
         hitObject.y = spritePosition
         if #hitObject.children > 0 then
@@ -291,9 +296,19 @@ function Gameplay:updateSpritePositions(offset, curTime)
             hitObject.children[1].scale.y = (pixelDistance / hitObject.children[1].height)
 
             if Settings.options["General"].downscroll then
-                hitObject.children[2].y = hitObject.children[2].y + pixelDistance - hitObject.children[2].height
+                --hitObject.children[2].y = hitObject.children[2].y + pixelDistance - hitObject.children[2].height
+                if Modscript:getReverse() == -1 then -- upscroll
+                    hitObject.children[2].y = hitObject.children[2].y + pixelDistance - hitObject.children[2].height
+                else
+                    hitObject.children[2].y = hitObject.children[2].y + pixelDistance + hitObject.children[2].height
+                end
             else
-                hitObject.children[2].y = hitObject.children[2].y + pixelDistance + hitObject.children[2].height
+                --hitObject.children[2].y = hitObject.children[2].y + pixelDistance + hitObject.children[2].height
+                if Modscript:getReverse() == -1 then -- downscroll
+                    hitObject.children[2].y = hitObject.children[2].y + pixelDistance + hitObject.children[2].height
+                else
+                    hitObject.children[2].y = hitObject.children[2].y + pixelDistance - hitObject.children[2].height
+                end
             end
         end
     end

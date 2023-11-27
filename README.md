@@ -42,11 +42,9 @@
 - [input.lua](/src/lib/input.lua)
 
 # Libraries Used (Not by me) 
-- [complex.lua](/src/lib/complex.lua)
+- [baton.lua](/src/lib/baton.lua)
 - [discordRPC.lua](/src/lib/discordRPC.lua)
 - [json.lua](/src/lib/json.lua)
-- [luafft.lua](/src/lib/luafft.lua)
-- [lume.lua](/src/lib/lume.lua)
 - [timer.lua](/src/lib/timer.lua)
 - [tinyyaml.lua](/src/lib/tinyyaml.lua)
 - [xml.lua](/src/lib/xml.lua)

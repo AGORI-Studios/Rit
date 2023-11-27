@@ -13,6 +13,8 @@ function Modscript:loadModifiers()
             self.modifiers[modifier.name] = modifier
         end
     end
+
+    Modscript.Reverse = Modscript.modifiers.Reverse()
 end
 
 function Modscript:set(name, value)
@@ -94,9 +96,6 @@ function Modscript:load(script)
         end
     )
 
-    self.modifiers = {}
-    self:loadModifiers()
-
     self:call("Start")
 end
 
@@ -119,6 +118,10 @@ function Modscript:call(func, args)
     if _G[func] then
         return _G[func](unpack(args or {}) or {})
     end
+end
+
+function Modscript:getReverse()
+    return self.Reverse.enabled and -1 or 1
 end
 
 return Modscript
