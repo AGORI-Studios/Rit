@@ -140,7 +140,7 @@ function SongMenu:update(dt)
         lerpedSongPos = math.fpsLerp(lerpedSongPos, (-(curSelected - 2.5)) * diffButton.height * 1.1, 25, dt)
     end
     
-    if input:isPressed("confirm") and not transitioning then
+    if input:pressed("confirm") and not transitioning then
         if curTab == "songs" then
             showCat = false
             transitioning = true
@@ -176,7 +176,7 @@ function SongMenu:update(dt)
                 switchState(states.game.Gameplay, 0.3, nil)
             end
         end
-    elseif input:isPressed("back") and not transitioning then
+    elseif input:pressed("back") and not transitioning then
         if curTab == "diffs" then
             showCat = true
             transitioning = true
@@ -202,8 +202,8 @@ function SongMenu:update(dt)
         end
     end
 
-    if input:isPressed("down") then curSelected = curSelected + 1 end
-    if input:isPressed("up") then curSelected = curSelected - 1 end
+    if input:pressed("down") then curSelected = curSelected + 1 end
+    if input:pressed("up") then curSelected = curSelected - 1 end
 end
 
 function SongMenu:wheelmoved(x, y)
