@@ -435,7 +435,6 @@ function Gameplay:update(dt)
     if self.didTimer and self.updateTime then
         if #self.hitObjects.members > 0 then
             if self.didTimer then
-                local fakeCrocet = (60 / bpm) * 1000
                 for i, ho in ipairs(self.hitObjects.members) do
                     ho.offset = self.noteoffsets[ho.data]
                     local strum = self.strumLineObjects.members[ho.data]
