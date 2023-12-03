@@ -1,27 +1,5 @@
---[[----------------------------------------------------------------------------
-
-This file is apart of Rit; a free and open sourced rhythm game made with LÖVE.
-
-Copyright (C) 2023 GuglioIsStupid
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-------------------------------------------------------------------------------]]
-
 local StrumObject = Sprite:extend()
 
-StrumObject.resetAnim = 0
 StrumObject.data = 1
 
 function StrumObject:new(x, y, data)
@@ -56,13 +34,6 @@ function StrumObject:new(x, y, data)
 end
 
 function StrumObject:update(dt)
-    if self.resetAnim > 0 then
-        self.resetAnim = self.resetAnim - dt
-        if self.resetAnim <= 0 then
-            self.graphic = Cache:loadImage(self.anims[1])
-        end
-    end
-
     self.super.update(self, dt)
 end
 
