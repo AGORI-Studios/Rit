@@ -118,7 +118,10 @@ function Gameplay:reset()
 end
 
 function Gameplay:addPlayfield(x, y)
-    table.insert(self.playfields, Playfield(x, y))
+    local x = x or 0
+    local y = y or 0
+    local playfield = Playfield(x, y)
+    table.insert(self.playfields, playfield)
 end
 local lastCombo = 0
 function Gameplay:doJudgement(time)
@@ -390,15 +393,18 @@ function Gameplay:enter()
 
     safeZoneOffset = (15 / 60) * 1000
 
+    self:add2(self.comboGroup)
+
+    self:addPlayfield(0, 0)
+
+    Modscript:call("Start")
+
     Timer.after(0.8, function()
         self.updateTime = true
         self.didTimer = true
     end)
 
-    self:add2(self.comboGroup)
-
     previousFrameTime = love.timer.getTime() * 1000
-    self:addPlayfield(0, 0)
 end
 
 function Gameplay:addObjectsToGroups()

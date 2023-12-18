@@ -1,5 +1,8 @@
 local MSFuncs = {}
+MSFuncs.__index = MSFuncs
 MSFuncs.sprites = {}
+
+MSFuncs.currentPlayfield = 1 -- default to one
 
 function MSFuncs:createSprite(name, path, x, y)
     local spr = Sprite(x, y, path)
@@ -43,6 +46,11 @@ function MSFuncs:removeSprite(name)
     if self.sprites[name] then
         self.sprites[name] = nil
     end
+end
+
+function MSFuncs:movePlayfield(x, y)
+    states.game.Gameplay.playfields[self.currentPlayfield].x = x
+    states.game.Gameplay.playfields[self.currentPlayfield].y = y
 end
 
 return MSFuncs
