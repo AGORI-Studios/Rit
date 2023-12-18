@@ -48,33 +48,6 @@ function math.angle(x1, y1, x2, y2)
     return math.atan2(y2 - y1, x2 - x1)
 end
 
---@name math.fastSin
---@description Returns the sine of a number, faster than math.sin but less accurate
---@param n number
---@return number
-function math.fastSin(n)
-    local n = n * 0.3183098862
-    if n > 1 then
-        n = n - bit.rshift(bit.lshift(math.ceil(n), 1), 1) * 2
-    elseif n < -1 then
-        n = n + bit.rshift(bit.lshift(math.ceil(-n), 1), 1) * 2
-    end
-    
-    if n > 0 then
-        return n * (3.1 + n * (0.5 + n * (-7.2 + n * 3.6)))
-    else
-        return n * (3.1 - n * (0.5 + n * (7.2 - n * 3.6)))
-    end
-end
-
---@name math.fastCos
---@description Returns the cosine of a number, faster than math.cos but less accurate
---@param n number
---@return number
-function math.fastCos(n)
-    return math.fastSin(n + 1.570796327)
-end
-
 --@name math.remapToRange
 --@description Remaps a number from one range to another
 --@param value number
