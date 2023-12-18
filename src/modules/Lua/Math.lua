@@ -80,3 +80,61 @@ end
 function math.fpsLerp(a, b, t, dt)
     return math.lerp(a, b, 1 - math.exp(-t * dt))
 end
+
+--@name math.grad
+--@description Returns a pseudo-random gradient vector
+--@param hash number
+--@param x number
+--@param y number
+--@param z number
+--@return number
+function math.grad(hash, x, y, z)
+    local h = hash % 16
+    local u = h < 8 and x or y
+    local v = h < 4 and y or ((h == 12 or h == 14) and x or z)
+    return ((h % 2) == 0 and u or -u) + ((h % 3) == 0 and v or -v)
+end
+
+--@name math.fade
+--@description Returns a fade value
+--@param t number
+--@return number
+function math.fade(t)
+    return t * t * t * (t * (t * 6 - 15) + 10)
+end
+
+function math.perlinNoise(x, y, z)
+    local X = math.floor(x) 
+    local Y = math.floor(y)
+    local Z = math.floor(z)
+
+    x = x - X
+    y = y - Y
+    z = z - Z
+
+    local u = math.fade(x)
+    local v = math.fade(y)
+    local w = math.fade(z)
+
+    local p = {}
+    for i = 0, 255 do
+        p[i] = love.math.random(0, 255)
+    end
+
+    local A = p[X] + Y
+    local AA = p[A] + Z
+    local AB = p[A + 1] + Z
+    local B = p[X + 1] + Y
+    local BA = p[B] + Z
+    local BB = p[B + 1] + Z
+
+    return lerp(w, lerp(v, lerp(u, grad(p[AA], x, y, z),
+            grad(p[BA], x - 1, y, z)),
+            lerp(u, grad(p[AB], x, y - 1, z),
+                    grad(p[BB], x - 1, y - 1, z))),
+            lerp(v, lerp(u, grad(p[AA + 1], x, y, z - 1),
+                    grad(p[BA + 1], x - 1, y, z - 1)),
+                    lerp(u, grad(p[AB + 1], x, y - 1, z - 1),
+                            grad(p[BB + 1], x - 1, y - 1, z - 1))))
+end
+
