@@ -20,6 +20,7 @@ Gameplay.songName = ""
 Gameplay.difficultyName = ""
 
 Gameplay.members = {}
+Gameplay.members2 = {} -- judgements, combo, etc
 
 Gameplay.chartType = ""
 
@@ -38,6 +39,8 @@ Gameplay.accuracy = 0
 Gameplay.misses = 0
 Gameplay.hits = 0
 Gameplay.noteScore = 0
+
+Gameplay.playfields = {}
 
 local lerpedScore = 0
 
@@ -72,6 +75,7 @@ function Gameplay:reset()
     self.songName = ""
     self.difficultyName = ""
     self.members = {}
+    self.members2 = {}
     self.didTimer = false
     self.objectKillOffset = 350
     self.inputsArray = {false, false, false, false}
@@ -92,6 +96,7 @@ function Gameplay:reset()
     self.accuracy = 0
     self.noteScore = 0
     self.soundManager = SoundManager()
+    self.playfields = {}
 
     self.noteoffsets = {}
 
@@ -111,6 +116,10 @@ function Gameplay:reset()
     self.escapeTimer = 0
 end
 
+function Gameplay:addPlayfield(x, y)
+    table.insert(self.playfields, Playfield(x, y))
+end
+
 function Gameplay:doJudgement(time)
     local judgement = nil
     local index = 1
@@ -127,12 +136,12 @@ function Gameplay:doJudgement(time)
     self.score = self.score + score
     self.accuracy = (self.hits / (self.hits + self.misses)) * 100
 
-    self:remove(self.judgement)
+    self:remove2(self.judgement)
     self.judgement = Sprite(75, 390, judgement.img)
     if judgeTimer.y then Timer.cancel(judgeTimer.y) end
     judgeTimer.y = Timer.tween(0.1, self.judgement, {y = 400}, "in-out-expo")
     self.judgement.origin.x = self.judgement.width / 2 -- Always center x origin
-    self:add(self.judgement)
+    self:add2(self.judgement)
 
     -- combo shits
     self.comboGroup.members = {}
@@ -290,10 +299,28 @@ function Gameplay:add(member, pos)
     end
 end
 
+function Gameplay:add2(member, pos)
+    local pos = pos or -1
+    if pos == -1 then
+        table.insert(self.members2, member)
+    else
+        table.insert(self.members2, pos, member)
+    end
+end
+
 function Gameplay:remove(member)
     for i, v in ipairs(self.members) do
         if v == member then
             table.remove(self.members, i)
+            return
+        end
+    end
+end
+
+function Gameplay:remove2(member)
+    for i, v in ipairs(self.members2) do
+        if v == member then
+            table.remove(self.members2, i)
             return
         end
     end
@@ -337,9 +364,10 @@ function Gameplay:enter()
         self.didTimer = true
     end)
 
-    self:add(self.comboGroup)
+    self:add2(self.comboGroup)
 
     previousFrameTime = love.timer.getTime() * 1000
+    self:addPlayfield(0, 0)
 end
 
 function Gameplay:addObjectsToGroups()
@@ -552,7 +580,12 @@ function Gameplay:draw()
         end
     end
 
-    for i, member in ipairs(self.members) do
+    for i, playfield in ipairs(self.playfields) do
+        playfield:draw(self.hitObjects.members)
+    end
+
+    -- draw members2
+    for i, member in ipairs(self.members2) do
         if member.draw then
             member:draw()
         end

@@ -73,6 +73,7 @@ function love.load()
     StrumObject = require("modules.Objects.game.StrumObject")
     HitObject = require("modules.Objects.game.HitObject")
     SongButton = require("modules.Objects.menu.SongButton")
+    Playfield = require("modules.Objects.game.Playfield")
 
     -- Parsers
     quaverLoader = require("modules.Parsers.Quaver")

@@ -10,3 +10,16 @@ function table.random(table)
 
     return table[keys[love.math.random(#keys)]]
 end
+
+--@name table.clone
+--@description Returns a clone of a table
+--@param table
+--@return table
+function table.clone(table)
+    local newTable = {}
+    for k, v in pairs(table) do
+        newTable[k] = v
+    end
+
+    return newTable
+end
