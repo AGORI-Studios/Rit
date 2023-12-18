@@ -84,6 +84,7 @@ function Gameplay:reset()
     self.judgement = nil
     self.comboGroup = Group()
     self.combo = 0
+    self.missCombo = 0
     self.initialScrollVelocity = 1
     self.velocityPositionMakers = {}
     self.currentSvIndex = 1
@@ -119,7 +120,7 @@ end
 function Gameplay:addPlayfield(x, y)
     table.insert(self.playfields, Playfield(x, y))
 end
-
+local lastCombo = 0
 function Gameplay:doJudgement(time)
     local judgement = nil
     local index = 1
@@ -149,21 +150,54 @@ function Gameplay:doJudgement(time)
     if judgement.name == "miss" then
         self.combo = 0
         self.misses = self.misses + 1
+        self.missCombo = self.missCombo + 1
     end
-    for i = 1, #tostring(self.combo) do
-        if not comboTimer[i] then comboTimer[i] = {} end
-        local digit = tostring(self.combo):sub(i, i)
-        local sprite = Sprite(0, 0, "defaultSkins/skinThrowbacks/combo/COMBO" .. digit .. ".png")
-        local sprWidth = sprite.width * 1.25
-        sprite.x = 180 - (#tostring(self.combo) * sprWidth/2) + (i * sprWidth)
-        sprite.y = 460
-        sprite:setGraphicSize(math.floor(sprWidth))
-        sprite.scale.y = sprite.scale.y + 0.2
-        if comboTimer[i].scaleY then Timer.cancel(comboTimer[i].scaleY) end
-        comboTimer[i].scaleY = Timer.tween(0.1, sprite.scale, {y = sprite.scale.y - 0.2}, "in-out-expo")
-        sprite.origin.x = sprWidth / 2
-        sprite.origin.y = sprWidth / 2
-        self.comboGroup:add(sprite)
+    if self.combo > 0 then
+        for i = 1, #tostring(self.combo) do
+            local lastComboDigit = tostring(lastCombo):sub(i, i)
+            local comboDigit = tostring(self.combo):sub(i, i)
+            local sprite = Sprite(0, 0, "defaultSkins/skinThrowbacks/combo/COMBO" .. comboDigit .. ".png")
+            local sprWidth = sprite.width * 1.25
+            sprite.x = 180 - (#tostring(self.combo) * sprWidth/2) + (i * sprWidth)
+            sprite.y = 460
+            sprite:setGraphicSize(math.floor(sprWidth))
+            sprite.scale.y = sprite.scale.y + 0.2
+            if lastComboDigit ~= comboDigit then
+                if not comboTimer[i] then comboTimer[i] = {} end
+                if comboTimer[i].scaleY then Timer.cancel(comboTimer[i].scaleY) end
+                comboTimer[i].scaleY = Timer.tween(0.1, sprite.scale, {y = sprite.scale.y - 0.2}, "in-out-expo")
+            end
+            sprite.origin.x = sprWidth / 2
+            sprite.origin.y = sprWidth / 2
+            self.comboGroup:add(sprite)
+        end
+        lastCombo = self.combo
+    end
+    if self.missCombo > 0 then
+        for i = 1, #tostring(self.missCombo) do
+            local lastComboDigit = tostring(lastCombo):sub(i, i)
+            local comboDigit = tostring(self.missCombo):sub(i, i)
+            local sprite = Sprite(0, 0, "defaultSkins/skinThrowbacks/combo/COMBO" .. comboDigit .. ".png")
+            local sprWidth = sprite.width * 1.25
+            sprite.x = 180 - (#tostring(self.missCombo) * sprWidth/2) + (i * sprWidth)
+            sprite.y = 460
+            sprite.color = {1, 0.2, 0.2}
+            sprite:setGraphicSize(math.floor(sprWidth))
+            sprite.scale.y = sprite.scale.y + 0.2
+            if lastComboDigit ~= comboDigit then
+                if not comboTimer[i] then comboTimer[i] = {} end
+                if comboTimer[i].scaleY then Timer.cancel(comboTimer[i].scaleY) end
+                if comboTimer[i].angle then Timer.cancel(comboTimer[i].angle) end
+                comboTimer[i].scaleY = Timer.tween(0.1, sprite.scale, {y = sprite.scale.y - 0.2}, "in-out-expo")
+                comboTimer[i].angle = Timer.tween(0.1, sprite, {angle = 15}, "in-out-expo", function()
+                    comboTimer[i].angle = Timer.tween(0.1, sprite, {angle = 0}, "in-out-expo")
+                end)
+            end
+            sprite.origin.x = sprWidth / 2
+            sprite.origin.y = sprWidth / 2
+            self.comboGroup:add(sprite)
+        end
+        lastCombo = self.missCombo
     end
 end
 
@@ -178,11 +212,8 @@ function Gameplay:initializePositionMarkers()
     table.insert(self.velocityPositionMakers, position)
     for i = 2, #self.sliderVelocities do
         local velocity = self.sliderVelocities[i]
-        position = position + (
-            velocity.startTime - 
-            self.sliderVelocities[i - 1].startTime
-        ) * (self.sliderVelocities[i - 1] and self.sliderVelocities[i - 1].multiplier or 0) 
-            * self.trackRounding
+        position = position + (velocity.startTime - self.sliderVelocities[i - 1].startTime) 
+                * (self.sliderVelocities[i - 1] and self.sliderVelocities[i - 1].multiplier or 0) * self.trackRounding
         table.insert(self.velocityPositionMakers, position)
     end
 end
@@ -556,6 +587,7 @@ function Gameplay:goodNoteHit(note, time)
 
         if not note.isSustainNote then
             self.combo = self.combo + 1
+            self.missCombo = 0
             self.hits = self.hits + 1
             self:doJudgement(time)
             if #note.children > 0 then
