@@ -146,3 +146,124 @@ function love.ease.inOutCirc(t, b, c, d)
         return c / 2 * (math.sqrt(1 - t * t) + 1) + b
     end
 end
+
+function love.ease.inElastic(t, b, c, d, a, p)
+    if t == 0 then
+        return b
+    end
+
+    t = t / d
+
+    if t == 1 then
+        return b + c
+    end
+
+    if not p then
+        p = d * 0.3
+    end
+
+    local s
+
+    if not a or a < math.abs(c) then
+        a = c
+        s = p / 4
+    else
+        s = p / (2 * math.pi) * math.asin(c / a)
+    end
+
+    t = t - 1
+    return -(a * 2 ^ (10 * t) * math.sin((t * d - s) * (2 * math.pi) / p)) + b
+end
+
+function love.ease.outElastic(t, b, c, d, a, p)
+    if t == 0 then
+        return b
+    end
+
+    t = t / d
+
+    if t == 1 then
+        return b + c
+    end
+
+    if not p then
+        p = d * 0.3
+    end
+
+    local s
+
+    if not a or a < math.abs(c) then
+        a = c
+        s = p / 4
+    else
+        s = p / (2 * math.pi) * math.asin(c / a)
+    end
+
+    return a * 2 ^ (-10 * t) * math.sin((t * d - s) * (2 * math.pi) / p) + c + b
+end
+
+function love.ease.inOutElastic(t, b, c, d, a, p)
+    if t == 0 then
+        return b
+    end
+
+    t = t / d * 2
+
+    if t == 2 then
+        return b + c
+    end
+
+    if not p then
+        p = d * (0.3 * 1.5)
+    end
+
+    local s
+
+    if not a or a < math.abs(c) then
+        a = c
+        s = p / 4
+    else
+        s = p / (2 * math.pi) * math.asin(c / a)
+    end
+
+    if t < 1 then
+        t = t - 1
+        return -0.5 * (a * 2 ^ (10 * t) * math.sin((t * d - s) * (2 * math.pi) / p)) + b
+    else
+        t = t - 1
+        return a * 2 ^ (-10 * t) * math.sin((t * d - s) * (2 * math.pi) / p) * 0.5 + c + b
+    end
+end
+
+function love.ease.inBack(t, b, c, d, s)
+    if not s then
+        s = 1.70158
+    end
+
+    t = t / d
+    return c * t * t * ((s + 1) * t - s) + b
+end
+
+function love.ease.outBack(t, b, c, d, s)
+    if not s then
+        s = 1.70158
+    end
+
+    t = t / d - 1
+    return c * (t * t * ((s + 1) * t + s) + 1) + b
+end
+
+function love.ease.inOutBack(t, b, c, d, s)
+    if not s then
+        s = 1.70158
+    end
+
+    s = s * 1.525
+    t = t / d * 2
+    if t < 1 then
+        return c / 2 * (t * t * ((s + 1) * t - s)) + b
+    else
+        t = t - 2
+        return c / 2 * (t * t * ((s + 1) * t + s) + 2) + b
+    end
+end
