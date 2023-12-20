@@ -11,13 +11,13 @@ function Tipsy:disable()
     self.super.disable(self)
 end
 
-function Tipsy:update(dt, beat)
+function Tipsy:update(dt, beat, playfield)
     if not self.enabled then return end
 
     for i = 1, states.game.Gameplay.mode do
         local ypos = self.amount * (math.cos(musicTime*0.001+i*(1.2)+1*(1.2))*__NOTE_OBJECT_WIDTH*0.5)
 
-        states.game.Gameplay.noteoffsets[i].y = ypos
+        states.game.Gameplay.playfields[playfield].lanes[i].y = ypos
     end
 end
 

@@ -320,9 +320,11 @@ function SongMenu:draw()
     home:draw()
     bars:draw()
     setFont("menuBold")
-    love.graphics.printf(SteamUserName, 180, 8, 1080/2, "left", 0, 2, 2) -- Steam name
+    love.graphics.printf(SteamUserName or "Not Logged In", 180, 8, 1080/2, "left", 0, 2, 2) -- Steam name
     -- draw SteamUserAvatarSmall to the right of the name
-    love.graphics.draw(SteamUserAvatarSmall, 180 + (fontWidth("menuBold", SteamUserName)*2) + 10, 3, 0, 2, 2)
+    if SteamUserAvatarSmall then
+        love.graphics.draw(SteamUserAvatarSmall, 180 + (fontWidth("menuBold", SteamUserName)*2) + 10, 3, 0, 2, 2)
+    end
     setFont("default")
 end
 

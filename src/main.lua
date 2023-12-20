@@ -10,15 +10,17 @@ end
 require("modules.Utilities")
 ffi = require("ffi")
 
-Try(
-    function()
-        Steam = require("lib.sworks.main")
-    end,
-    function()
-        Steam = nil
-        print("Couldn't load Steamworks.")
-    end
-)
+if not __DEBUG__ then
+    Try(
+        function()
+            Steam = require("lib.sworks.main")
+        end,
+        function()
+            Steam = nil
+            print("Couldn't load Steamworks.")
+        end
+    )
+end
 Try(
     function()
         discordRPC = require("lib.discordRPC")

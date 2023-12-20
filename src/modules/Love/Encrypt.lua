@@ -1,4 +1,4 @@
-local env = require("lib.env")
+--[[ local env = require("lib.env")
 
 love.encrypt = {}
 
@@ -14,3 +14,4 @@ end
 function love.encrypt.decode(str)
     
 end
+ ]]

@@ -48,33 +48,6 @@ function math.angle(x1, y1, x2, y2)
     return math.atan2(y2 - y1, x2 - x1)
 end
 
---@name math.fastSin
---@description Returns the sine of a number, faster than math.sin but less accurate
---@param n number
---@return number
-function math.fastSin(n)
-    local n = n * 0.3183098862
-    if n > 1 then
-        n = n - bit.rshift(bit.lshift(math.ceil(n), 1), 1) * 2
-    elseif n < -1 then
-        n = n + bit.rshift(bit.lshift(math.ceil(-n), 1), 1) * 2
-    end
-    
-    if n > 0 then
-        return n * (3.1 + n * (0.5 + n * (-7.2 + n * 3.6)))
-    else
-        return n * (3.1 - n * (0.5 + n * (7.2 - n * 3.6)))
-    end
-end
-
---@name math.fastCos
---@description Returns the cosine of a number, faster than math.cos but less accurate
---@param n number
---@return number
-function math.fastCos(n)
-    return math.fastSin(n + 1.570796327)
-end
-
 --@name math.remapToRange
 --@description Remaps a number from one range to another
 --@param value number
@@ -107,3 +80,61 @@ end
 function math.fpsLerp(a, b, t, dt)
     return math.lerp(a, b, 1 - math.exp(-t * dt))
 end
+
+--@name math.grad
+--@description Returns a pseudo-random gradient vector
+--@param hash number
+--@param x number
+--@param y number
+--@param z number
+--@return number
+function math.grad(hash, x, y, z)
+    local h = hash % 16
+    local u = h < 8 and x or y
+    local v = h < 4 and y or ((h == 12 or h == 14) and x or z)
+    return ((h % 2) == 0 and u or -u) + ((h % 3) == 0 and v or -v)
+end
+
+--@name math.fade
+--@description Returns a fade value
+--@param t number
+--@return number
+function math.fade(t)
+    return t * t * t * (t * (t * 6 - 15) + 10)
+end
+
+function math.perlinNoise(x, y, z)
+    local X = math.floor(x) 
+    local Y = math.floor(y)
+    local Z = math.floor(z)
+
+    x = x - X
+    y = y - Y
+    z = z - Z
+
+    local u = math.fade(x)
+    local v = math.fade(y)
+    local w = math.fade(z)
+
+    local p = {}
+    for i = 0, 255 do
+        p[i] = love.math.random(0, 255)
+    end
+
+    local A = p[X] + Y
+    local AA = p[A] + Z
+    local AB = p[A + 1] + Z
+    local B = p[X + 1] + Y
+    local BA = p[B] + Z
+    local BB = p[B + 1] + Z
+
+    return lerp(w, lerp(v, lerp(u, grad(p[AA], x, y, z),
+            grad(p[BA], x - 1, y, z)),
+            lerp(u, grad(p[AB], x, y - 1, z),
+                    grad(p[BB], x - 1, y - 1, z))),
+            lerp(v, lerp(u, grad(p[AA + 1], x, y, z - 1),
+                    grad(p[BA + 1], x - 1, y, z - 1)),
+                    lerp(u, grad(p[AB + 1], x, y - 1, z - 1),
+                            grad(p[BB + 1], x - 1, y - 1, z - 1))))
+end
+

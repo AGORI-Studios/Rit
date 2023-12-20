@@ -21,3 +21,20 @@ function love.math.randomChoice(...)
     return args[love.math.random(1, #args)]
 end
 
+function love.math.randomChoiceIgnore(ignoreNum, ...)
+    local args = {...}
+    local num = love.math.random(1, #args)
+    while args[num] == ignoreNum do
+        num = love.math.random(1, #args)
+    end
+    return args[num]
+end
+
+function love.math.randomChoiceIgnoreAll(ignoreNums, ...)
+    local args = {...}
+    local num = love.math.random(1, #args)
+    while table.contains(ignoreNums, args[num]) do
+        num = love.math.random(1, #args)
+    end
+    return args[num]
+end

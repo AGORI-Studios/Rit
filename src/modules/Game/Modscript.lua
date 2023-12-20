@@ -21,8 +21,8 @@ function Modscript:set(name, value)
     _G[name] = value
 end
 
-local modlist = {}
-local enabledMods = {}
+local modlist = {{}}
+local enabledMods = {{}}
 
 function Modscript:load(script)
     print("Loading modscript " .. script)
@@ -91,26 +91,52 @@ function Modscript:load(script)
             print(modifier, beat, amount, self.modifiers[modifier])
             if self.modifiers[modifier] then
                 self.modifiers[modifier]:enable(amount, beat)
-                table.insert(modlist, {modifier, amount, beat})
+                table.insert(modlist[self.funcs.currentPlayfield], {modifier, amount, beat, self.funcs.currentPlayfield})
             end
         end
     )
 
-    self:call("Start")
+    self:set(
+        "CreatePlayfield",
+        function(x, y)
+            table.insert(modlist, {}) -- add a new mods table for the new playfield
+            table.insert(enabledMods, {})
+            states.game.Gameplay:addPlayfield(x, y)
+            print(#states.game.Gameplay.playfields)
+        end
+    )
+
+    self:set(
+        "SetPlayfield",
+        function(id)
+            self.funcs.currentPlayfield = id
+        end
+    )
+
+    self:set(
+        "MovePlayfield",
+        function(x, y)
+            self.funcs:movePlayfield(x, y)
+        end
+    )
 end
 
 function Modscript:update(beat)
     for i, v in pairs(modlist) do
-        print(v[3], beat)
-        if beat >= v[3] then
-            self.modifiers[v[1]]:enable(v[2])
-            table.insert(enabledMods, self.modifiers[v[1]])
-            table.remove(modlist, i)
-        end
+        for j, playfieldmods in ipairs(v) do
+            if beat >= playfieldmods[3] then
+                self.modifiers[playfieldmods[1]]:enable(playfieldmods[2])
+                table.insert(enabledMods[playfieldmods[4]], self.modifiers[playfieldmods[1]])
+                table.remove(modlist, i)
+            end
+        end        
     end
 
     for i, v in pairs(enabledMods) do
-        v:update(dt, beat)
+        for j, mod in ipairs(v) do
+            mod:update(dt, beat, i)
+        end
+        --v:update(dt, beat)
     end
 end
 
