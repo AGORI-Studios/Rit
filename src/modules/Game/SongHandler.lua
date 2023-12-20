@@ -99,6 +99,7 @@ function loadSongs(path)
                             songList[title].type = "Rit"
                         end
                     elseif song:sub(-3) == ".mc" then
+                        print(song)
                         local fileData = json(lf.read(path .."/" .. file .. "/" .. song))
                         local title = fileData.meta.song.title
                         local difficultyName = fileData.meta.version
@@ -151,8 +152,8 @@ function loadSongs(path)
                                     ratingColour = {1,1,1},
                                 }
                             end
-                        end --]]
-                    end
+                        end
+                    end ]]
                 end
             end
         elseif lf.getInfo(path .."/" .. file).type == "file" then

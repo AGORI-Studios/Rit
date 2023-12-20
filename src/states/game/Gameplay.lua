@@ -120,7 +120,7 @@ end
 function Gameplay:addPlayfield(x, y)
     table.insert(self.playfields, Playfield(x, y))
 end
-local lastCombo = 0
+
 function Gameplay:doJudgement(time)
     local judgement = nil
     local index = 1
@@ -154,7 +154,6 @@ function Gameplay:doJudgement(time)
     end
     if self.combo > 0 then
         for i = 1, #tostring(self.combo) do
-            local lastComboDigit = tostring(lastCombo):sub(i, i)
             local comboDigit = tostring(self.combo):sub(i, i)
             local sprite = Sprite(0, 0, "defaultSkins/skinThrowbacks/combo/COMBO" .. comboDigit .. ".png")
             local sprWidth = sprite.width * 1.25
@@ -162,20 +161,16 @@ function Gameplay:doJudgement(time)
             sprite.y = 460
             sprite:setGraphicSize(math.floor(sprWidth))
             sprite.scale.y = sprite.scale.y + 0.2
-            if lastComboDigit ~= comboDigit then
-                if not comboTimer[i] then comboTimer[i] = {} end
-                if comboTimer[i].scaleY then Timer.cancel(comboTimer[i].scaleY) end
-                comboTimer[i].scaleY = Timer.tween(0.1, sprite.scale, {y = sprite.scale.y - 0.2}, "in-out-expo")
-            end
+            if not comboTimer[i] then comboTimer[i] = {} end
+            if comboTimer[i].scaleY then Timer.cancel(comboTimer[i].scaleY) end
+            comboTimer[i].scaleY = Timer.tween(0.1, sprite.scale, {y = sprite.scale.y - 0.2}, "in-out-expo")
             sprite.origin.x = sprWidth / 2
             sprite.origin.y = sprWidth / 2
             self.comboGroup:add(sprite)
         end
-        lastCombo = self.combo
     end
     if self.missCombo > 0 then
         for i = 1, #tostring(self.missCombo) do
-            local lastComboDigit = tostring(lastCombo):sub(i, i)
             local comboDigit = tostring(self.missCombo):sub(i, i)
             local sprite = Sprite(0, 0, "defaultSkins/skinThrowbacks/combo/COMBO" .. comboDigit .. ".png")
             local sprWidth = sprite.width * 1.25
@@ -184,20 +179,13 @@ function Gameplay:doJudgement(time)
             sprite.color = {1, 0.2, 0.2}
             sprite:setGraphicSize(math.floor(sprWidth))
             sprite.scale.y = sprite.scale.y + 0.2
-            if lastComboDigit ~= comboDigit then
-                if not comboTimer[i] then comboTimer[i] = {} end
-                if comboTimer[i].scaleY then Timer.cancel(comboTimer[i].scaleY) end
-                if comboTimer[i].angle then Timer.cancel(comboTimer[i].angle) end
-                comboTimer[i].scaleY = Timer.tween(0.1, sprite.scale, {y = sprite.scale.y - 0.2}, "in-out-expo")
-                comboTimer[i].angle = Timer.tween(0.1, sprite, {angle = 15}, "in-out-expo", function()
-                    comboTimer[i].angle = Timer.tween(0.1, sprite, {angle = 0}, "in-out-expo")
-                end)
-            end
+            if not comboTimer[i] then comboTimer[i] = {} end
+            if comboTimer[i].scaleY then Timer.cancel(comboTimer[i].scaleY) end
+            comboTimer[i].scaleY = Timer.tween(0.1, sprite.scale, {y = sprite.scale.y - 0.2}, "in-out-expo")
             sprite.origin.x = sprWidth / 2
             sprite.origin.y = sprWidth / 2
             self.comboGroup:add(sprite)
         end
-        lastCombo = self.missCombo
     end
 end
 

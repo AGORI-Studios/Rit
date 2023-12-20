@@ -5,6 +5,7 @@ local songButtons = {
     ["Quaver"] = {},
     ["Malody"] = {},
     ["Rit"] = {},
+    ["Stepmania"] = {},
     ["All"] = {}
 }
 
@@ -33,7 +34,8 @@ local allTypes = {
     "Rit",
     "Quaver",
     "osu!",
-    "Malody"
+    "Malody",
+    "Stepmania"
 }
 
 function SongMenu:enter()
@@ -79,6 +81,7 @@ function SongMenu:enter()
         ["Quaver"] = {},
         ["Malody"] = {},
         ["Rit"] = {},
+        ["Stepmania"] = {},
         ["All"] = {}
     }
 
@@ -92,6 +95,7 @@ function SongMenu:enter()
             if type(diff) == "table" then
                 table.insert(diffs, diff)
                 songName = diff.title:trim()
+                bmType = diff.type
             else
                 bmType = diff
             end

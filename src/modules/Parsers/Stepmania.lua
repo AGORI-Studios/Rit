@@ -7,293 +7,255 @@ local title, subtitle, artist, titleTransLit, subtitleTransLit, artistTransLit,
     musicLength, offset, sampleStart, sampleLength, selectable, bpms,
     stops, charts
 
-local function parseBpms(line)
-    local bpms = {}
-    local split = line:split(",")
+local folderPath
 
-    for i, bpm in ipairs(split) do
-        local bpmSplit = bpm:gsub(",", ""):gsub(";", ""):split("=")
-        if #bpmSplit ~= 2 then
-            goto continue
-        end
+local measureTicks = 192
+local beatTicks = 48
+local stepTicks = 12
+local curLine = 0
 
-        --[[ bpms[#bpms+1] = {
-            beat = tonumber(bpmSplit[1]),
-            bpm = tonumber(bpmSplit[2]),
-        } ]]
-        table.insert(bpms, {
-            beat = tonumber(bpmSplit[1] or 0),
-            bpm = tonumber(bpmSplit[2] or 222.22),
-        })
+local Tempo = Object:extend()
+local line
 
-        ::continue::
-    end
-
-    return bpms
+function Tempo:new(bpm, tick, time)
+    self.bpm = bpm
+    self.tick = tick
+    self.time = time
 end
 
-local function parseStops(line)
-    local stops = {}
-    local split = line:split(",")
-
-    for i, stop in ipairs(split) do
-        if (stop ~= nil and stop ~= "") then
-            goto continue
-        end
-
-        local stopSplit = stop:gsub(",", ""):gsub(";", ""):split("=")
-        if #stopSplit ~= 2 then
-            goto continue
-        end
-
-        stops[#stops+1] = {
-            beat = tonumber(stopSplit[1]),
-            seconds = tonumber(stopSplit[2]),
-        }
-
-        ::continue::
-    end
-
-    return stops
+function Tempo:timeToTick(time)
+    return math.round((self.tick + (time - self.time) * measureTicks * self.bpm / 60) / 240000)
 end
 
-local function parseMeasure(line)
-    local notes = {}
-
-    for i, char in ipairs(line:splitAllCharacters()) do
-        table.insert(notes, tonumber(char))
-    end
-
-    return notes
+function Tempo:tickToTime(tick)
+    return self.time + (tick - self.tick) * 240000 / measureTicks / self.bpm
 end
 
-local function parse(lines)
-    local currentChart = nil
+local tempoMarkers = {}
+local sectionNum = 0
+local offset = 0
 
-    local inBpms, inStops = false, false
+local allNotes = {}
 
-    for i, line in ipairs(lines) do
-        local trimmedLine = line:trim()
-
-        if trimmedLine:startsWith("#") and trimmedLine:find(":") then
-            local split = trimmedLine:split(":")
-
-            local key = split[1]:gsub("#", ""):trim()
-            local value
-            if split[2] then
-                value = split[2]:gsub(";", ""):gsub(":", ""):trim()
-            end
-
-            if key == "TITLE" then
-                title = value
-            elseif key == "SUBTITLE" then
-                subtitle = value
-            elseif key == "ARTIST" then
-                artist = value
-            elseif key == "TITLETRANSLIT" then
-                titleTransLit = value
-            elseif key == "SUBTITLETRANSLIT" then
-                subtitleTransLit = value
-            elseif key == "ARTISTTRANSLIT" then
-                artistTransLit = value
-            elseif key == "CREDIT" then
-                credit = value
-            elseif key == "BANNER" then
-                banner = value
-            elseif key == "BACKGROUND" then
-                background = value
-            elseif key == "LYRICSPATH" then
-                lyricsPath = value
-            elseif key == "CDTITLE" then
-                cdTitle = value
-            elseif key == "MUSIC" then
-                music = value
-            elseif key == "MUSICLENGTH" then
-                musicLength = tonumber(value)
-            elseif key == "OFFSET" then
-                offset = tonumber(value)
-            elseif key == "SAMPLESTART" then
-                sampleStart = tonumber(value)
-            elseif key == "SAMPLELENGTH" then
-                sampleLength = tonumber(value)
-            elseif key == "SELECTABLE" then
-            elseif key == "BPMS" then
-                inBpms = true
-                bpms = parseBpms(value)
-                if line:find(";") then
-                    inBpms = false
-                end
-            elseif key == "STOPS" then
-                inStops = true
-
-                stops = (value == nil or value == "") and {} or parseStops(value)
-                if line:find(";") then
-                    inStops = false
-                end
-            elseif key == "NOTES" then
-                local chart = {measures = {}}
-                currentChart = chart
-                charts[#charts+1] = chart
-            end
-        elseif inBpms then
-            addRangeBpms(parseBpms(line))
-            if line:find(";") then
-                inBpms = false
-            end
-        elseif inStops then
-            addRangeStops(parseStops(line))
-            if line:find(";") then
-                inStops = false
-            end
-        elseif trimmedLine:startsWith("//") then
-            -- comment
-        elseif currentChart and not currentChart.grooveRadarValues then
-            local value = trimmedLine:gsub(":", "")
-
-            if not currentChart.type then
-                currentChart.type = value
-            elseif not currentChart.description then
-                currentChart.description = value
-            elseif not currentChart.difficulty then
-                currentChart.difficulty = value
-            elseif not currentChart.numericalMeter then
-                currentChart.numericalMeter = value
-            elseif not currentChart.grooveRaderValues then
-                currentChart.grooveRadarValues = value
-            end
-        elseif currentChart and currentChart.grooveRadarValues and not (trimmedLine == nil or trimmedLine == "") then
-            if trimmedLine:startsWith(",") then
-                currentChart.measures = {
-                    {}
-                }
-            end
-            -- currentChart.Measures.Last().Notes.Add(StepFileChartMeasure.ParseLine(trimmedLine));
-            currentChart.measures[#currentChart.measures+1] = {
-                notes = parseMeasure(trimmedLine),
-            }
+function timeToTick(time)
+    for i = 1, #tempoMarkers do
+        local tempo = tempoMarkers[i+1]
+        if tempo and tempo.time > time then
+            return tempo:timeToTick(time)
+        elseif not tempo then
+            return tempoMarkers[i]:timeToTick(time)
         end
     end
 end
 
-function stepmaniaLoader.load(chart, folderPath, forDiff)
-    charts = {}
-    parse(love.filesystem.read(chart):split("\n"))
-
-    audioFile = love.audio.newSource(folderPath .. "/" .. music, "stream")
-
-    __title = title
-    __diffName = charts[1].difficulty
-
-    local totalBeats = 0
-    local bpmCache = bpms
-    local stopCache = stops
-
-    local chart = charts[1]
-
-    local currentTime = -offset * 1000
-
-    for i, measure in ipairs(chart.measures) do
-        if not measure.notes then
-            goto continue
+function tickToTime(tick)
+    for i = 1, #tempoMarkers do
+        local tempo = tempoMarkers[i+1]
+        if tempo and tempo.tick > tick then
+            return tempo:tickToTime(tick)
+        elseif not tempo then
+            return tempoMarkers[i]:tickToTime(tick)
         end
-        local beatTimePerRow = 4 / #measure.notes
-        local storedLongs = {}
+    end
+end
 
-        if #bpmCache ~= 0 and totalBeats >= bpmCache[1].beat then
-            bpm = bpmCache[1].bpm
-            crochet = (60 / bpm) * 1000
-            stepCrochet = crochet / 4
-
-            table.remove(bpmCache, 1)
+function tickToBPM(tick)
+    for i = 1, #tempoMarkers do
+        local tempo = tempoMarkers[i+1]
+        if tempo and tempo.tick > tick then
+            return tempo.bpm
+        elseif not tempo then
+            return tempoMarkers[i].bpm
         end
+    end
+end
 
-        for j, row in ipairs(measure.notes) do
-                if row == 0 then -- Nothing
-                elseif row == 1 then -- Normal
-                    --StartTime = (int) Math.Round(currentTime, MidpointRounding.AwayFromZero),
-                    local startTime = math.round(currentTime)
-                    local lane = j
-                    local ho = HitObject(startTime, lane, nil, false)
-                    table.insert(states.game.Gameplay.unspawnNotes, ho)
-                elseif row == 2 then -- Head
-                    --[[
-                        qua.HitObjects.Add(new HitObjectInfo
-                                    {
-                                        StartTime = (int) Math.Round(currentTime, MidpointRounding.AwayFromZero),
-                                        EndTime = int.MinValue,
-                                        Lane = i + 1
-                                    });
-                    ]]
-                    local startTime = math.round(currentTime)
-                    local lane = j -- opposite of math.huge for endTime
-                    local endTime = -math.huge
-                    storedLongs[i] = {
-                        startTime = startTime,
-                        lane = lane,
-                        endTime = endTime,
-                    }
-                elseif row == 3 then
-                    local lane = j
-                    local long = storedLongs[lane] or {startTime = currentTime, lane = j, endTime = currentTime}
-                    local startTime = long.startTime
-                    local endTime = math.round(currentTime)
+function getTagValue(line, tag)
+    if line:find("^#" .. tag .. ":") then
+        return line:gsub("^#" .. tag .. ":", ""):gsub(";", "")
+    end
+end
 
-                    local length = endTime - startTime
-
-                    local hasSustain = length ~= startTime
-
-                    local ho = HitObject(startTime, lane, nil, false)
-                    table.insert(states.game.Gameplay.unspawnNotes, ho)
-
-                    length = math.floor(length / stepCrochet)
-
-                    if length > 0 then
-                        for sustain = 0, length do
-                            local oldHo = states.game.Gameplay.unspawnNotes[#states.game.Gameplay.unspawnNotes]
-
-                            local slider = HitObject(startTime + (stepCrochet*sustain), lane, oldHo, true)
-                            table.insert(ho.tail, slider)
-                            table.insert(states.game.Gameplay.unspawnNotes, slider)
-                            slider.correctionOffset = (ho.height * 0.925)/2
-                            oldHo:updateHitbox()
-                        end
-                    end
-                end
+function parseSMbpms(bpmString)
+    --#BPMS:0.000=165.000,7.750=354.000,8.000=165.000;
+    local bpmRe = "([%d%.]+)=([%d%.]+)"
+    local smBpms = bpmString:split(",")
+    for i = 1, #smBpms do
+        print(smBpms[i])
+        local reMatch = smBpms[i]:match(bpmRe)
+        if reMatch and reMatch.start() == 0 then
+            local currentTick = math.round(tonumber(reMatch[1]) * beatTicks)
+            local currentBpm = tonumber(reMatch[2])
+            local currentTime = tickToTime(currentTick)
+            tempoMarkers[#tempoMarkers+1] = Tempo(currentBpm, currentTick, currentTime)
         end
-        ::continue::
     end
 end
 
 function stepmaniaLoader.getDifficulties(chart)
-    -- just returns a list of all the difficulties (names)
-
+    local chart = love.filesystem.read(chart)
     local diffs = {}
+    local lines = chart:split("\n")
     local songName = ""
-
-    local lines = {}
-    for line in love.filesystem.lines(chart) do
-        table.insert(lines, line)
-    end
-    local lineIndex = 1
-
-    for line in love.filesystem.lines(chart) do
-
-        if line:find("#TITLE:") then
-            line = line:gsub("#TITLE:", ""):gsub(";", "")
-            songName = line
+    for i = 1, #lines do
+        local line = lines[i]
+        if line:find("^#TITLE:") then
+            songName = line:gsub("^#TITLE:", ""):gsub(";", "")
         end
-        if line:find("#NOTES") then
-            local diff = lines[lineIndex + 3]:split(":")[1]
-            table.insert(diffs, {
-                name = diff:trim(),
+        if line:find("^#NOTES:") then
+            local diff = lines[i+3]:split(":")[1]
+
+            diffs[#diffs+1] = {
                 songName = songName,
-            })
+                name = diff,
+                BackgroundFile = "",
+            }
         end
-
-        lineIndex = lineIndex + 1
     end
-
     return diffs
 end
+
+function stepmaniaLoader.load(chart, folderPath_, forDiff)
+    curChart = "Stepmania"
+    folderPath = folderPath_
+    local chart = love.filesystem.read(chart)
+    bpm = 0
+    crochet = 0
+    stepCrochet = 0
+    
+    stepmaniaLoader.parseChart(chart)
+
+    __title = title
+    __diffName = diff
+end
+
+local function readLine(lines)
+    local line = lines[1]
+    if line then
+        table.remove(lines, 1)
+        curLine = curLine + 1
+    end
+    return line
+end
+
+function stepmaniaLoader.parseChart(chart)
+    local lines = chart:split("\n")
+
+    while #lines > 0 do
+        line = readLine(lines)
+        local value
+        --[[ value = getTagValue(line, "TITLE")
+        if value then
+            title = value
+            line = readLine(lines)
+            goto continue
+        end
+        value = getTagValue(line, "OFFSET")
+        if value then
+            offset = tonumber(value) * 1000
+            line = readLine(lines)
+            goto continue
+        end
+        value = getTagValue(line, "BPMS")
+        if value then
+            print(value)
+            parseSMbpms(value)
+            line = readLine(lines)
+            goto continue
+        end ]]
+        if line:find("^#TITLE:") then
+            title = line:gsub("^#TITLE:", ""):gsub(";", "")
+            line = readLine(lines)
+            goto continue
+        end
+        if line:find("^#OFFSET:") then
+            local value = line:gsub("^#OFFSET:", ""):gsub(";", "")
+            offset = tonumber(value) * 1000
+            line = readLine(lines)
+            goto continue
+        end
+        if line:find("^#BPMS:") then
+            parseSMbpms(line:gsub("^#BPMS:", ""):gsub(";", ""))
+            line = readLine(lines)
+            goto continue
+        end
+        --[[ value = getTagValue(line, "MUSIC")
+        if value then
+            states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. value, 1, true, "stream")
+            line = readLine(lines)
+            goto continue
+        end ]]
+        if line:find("^#MUSIC:") then
+            local value = line:gsub("^#MUSIC:", ""):gsub(";", "")
+            states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. value, 1, true, "stream")
+            line = readLine(lines)
+            goto continue
+        end
+
+        if line:strip() == "#NOTES:" then
+            line = readLine(lines)
+            local isDouble = (line:strip() == "dance-double:")
+            -- double not supported (for now)
+            if (line:strip() ~= "dance-single:") and not (not isDouble) then
+                line = readLine(lines)
+                goto continue
+            end
+            line = readLine(lines)
+            line = readLine(lines)
+            line = readLine(lines)
+            local trackedHolds = {}
+            while line and line:strip()[1] ~= ";" do
+                measureNotes = {}
+                if not line then break end
+                while line and line:strip()[1] ~= "," do
+                    if line:strip():match("^%d") then
+                        measureNotes[#measureNotes+1] = line:strip():gsub(",", ""):splitAllCharacters()
+                    end
+                    line = readLine(lines)
+                    if not line then break end
+                
+                    ticksPerRow = measureTicks / #measureNotes
+                    bpm = tickToBPM(sectionNum * measureTicks)
+
+                    local notes = {}
+                    for i = 1, #measureNotes do
+                        local notesRow = measureNotes[i]
+                        for j = 1, #notesRow do
+                            if notesRow[j] == "1" or notesRow[j] == "2" or notesRow[j] == "4" then
+                                local time = tickToTime(sectionNum * measureTicks + (i-1) * ticksPerRow)
+                                local lane = j
+                                local endTime = 0
+                                local note = {time, lane, endTime}
+                                table.insert(notes, note)
+                            end
+                        end
+                    end
+                    sectionNum = sectionNum + 1
+                    table.insert(allNotes, notes)
+                    if line then
+                        if line:strip()[1] == ";" then
+                            line = readLine(lines)
+                        end
+                    end
+                    if not line then break end
+                end
+            end
+        end
+
+        ::continue::
+    end
+
+    -- Now we convert the map into rit's format
+    for i = 1, #allNotes do
+        local notes = allNotes[i]
+        for j = 1, #notes do
+            local note = notes[j]
+            local ho = HitObject(note[1], note[2], note[3])
+            table.insert(states.game.Gameplay.unspawnNotes, ho)
+            --print(ho.startTime, ho.endTime, ho.lane)
+        end
+    end
+end
+
 
 return stepmaniaLoader

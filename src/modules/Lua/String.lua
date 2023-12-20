@@ -117,3 +117,10 @@ function string.random(length)
     end
     return str
 end
+
+--@name string.strip
+--@description Strips all whitespace from a string (left and right)
+--@return string
+function string.strip(self)
+    return self:gsub("^%s*(.-)%s*$", "%1")
+end
