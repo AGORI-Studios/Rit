@@ -15,7 +15,6 @@ Gameplay.updateTime = false
 Gameplay.endingSong = false
 Gameplay.starting = false
 
-
 Gameplay.songName = ""
 Gameplay.difficultyName = ""
 
@@ -274,7 +273,7 @@ function Gameplay:initPositions()
     end
 end
 
-function Gameplay:getSpritePosition(offset, initialPos)
+function Gameplay:getNotePosition(offset, initialPos)
     if not Settings.options["General"].downscroll then
         return strumY + (((initialPos or 0) - offset) * Settings.options["General"].scrollspeed / self.trackRounding)
     else
@@ -283,11 +282,11 @@ function Gameplay:getSpritePosition(offset, initialPos)
 end
 
 
-function Gameplay:updateSpritePositions(offset, curTime)
+function Gameplay:updateNotePosition(offset, curTime)
     local spritePosition = 0
 
     for _, hitObject in ipairs(self.hitObjects.members) do
-        spritePosition = self:getSpritePosition(offset, hitObject.initialTrackPosition)
+        spritePosition = self:getNotePosition(offset, hitObject.initialTrackPosition)
         if not hitObject.moveWithScroll then
             -- go to strumY (it's a hold)
             spritePosition = strumY
@@ -297,7 +296,7 @@ function Gameplay:updateSpritePositions(offset, curTime)
             hitObject.children[1].y = spritePosition + hitObject.height/2
             hitObject.children[2].y = spritePosition + hitObject.height/2
 
-            hitObject.endY = self:getSpritePosition(offset, hitObject.endTrackPosition)
+            hitObject.endY = self:getNotePosition(offset, hitObject.endTrackPosition)
             local pixelDistance = hitObject.endY - hitObject.children[1].y + hitObject.children[2].height-- the distance of start and end we need
             hitObject.children[1].scale.y = (pixelDistance / hitObject.children[1].height)
 
@@ -309,8 +308,6 @@ function Gameplay:updateSpritePositions(offset, curTime)
         end
     end
 end
-
--- // End of Slider Velocity Functions (Quaver) \\ --
 
 function Gameplay:add(member, pos)
     local pos = pos or -1
@@ -376,7 +373,7 @@ function Gameplay:enter()
     self:initializePositionMarkers()
     self:updateCurrentTrackPosition()
     self:initPositions()
-    self:updateSpritePositions(self.currentTrackPosition, musicTime)
+    self:updateNotePosition(self.currentTrackPosition, musicTime)
     self:addObjectsToGroups()
 
     safeZoneOffset = (15 / 60) * 1000
@@ -443,7 +440,7 @@ function Gameplay:update(dt)
             return
         end
         self:updateCurrentTrackPosition()
-        self:updateSpritePositions(self.currentTrackPosition, musicTime)
+        self:updateNotePosition(self.currentTrackPosition, musicTime)
     end
 
     Modscript:update(self.soundManager:getBeat("music"))

@@ -274,6 +274,7 @@ function love.draw()
         "Volume: " .. math.round(lerpedMasterVolume, 2)
     )
 end
+
 function love.quit()
     if Steam then
         Steam.shutdown()

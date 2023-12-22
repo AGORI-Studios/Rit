@@ -126,7 +126,7 @@ function loadSongs(path)
                         end
                         songList[title].type = "Malody"
                         -- With how stupid I am, stepmania is probably going to be the last thing I add
-                    --[[ elseif song:sub(-3) == ".sm" then -- for stepmania, we have to call "smLoader.getDifficulties(chart)"
+                    elseif song:sub(-3) == ".sm" then -- for stepmania, we have to call "smLoader.getDifficulties(chart)"
                         diffs = smLoader.getDifficulties(path .."/" .. file .. "/" .. song)
                         -- has a table in a table (holds name and songName)
 
@@ -153,7 +153,7 @@ function loadSongs(path)
                                 }
                             end
                         end
-                    end ]]
+                    end
                 end
             end
         elseif lf.getInfo(path .."/" .. file).type == "file" then
