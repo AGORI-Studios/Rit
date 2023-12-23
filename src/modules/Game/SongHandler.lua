@@ -20,7 +20,6 @@ function loadSongs(path)
                         local fileData = lf.read(path .."/" .. file .. "/" .. song)
                         local title = fileData:match("Title:(.-)\r?\n")
                         local difficultyName = fileData:match("DifficultyName:(.-)\r?\n")
-                        local BackgroundFile = fileData:match("BackgroundFile:(.-)\r?\n")
                         local mode = fileData:match("Mode:(.-)\r?\n"):gsub("^%s*(.-)%s*$", "%1")
                         local Creator = fileData:match("Creator:(.-)\r?\n")
                         local alreadyInList = false
@@ -35,7 +34,6 @@ function loadSongs(path)
                                 filename = file,
                                 title = title,
                                 difficultyName = difficultyName,
-                                BackgroundFile = BackgroundFile,
                                 path = path .."/" .. file .. "/" .. song,
                                 folderPath = path .."/" .. file,
                                 type = "Quaver",
@@ -50,7 +48,6 @@ function loadSongs(path)
                         local fileData = lf.read(path .."/" .. file .. "/" .. song)
                         local title = fileData:match("Title:(.-)\r?\n")
                         local difficultyName = fileData:match("Version:(.-)\r?\n")
-                        local BackgroundFile = fileData:match("0,0,(.-)\r?\n")
                         local alreadyInList = false
                         for _, song in ipairs(songList) do
                             if song.title == title and song.difficultyName == difficultyName then
@@ -63,7 +60,6 @@ function loadSongs(path)
                                 filename = file,
                                 title = title,
                                 difficultyName = difficultyName,
-                                BackgroundFile = BackgroundFile,
                                 path = path .."/" .. file .. "/" .. song,
                                 folderPath = path .."/" .. file,
                                 type = "osu!",
@@ -76,7 +72,6 @@ function loadSongs(path)
                         local fileData = lf.read(path .."/" .. file .. "/" .. song)
                         local title = fileData:match("SongTitle:(.-)\r?\n")
                         local difficultyName = fileData:match("SongDiff:(.-)\r?\n")
-                        local BackgroundFile = fileData:match("Background:(.-)\r?\n")
                         local alreadyInList = false
                         for _, song in ipairs(songList) do
                             if song.title == title and song.difficultyName == difficultyName then
@@ -89,7 +84,6 @@ function loadSongs(path)
                                 filename = file,
                                 title = title,
                                 difficultyName = difficultyName,
-                                BackgroundFile = BackgroundFile,
                                 path = path .."/" .. file .. "/" .. song,
                                 folderPath = path .."/" .. file,
                                 type = "Rit",
@@ -103,7 +97,6 @@ function loadSongs(path)
                         local fileData = json(lf.read(path .."/" .. file .. "/" .. song))
                         local title = fileData.meta.song.title
                         local difficultyName = fileData.meta.version
-                        local BackgroundFile = fileData.meta.background
                         local alreadyInList = false
                         for _, song in ipairs(songList) do
                             if song.title == title and song.difficultyName == difficultyName then
@@ -116,7 +109,6 @@ function loadSongs(path)
                                 filename = file,
                                 title = title,
                                 difficultyName = difficultyName,
-                                BackgroundFile = BackgroundFile,
                                 path = path .."/" .. file .. "/" .. song,
                                 folderPath = path .."/" .. file,
                                 type = "Malody",
@@ -144,7 +136,6 @@ function loadSongs(path)
                                     filename = file,
                                     title = diff.songName,
                                     difficultyName = diff.name,
-                                    BackgroundFile = diff.BackgroundFile,
                                     path = path .."/" .. file .. "/" .. song,
                                     folderPath = path .."/" .. file,
                                     type = "Stepmania",
@@ -164,7 +155,6 @@ function loadSongs(path)
                     local fileData = lf.read("song/" .. song)
                     local title = fileData:match("Title:(.-)\r?\n")
                     local difficultyName = fileData:match("DifficultyName:(.-)\r?\n")
-                    local BackgroundFile = fileData:match("BackgroundFile:(.-)\r?\n")
                     local mode = fileData:match("Mode:(.-)\r?\n"):gsub("^%s*(.-)%s*$", "%1")
                     local Creator = fileData:match("Creator:(.-)\r?\n")
                     local alreadyInList = false
@@ -179,7 +169,6 @@ function loadSongs(path)
                             filename = file,
                             title = title,
                             difficultyName = difficultyName,
-                            BackgroundFile = BackgroundFile,
                             path = "song/" .. song,
                             folderPath = "song",
                             type = "Quaver",
@@ -194,7 +183,6 @@ function loadSongs(path)
                     local fileData = lf.read("song/" .. song)
                     local title = fileData:match("Title:(.-)\r?\n")
                     local difficultyName = fileData:match("Version:(.-)\r?\n")
-                    local BackgroundFile = fileData:match("0,0,(.-)\r?\n")
                     local alreadyInList = false
                     for _, song in ipairs(songList) do
                         if song.title == title and song.difficultyName == difficultyName then
@@ -207,7 +195,6 @@ function loadSongs(path)
                             filename = file,
                             title = title,
                             difficultyName = difficultyName,
-                            BackgroundFile = BackgroundFile,
                             path = "song/" .. song,
                             folderPath = "song",
                             type = "osu!",

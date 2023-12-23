@@ -12,4 +12,7 @@ function love.conf(t)
     t.window.resizable = true
     t.window.vsync = false
     t.console = __DEBUG__
+
+    -- disable modules we don't need
+    t.modules.physics = false
 end

@@ -41,6 +41,10 @@ function quaverLoader.load(chart, folderPath, forDiff)
 
     states.game.Gameplay.initialScrollVelocity = chart.InitialScrollVelocity or 1
 
+    if love.filesystem.getInfo(folderPath .. "/" .. meta.backgroundFile) then
+        states.game.Gameplay.background = love.graphics.newImage(folderPath .. "/" .. meta.backgroundFile)
+    end
+
     for i = 1, #chart.SliderVelocities do
         local sliderVelocity = chart.SliderVelocities[i]
         local startTime = sliderVelocity.StartTime

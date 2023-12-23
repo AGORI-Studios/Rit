@@ -23,7 +23,7 @@ if not __DEBUG__ then
 end
 Try(
     function()
-        discordRPC = require("lib.discordRPC")
+        discordRPC = require("lib.discordRPC") -- https://github.com/pfirsich/lua-discordRPC
         discordRPC.nextPresenceUpdate = 0
     end,
     function()

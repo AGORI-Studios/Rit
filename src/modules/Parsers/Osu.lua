@@ -29,7 +29,7 @@ function osuLoader.processLine(line)
         elseif currentBlockName == "General" then
             osuLoader.processGeneral(line)
         elseif currentBlockName == "Events" then
-            -- events
+            osuLoader.processEvent(line)
         elseif currentBlockName == "TimingPoints" then
             osuLoader.addTimingPoint(line)
         elseif currentBlockName == "HitObjects" then
@@ -55,6 +55,20 @@ function osuLoader.processGeneral(line)
         local value = value:trim()
         --audioFile = love.audio.newSource(folderPath .. "/" .. value, "stream")
         states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. value, 1, true, "stream")
+    end
+end
+function osuLoader.processEvent(line)
+    local split = line:split(",")
+    if split[1] == "0" then
+        local bg = line:match("^0,.+,\"(.+)\".*$")
+        --states.game.Gameplay.background = love.graphics.newImage(folderPath .. "/" .. bg)
+        if love.filesystem.getInfo(folderPath .. "/" .. bg) then
+            if bg:find(".jpg") or bg:find(".png") then
+                states.game.Gameplay.background = love.graphics.newImage(folderPath .. "/" .. bg)
+            else
+                --states.game.Gameplay.background = love.graphics.newVideo(folderPath .. "/" .. bg) -- TODO. Make an FFMPEG wrapper for love2d
+            end
+        end
     end
 end
 function osuLoader.addTimingPoint(line)

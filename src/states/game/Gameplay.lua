@@ -41,6 +41,18 @@ Gameplay.noteScore = 0
 
 Gameplay.playfields = {}
 
+Gameplay.background = nil
+Gameplay.backgrounds = {
+    -- preloaded images/videos -- (Video WIP)
+}
+
+Gameplay.bgLane = {
+    x = 0,
+    width = 0
+}
+
+Gameplay.events = {}
+
 local lerpedScore = 0
 
 local comboTimer = {}
@@ -99,6 +111,16 @@ function Gameplay:reset()
     self.playfields = {}
 
     self.noteoffsets = {}
+
+    self.background = nil
+    self.backgrounds = {}
+
+    self.events = {}
+
+    self.bgLane = {
+        x = 0,
+        width = 0
+    }
 
     self:preloadAssets()
 
@@ -417,6 +439,10 @@ function Gameplay:generateStrums()
         self.strumLineObjects:add(strum)
         strum:postAddToGroup()
     end
+
+    -- generate lane
+    self.bgLane.x = self.strumX - ((self.mode - 4) * (__NOTE_OBJECT_WIDTH * 0.0185))
+    self.bgLane.width = (__NOTE_OBJECT_WIDTH) * self.mode 
 end
 
 function Gameplay:update(dt)
@@ -597,11 +623,19 @@ function Gameplay:substateReturn()
 end
 
 function Gameplay:draw()
+    if self.background then
+        love.graphics.setColor(0.3, 0.3, 0.3)
+        love.graphics.draw(self.background, 0, 0, 0, 1920/self.background:getWidth(), 1080/self.background:getHeight())
+    end
     for i, spr in pairs(Modscript.funcs.sprites) do
         if not spr.drawWithoutRes and not spr.drawOverNotes then
             spr:draw()
         end
     end
+
+    love.graphics.setColor(0,0,0)
+    love.graphics.rectangle("fill", self.bgLane.x, 0, self.bgLane.width, 1080)
+    love.graphics.setColor(1,1,1)
 
     for i, playfield in ipairs(self.playfields) do
         playfield:draw(self.hitObjects.members)
@@ -640,7 +674,7 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath)
     elseif chartType == "osu!" then
         osuLoader.load(songPath, folderPath)
     elseif chartType == "Stepmania" then
-        smLoader.load(songPath, folderPath)
+        smLoader.load(songPath, folderPath, false)
     elseif chartType == "Malody" then
         malodyLoader.load(songPath, folderPath)
     elseif chartType == "Rit" then
