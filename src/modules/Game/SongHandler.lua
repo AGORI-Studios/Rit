@@ -22,6 +22,7 @@ function loadSongs(path)
                         local difficultyName = fileData:match("DifficultyName:(.-)\r?\n")
                         local mode = fileData:match("Mode:(.-)\r?\n"):gsub("^%s*(.-)%s*$", "%1")
                         local Creator = fileData:match("Creator:(.-)\r?\n")
+                        local AudioFile = fileData:match("AudioFile:(.-)\r?\n"):trim()
                         local alreadyInList = false
                         for _, song in ipairs(songList) do
                             if song.title == title and song.difficultyName == difficultyName then
@@ -40,7 +41,8 @@ function loadSongs(path)
                                 rating = "",
                                 ratingColour = {1,1,1},
                                 creator = Creator,
-                                mode = mode:match("%d+")
+                                mode = mode:match("%d+"),
+                                audioFile = path .."/" .. file .. "/" .. AudioFile
                             }
                             songList[title].type = "Quaver"
                         end
@@ -48,6 +50,7 @@ function loadSongs(path)
                         local fileData = lf.read(path .."/" .. file .. "/" .. song)
                         local title = fileData:match("Title:(.-)\r?\n")
                         local difficultyName = fileData:match("Version:(.-)\r?\n")
+                        local AudioFile = fileData:match("AudioFilename:(.-)\r?\n"):trim()
                         local alreadyInList = false
                         for _, song in ipairs(songList) do
                             if song.title == title and song.difficultyName == difficultyName then
@@ -65,6 +68,7 @@ function loadSongs(path)
                                 type = "osu!",
                                 rating = "",
                                 ratingColour = {1,1,1},
+                                audioFile = path .."/" .. file .. "/" .. AudioFile
                             }
                             songList[title].type = "osu!"
                         end
@@ -72,6 +76,7 @@ function loadSongs(path)
                         local fileData = lf.read(path .."/" .. file .. "/" .. song)
                         local title = fileData:match("SongTitle:(.-)\r?\n")
                         local difficultyName = fileData:match("SongDiff:(.-)\r?\n")
+                        local AudioFile = fileData:match("AudioFile:(.-)\r?\n"):trim()
                         local alreadyInList = false
                         for _, song in ipairs(songList) do
                             if song.title == title and song.difficultyName == difficultyName then
@@ -89,6 +94,7 @@ function loadSongs(path)
                                 type = "Rit",
                                 rating = "",
                                 ratingColour = {1,1,1},
+                                audioFile = path .."/" .. file .. "/" .. AudioFile
                             }
                             songList[title].type = "Rit"
                         end
@@ -97,6 +103,12 @@ function loadSongs(path)
                         local fileData = json(lf.read(path .."/" .. file .. "/" .. song))
                         local title = fileData.meta.song.title
                         local difficultyName = fileData.meta.version
+                        local AudioFile
+                        for i, note in ipairs(fileData.note) do
+                            if note.type == 1 then
+                                AudioFile = note.sound
+                            end
+                        end
                         local alreadyInList = false
                         for _, song in ipairs(songList) do
                             if song.title == title and song.difficultyName == difficultyName then
@@ -114,11 +126,12 @@ function loadSongs(path)
                                 type = "Malody",
                                 rating = "",
                                 ratingColour = {1,1,1},
+                                audioFile = path .."/" .. file .. "/" .. AudioFile
                             }
                         end
                         songList[title].type = "Malody"
                         -- With how stupid I am, stepmania is probably going to be the last thing I add
-                    elseif song:sub(-3) == ".sm" then -- for stepmania, we have to call "smLoader.getDifficulties(chart)"
+                    --[[ elseif song:sub(-3) == ".sm" then -- for stepmania, we have to call "smLoader.getDifficulties(chart)"
                         diffs = smLoader.getDifficulties(path .."/" .. file .. "/" .. song)
                         -- has a table in a table (holds name and songName)
 
@@ -143,20 +156,21 @@ function loadSongs(path)
                                     ratingColour = {1,1,1},
                                 }
                             end
-                        end
+                        end ]]
                     end
                 end
             end
         elseif lf.getInfo(path .."/" .. file).type == "file" then
             lf.mount(path .."/" .. file, "song")
             -- for all files in song/
-            for _, song in ipairs(love.filesystem.getDirectoryItems("song")) do
+            for _, song in ipairs(lf.getDirectoryItems("song")) do
                 if song:sub(-4) == ".qua" then
                     local fileData = lf.read("song/" .. song)
                     local title = fileData:match("Title:(.-)\r?\n")
                     local difficultyName = fileData:match("DifficultyName:(.-)\r?\n")
                     local mode = fileData:match("Mode:(.-)\r?\n"):gsub("^%s*(.-)%s*$", "%1")
                     local Creator = fileData:match("Creator:(.-)\r?\n")
+                    local AudioFile = fileData:match("AudioFile:(.-)\r?\n"):trim()
                     local alreadyInList = false
                     for _, song in ipairs(songList) do
                         if song.title == title and song.difficultyName == difficultyName then
@@ -175,7 +189,8 @@ function loadSongs(path)
                             rating = "",
                             ratingColour = {1,1,1},
                             creator = Creator,
-                            mode = mode:match("%d+")
+                            mode = mode:match("%d+"),
+                            audioFile = "song/" .. AudioFile
                        }
                         songList[title].type = "Quaver"
                     end
@@ -183,6 +198,7 @@ function loadSongs(path)
                     local fileData = lf.read("song/" .. song)
                     local title = fileData:match("Title:(.-)\r?\n")
                     local difficultyName = fileData:match("Version:(.-)\r?\n")
+                    local AudioFile = fileData:match("AudioFilename:(.-)\r?\n"):trim()
                     local alreadyInList = false
                     for _, song in ipairs(songList) do
                         if song.title == title and song.difficultyName == difficultyName then
@@ -200,12 +216,13 @@ function loadSongs(path)
                             type = "osu!",
                             rating = "",
                             ratingColour = {1,1,1},
+                            audioFile = "song/" .. AudioFile
                         }
                         songList[title].type = "osu!"
                     end
                 end
             end
-            love.filesystem.unmount(path .."/" .. file)
+            lf.unmount(path .."/" .. file)
         end
     end
 
@@ -224,15 +241,47 @@ function loadSongs(path)
     end
 end
 
-function playRandomSong()
-    -- calls the loader.audioFile to play the song
-    
-    local song = songList[love.math.random(1, #songList)]
-    audioFile = nil
+function playRandomSong()    
+    -- get a random value with pairs
+    local song = table.random(songList)
+    local diff = table.random(song)
 
-    if song.type == "osu!" then
-        osuLoader.getSong(song.folderPath, song.path)
-    elseif song.type == "Quaver" then
-        quaverLoader.getSong(song.folderPath, song.path)
+    if not diff then playRandomSong() return end
+    if not diff.audioFile then playRandomSong() return end
+
+    if diff.audioFile:startsWith("song/") then
+        lf.mount("songs/" .. diff.filename, "song")
+        table.print(lf.getDirectoryItems("song"))
+    end
+    
+    MenuSoundManager:stop("music")
+    MenuSoundManager:removeAllSounds()
+    MenuSoundManager:newSound("music", diff.audioFile, 1, true, "stream")
+    MenuSoundManager:play("music")
+    MenuSoundManager:fadeIn("music", 2, 1, 0.1)
+
+    if diff.audioFile:startsWith("song/") then
+        lf.unmount(diff.path)
+    end
+end
+
+function playSelectedSong(song)
+    local diff = table.random(song.children)
+
+    if not diff then return end
+    if not diff.audioFile then return end
+
+    if diff.audioFile:startsWith("song/") then
+        lf.mount("songs/" .. diff.filename, "song")
+    end
+
+    MenuSoundManager:stop("music")
+    MenuSoundManager:removeAllSounds()
+    MenuSoundManager:newSound("music", diff.audioFile, 1, true, "stream")
+    MenuSoundManager:play("music")
+    MenuSoundManager:fadeIn("music", 2, 1, 0.1)
+
+    if diff.audioFile:startsWith("song/") then
+        lf.unmount(diff.path)
     end
 end

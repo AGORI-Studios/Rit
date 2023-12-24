@@ -1,2 +1,2 @@
-LÖVE 11.4 for Windows (64-bit): https://github.com/love2d/love/releases/download/11.4/love-11.4-win64.zip
-	Download it, extract it, and copy the contents of the "love-11.3-win64" directory to ./love
+LÖVE 11.5 for Windows (64-bit): https://github.com/love2d/love/releases/download/11.5/love-11.5-win64.zip
+	Download it, extract it, and copy the contents of the "love-11.5-win64" directory to ./love

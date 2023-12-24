@@ -23,3 +23,9 @@ function table.clone(table)
 
     return newTable
 end
+
+function table.print(table)
+    for k, v in pairs(table) do
+        print(k, v)
+    end
+end

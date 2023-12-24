@@ -5,6 +5,11 @@ local menuBPM = 120
 
 local timers = {}
 
+local soundData
+
+local balls, bg, logo, twitterLogo, kofiLogo, discordLogo
+local equalizer
+
 function StartMenu:enter()
     balls = {}
     bg = Sprite(0, 0, "assets/images/ui/menu/BGsongList.png")
@@ -37,6 +42,17 @@ function StartMenu:enter()
             largeImageKey = "totallyreallogo",
             largeImageText = "Rit" .. (__DEBUG__ and " DEBUG MODE" or "")
         }
+    end
+
+    loadSongs("defaultSongs")
+    loadSongs("songs")
+    if not MenuSoundManager:exists("music") then playRandomSong() end
+
+    if MenuSoundManager:exists("music") then
+        soundData = MenuSoundManager:getSoundData("music")
+
+        -- equalizer that draws on top of the screen
+        equalizer = Spectrum(soundData)
     end
 end
 
@@ -71,6 +87,10 @@ function StartMenu:update(dt)
     end
 
     if input:pressed("confirm") then state.switch(states.menu.SongMenu) end
+
+    if equalizer then
+        equalizer:update(MenuSoundManager:getChannel("music").sound, soundData)
+    end
 end
 
 function StartMenu:mousepressed(x, y, b)
@@ -99,6 +119,10 @@ function StartMenu:draw()
     twitterLogo:draw()
     kofiLogo:draw()
     discordLogo:draw()
+
+    if equalizer then
+        equalizer:draw()
+    end
 end
 
 return StartMenu

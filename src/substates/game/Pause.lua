@@ -35,6 +35,29 @@ function Pause:update(dt)
     end
 end
 
+function Pause:mousemoved(x, y, dx, dy, istouch)
+    if x > 0 and x < __inits.__GAME_WIDTH and y > 0 and y < __inits.__GAME_HEIGHT then
+        self.selection = math.floor((y - 200) / 50) + 1
+    end
+end
+
+function Pause:mousepressed(x, y, button, istouch)
+    if x > 0 and x < __inits.__GAME_WIDTH and y > 0 and y < __inits.__GAME_HEIGHT then
+        if self.selection == 1 then
+            
+        elseif self.selection == 2 then
+            state.switch(states.game.Gameplay)
+        elseif self.selection == 3 then
+            state.switch(states.menu.SongMenu)
+        end
+        states.game.Gameplay.inPause = false
+        states.game.Gameplay.updateTime = true
+        previousFrameTime = love.timer.getTime() * 1000
+        states.game.Gameplay.escapeTimer = 0
+        state.killSubstate()
+    end
+end
+
 function Pause:draw() 
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.setFont(Cache.members.font["menuBig"])

@@ -144,25 +144,6 @@ function stepmaniaLoader.parseChart(chart)
     while #lines > 0 do
         line = readLine(lines)
         local value
-        --[[ value = getTagValue(line, "TITLE")
-        if value then
-            title = value
-            line = readLine(lines)
-            goto continue
-        end
-        value = getTagValue(line, "OFFSET")
-        if value then
-            offset = tonumber(value) * 1000
-            line = readLine(lines)
-            goto continue
-        end
-        value = getTagValue(line, "BPMS")
-        if value then
-            print(value)
-            parseSMbpms(value)
-            line = readLine(lines)
-            goto continue
-        end ]]
         if line:find("^#TITLE:") then
             title = line:gsub("^#TITLE:", ""):gsub(";", "")
             line = readLine(lines)
@@ -179,12 +160,6 @@ function stepmaniaLoader.parseChart(chart)
             line = readLine(lines)
             goto continue
         end
-        --[[ value = getTagValue(line, "MUSIC")
-        if value then
-            states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. value, 1, true, "stream")
-            line = readLine(lines)
-            goto continue
-        end ]]
         if line:find("^#MUSIC:") then
             local value = line:gsub("^#MUSIC:", ""):gsub(";", "")
             states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. value, 1, true, "stream")

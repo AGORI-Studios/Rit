@@ -56,6 +56,7 @@ function love.load()
     threadLoader = require("lib.loveloader")
     xml = require("lib.xml")
     lovefs = require("lib.lovefs.lovefs")
+    require("lib.luafft")
 
     -- Classes
     Group = require("modules.Classes.Group")
@@ -74,8 +75,10 @@ function love.load()
     -- Objects
     StrumObject = require("modules.Objects.game.StrumObject")
     HitObject = require("modules.Objects.game.HitObject")
-    SongButton = require("modules.Objects.menu.SongButton")
     Playfield = require("modules.Objects.game.Playfield")
+
+    SongButton = require("modules.Objects.menu.SongButton")
+    Spectrum = require("modules.Objects.menu.Spectrum")
 
     -- Parsers
     quaverLoader = require("modules.Parsers.Quaver")
@@ -157,6 +160,8 @@ function love.load()
 
     gameScreen = love.graphics.newCanvas(__inits.__GAME_WIDTH, __inits.__GAME_HEIGHT)
 
+    MenuSoundManager = SoundManager()
+
     state.switch(states.screens.PreloaderScreen)
 end
 
@@ -189,6 +194,8 @@ function love.update(dt)
         end
         discordRPC.runCallbacks()
     end
+
+    MenuSoundManager:update(dt)
 end
 
 function love.filedropped(file)

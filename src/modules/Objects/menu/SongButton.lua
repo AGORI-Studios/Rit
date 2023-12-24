@@ -25,6 +25,7 @@ function SongButton:new(y, diffs, bmType, name, creator)
         diffBtn.songPath = diff.songPath
         diffBtn.filename = diff.filename
         diffBtn.path = diff.path
+        diffBtn.audioFile = diff.audioFile
     end
     
     self.type = bmType

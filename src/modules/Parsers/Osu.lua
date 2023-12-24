@@ -14,6 +14,8 @@ function osuLoader.load(chart, folderPath_, forDiff)
     for _, line in ipairs(chart:split("\n")) do
         osuLoader.processLine(line)
     end
+
+    chart = nil
 end
 
 function osuLoader.processLine(line)

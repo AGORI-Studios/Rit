@@ -2,13 +2,16 @@ local SoundManager = Object:extend()
 
 function SoundManager:new()
     self.channel = {}
+    self.soundData = {}
 end
 
 function SoundManager:newSound(name, path, volume, loop, type)
     local volume = volume or 1
     local loop = loop or false
+    if not path then return end
+    self.soundData[name] = love.sound.newSoundData(path)
     self.channel[name] = {
-        sound = love.audio.newSource(path, type or "static"),
+        sound = love.audio.newSource(self.soundData[name], type or "stream"),
         volume = volume,
         loop = loop,
         bpm = 120,
@@ -26,6 +29,7 @@ function SoundManager:play(name, clone)
         clone:play()
         return clone
     else
+        if not self.channel[name] then return end
         self.channel[name].sound:play()
         return self.channel[name].sound
     end
@@ -43,10 +47,20 @@ function SoundManager:update(dt)
             v.time = 0
             v.onBeat(v.beat)
         end
+        v.sound:setVolume(v.volume)
+    end
+end
+
+function SoundManager:removeAllSounds()
+    for k, v in pairs(self.channel) do
+        v.sound:stop()
+        v.sound:release()
+        self.channel[k] = nil
     end
 end
 
 function SoundManager:stop(name)
+    if not self.channel[name] then return end
     self.channel[name].sound:stop()
 end
 
@@ -123,6 +137,37 @@ end
 
 function SoundManager:setBeatCallback(name, callback)
     self.channel[name].onBeat = callback
+end
+
+function SoundManager:release(name)
+    self.channel[name].sound:release()
+end
+
+function SoundManager:fadeIn(name, t, volume, delay)
+    local t = t or 0.3
+    local volume = volume or 1
+    self.channel[name].sound:setVolume(0)
+    self.channel[name].sound:play()
+    self.channel[name].volume = 0
+    if delay then
+        Timer.after(delay, function()
+            Timer.tween(t, self.channel[name], {volume = volume}, "linear")
+        end)
+    else
+        Timer.tween(t, self.channel[name], {volume = volume}, "linear")
+    end
+end
+
+function SoundManager:exists(name)
+    return self.channel[name] ~= nil
+end
+
+function SoundManager:getSoundData(name)
+    return self.soundData[name]
+end
+
+function SoundManager:getChannel(name)
+    return self.channel[name]
 end
 
 return SoundManager

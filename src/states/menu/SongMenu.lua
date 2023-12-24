@@ -29,6 +29,8 @@ local inCat = false
 local showCat = true
 local inSidebar = false
 
+local songTimer
+
 local allTypes = {
     "All",
     "Rit",
@@ -65,8 +67,7 @@ function SongMenu:enter()
     bars:setScale(1.5)
     gear:setScale(1.5)
     home:setScale(1.5)
-    loadSongs("defaultSongs")
-    loadSongs("songs")
+
     if discordRPC then
         discordRPC.presence = {
             details = "In the menu",
@@ -110,6 +111,8 @@ function SongMenu:enter()
         local allBtn = SongButton(y, diffs, bmType, songName)
         table.insert(songButtons["All"], allBtn)
     end
+
+    playSelectedSong(songButtons[curSongType][curSelected])
 end
 
 function SongMenu:update(dt)
@@ -158,6 +161,7 @@ function SongMenu:update(dt)
                 states.game.Gameplay.folderpath = folderpath
                 switchState(states.game.Gameplay, 0.3, nil)
             end
+            MenuSoundManager:removeAllSounds()
         end
     elseif input:pressed("back") and not transitioning then
         if curTab == "diffs" then
@@ -185,13 +189,37 @@ function SongMenu:update(dt)
         end
     end
 
-    if input:pressed("down") then curSelected = curSelected + 1 end
-    if input:pressed("up") then curSelected = curSelected - 1 end
+    if input:pressed("down") then 
+        curSelected = curSelected + 1 
+        if curTab == "songs" then
+            if songTimer then Timer.cancel(songTimer) end
+            songTimer = Timer.after(0.25, function()
+                playSelectedSong(songButtons[curSongType][curSelected])
+            end)
+        end
+    end
+    if input:pressed("up") then 
+        curSelected = curSelected - 1 
+        if curTab == "songs" then
+            if songTimer then Timer.cancel(songTimer) end
+            songTimer = Timer.after(0.25, function()
+                playSelectedSong(songButtons[curSongType][curSelected])
+            end)
+        end
+    end
+
+
 end
 
 function SongMenu:wheelmoved(x, y)
     if state.inSubstate then return end
     curSelected = curSelected - y
+    if curTab == "songs" then
+        if songTimer then Timer.cancel(songTimer) end
+        songTimer = Timer.after(0.25, function()
+            playSelectedSong(songButtons[curSongType][curSelected])
+        end)
+    end
 end
 
 function SongMenu:mousepressed(x, y, b)
@@ -226,6 +254,12 @@ function SongMenu:mousepressed(x, y, b)
         for i, btn in ipairs(songButtons[curSongType]) do
             if btn:isHovered(x, y) then
                 curSelected = i
+                if curTab == "songs" then
+                    if songTimer then Timer.cancel(songTimer) end
+                    songTimer = Timer.after(0.25, function()
+                        playSelectedSong(songButtons[curSongType][curSelected])
+                    end)
+                end
                 if curTab == "diffs" then
                     for i, diffBtn in ipairs(btn.children) do
                         if diffBtn:isHovered(x, y) then
@@ -253,13 +287,15 @@ function SongMenu:draw()
     setFont("menuBold")
     love.graphics.translate(0, lerpedSongPos)
     for i, btn in ipairs(songButtons[curSongType]) do
-        if curSelected ~= i then
-            btn.color = {0.5, 0.5, 0.5}
-        else
-            btn.color = {1, 1, 1}
+        -- dont draw if it's out of bounds with lerpedSongPos
+        if not (btn.y + lerpedSongPos > 1080 or btn.y + lerpedSongPos < -btn.height) then
+            if curSelected ~= i then
+                btn.color = {0.5, 0.5, 0.5}
+            else
+                btn.color = {1, 1, 1}
+            end
+            btn:draw()
         end
-        btn:draw()
-
         if btn.open then
             for j, diffBtn in ipairs(btn.children) do
                 if curSelected ~= j then
