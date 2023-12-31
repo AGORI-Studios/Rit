@@ -26,6 +26,8 @@ function QuaverImportScreen:enter()
                     for _, file in ipairs(lFiles) do
                         importer:copy(dir .. sep .. file, songsFolder .. sep .. song .. sep .. file)
                     end
+
+                    importer:cd(lastDir)
                 end
             end
         end
