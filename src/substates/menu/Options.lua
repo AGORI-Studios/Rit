@@ -44,7 +44,7 @@ function Options:mousepressed(x, y, id)
             love.system.openURL("file://" .. love.filesystem.getSaveDirectory() .. "/")
         end
 
-        if mx >= __inits.__GAME_WIDTH-200 and mx <= __inits.__GAME_HEIGHT-100 and my >= 100 and my <= 150 then
+        if mx >= __inits.__GAME_WIDTH-200 and mx <= __inits.__GAME_WIDTH-100 and my >= 100 and my <= 150 then
             state.killSubstate()
         end
     end

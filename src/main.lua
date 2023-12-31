@@ -55,7 +55,7 @@ function love.load()
     ini = require("lib.ini")
     threadLoader = require("lib.loveloader")
     xml = require("lib.xml")
-    lovefs = require("lib.lovefs.lovefs")
+    require("lib.lovefs.lovefs")
     require("lib.luafft")
 
     -- Classes
@@ -123,6 +123,10 @@ function love.load()
             PreloaderScreen = require("states.screen.PreloaderScreen"),
             SplashScreen = require("states.screen.SplashScreen"),
             MapEditorScreen = require("states.screen.MapEditorScreen"),
+            Importers = {
+                QuaverImportScreen = require("states.screen.Importers.QuaverImportScreen"),
+                OsuImportScreen = require("states.screen.Importers.OsuImportScreen"),
+            }
         }
     }
     substates = {

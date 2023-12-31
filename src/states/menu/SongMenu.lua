@@ -31,6 +31,8 @@ local inSidebar = false
 
 local songTimer
 
+local nowPlaying = ""
+
 local allTypes = {
     "All",
     "Rit",
@@ -61,12 +63,14 @@ function SongMenu:enter()
     bars = Sprite(1830, 0, "assets/images/ui/buttons/barsHorizontal.png")
     gear = Sprite(0, 0, "assets/images/ui/buttons/gear.png")
     home = Sprite(80, 0, "assets/images/ui/buttons/home.png")
+    import = Sprite(1760, -2, "assets/images/ui/buttons/import.png")
 
     categoryOpen = Sprite(0, -125, "assets/images/ui/menu/catOpen.png")
     categoryClosed = Sprite(0, -125, "assets/images/ui/menu/catClosed.png")
     bars:setScale(1.5)
     gear:setScale(1.5)
     home:setScale(1.5)
+    import:setScale(1.5)
 
     if discordRPC then
         discordRPC.presence = {
@@ -112,7 +116,10 @@ function SongMenu:enter()
         table.insert(songButtons["All"], allBtn)
     end
 
-    playSelectedSong(songButtons[curSongType][curSelected])
+    if songButtons[curSongType][lastCurSelected] then
+        playSelectedSong(songButtons[curSongType][lastCurSelected])
+        nowPlaying = songButtons[curSongType][lastCurSelected].name
+    end
 end
 
 function SongMenu:update(dt)
@@ -195,7 +202,10 @@ function SongMenu:update(dt)
             lastCurSelected = curSelected
             if songTimer then Timer.cancel(songTimer) end
             songTimer = Timer.after(1, function()
-                playSelectedSong(songButtons[curSongType][lastCurSelected])
+                if songButtons[curSongType][lastCurSelected] then
+                    playSelectedSong(songButtons[curSongType][lastCurSelected])
+                    nowPlaying = songButtons[curSongType][lastCurSelected].name
+                end
             end)
         end
     end
@@ -205,7 +215,10 @@ function SongMenu:update(dt)
             lastCurSelected = curSelected
             if songTimer then Timer.cancel(songTimer) end
             songTimer = Timer.after(1, function()
-                playSelectedSong(songButtons[curSongType][lastCurSelected])
+                if songButtons[curSongType][lastCurSelected] then
+                    playSelectedSong(songButtons[curSongType][lastCurSelected])
+                    nowPlaying = songButtons[curSongType][lastCurSelected].name
+                end
             end)
         end
     end
@@ -218,7 +231,10 @@ function SongMenu:wheelmoved(x, y)
         lastCurSelected = curSelected
         if songTimer then Timer.cancel(songTimer) end
         songTimer = Timer.after(1, function()
-            playSelectedSong(songButtons[curSongType][lastCurSelected])
+            if songButtons[curSongType][lastCurSelected] then
+                playSelectedSong(songButtons[curSongType][lastCurSelected])
+                nowPlaying = songButtons[curSongType][lastCurSelected].name
+            end
         end)
     end
 end
@@ -232,8 +248,9 @@ function SongMenu:mousepressed(x, y, b)
         elseif home:isHovered(x, y) then
             state.switch(states.menu.StartMenu)
         elseif bars:isHovered(x, y) then
-            --state.substate(substates.menu.Options)
             shakeObject(bars)
+        elseif import:isHovered(x, y) then
+            state.switch(states.screens.Importers.QuaverImportScreen)
         end
 
         y = y - lerpedSongPos
@@ -259,7 +276,10 @@ function SongMenu:mousepressed(x, y, b)
                     lastCurSelected = curSelected
                     if songTimer then Timer.cancel(songTimer) end
                     songTimer = Timer.after(1, function()
-                        playSelectedSong(songButtons[curSongType][lastCurSelected])
+                        if songButtons[curSongType][lastCurSelected] then
+                            playSelectedSong(songButtons[curSongType][lastCurSelected])
+                            nowPlaying = songButtons[curSongType][lastCurSelected].name
+                        end
                     end)
                 end
                 if curTab == "diffs" then
@@ -357,11 +377,31 @@ function SongMenu:draw()
     gear:draw()
     home:draw()
     bars:draw()
+    import:draw()
     setFont("menuBold")
     love.graphics.printf(SteamUserName or "Not Logged In", 180, 8, 1080/2, "left", 0, 2, 2) -- Steam name
     -- draw SteamUserAvatarSmall to the right of the name
     if SteamUserAvatarSmall then
         love.graphics.draw(SteamUserAvatarSmall, 180 + (fontWidth("menuBold", SteamUserName)*2) + 10, 3, 0, 2, 2)
+    end
+    -- now playing text
+    if fontWidth("menuBold", "Now Playing: " .. nowPlaying) > 452 then
+        local newWidth = 0
+        local newString = ""
+        for i = 1, #("Now Playing: " .. nowPlaying):splitAllCharacters() do
+            local char = ("Now Playing: " .. nowPlaying):sub(i, i)
+            newWidth = newWidth + fontWidth("menuBold", char)
+            if newWidth > 452 then
+                -- break, remove last 3, and add "..."
+                newString = newString:sub(1, #newString - 3) .. "..."
+                break
+            else
+                newString = newString .. char
+            end
+        end
+        love.graphics.printf(newString, 1920/2-65, 8, 1080/2, "left", 0, 2, 2)
+    else
+        love.graphics.printf("Now Playing: " .. nowPlaying, 1920/2-65, 8, 1080/2, "left", 0, 2, 2)
     end
     setFont("default")
 end
