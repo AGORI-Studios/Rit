@@ -4,6 +4,7 @@ Settings.options = {
     ["General"] = {
         downscroll = true,
         scrollspeed = 2,
+        backgroundVisibility = 1,
     },
     ["Meta"] = {
         __VERSION__ = 1

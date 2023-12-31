@@ -88,7 +88,7 @@ function StartMenu:update(dt)
 
     if input:pressed("confirm") then state.switch(states.menu.SongMenu) end
 
-    if equalizer then
+    if equalizer and MenuSoundManager:getChannel("music") then
         equalizer:update(MenuSoundManager:getChannel("music").sound, soundData)
     end
 end
@@ -101,7 +101,7 @@ function StartMenu:mousepressed(x, y, b)
         elseif kofiLogo:isHovered(x, y) then
             love.system.openURL("https://ko-fi.com/guglioisstupid")
         elseif discordLogo:isHovered(x, y) then
-            love.system.openURL("https://discord.gg/ehY5gMMPW8")
+            love.system.openURL("https://discord.gg/y5zz2Dm7A2")
         end
     end
 end

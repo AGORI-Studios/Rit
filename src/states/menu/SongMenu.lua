@@ -192,32 +192,33 @@ function SongMenu:update(dt)
     if input:pressed("down") then 
         curSelected = curSelected + 1 
         if curTab == "songs" then
+            lastCurSelected = curSelected
             if songTimer then Timer.cancel(songTimer) end
-            songTimer = Timer.after(0.25, function()
-                playSelectedSong(songButtons[curSongType][curSelected])
+            songTimer = Timer.after(1, function()
+                playSelectedSong(songButtons[curSongType][lastCurSelected])
             end)
         end
     end
     if input:pressed("up") then 
         curSelected = curSelected - 1 
         if curTab == "songs" then
+            lastCurSelected = curSelected
             if songTimer then Timer.cancel(songTimer) end
-            songTimer = Timer.after(0.25, function()
-                playSelectedSong(songButtons[curSongType][curSelected])
+            songTimer = Timer.after(1, function()
+                playSelectedSong(songButtons[curSongType][lastCurSelected])
             end)
         end
     end
-
-
 end
 
 function SongMenu:wheelmoved(x, y)
     if state.inSubstate then return end
     curSelected = curSelected - y
     if curTab == "songs" then
+        lastCurSelected = curSelected
         if songTimer then Timer.cancel(songTimer) end
-        songTimer = Timer.after(0.25, function()
-            playSelectedSong(songButtons[curSongType][curSelected])
+        songTimer = Timer.after(1, function()
+            playSelectedSong(songButtons[curSongType][lastCurSelected])
         end)
     end
 end
@@ -255,9 +256,10 @@ function SongMenu:mousepressed(x, y, b)
             if btn:isHovered(x, y) then
                 curSelected = i
                 if curTab == "songs" then
+                    lastCurSelected = curSelected
                     if songTimer then Timer.cancel(songTimer) end
-                    songTimer = Timer.after(0.25, function()
-                        playSelectedSong(songButtons[curSongType][curSelected])
+                    songTimer = Timer.after(1, function()
+                        playSelectedSong(songButtons[curSongType][lastCurSelected])
                     end)
                 end
                 if curTab == "diffs" then

@@ -284,7 +284,7 @@ end
 
 function love.quit()
     if Steam then
-        Steam.shutdown()
+        Steam.Shutdown()
     end
     if discordRPC then
         discordRPC.shutdown()

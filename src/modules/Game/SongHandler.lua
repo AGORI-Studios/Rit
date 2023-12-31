@@ -264,8 +264,9 @@ function playRandomSong()
         lf.unmount(diff.path)
     end
 end
-
+local baseSoundData = {}
 function playSelectedSong(song)
+    if not song or not song.children then return end
     local diff = table.random(song.children)
 
     if not diff then return end
@@ -277,9 +278,13 @@ function playSelectedSong(song)
 
     MenuSoundManager:stop("music")
     MenuSoundManager:removeAllSounds()
-    MenuSoundManager:newSound("music", diff.audioFile, 1, true, "stream")
-    MenuSoundManager:play("music")
-    MenuSoundManager:fadeIn("music", 2, 1, 0.1)
+    --MenuSoundManager:newSound("music", diff.audioFile, 1, true, "stream")
+    threadLoader.newSoundData(baseSoundData, "music", diff.audioFile)
+    threadLoader.start(function()
+        MenuSoundManager:newSound("music", baseSoundData.music, 1, true, "stream")
+        MenuSoundManager:play("music")
+        MenuSoundManager:fadeIn("music", 2, 1, 0.1)
+    end)
 
     if diff.audioFile:startsWith("song/") then
         lf.unmount(diff.path)

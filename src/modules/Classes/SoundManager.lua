@@ -9,7 +9,11 @@ function SoundManager:newSound(name, path, volume, loop, type)
     local volume = volume or 1
     local loop = loop or false
     if not path then return end
-    self.soundData[name] = love.sound.newSoundData(path)
+    if _G.type(path) == "string" then
+        self.soundData[name] = love.sound.newSoundData(path)
+    else -- already a sounddata (assumed)
+        self.soundData[name] = path
+    end
     self.channel[name] = {
         sound = love.audio.newSource(self.soundData[name], type or "stream"),
         volume = volume,
