@@ -51,6 +51,7 @@
 - [loveloader.lua](/src/lib/loveloader.lua)
 - [sworks](/src/lib/sworks/)
 - [lovefs](/src/lib/lovefs/)
+- [aqua](/src/lib/aqua) (Just the video module)
 
 # Credits
 - [Getsaa](https://twitter.com/GetsaaNG) - Menu design, UI design, and art
