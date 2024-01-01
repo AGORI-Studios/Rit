@@ -6,6 +6,15 @@ requirements/win64/*
 !requirements/win64/luasteam.dll
 !requirements/win64/discord-rpc.dll
 !requirements/win64/https.dll
+!requirements/win64/avcodec-60.dll
+!requirements/win64/avdevice-60.dll
+!requirements/win64/avfilter-07.dll
+!requirements/win64/avformat-60.dll
+!requirements/win64/avutil-58.dll
+!requirements/win64/postproc-57.dll
+!requirements/win64/swresample-4.dll
+!requirements/win64/swscale-7.dll
+!requirements/win64/video.dll
 
 requirements/win32/*
 !requirements/win32/dependencies.txt
