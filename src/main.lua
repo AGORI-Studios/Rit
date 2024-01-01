@@ -57,6 +57,7 @@ function love.load()
     xml = require("lib.xml")
     require("lib.lovefs.lovefs")
     require("lib.luafft")
+    Video = require("lib.aqua.Video")
 
     -- Classes
     Group = require("modules.Classes.Group")

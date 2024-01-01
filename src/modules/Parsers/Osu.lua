@@ -61,14 +61,19 @@ function osuLoader.processGeneral(line)
 end
 function osuLoader.processEvent(line)
     local split = line:split(",")
-    if split[1] == "0" then
+    if split[1] == "Video" then -- Video,-64,"video.mp4"
+        local video = line:match("^Video,.+\"(.+)\".*$")
+        local videoPath = folderPath .. "/" .. video
+        -- get filedata userdata
+        local fileData = love.filesystem.newFileData(videoPath)
+        states.game.Gameplay.background = Video(fileData)
+    end
+    if split[1] == "0" and not states.game.Gameplay.background then
         local bg = line:match("^0,.+,\"(.+)\".*$")
         --states.game.Gameplay.background = love.graphics.newImage(folderPath .. "/" .. bg)
         if love.filesystem.getInfo(folderPath .. "/" .. bg) then
             if bg:find(".jpg") or bg:find(".png") then
                 states.game.Gameplay.background = love.graphics.newImage(folderPath .. "/" .. bg)
-            else
-                --states.game.Gameplay.background = love.graphics.newVideo(folderPath .. "/" .. bg) -- TODO. Make an FFMPEG wrapper for love2d
             end
         end
     end

@@ -57,6 +57,9 @@ function loadSongs(path)
                                 alreadyInList = true
                             end
                         end
+                        local Mode = fileData:match("Mode:(.-)\r?\n"):trim()
+                        -- needs to be 3, else FUCK YOU!
+                        if Mode ~= "3" then goto continue end
                         if not alreadyInList then
                             songList[title] = songList[title] or {}
                             songList[title][difficultyName] = {
@@ -72,6 +75,7 @@ function loadSongs(path)
                             }
                             songList[title].type = "osu!"
                         end
+                        ::continue::
                     elseif song:sub(-5) == ".ritc" then
                         local fileData = lf.read(path .."/" .. file .. "/" .. song)
                         local title = fileData:match("SongTitle:(.-)\r?\n")
@@ -200,6 +204,9 @@ function loadSongs(path)
                     local difficultyName = fileData:match("Version:(.-)\r?\n")
                     local AudioFile = fileData:match("AudioFilename:(.-)\r?\n"):trim()
                     local alreadyInList = false
+                    local Mode = fileData:match("Mode:(.-)\r?\n"):trim()
+                    -- needs to be 3, else FUCK YOU!
+                    if Mode ~= "3" then goto continue end
                     for _, song in ipairs(songList) do
                         if song.title == title and song.difficultyName == difficultyName then
                             alreadyInList = true
@@ -220,6 +227,7 @@ function loadSongs(path)
                         }
                         songList[title].type = "osu!"
                     end
+                    ::continue::
                 end
             end
             lf.unmount(path .."/" .. file)

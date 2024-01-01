@@ -124,7 +124,7 @@ function SoundManager:getSound(name)
 end
 
 function SoundManager:seek(name, seconds, unit)
-    self.channel[name].sound:seek(seconds, unit)
+    self.channel[name].sound:seek(seconds or 0, unit or "seconds")
 end
 
 function SoundManager:tell(name, unit)

@@ -406,12 +406,11 @@ function Gameplay:enter()
 
     Modscript:call("Start")
 
-    Timer.after(0.8, function()
+    Timer.after(1.2, function()
         self.updateTime = true
         self.didTimer = true
+        previousFrameTime = love.timer.getTime() * 1000
     end)
-
-    previousFrameTime = love.timer.getTime() * 1000
 end
 
 function Gameplay:addObjectsToGroups()
@@ -449,12 +448,15 @@ function Gameplay:update(dt)
     if self.inPause then return end
     if self.updateTime then
         -- use previousFrameTime to get musicTime (love.timer.getTime is pft)
+        if self.background.play and (self.background.isDone and not self.background:isDone()) then
+            self.background:play(musicTime/1000)
+        end
         musicTime = musicTime + (love.timer.getTime() * 1000) - (previousFrameTime or (love.timer.getTime()*1000))
         self.soundManager:update(dt)
         previousFrameTime = love.timer.getTime() * 1000
-        if musicTime >= 0 and not self.soundManager:isPlaying("music") and musicTime < self.songDuration then
+        if musicTime >= 0 and not self.soundManager:isPlaying("music") and musicTime < 1000 then
             self.soundManager:play("music")
-            self.soundManager:seek("music", musicTime / 1000) -- safe measure to keep it lined up
+            musicTime = 0
         elseif (musicTime > self.songDuration and not self.soundManager:isPlaying("music")) then
             state.switch(states.menu.SongMenu)
             return
@@ -625,7 +627,7 @@ end
 function Gameplay:draw()
     if self.background then
         love.graphics.setColor(0.3, 0.3, 0.3)
-        love.graphics.draw(self.background, 0, 0, 0, 1920/self.background:getWidth(), 1080/self.background:getHeight())
+        love.graphics.draw(self.background.image or self.background, 0, 0, 0, 1920/self.background:getWidth(), 1080/self.background:getHeight())
     end
     for i, spr in pairs(Modscript.funcs.sprites) do
         if not spr.drawWithoutRes and not spr.drawOverNotes then
