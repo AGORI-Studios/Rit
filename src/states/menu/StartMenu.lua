@@ -13,7 +13,7 @@ local balls, bg, logo, twitterLogo, kofiLogo, discordLogo
 local equalizer
 
 local curMenu = 1
-local curLogoScale = {2}
+local curLogoScale = {2.25}
 local logoScale = {2, 2}
 local logoPos = {0, 0}
 
@@ -64,7 +64,7 @@ local function enterFunc()
     Timer.tween(
         0.5, curLogoScale, 
         {
-            1.55
+            1.85
         },
         "in-out-cubic"
     )
@@ -127,7 +127,7 @@ function StartMenu:enter()
     --logo = Image("assets/images/ui/menu/logo.png")
     logo = Sprite(0, 0, "assets/images/ui/menu/logo.png")
     logo:centerOrigin()
-    logo.scale = Point(2, 2)
+    logo.scale = Point(2.25, 2.25)
 
     twitterLogo = Sprite(1780, 950, "assets/images/ui/icons/twitter.png")
     kofiLogo = Sprite(1780, 825, "assets/images/ui/icons/ko-fi.png")
