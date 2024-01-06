@@ -21,6 +21,10 @@ function Video:new(fileData)
     self.imageData = love.image.newImageData(vid:getDimensions())
     self.image = love.graphics.newImage(self.imageData)
 
+    self.width = self.image:getWidth()
+
+    self.height = self.image:getHeight()
+
     return self
 end
 
@@ -39,33 +43,28 @@ end
 function Video:play(time)
     local time = time or 0
     local vid = self.video
+    
     while time >= vid:tell() do
         if not vid:read(self.imageData:getPointer()) then
-            vid:seek(0)
+            break
         end
     end
     self.image:replacePixels(self.imageData)
 end
 
 function Video:getWidth()
-    return self.image:getWidth()
+    return self.width
 end
 
 function Video:getHeight()
-    return self.image:getHeight()
+    return self.height
 end
 
 function Video:getDimensions()
-    return self.image:getDimensions()
+    return self.width, self.height
 end
 
--- vid:read(self.imageData:getPointer())
 function Video:isDone()
-    -- checl if vid:read(self.imageData:getPointer()) returns false/nil
-    -- if so, return true
-    -- else return false
-    local isDone = not self.video:read(self.imageData:getPointer())
-    return isDone
 end
 
 return Video

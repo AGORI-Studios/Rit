@@ -448,24 +448,27 @@ function Gameplay:update(dt)
     if self.inPause then return end
     if self.updateTime then
         -- use previousFrameTime to get musicTime (love.timer.getTime is pft)
-        if self.background.play and (self.background.isDone and not self.background:isDone()) then
-            self.background:play(musicTime/1000)
-        end
-        musicTime = musicTime + (love.timer.getTime() * 1000) - (previousFrameTime or (love.timer.getTime()*1000))
-        self.soundManager:update(dt)
-        previousFrameTime = love.timer.getTime() * 1000
         if musicTime >= 0 and not self.soundManager:isPlaying("music") and musicTime < 1000 then
             self.soundManager:play("music")
             musicTime = 0
         elseif (musicTime > self.songDuration and not self.soundManager:isPlaying("music")) then
             state.switch(states.menu.SongMenu)
+            self.background:release()
             return
         elseif self.escapeTimer >= 0.7 then
             state.substate(substates.game.Pause)
             self.inPause = true
             self.soundManager:pause("music")
             self.updateTime = false
+            self.background:release()
             return
+        else
+            if (self.background and self.background.play) and (musicTime >= 0 and musicTime < self.songDuration-1000) and self.soundManager:isPlaying("music") then
+                self.background:play(musicTime/1000)
+            end
+            musicTime = musicTime + (love.timer.getTime() * 1000) - (previousFrameTime or (love.timer.getTime()*1000))
+            self.soundManager:update(dt)
+            previousFrameTime = love.timer.getTime() * 1000
         end
         self:updateCurrentTrackPosition()
         self:updateNotePosition(self.currentTrackPosition, musicTime)
@@ -625,7 +628,7 @@ function Gameplay:substateReturn()
 end
 
 function Gameplay:draw()
-    if self.background then
+    if self.background and musicTime >= 0 then
         love.graphics.setColor(0.3, 0.3, 0.3)
         love.graphics.draw(self.background.image or self.background, 0, 0, 0, 1920/self.background:getWidth(), 1080/self.background:getHeight())
     end

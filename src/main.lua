@@ -239,6 +239,7 @@ function toGameScreen(x, y)
     -- converts our mouse position to the game screen (canvas) with the correct ratio
     local ratio = 1
     ratio = math.min(__WINDOW_WIDTH/__inits.__GAME_WIDTH, __WINDOW_HEIGHT/__inits.__GAME_HEIGHT)
+
     local x, y = x - __WINDOW_WIDTH/2, y - __WINDOW_HEIGHT/2
     x, y = x / ratio, y / ratio
     x, y = x + __inits.__GAME_WIDTH/2, y + __inits.__GAME_HEIGHT/2
@@ -248,8 +249,8 @@ end
 
 function love.draw()
     love.graphics.setCanvas(gameScreen)
-    love.graphics.clear(0,0,0,1)
-    state.draw()
+        love.graphics.clear(0,0,0,1)
+        state.draw()
     love.graphics.setCanvas()
 
     -- ratio
