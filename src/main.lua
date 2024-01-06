@@ -1,6 +1,5 @@
 fade = 1
 masterVolume = 50
-lerpedMasterVolume = 50
 isLoading = false
 __DEBUG__ = not love.filesystem.isFused()
 if not __DEBUG__ then 
@@ -45,6 +44,7 @@ __inits = require("init")
 __WINDOW_WIDTH, __WINDOW_HEIGHT = __inits.__WINDOW_WIDTH, __inits.__WINDOW_HEIGHT
 
 local winOpacity = {1}
+local volume = {1}
 local curVol = 1
 local isClosing = false
 
@@ -76,6 +76,7 @@ function love.load()
     Settings = require("modules.Game.Settings")
     Settings.loadOptions()
     VersionChecker = require("modules.VersionChecker")
+    Popup = require("modules.Popup")
 
     -- Objects
     StrumObject = require("modules.Objects.game.StrumObject")
@@ -191,12 +192,10 @@ function love.update(dt)
     Timer.update(dt)
     input:update()
     if not isLoading then state.update(dt) end
-    lerpedMasterVolume = math.fpsLerp(lerpedMasterVolume, masterVolume, 10, love.timer.getDelta())
-    love.audio.setVolume(lerpedMasterVolume/100)
+    love.audio.setVolume(volume[1] * (masterVolume/100))
 
     if isClosing then 
         love.window.setWindowOpacity(winOpacity[1]) 
-        love.audio.setVolume(curVol * winOpacity[1])
     end
 
     if discordRPC then
@@ -214,6 +213,16 @@ end
 
 function love.filedropped(file)
     
+end
+
+function love.focus(f)
+    state.focus(f)
+
+    if not f and volume then
+        Timer.tween(0.5, volume, {0.25}, "linear")
+    elseif f and volume then
+        Timer.tween(0.5, volume, {1}, "linear")
+    end
 end
 
 function love.keypressed(key)
@@ -309,8 +318,13 @@ function love.draw()
        
         "Steam: " .. (Steam and "true" or "false") .. "\n" ..
         (Steam and "Steam User: " .. SteamUserName .. "\n" or "") ..
-        "Volume: " .. math.round(lerpedMasterVolume, 2)
+        "Volume: " .. math.round(masterVolume, 2)
     )
+
+    -- draw Popup.popups
+    for i, popup in ipairs(Popup.popups) do
+        popup:draw()
+    end
 end
 
 function love.quit()
@@ -328,6 +342,7 @@ function love.quit()
         Timer.tween(0.5, winOpacity, {0}, "linear", function()
             love.event.quit()
         end)
+        Timer.tween(0.5, volume, {0}, "linear")
         curVol = love.audio.getVolume()
         return true
     end

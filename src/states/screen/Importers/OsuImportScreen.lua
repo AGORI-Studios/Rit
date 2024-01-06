@@ -17,22 +17,37 @@ end
 -- replace $USER and %username% with the actual username
 path = path:gsub("$USER", username):gsub("%%username%%", username)
 
+local frame = 0
+
 function OsuImportScreen:enter()
-    -- osu saves its songs as .osz files (thank god) so we can just copy one file over lol!
+    frame = 0
+end
 
-    if importer:exists(path) then
-        importer:cd(path)
-        local lastDir = importer.current
-        local dir, _, lFiles = importer:ls()
+function OsuImportScreen:update(dt)
+    frame = frame + 1
 
-        for _, song in ipairs(lFiles) do
-            if song:sub(-4) == ".osz" then
-                importer:copy(dir .. sep .. song, songsFolder .. sep .. song)
+    if frame == 2 then
+        -- osu saves its songs as .osz files (thank god) so we can just copy one file over lol!
+
+        if importer:exists(path) then
+            importer:cd(path)
+            local lastDir = importer.current
+            local dir, _, lFiles = importer:ls()
+
+            for _, song in ipairs(lFiles) do
+                if song:sub(-4) == ".osz" then
+                    importer:copy(dir .. sep .. song, songsFolder .. sep .. song)
+                end
             end
         end
-    end
 
-    state.switch(states.menu.StartMenu)
+        state.switch(states.menu.StartMenu)
+        Popup("bottom right", "Imported songs", "Imported all songs successfully!", 0.5, 1)
+    end
+end
+
+function OsuImportScreen:draw()
+    love.graphics.printf("Importing osu! songs...", 0, __inits.__GAME_HEIGHT/2-100, __inits.__GAME_WIDTH/2, "center", 0, 2, 2)
 end
 
 return OsuImportScreen

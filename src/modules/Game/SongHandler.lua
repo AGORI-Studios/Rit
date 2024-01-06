@@ -266,7 +266,7 @@ function playRandomSong()
     MenuSoundManager:removeAllSounds()
     MenuSoundManager:newSound("music", diff.audioFile, 1, true, "stream")
     MenuSoundManager:play("music")
-    MenuSoundManager:fadeIn("music", 2, 1, 0.1)
+    MenuSoundManager:setLooping("music", true)
 
     if diff.audioFile:startsWith("song/") then
         lf.unmount(diff.path)
@@ -291,7 +291,7 @@ function playSelectedSong(song)
     threadLoader.start(function()
         MenuSoundManager:newSound("music", baseSoundData.music, 1, true, "stream")
         MenuSoundManager:play("music")
-        MenuSoundManager:fadeIn("music", 2, 1, 0.1)
+        MenuSoundManager:setLooping("music", true)
     end)
 
     if diff.audioFile:startsWith("song/") then

@@ -93,7 +93,7 @@ function SoundManager:setVolume(name, volume)
     self.channel[name].sound:setVolume(volume)
 end
 
-function SoundManager:setLoop(name, loop)
+function SoundManager:setLooping(name, loop)
     self.channel[name].loop = loop
     self.channel[name].sound:setLooping(loop)
 end
@@ -145,21 +145,6 @@ end
 
 function SoundManager:release(name)
     self.channel[name].sound:release()
-end
-
-function SoundManager:fadeIn(name, t, volume, delay)
-    local t = t or 0.3
-    local volume = volume or 1
-    self.channel[name].sound:setVolume(0)
-    self.channel[name].sound:play()
-    self.channel[name].volume = 0
-    if delay then
-        Timer.after(delay, function()
-            Timer.tween(t, self.channel[name], {volume = volume}, "linear")
-        end)
-    else
-        Timer.tween(t, self.channel[name], {volume = volume}, "linear")
-    end
 end
 
 function SoundManager:exists(name)

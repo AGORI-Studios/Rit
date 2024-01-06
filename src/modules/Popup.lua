@@ -1,4 +1,5 @@
 local Popup = Object:extend()
+Popup.popups = {}
 
 function Popup:new(dir, title, text, fadeTime, delay)
     self.pos = dir or "bottom right" -- scrolls from the right
@@ -8,25 +9,25 @@ function Popup:new(dir, title, text, fadeTime, delay)
     self.delay = delay or 0.5
     self.fade = 0
     self.timer = 0
+    self.index = #Popup.popups + 1
 
-    Timer.after(self.delay, function()
-        Timer.tween(self.fadeTime, self, {fade = 1}, "linear", function()
+    Timer.tween(self.fadeTime, self, {fade = 1}, "linear", function()
+        Timer.after(self.delay, function()
             self:destroy()
         end)
     end)
     
+    table.insert(Popup.popups, self)
 end
 
 function Popup:update(dt)
     self.timer = self.timer + dt
-    if self.timer > self.delay then
-        self.fade = math.min(self.fade + dt/self.fadeTime, 1)
-    end
+    
 end
 
 function Popup:destroy()
     Timer.tween(self.fadeTime, self, {fade = 0}, "linear", function()
-        state:remove(self)
+        table.remove(Popup.popups, self.index)
     end)
 end
 
@@ -42,10 +43,15 @@ function Popup:draw()
     elseif self.pos == "top left" then
         x, y = 0, 0
     end
-    love.graphics.setColor(0,0,0,self.fade)
+    
+    love.graphics.setColor(0.75, 0.75, 0.75, self.fade)
     love.graphics.rectangle("fill", x, y, 400, 200)
-    love.graphics.setColor(1,1,1,self.fade)
+    love.graphics.setColor(0.5, 0.5, 0.5, self.fade)
+    love.graphics.rectangle("fill", x, y, 400, 25)
+    love.graphics.setColor(0.15, 0.15, 0.15, self.fade)
     love.graphics.printf(self.title, x, y, 400, "center")
-    love.graphics.printf(self.text, x, y + 50, 400, "center")
-    love.graphics.setColor(1,1,1,1)
+    love.graphics.printf(self.text, x, y + 25, 400, "center")
+
 end
+
+return Popup

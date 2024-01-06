@@ -459,7 +459,6 @@ function Gameplay:update(dt)
             self.inPause = true
             self.soundManager:pause("music")
             self.updateTime = false
-            self.background:release()
             return
         else
             if (self.background and self.background.play) and (musicTime >= 0 and musicTime < self.songDuration-1000) and self.soundManager:isPlaying("music") then
