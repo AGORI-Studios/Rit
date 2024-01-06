@@ -44,6 +44,10 @@ Try(
 __inits = require("init")
 __WINDOW_WIDTH, __WINDOW_HEIGHT = __inits.__WINDOW_WIDTH, __inits.__WINDOW_HEIGHT
 
+local winOpacity = {1}
+local curVol = 1
+local isClosing = false
+
 function love.load()
     __NOTE_OBJECT_WIDTH = 0
     -- Libraries 
@@ -190,6 +194,11 @@ function love.update(dt)
     lerpedMasterVolume = math.fpsLerp(lerpedMasterVolume, masterVolume, 10, love.timer.getDelta())
     love.audio.setVolume(lerpedMasterVolume/100)
 
+    if isClosing then 
+        love.window.setWindowOpacity(winOpacity[1]) 
+        love.audio.setVolume(curVol * winOpacity[1])
+    end
+
     if discordRPC then
         if love.timer.getTime() or 0 > discordRPC.nextPresenceUpdate then
             if discordRPC.presence then
@@ -233,6 +242,22 @@ end
 
 function love.mousepressed(x, y, b)
     state.mousepressed(x, y, b)
+end
+
+function love.mousereleased(x, y, b)
+    state.mousereleased(x, y, b)
+end
+
+function love.textinput(t)
+    state.textinput(t)
+end
+
+function love.keyreleased(key)
+    state.keyreleased(key)
+end
+
+function love.mousemoved(x, y, dx, dy, istouch)
+    state.mousemoved(x, y, dx, dy, istouch)
 end
 
 function toGameScreen(x, y)
@@ -297,4 +322,13 @@ function love.quit()
     end
 
     Settings.saveOptions()
+
+    if not isClosing then
+        isClosing = true
+        Timer.tween(0.5, winOpacity, {0}, "linear", function()
+            love.event.quit()
+        end)
+        curVol = love.audio.getVolume()
+        return true
+    end
 end

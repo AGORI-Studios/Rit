@@ -447,7 +447,6 @@ end
 function Gameplay:update(dt)
     if self.inPause then return end
     if self.updateTime then
-        -- use previousFrameTime to get musicTime (love.timer.getTime is pft)
         if musicTime >= 0 and not self.soundManager:isPlaying("music") and musicTime < 1000 then
             self.soundManager:play("music")
             musicTime = 0

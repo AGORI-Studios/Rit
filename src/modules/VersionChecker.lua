@@ -13,7 +13,7 @@ local function loadVersion()
     end
 end
 
-loadVersion()
+--loadVersion()
 
 -- get latest git release tag with lua-https with user agent "RitBot" UserAgent: RitBot
 local GitURL = "https://api.github.com/repos/AGORI-Studios/Rit/releases/latest"
