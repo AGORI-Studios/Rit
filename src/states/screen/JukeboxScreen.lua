@@ -62,6 +62,9 @@ local function playSong()
     MenuSoundManager:play("music")
     MenuSoundManager:setLooping("music", false)
 
+    startedTime = love.timer.getTime()
+    endedTime = startedTime + MenuSoundManager:getDuration("music")
+
     if curDiff.audioFile:startsWith("song/") then
         love.filesystem.unmount(curDiff.path)
     end
@@ -210,8 +213,20 @@ end
 function Jukebox:update(dt)
     time = time + 1000 * dt
     time2 = time2 + 1000 * dt
+    songTime = MenuSoundManager:tell("music")
     local mx, my = love.mouse.getPosition()
     local px, py = (-mx / 50), (-my / 50)
+
+    if discordRPC then
+        local formattedTime = string.format("%02d:%02d", math.floor(songTime / 60), math.floor(songTime % 60))
+        discordRPC.presence = {
+            details = "In the Jukebox",
+            -- time and what song
+            state = "Listening to " .. curSong.title,
+            largeImageKey = "totallyreallogo",
+            largeImageText = "Rit" .. (__DEBUG__ and " DEBUG MODE" or ""),
+        }
+    end
 
     for i, bubble in ipairs(balls) do
         bubble.ogX = bubble.ogX + math.sin(time2 / (100 * i)) * 0.05
