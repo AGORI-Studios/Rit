@@ -29,3 +29,16 @@ function table.print(table)
         print(k, v)
     end
 end
+
+--@name table.randomize
+--@description Randomizes the order of a table
+--@param table
+--@return table
+function table.randomize(table)
+    local newTable = {}
+    for k, v in pairs(table) do
+        newTable[love.math.random(1, #newTable+1)] = v
+    end
+
+    return newTable
+end

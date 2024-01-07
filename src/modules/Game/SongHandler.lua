@@ -103,7 +103,6 @@ function loadSongs(path)
                             songList[title].type = "Rit"
                         end
                     elseif song:sub(-3) == ".mc" then
-                        print(song)
                         local fileData = json(lf.read(path .."/" .. file .. "/" .. song))
                         local title = fileData.meta.song.title
                         local difficultyName = fileData.meta.version
@@ -259,7 +258,6 @@ function playRandomSong()
 
     if diff.audioFile:startsWith("song/") then
         lf.mount("songs/" .. diff.filename, "song")
-        table.print(lf.getDirectoryItems("song"))
     end
     
     MenuSoundManager:stop("music")

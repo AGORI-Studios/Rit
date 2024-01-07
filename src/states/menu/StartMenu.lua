@@ -13,7 +13,7 @@ local balls, bg, logo, twitterLogo, kofiLogo, discordLogo
 local equalizer
 
 local curMenu = 1
-local curLogoScale = {2.25}
+local curLogoScale = {1.85}
 local logoScale = {2, 2}
 local logoPos = {0, 0}
 
@@ -61,14 +61,8 @@ local function enterFunc()
     didTransition = true
 
     curMenu = 2
-    Timer.tween(
-        0.5, curLogoScale, 
-        {
-            1.85
-        },
-        "in-out-cubic"
-    )
-    Timer.tween(
+    if timers.logoPos then Timer.cancel(timers.logoPos) end
+    timers.logoPos = Timer.tween(
         0.5, logoPos,
         {
             [1] = -1250,
@@ -91,21 +85,24 @@ local function enterFunc()
     end
 
     -- tween the logos to the left
-    Timer.tween(
+    if timers.twitterLogo then Timer.cancel(timers.twitterLogo) end
+    timers.twitterLogo = Timer.tween(
         0.5, twitterLogo,
         {
             x = 155
         },
         "in-out-cubic"
     )
-    Timer.tween(
+    if timers.kofiLogo then Timer.cancel(timers.kofiLogo) end
+    timers.kofiLogo = Timer.tween(
         0.5, kofiLogo,
         {
             x = 25
         },
         "in-out-cubic"
     )
-    Timer.tween(
+    if timers.discordLogo then Timer.cancel(timers.discordLogo) end
+    timers.discordLogo = Timer.tween(
         0.5, discordLogo,
         {
             x = 25
@@ -117,13 +114,64 @@ local function enterFunc()
     end)
 end 
 
+local function backFunc()
+    doingTransition = true
+    didTransition = false
+
+    curMenu = 1
+
+    Timer.tween(
+        0.5, logoPos,
+        {
+            [1] = 0,
+            [2] = 0
+        },
+        "in-out-cubic"
+    )
+    for i = 1, #buttons do
+        if timers.buttons["_" .. i] then Timer.cancel(timers.buttons["_" .. i]) end
+        buttons[i].x = __inits.__GAME_WIDTH + 400
+    end
+
+    -- tween the logos to the right
+    if timers.twitterLogo then Timer.cancel(timers.twitterLogo) end
+    timers.twitterLogo = Timer.tween(
+        0.5, twitterLogo,
+        {
+            x = 1780
+        },
+        "in-out-cubic"
+    )
+    if timers.kofiLogo then Timer.cancel(timers.kofiLogo) end
+    timers.kofiLogo = Timer.tween(
+        0.5, kofiLogo,
+        {
+            x = 1780
+        },
+        "in-out-cubic"
+    )
+    if timers.discordLogo then Timer.cancel(timers.discordLogo) end
+    timers.discordLogo = Timer.tween(
+        0.5, discordLogo,
+        {
+            x = 1650
+        },
+        "in-out-cubic"
+    )
+    Timer.after(1 * (#buttons / 6), function()
+        doingTransition = false
+    end)
+end
+
 function StartMenu:enter()
     balls = {}
     bg = Sprite(0, 0, "assets/images/ui/menu/BGsongList.png")
     for i = 1, 5 do
         balls[i] = Sprite(love.math.random(0, 1600), love.math.random(0, 720), "assets/images/ui/menu/BGball" .. i .. ".png")
-        balls[i].ogX, balls[i].ogY = love.math.random(0, 1920), love.math.random(0, 1080)
+        balls[i].ogX, balls[i].ogY = love.math.random(0, 1920 - balls[i].width), love.math.random(0, 1080 - balls[i].height)
+        balls[i].velY = love.math.random(25, 50)
     end
+    table.randomize(balls)
     --logo = Image("assets/images/ui/menu/logo.png")
     logo = Sprite(0, 0, "assets/images/ui/menu/logo.png")
     logo:centerOrigin()
@@ -197,10 +245,10 @@ function StartMenu:update(dt)
 
     bg.x, bg.y = px * 0.025, py * 0.025
 
-    for i = 1, #balls do
+    --[[ for i = 1, #balls do
         balls[i].x = balls[i].ogX + px * 0.09 + (0.05 * i * 5)
         balls[i].y = balls[i].ogY + py * 0.09 + (0.05 * i * 5)
-    end
+    end ]]
 
     if logoScale[1] > curLogoScale[1] then
         logoScale[1] = math.fpsLerp(logoScale[1], curLogoScale[1], 5, dt)
@@ -213,6 +261,25 @@ function StartMenu:update(dt)
         if curHover ~= 0 then
             buttons[curHover].action()
         end
+    elseif input:pressed("back") and curMenu == 1 then
+        love.event.quit()
+    elseif input:pressed("back") and curMenu == 2 then
+        backFunc()
+    end
+
+    for i, bubble in ipairs(balls) do
+        bubble.ogX = bubble.ogX + math.sin(time2 / (100 * i)) * 0.05
+        -- velY is the speed of the bubble
+        bubble.ogY = bubble.ogY - bubble.velY * dt
+
+        if bubble.ogY < -bubble.height then
+            bubble.ogY = __inits.__GAME_HEIGHT + 100
+            bubble.ogX = love.math.random(0, 1920 - bubble.width)
+            bubble.velY = love.math.random(25, 50)
+        end
+
+        bubble.x = bubble.ogX + px * 0.09 + (0.05 * i * 5)
+        bubble.y = bubble.ogY + py * 0.09 + (0.05 * i * 5)
     end
 
     if equalizer and MenuSoundManager:getChannel("music") then
@@ -273,6 +340,8 @@ function StartMenu:mousepressed(x, y, b)
                     return
                 end
             end
+        elseif b == 2 then
+            backFunc()
         end
     else
         if b == 1 then
