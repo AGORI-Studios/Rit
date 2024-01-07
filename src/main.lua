@@ -5,6 +5,7 @@ __DEBUG__ = not love.filesystem.isFused()
 if not __DEBUG__ then 
     function print() end -- disable print if not in debug mode, allows for better performance
 end
+__InJukebox = false
 
 require("modules.Utilities")
 ffi = require("ffi")
@@ -193,7 +194,7 @@ function love.update(dt)
     Timer.update(dt)
     input:update()
     if not isLoading then state.update(dt) end
-    if not state.current == states.screens.JukeboxScreen then
+    if not __InJukebox then
         love.audio.setVolume(volume[1] * (masterVolume/100))
     end
 

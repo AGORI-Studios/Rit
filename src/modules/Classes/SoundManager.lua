@@ -23,11 +23,13 @@ function SoundManager:newSound(name, path, volume, loop, type)
         beatLength = 60 / 120,
         time = 0,
         lastFrameTime = 0,
-        onBeat = function() end
+        onBeat = function() end,
+        paused = false
     }
 end
 
 function SoundManager:play(name, clone)
+    self.channel[name].paused = false
     if clone then
         local clone = self.channel[name].sound:clone()
         clone:play()
@@ -69,6 +71,7 @@ function SoundManager:stop(name)
 end
 
 function SoundManager:pause(name)
+    self.channel[name].paused = true
     self.channel[name].sound:pause()
 end
 
@@ -81,7 +84,7 @@ function SoundManager:isPlaying(name)
 end
 
 function SoundManager:isPaused(name)
-    return self.channel[name].sound:isPaused()
+    return self.channel[name].paused
 end
 
 function SoundManager:isStopped(name)

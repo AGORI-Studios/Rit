@@ -204,6 +204,7 @@ function Jukebox:enter()
     --getNewSong()
     playSong()
 
+    __InJukebox = true
 end
 
 function Jukebox:update(dt)
@@ -227,8 +228,7 @@ function Jukebox:update(dt)
         bubble.y = bubble.ogY + py * 0.09 + (0.05 * i * 5)
     end
 
-    if MenuSoundManager:exists("music") and not MenuSoundManager:isPlaying("music") and 
-            MenuSoundManager:tell("music") >= MenuSoundManager:getDuration("music") then
+    if not MenuSoundManager:isPlaying("music") and not MenuSoundManager:isPaused("music") then
 
         songIndex = songIndex + 1
         if songIndex > #orderedSongs then
@@ -285,7 +285,7 @@ function Jukebox:draw()
 
     -- draw progress bar
     if MenuSoundManager:exists("music") then
-        local percent = MenuSoundManager:tell("music") / MenuSoundManager:getDuration("music")
+        local percent = (MenuSoundManager:tell("music")) / MenuSoundManager:getDuration("music")
         love.graphics.setColor(0.70, 0.35, 0)
         
         local mediaWidth = #buttons * 100
@@ -306,6 +306,10 @@ function Jukebox:draw()
     )
 
     closeBtn:draw()
+end
+
+function Jukebox:exit()
+    __InJukebox = false
 end
 
 return Jukebox
