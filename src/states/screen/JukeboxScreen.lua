@@ -1,0 +1,311 @@
+local Jukebox = state()
+local curSong = nil
+local curDiff = nil
+
+local balls, bg
+
+local time, time2, songTime = 0, 0, 0
+
+local equalizer
+
+local orderedSongs = {}
+local songIndex = 1
+
+local function getNewSong()
+    local lastSong = curSong
+
+    while curSong == lastSong do
+        curSong = table.random(orderedSongs)
+        curDiff = table.random(curSong)
+        while (type(curDiff) == "string") do
+            curDiff = table.random(curSong)
+        end
+    end
+
+
+    if curDiff.audioFile:startsWith("song/") then
+        love.filesystem.mount("songs/" .. curDiff.filename, "song")
+    end
+
+    MenuSoundManager:stop("music")
+    MenuSoundManager:removeAllSounds()
+    MenuSoundManager:newSound("music", curDiff.audioFile, 1, false, "stream")
+    MenuSoundManager:play("music")
+    MenuSoundManager:setLooping("music", false)
+
+    if curDiff.audioFile:startsWith("song/") then
+        love.filesystem.unmount(curDiff.path)
+    end
+
+    if MenuSoundManager:exists("music") then
+        soundData = MenuSoundManager:getSoundData("music")
+
+        -- equalizer that draws on top of the screen
+        equalizer = Spectrum(soundData)
+    end
+end
+
+local function playSong()
+    curSong = orderedSongs[songIndex]
+    curDiff = table.random(curSong)
+    while (type(curDiff) == "string") do
+        curDiff = table.random(curSong)
+    end
+
+    if curDiff.audioFile:startsWith("song/") then
+        love.filesystem.mount("songs/" .. curDiff.filename, "song")
+    end
+
+    MenuSoundManager:stop("music")
+    MenuSoundManager:removeAllSounds()
+    MenuSoundManager:newSound("music", curDiff.audioFile, 1, false, "stream")
+    MenuSoundManager:play("music")
+    MenuSoundManager:setLooping("music", false)
+
+    if curDiff.audioFile:startsWith("song/") then
+        love.filesystem.unmount(curDiff.path)
+    end
+
+    if MenuSoundManager:exists("music") then
+        soundData = MenuSoundManager:getSoundData("music")
+
+        -- equalizer that draws on top of the screen
+        equalizer = Spectrum(soundData)
+    end
+end
+
+local buttons = {
+    -- media controls
+    {
+        x = 0,
+        y = 1030,
+        width = 100,
+        height = 100,
+        image = "assets/images/ui/menu/media/previous.png",
+        placeholderText = "Prev",
+        onClick = function()
+            songIndex = songIndex - 1
+            if songIndex < 1 then
+                songIndex = #orderedSongs
+            end
+            playSong()
+        end,
+        type = "once",
+    },
+    {
+        x = 100,
+        y = 1030,
+        width = 100,
+        height = 100,
+        image = "assets/images/ui/menu/media/forward.png",
+        placeholderText = "Play/pause",
+        onClick = function()
+            MenuSoundManager:play("music")
+        end,
+        type = "toggle",
+        colour = {1, 1, 1}
+    },
+    {
+        x = 200,
+        y = 1030,
+        width = 100,
+        height = 100,
+        image = "assets/images/ui/menu/media/next.png",
+        placeholderText = "Next",
+        onClick = function()
+            songIndex = songIndex + 1
+            if songIndex > #orderedSongs then
+                songIndex = 1
+            end
+            playSong()
+        end,
+        type = "once"
+    },
+    {
+        x = 300,
+        y = 1030,
+        width = 100,
+        height = 100,
+        image = "assets/images/ui/menu/media/stop.png",
+        placeholderText = "Stop",
+        onClick = function()
+            MenuSoundManager:pause("music")
+        end,
+        type = "once"
+    },
+    {
+        x = 400,
+        y = 1030,
+        width = 100,
+        height = 100,
+        image = "assets/images/ui/menu/media/rewind.png",
+        placeholderText = "Restart",
+        onClick = function()
+            MenuSoundManager:stop("music")
+            MenuSoundManager:removeAllSounds()
+            MenuSoundManager:newSound("music", curDiff.audioFile, 1, false, "stream")
+            MenuSoundManager:play("music")
+            MenuSoundManager:setLooping("music", false)
+        end,
+        type = "once"
+    },
+    {
+        x = 500,
+        y = 1030,
+        width = 100,
+        height = 100,
+        image = "assets/images/ui/menu/media/return.png",
+        placeholderText = "Loop",
+        onClick = function()
+            MenuSoundManager:setLooping("music", not MenuSoundManager:getLooping("music"))
+        end,
+        type = "toggle",
+        colour = {1, 1, 1}
+    }
+}
+
+local closeBtn
+
+function Jukebox:enter()
+    orderedSongs = {}
+    loadSongs("defaultSongs")
+    loadSongs("songs")
+    for i, song in pairs(songList) do
+        local rndDiff = table.random(song)
+        while (type(rndDiff) == "string") do
+            rndDiff = table.random(song)
+        end
+        song.title = rndDiff.title
+        table.insert(orderedSongs, song)
+        table.sort(orderedSongs, function(a, b) return a.title < b.title end)
+    end
+    --print(#orderedSongs .. " songs loaded")
+
+    balls = {}
+    bg = Sprite(0, 0, "assets/images/ui/menu/BGsongList.png")
+    for i = 1, 5 do
+        balls[i] = Sprite(love.math.random(0, 1600), love.math.random(0, 720), "assets/images/ui/menu/BGball" .. i .. ".png")
+        balls[i].ogX, balls[i].ogY = love.math.random(0, 1920 - balls[i].width), love.math.random(0, 1080 - balls[i].height)
+        balls[i].velY = love.math.random(25, 50)
+    end
+    table.randomize(balls)
+
+    -- media controls (load images)
+    for i, button in ipairs(buttons) do
+        if button.image and not button.img and love.filesystem.getInfo(button.image) then
+            button.img = Sprite(button.x, button.y, button.image)
+        end
+    end
+
+    -- top right
+    closeBtn = Sprite(__inits.__GAME_WIDTH - 75, 25, "assets/images/ui/menu/cross.png")
+    closeBtn.color = {1, 0, 0}
+
+    --getNewSong()
+    playSong()
+
+end
+
+function Jukebox:update(dt)
+    time = time + 1000 * dt
+    time2 = time2 + 1000 * dt
+    local mx, my = love.mouse.getPosition()
+    local px, py = (-mx / 50), (-my / 50)
+
+    for i, bubble in ipairs(balls) do
+        bubble.ogX = bubble.ogX + math.sin(time2 / (100 * i)) * 0.05
+        -- velY is the speed of the bubble
+        bubble.ogY = bubble.ogY - bubble.velY * dt
+
+        if bubble.ogY < -bubble.height then
+            bubble.ogY = __inits.__GAME_HEIGHT + 100
+            bubble.ogX = love.math.random(0, 1920 - bubble.width)
+            bubble.velY = love.math.random(25, 50)
+        end
+
+        bubble.x = bubble.ogX + px * 0.09 + (0.05 * i * 5)
+        bubble.y = bubble.ogY + py * 0.09 + (0.05 * i * 5)
+    end
+
+    if MenuSoundManager:exists("music") and not MenuSoundManager:isPlaying("music") and 
+            MenuSoundManager:tell("music") >= MenuSoundManager:getDuration("music") then
+
+        songIndex = songIndex + 1
+        if songIndex > #orderedSongs then
+            songIndex = 1
+        end
+        playSong()
+    end
+
+    if equalizer and MenuSoundManager:getChannel("music") then
+        equalizer:update(MenuSoundManager:getChannel("music").sound, soundData)
+    end
+
+end
+
+function Jukebox:mousepressed(x, y, button)
+    local x, y = toGameScreen(x, y)
+    if button == 1 then
+        for i, button in ipairs(buttons) do
+            if x > button.x and x < button.x + button.width and y > button.y and y < button.y + button.height then
+                button.onClick()
+            end
+        end
+
+        if x > closeBtn.x and x < closeBtn.x + closeBtn.width and y > closeBtn.y and y < closeBtn.y + closeBtn.height then
+            state.switch(states.menu.StartMenu)
+        end
+    end
+end
+
+function Jukebox:draw()
+    bg:draw()
+    for i, bubble in ipairs(balls) do
+        bubble:draw()
+    end
+
+    if equalizer then
+        equalizer:draw()
+    end
+
+    -- media controls
+    for i, button in ipairs(buttons) do
+        if button.img then
+            if button.type == "toggle" then
+                love.graphics.setColor(button.colour[1], button.colour[2], button.colour[3])
+            end
+            button.img:draw()
+        else
+            love.graphics.setColor(0.5, 0.5, 0.5)
+            love.graphics.rectangle("fill", button.x, button.y, button.width, button.height)
+            love.graphics.setColor(0.15, 0.15, 0.15)
+            love.graphics.printf(button.placeholderText, button.x, button.y + button.height / 2 - 10, button.width, "center")
+        end
+    end
+
+    -- draw progress bar
+    if MenuSoundManager:exists("music") then
+        local percent = MenuSoundManager:tell("music") / MenuSoundManager:getDuration("music")
+        love.graphics.setColor(0.70, 0.35, 0)
+        
+        local mediaWidth = #buttons * 100
+        
+        -- draw progress bar to right of media controls
+        love.graphics.rectangle("fill", mediaWidth + 100, 1030, __inits.__GAME_WIDTH - mediaWidth - 200, 100)
+        love.graphics.setColor(0.50, 0.25, 0)
+        love.graphics.rectangle("fill", mediaWidth + 100, 1030, (__inits.__GAME_WIDTH - mediaWidth - 200) * percent, 100)
+    end
+    -- show title above progress bar, left aligned
+    love.graphics.setColor(1, 1, 1)
+    local lastFont = love.graphics.getFont()
+    love.graphics.setFont(Cache.members.font["defaultBold"])
+    love.graphics.printf(
+        (curSong.title or "Unknown"),
+        __inits.__GAME_WIDTH/2-265, 990, __inits.__GAME_WIDTH, "left",
+        0, 2.25, 2.25
+    )
+
+    closeBtn:draw()
+end
+
+return Jukebox

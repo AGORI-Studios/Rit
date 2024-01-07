@@ -132,7 +132,8 @@ function love.load()
             Importers = {
                 QuaverImportScreen = require("states.screen.Importers.QuaverImportScreen"),
                 OsuImportScreen = require("states.screen.Importers.OsuImportScreen"),
-            }
+            },
+            Jukebox = require("states.screen.JukeboxScreen"),
         }
     }
     substates = {
@@ -192,7 +193,9 @@ function love.update(dt)
     Timer.update(dt)
     input:update()
     if not isLoading then state.update(dt) end
-    love.audio.setVolume(volume[1] * (masterVolume/100))
+    if not state.current == states.screens.JukeboxScreen then
+        love.audio.setVolume(volume[1] * (masterVolume/100))
+    end
 
     if isClosing then 
         love.window.setWindowOpacity(winOpacity[1]) 

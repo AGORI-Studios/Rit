@@ -270,7 +270,9 @@ function playRandomSong()
         lf.unmount(diff.path)
     end
 end
+
 local baseSoundData = {}
+
 function playSelectedSong(song)
     if not song or not song.children then return end
     local diff = table.random(song.children)

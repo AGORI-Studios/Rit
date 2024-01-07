@@ -98,6 +98,10 @@ function SoundManager:setLooping(name, loop)
     self.channel[name].sound:setLooping(loop)
 end
 
+function SoundManager:getLooping(name)
+    return self.channel[name].loop
+end
+
 function SoundManager:setBPM(name, bpm)
     self.channel[name].bpm = bpm
     self.channel[name].beatLength = 60 / bpm

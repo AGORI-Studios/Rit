@@ -32,7 +32,8 @@ local buttons = {
     {
         text = "Jukebox",
         action = function()
-            love.window.showMessageBox("Jukebox - Coming Soon", "The Jukebox is currently in development. Please check back later!", "info")
+            --love.window.showMessageBox("Jukebox - Coming Soon", "The Jukebox is currently in development. Please check back later!", "info")
+            state.switch(states.screens.Jukebox)
         end,
         x = 0,
         y = 0
