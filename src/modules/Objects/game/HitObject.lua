@@ -81,8 +81,8 @@ function HitObject:new(time, data, endTime, sustainNote)
     self.x = self.x + self.offsetX
 
     if #self.children > 0 then
-        self.children[1].x = self.x + self.children[1].width/4.5
-        self.children[2].x = self.x + self.children[1].width/4.5
+        self.children[1].x = self.x + self.children[1].width/4.5 - ((self.data - 1) * (self.width))
+        self.children[2].x = self.x + self.children[1].width/4.5 - ((self.data - 1) * (self.width))
     end
 
     return self
