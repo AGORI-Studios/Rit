@@ -416,7 +416,6 @@ end
 function Gameplay:addObjectsToGroups()
     for i, ho in ipairs(self.unspawnNotes) do
         self.hitObjects:add(ho)
-        ho.spawned = true
     end
 end
 
