@@ -5,6 +5,7 @@ Settings.options = {
         downscroll = true,
         scrollspeed = 2,
         backgroundVisibility = 1,
+        skin = "Circle Default",
     },
     ["Meta"] = {
         __VERSION__ = 1

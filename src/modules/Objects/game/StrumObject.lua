@@ -7,18 +7,8 @@ function StrumObject:new(x, y, data)
     self.data = data
 
     self.anims = {}
-    if skinData["NoteAssets"][tostring(states.game.Gameplay.mode) .. "k_" .. data .. "_receptor_unpressed"] then
-        self.anims[1] = skin:format(skinData["NoteAssets"][tostring(states.game.Gameplay.mode) .. "k_" .. data .. "_receptor_unpressed"])
-    else
-        -- default to left
-        self.anims[1] = skin:format(skinData["NoteAssets"]["1k_1_receptor_unpressed"])
-    end
-    if skinData["NoteAssets"][tostring(states.game.Gameplay.mode) .. "k_" .. data .. "_receptor_pressed"] then
-        self.anims[2] = skin:format(skinData["NoteAssets"][tostring(states.game.Gameplay.mode) .. "k_" .. data .. "_receptor_pressed"])
-    else
-        -- default to left
-        self.anims[2] = skin:format(skinData["NoteAssets"]["1k_1_receptor_pressed"])
-    end
+    self.anims[1] = skin:format("notes/" .. tostring(states.game.Gameplay.mode) .. "K/receptor" .. data .. "-unpressed.png")
+    self.anims[2] = skin:format("notes/" .. tostring(states.game.Gameplay.mode) .. "K/receptor" .. data .. "-pressed.png")
     
 
     Cache:loadImage(self.anims[1], self.anims[2])

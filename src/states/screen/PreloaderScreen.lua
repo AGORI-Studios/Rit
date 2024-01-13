@@ -24,51 +24,6 @@ function PreloaderScreen:enter()
         threadLoader.newImage(self, "BGball" .. i, "assets/images/ui/menu/BGball" .. i .. ".png")
     end
 
-    for i = 1, 10 do
-        -- 1k to 10k
-        for j = 1, i do
-            local inAllNoteImgsNOTE = false
-            local inAllNoteImgsHOLD = false
-            local inAllNoteImgsHOLD_END = false
-            local inAllNoteImgsRECEPTOR_UNPRESSED = false
-            local inAllNoteImgsRECEPTOR_PRESSED = false
-
-            local nPath = skin:format(skinData["NoteAssets"][tostring(i) .. "k_" .. j .. "_note"])
-            local hePath = skin:format(skinData["NoteAssets"][tostring(i) .. "k_" .. j .. "_hold_end"])
-            local hPath = skin:format(skinData["NoteAssets"][tostring(i) .. "k_" .. j .. "_hold"])
-            local rupPath = skin:format(skinData["NoteAssets"][tostring(i) .. "k_" .. j .. "_receptor_unpressed"])
-            local rpPath = skin:format(skinData["NoteAssets"][tostring(i) .. "k_" .. j .. "_receptor_pressed"])
-
-            for k, v in pairs(allNoteImgs) do
-                if v == nPath then inAllNoteImgsNOTE = true end
-                if v == hePath then inAllNoteImgsHOLD_END = true end
-                if v == hPath then inAllNoteImgsHOLD = true end
-                if v == rupPath then inAllNoteImgsRECEPTOR_UNPRESSED = true end
-                if v == rpPath then inAllNoteImgsRECEPTOR_PRESSED = true end
-            end
-
-            if not inAllNoteImgsNOTE then
-                table.insert(allNoteImgs, nPath)
-                threadLoader.newImage(self, i .. "k_" .. j .. "_note", nPath)
-            end
-            if not inAllNoteImgsHOLD_END then
-                table.insert(allNoteImgs, hePath)
-                threadLoader.newImage(self, i .. "k_" .. j .. "_hold_end", hePath)
-            end
-            if not inAllNoteImgsHOLD then 
-                table.insert(allNoteImgs, hPath)
-                threadLoader.newImage(self, i .. "k_" .. j .. "_hold", hPath)
-            end
-            if not inAllNoteImgsRECEPTOR_UNPRESSED then
-                table.insert(allNoteImgs, rupPath)
-                threadLoader.newImage(self, i .. "k_" .. j .. "_note", rupPath)
-            end
-            if not inAllNoteImgsRECEPTOR_PRESSED then
-                table.insert(allNoteImgs, rpPath)
-                threadLoader.newImage(self, i .. "k_" .. j .. "_hold_end", rpPath)
-            end
-        end
-    end
     threadLoader.start(function()
         doneLoading = true
         Timer.after(1, function()

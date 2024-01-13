@@ -71,13 +71,19 @@ function love.load()
     Sprite = require("modules.Classes.Sprite")
     SoundManager = require("modules.Classes.SoundManager")
     require("modules.Game.SongHandler")
-    skin = require("modules.Game.SkinHandler")
     require("modules.Game.Input")
     Modscript = require("modules.Game.Modscript")
     Settings = require("modules.Game.Settings")
     Settings.loadOptions()
     VersionChecker = require("modules.VersionChecker")
     Popup = require("modules.Popup")
+    skin = require("modules.Game.SkinHandler")
+    skinList = {}
+    skin:loadSkins("Skins")
+    skin:loadSkins("defaultSkins")
+    if not love.filesystem.getInfo("Skins") then
+        love.filesystem.createDirectory("Skins")
+    end
 
     -- Objects
     StrumObject = require("modules.Objects.game.StrumObject")
@@ -170,6 +176,7 @@ function love.load()
         discordRPC.initialize("785717724906913843", true)
     end
 
+    -- need stencil for the game screen
     gameScreen = love.graphics.newCanvas(__inits.__GAME_WIDTH, __inits.__GAME_HEIGHT)
 
     MenuSoundManager = SoundManager()
@@ -286,7 +293,7 @@ function toGameScreen(x, y)
 end
 
 function love.draw()
-    love.graphics.setCanvas(gameScreen)
+    love.graphics.setCanvas({gameScreen, stencil = true})
         love.graphics.clear(0,0,0,1)
         state.draw()
     love.graphics.setCanvas()

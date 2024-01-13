@@ -52,6 +52,7 @@
 - [sworks](/src/lib/sworks/)
 - [lovefs](/src/lib/lovefs/)
 - [aqua](/src/lib/aqua) (Just the video module)
+- [loveframes](/src/lib/loveframes)
 
 # Credits
 - [Getsaa](https://twitter.com/GetsaaNG) - Menu design, UI design, and art
@@ -59,6 +60,9 @@
 - [Quaver](https://store.steampowered.com/app/980610/Quaver/) - Inspiration
 - [osu!](https://osu.ppy.sh/) - Inspiration
 - [Average4k](https://twitter.com/Average4k) - Inspiration
+- [Stepmania](https://www.stepmania.com/) - Inspiration
+- [Malody](https://m.mugzone.net/) - Inspiration
+- [Etterna](https://etternaonline.com/) - Inspiration
 
 # License
 - [GNU License](/LICENSE)

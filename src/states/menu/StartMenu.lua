@@ -256,17 +256,6 @@ function StartMenu:update(dt)
         logoScale[2] = math.fpsLerp(logoScale[2], curLogoScale[1], 5, dt)
         logo:setScale(logoScale[1], logoScale[2])
     end
-    if input:pressed("confirm") and curMenu == 1 then
-        enterFunc()
-    elseif input:pressed("confirm") and curMenu == 2 then
-        if curHover ~= 0 then
-            buttons[curHover].action()
-        end
-    elseif input:pressed("back") and curMenu == 1 then
-        love.event.quit()
-    elseif input:pressed("back") and curMenu == 2 then
-        backFunc()
-    end
 
     for i, bubble in ipairs(balls) do
         bubble.ogX = bubble.ogX + math.sin(time2 / (100 * i)) * 0.05
@@ -286,6 +275,9 @@ function StartMenu:update(dt)
     if equalizer and MenuSoundManager:getChannel("music") then
         equalizer:update(MenuSoundManager:getChannel("music").sound, soundData)
     end
+
+    if state.inSubstate then return end
+
     if not doingTransition and didTransition then
         for i = 1, #buttons do
             if timers.buttons["_" .. i] == nil then
@@ -302,6 +294,18 @@ function StartMenu:update(dt)
                 )
             end
         end
+    end
+
+    if input:pressed("confirm") and curMenu == 1 then
+        enterFunc()
+    elseif input:pressed("confirm") and curMenu == 2 then
+        if curHover ~= 0 then
+            buttons[curHover].action()
+        end
+    elseif input:pressed("back") and curMenu == 1 then
+        love.event.quit()
+    elseif input:pressed("back") and curMenu == 2 then
+        backFunc()
     end
 end
 

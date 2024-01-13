@@ -30,13 +30,7 @@ function HitObject:new(time, data, endTime)
     self.children = {}
     self.moveWithScroll = true
 
-    -- assets are like [mode]k_data
-    if skinData["NoteAssets"][tostring(states.game.Gameplay.mode) .. "k_" .. data .. "_note"] then
-        self:load(skin:format(skinData["NoteAssets"][tostring(states.game.Gameplay.mode) .. "k_" .. data .. "_note"]))
-    else
-        -- default to left
-        self:load(skin:format(skinData["NoteAssets"]["1k_1_note"]))
-    end
+    self:load(skin:format("notes/" .. tostring(states.game.Gameplay.mode) .. "K/note" .. data .. ".png"))
 
     self:setGraphicSize(math.floor(self.width * 0.925))
     _G.__NOTE_OBJECT_WIDTH = self.width
@@ -44,12 +38,12 @@ function HitObject:new(time, data, endTime)
     self.x = self.x + (self.width * 0.925+4) * (data-1)
 
     if self.endTime and self.endTime > self.time then
-        local holdObj = Sprite():load(skin:format(skinData["NoteAssets"][tostring(states.game.Gameplay.mode) .. "k_" .. data .. "_hold"]))
+        local holdObj = Sprite():load(skin:format("notes/" .. tostring(states.game.Gameplay.mode) .. "K/note" .. data .. "-hold.png"))
         holdObj.endTime = self.endTime
 
         table.insert(self.children, holdObj)
 
-        local endObj = Sprite():load(skin:format(skinData["NoteAssets"][tostring(states.game.Gameplay.mode) .. "k_" .. data .. "_hold_end"]))
+        local endObj = Sprite():load(skin:format("notes/" .. tostring(states.game.Gameplay.mode) .. "K/note" .. data .. "-end.png"))
         holdObj.endTime = self.endTime
         if not Settings.options["General"].downscroll then
             endObj.scale.y = -1
