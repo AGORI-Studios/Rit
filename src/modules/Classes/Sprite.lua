@@ -20,6 +20,8 @@ Sprite.clipRect = nil
 
 Sprite.x, Sprite.y = 0, 0
 
+Sprite.type = "Image"
+
 
 local function NewFrame(FrameName, X, Y, W, H, Sw, Sh, Ox, Oy, Ow, Oh)
     local Aw, Ah = X + W, Y + H
@@ -95,6 +97,8 @@ function Sprite:new(x, y, graphic)
     self.animFinished = false
     self.indexFrame = 1
 
+    self.type = "Image"
+
     if graphic then self:load(graphic) end
 
     return self
@@ -115,6 +119,96 @@ function Sprite:load(graphic, animated, frameWidth, frameHeight)
     self.height = self.graphic:getHeight()
 
     return self
+end
+
+function Sprite:mapBezier(bezier, graphic, resolution, meshMode)
+    if type(graphic) == "string" then
+        graphic = Cache:loadImage(graphic)
+    end
+    image:setWrap("repeat", "clamp")
+
+    local resolution = resolution or 4
+    local meshMode = meshMode or "fan"
+    
+    local points = bezier:render(resolution)
+
+    table.insert(points, 1, points[1])
+    table.insert(points, points[3])
+
+    local vertices = {}
+    local w = graphic:getWidth()
+    local h = graphic:getHeight()
+    local u = 0
+
+    for x = 1, #points -1, 2 do
+        local pv = {
+            points[x-2], 
+            points[x-1]
+        }
+        local v = {
+            points[x], 
+            points[x+1]
+        }
+        local nv = {
+            points[x+2], 
+            points[x+3]
+        }
+
+        local dist, vert
+
+        if x == 1 then
+            dist = ((nv[1] - v[1]) ^ 2 + (nv[2] - v[2]) ^ 2) ^ 0.5
+            vert = {
+                (nv[2] - v[2]) * width / (dist * 2),
+                -(nv[1] - v[1]) * height / (dist * 2)
+            }
+        elseif x == #points - 1 then
+            dist = ((v[1] - pv[1]) ^ 2 + (v[2] - pv[2]) ^ 2) ^ 0.5
+            vert = {
+                (v[2] - pv[2]) * width / (dist * 2),
+                -(v[1] - pv[1]) * height / (dist * 2)
+            }
+        else
+            dist = ((nv[1] - pv[1]) ^ 2 + (nv[2] - pv[2]) ^ 2) ^ 0.5
+            vert = {
+                (nv[2] - pv[2]) * width / (dist * 2),
+                -(nv[1] - pv[1]) * height / (dist * 2)
+            }
+        end
+
+        u = u + dist / height / 2
+
+        table.insert(vertices, {
+            v[1] + vert[1],
+            v[2] - vert[2],
+            u, 0
+        })
+        table.insert(vertices, {
+            v[1] - vert[1],
+            v[2] + vert[2],
+            u, 1
+        })
+    end
+
+    table.remove(vertices, 1)
+    table.remove(vertices, 1)
+
+    if meshMode then
+        self.graphic = love.graphics.newMesh(vertices, "strip", meshMode)
+    else
+        self.graphic = love.graphics.newMesh(vertices, "strip", static)
+    end
+
+    self.graphic:setTexture(image)
+
+    self.width = self.graphic:getWidth()
+    self.height = self.graphic:getHeight()
+
+    return self
+end
+
+function Sprite:updateVertices(vertices)
+    self.graphic:setVertices(vertices)
 end
 
 function Sprite:setFrames(xmlPath)
