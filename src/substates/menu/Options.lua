@@ -110,6 +110,8 @@ function Options:enter()
             skinButton:SetText(v.name)
             skinButton.OnClick = function()
                 Settings.options["General"].skin = v.name
+                skin.name = v.name
+                skin.path = v.path
             end
             skin_1:AddItem(skinButton)
         end

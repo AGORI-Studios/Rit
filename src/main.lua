@@ -55,6 +55,7 @@ function love.load()
     Object = require("lib.class")
     Timer = require("lib.timer")
     json = require("lib.json").decode
+    json_encode = require("lib.json").encode
     state = require("lib.state")
     tinyyaml = require("lib.tinyyaml")
     ini = require("lib.ini")
@@ -79,10 +80,10 @@ function love.load()
     Popup = require("modules.Popup")
     skin = require("modules.Game.SkinHandler")
     skinList = {}
-    skin:loadSkins("Skins")
+    skin:loadSkins("skins")
     skin:loadSkins("defaultSkins")
-    if not love.filesystem.getInfo("Skins") then
-        love.filesystem.createDirectory("Skins")
+    if not love.filesystem.getInfo("skins") then
+        love.filesystem.createDirectory("skins")
     end
 
     -- Objects

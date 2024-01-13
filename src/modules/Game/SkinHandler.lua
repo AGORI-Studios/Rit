@@ -1,19 +1,21 @@
 
 local skin = {}
 
-skin.name = Settings.options["General"].skin
+skin.name = Settings.options["General"].skin.name
+skin.path = Settings.options["General"].skin.path
+print(Settings.options["General"].skin.name)
 skin.skins = {}
 
 function skin:format(path)
     local ogPath = path
-    local path = "defaultSkins/" .. self.name .. "/" .. path
-    print("Checking path: " .. path)
+    local path = "defaultSkins/" .. self.path .. "/" .. path
+    --print("Checking path: " .. path)
     if love.filesystem.getInfo(path) then
         return path
     else
-        local path = "Skins/" .. self.name .. "/" .. ogPath
+        local path = "Skins/" .. self.path .. "/" .. ogPath
         --[[ return path:gsub(skin.name, "skinThrowbacks") ]]
-        print("Checking path: " .. path)
+        --print("Checking path: " .. path)
         if love.filesystem.getInfo(path) then
             return path
         else
@@ -32,11 +34,10 @@ function skin:loadSkins(baseDir)
             local skinData = ini.parse(skinPath .. "/skin.ini")
             local name = skinData.Metadata.name
             local creator = skinData.Metadata.creator
-
             local skin = {
                 name = name or skinFolder,
                 creator = creator or "Unknown",
-                path = skinPath
+                path = skinFolder
             }
 
             table.insert(skinList, skin)
