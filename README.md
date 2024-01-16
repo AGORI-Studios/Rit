@@ -53,6 +53,7 @@
 - [lovefs](/src/lib/lovefs/)
 - [aqua](/src/lib/aqua) (Just the video module)
 - [loveframes](/src/lib/loveframes)
+- [cimgui](/src/lib/cimgui)
 
 # Credits
 - [Getsaa](https://twitter.com/GetsaaNG) - Menu design, UI design, and art
