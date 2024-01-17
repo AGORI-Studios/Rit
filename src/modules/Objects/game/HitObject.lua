@@ -85,6 +85,8 @@ function HitObject:draw(bezier)
     if self.y < 1080 and self.y > -(self.height * self.scale.y) then
         -- use y position for finding the position on the bezier curve
         local x, y = findBezierPosition(bezier, self.data, (self.y + self.height * self.scale.y) / 1080)
+        -- if downscroll, go backwards through the bezier curve
+        y = Settings.options["General"].downscroll and 1080 - y or y
         for i, child in ipairs(self.children) do
             child:draw(x, y)
         end

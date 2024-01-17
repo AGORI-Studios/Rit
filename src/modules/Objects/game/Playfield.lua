@@ -12,12 +12,18 @@ function Playfield:new(x, y, reversed)
     self.beziers = {}
     for i = 1, states.game.Gameplay.mode do
         local endX = states.game.Gameplay.strumXs[i]
-        local endY = Settings.options["General"].downscroll and 1080-(__NOTE_OBJECT_WIDTH) or -__NOTE_OBJECT_WIDTH*2
+        local endY = Settings.options["General"].downscroll and 1080-(__NOTE_OBJECT_WIDTH) or -__NOTE_OBJECT_WIDTH
         local midX = love.math.random(0, 1920)
         local midY = love.math.random(0, 1080)
         local startX = states.game.Gameplay.strumXs[i]
         local startY = Settings.options["General"].downscroll and -__NOTE_OBJECT_WIDTH or 1080
-        self.points[i] = {startX, startY, midX, midY, endX, endY}
+        --self.points[i] = {startX, startY, midX, midY, endX, endY}
+        -- if its not downscroll, start and end are flipped
+        if not Settings.options["General"].downscroll then
+            self.points[i] = {endX, endY, midX, midY, startX, startY + (__NOTE_OBJECT_WIDTH * 2)}
+        else
+            self.points[i] = {startX, startY, midX, midY, endX, endY}
+        end
 
         local bezier = love.math.newBezierCurve(self.points[i])
         table.insert(self.beziers, bezier)
