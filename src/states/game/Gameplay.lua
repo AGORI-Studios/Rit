@@ -46,6 +46,8 @@ Gameplay.backgrounds = {
     -- preloaded images/videos -- (Video WIP)
 }
 
+Gameplay.strumXs = {}
+
 Gameplay.bgLane = {
     x = 0,
     width = 0
@@ -121,6 +123,8 @@ function Gameplay:reset()
         x = 0,
         width = 0
     }
+
+    self.strumXs = {}
 
     self:preloadAssets()
 
@@ -425,6 +429,7 @@ function Gameplay:generateStrums()
     -- update hitobjects x position
     for i, ho in ipairs(self.unspawnNotes) do
         ho.x = self.strumX + ((ho.data - 1) * (__NOTE_OBJECT_WIDTH * 0.925)) + 32
+        if not self.strumXs[ho.data] then self.strumXs[ho.data] = ho.x end
         if #ho.children > 0 then
             ho.children[1].x = self.strumX + ((ho.data - 1) * (__NOTE_OBJECT_WIDTH * 0.925)) + 32
             ho.children[2].x = self.strumX + ((ho.data - 1) * (__NOTE_OBJECT_WIDTH * 0.925)) + 32
@@ -641,6 +646,12 @@ function Gameplay:draw()
 
     for i, playfield in ipairs(self.playfields) do
         playfield:draw(self.hitObjects.members)
+        -- draw the playfields bezier
+        for i, bezier in ipairs(playfield.beziers) do
+            love.graphics.setColor(1, 0, 0, 1)
+            love.graphics.line(bezier:render())
+            love.graphics.setColor(1, 1, 1, 1)
+        end
     end
 
     -- draw members2

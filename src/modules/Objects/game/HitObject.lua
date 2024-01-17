@@ -75,12 +75,20 @@ function HitObject:update(dt)
     end
 end
 
-function HitObject:draw()
+local function findBezierPosition(bezier, lane, position)
+    if position > 1 then position = 1 end
+    if position < 0 then position = 0 end
+    return bezier:evaluate(position)
+end
+
+function HitObject:draw(bezier)
     if self.y < 1080 and self.y > -(self.height * self.scale.y) then
+        -- use y position for finding the position on the bezier curve
+        local x, y = findBezierPosition(bezier, self.data, (self.y + self.height * self.scale.y) / 1080)
         for i, child in ipairs(self.children) do
-            child:draw()
+            child:draw(x, y)
         end
-        self.super.draw(self)
+        self.super.draw(self, x, y)
     end
 end
 

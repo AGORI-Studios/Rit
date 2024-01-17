@@ -1,4 +1,5 @@
 local Sprite = Object:extend()
+Sprite.__class_name = "Sprite"
 local ton = tonumber
 
 Sprite.frame = 1
@@ -21,7 +22,6 @@ Sprite.clipRect = nil
 Sprite.x, Sprite.y = 0, 0
 
 Sprite.type = "Image"
-
 
 local function NewFrame(FrameName, X, Y, W, H, Sw, Sh, Ox, Oy, Ow, Oh)
     local Aw, Ah = X + W, Y + H
@@ -377,14 +377,14 @@ function Sprite:isHovered(x, y)
     return x >= self.x and x <= self.x + width and y >= self.y and y <= self.y + height
 end
 
-function Sprite:draw()
+function Sprite:draw(x, y)
     if self.exists and self.alive and self.visible and self.graphic then
         local frame = self:getCurrentFrame()
 
         if self.clipRect then
             love.graphics.setStencilTest("greater", 0)
         end
-        local x, y = self.x, self.y
+        local x, y = x or self.x, y or self.y
         local angle = math.rad(self.angle)
         local sx, sy = self.scale:get()
         local ox, oy = self.origin:get()
