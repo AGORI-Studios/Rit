@@ -133,7 +133,7 @@ function loadSongs(path)
                             }
                         end
                         songList[title].type = "Malody"
-                    elseif song:sub(-6) == ".chart" then
+                    --[[ elseif song:sub(-6) == ".chart" then
                         -- check for song.ini in same path
                         local songIni = lf.getInfo(path .."/" .. file .. "/song.ini")
                         local songMeta
@@ -169,7 +169,7 @@ function loadSongs(path)
                             }
                         end
                         songList[title].type = "CloneHero"
-                        ::continue::
+                        ::continue:: ]]
                         -- With how stupid I am, stepmania is probably going to be the last thing I add
                     --[[ elseif song:sub(-3) == ".sm" then -- for stepmania, we have to call "smLoader.getDifficulties(chart)"
                         diffs = smLoader.getDifficulties(path .."/" .. file .. "/" .. song)
