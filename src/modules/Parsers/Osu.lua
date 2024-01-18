@@ -61,7 +61,7 @@ function osuLoader.processGeneral(line)
 end
 function osuLoader.processEvent(line)
     local split = line:split(",")
-    if split[1] == "Video" then -- Video,-64,"video.mp4"
+    if split[1] == "Video" and video then -- Video,-64,"video.mp4"
         local video = line:match("^Video,.+\"(.+)\".*$")
         local videoPath = folderPath .. "/" .. video
         -- get filedata userdata

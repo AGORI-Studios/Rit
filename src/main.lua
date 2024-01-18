@@ -258,8 +258,10 @@ function love.focus(f)
 end
 
 function love.keypressed(key)
-    imgui.love.KeyPressed(key)
-    if imgui.love.GetWantCaptureKeyboard() then return end
+    if imgui then
+        imgui.love.KeyPressed(key)
+        if imgui.love.GetWantCaptureKeyboard() then return end
+    end
     state.keypressed(key)
 
     if __DEBUG__ then
@@ -275,8 +277,10 @@ function love.resize(w,h)
 end
 
 function love.wheelmoved(x, y)
-    imgui.love.WheelMoved(x, y)
-    if imgui.love.GetWantCaptureMouse() then return end
+    if imgui then
+        imgui.love.WheelMoved(x, y)
+        if imgui.love.GetWantCaptureMouse() then return end
+    end
     state.wheelmoved(x, y)
 
     if love.keyboard.isDown("lalt") then
@@ -286,32 +290,42 @@ function love.wheelmoved(x, y)
 end
 
 function love.mousepressed(x, y, b)
-    imgui.love.MousePressed(b)
-    if imgui.love.GetWantCaptureMouse() then return end
+    if imgui then
+        imgui.love.MousePressed(b)
+        if imgui.love.GetWantCaptureMouse() then return end
+    end
     state.mousepressed(x, y, b)
 end
 
 function love.mousereleased(x, y, b)
-    imgui.love.MouseReleased(b)
-    if imgui.love.GetWantCaptureMouse() then return end
+    if imgui then
+        imgui.love.MouseReleased(b)
+        if imgui.love.GetWantCaptureMouse() then return end
+    end
     state.mousereleased(x, y, b)
 end
 
 function love.textinput(t)
-    imgui.love.TextInput(t)
-    if imgui.love.GetWantCaptureKeyboard() then return end
+    if imgui then
+        imgui.love.TextInput(t)
+        if imgui.love.GetWantCaptureKeyboard() then return end
+    end
     state.textinput(t)
 end
 
 function love.keyreleased(key)
-    imgui.love.KeyReleased(key)
-    if imgui.love.GetWantCaptureKeyboard() then return end
+    if imgui then
+        imgui.love.KeyReleased(key)
+        if imgui.love.GetWantCaptureKeyboard() then return end
+    end
     state.keyreleased(key)
 end
 
 function love.mousemoved(x, y, dx, dy, istouch)
-    imgui.love.MouseMoved(x, y)
-    if imgui.love.GetWantCaptureMouse() then return end
+    if imgui then
+        imgui.love.MouseMoved(x, y)
+        if imgui.love.GetWantCaptureMouse() then return end
+    end
     state.mousemoved(x, y, dx, dy, istouch)
 end
 
@@ -388,13 +402,12 @@ function love.quit()
 
     Settings.saveOptions()
 
-    if imgui then
-        imgui.love.Shutdown()
-    end
-
     if not isClosing then
         isClosing = true
         Timer.tween(0.5, winOpacity, {0}, "linear", function()
+            if imgui then
+                imgui.love.Shutdown()
+            end
             love.event.quit()
         end)
         Timer.tween(0.5, volume, {0}, "linear")

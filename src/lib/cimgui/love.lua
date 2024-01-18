@@ -222,11 +222,13 @@ function L.BuildFontAtlas(format)
 end
 
 function L.Update(dt)
-    io.DisplaySize.x, io.DisplaySize.y = love.graphics.getDimensions()
-    io.DeltaTime = dt
+    if io then
+        io.DisplaySize.x, io.DisplaySize.y = love.graphics.getDimensions()
+        io.DeltaTime = dt
 
-    if io.WantSetMousePos then
-        love.mouse.setPosition(io.MousePos.x, io.MousePos.y)
+        if io.WantSetMousePos then
+            love.mouse.setPosition(io.MousePos.x, io.MousePos.y)
+        end
     end
 end
 
