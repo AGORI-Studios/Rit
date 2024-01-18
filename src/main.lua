@@ -10,45 +10,47 @@ __InJukebox = false
 require("modules.Utilities")
 ffi = require("ffi")
 
-if not __DEBUG__ then
+if love.system.getOS() ~= "NX" then
+    if not __DEBUG__ then
+        Try(
+            function()
+                Steam = require("lib.sworks.main")
+            end,
+            function()
+                Steam = nil
+                print("Couldn't load Steamworks.")
+            end
+        )
+    end
     Try(
         function()
-            Steam = require("lib.sworks.main")
+            discordRPC = require("lib.discordRPC") -- https://github.com/pfirsich/lua-discordRPC
+            discordRPC.nextPresenceUpdate = 0
         end,
         function()
-            Steam = nil
-            print("Couldn't load Steamworks.")
+            discordRPC = nil
+            print("Couldn't load Discord RPC.")
+        end
+    )
+    Try(
+        function()
+            https = require("https") -- https://github.com/love2d/lua-https
+        end,
+        function()
+            https = nil
+            print("Couldn't load https.")
+        end
+    )
+    Try(
+        function()
+            imgui = require("lib.cimgui")
+        end,
+        function()
+            imgui = nil
+            print("Couldn't load imgui.")
         end
     )
 end
-Try(
-    function()
-        discordRPC = require("lib.discordRPC") -- https://github.com/pfirsich/lua-discordRPC
-        discordRPC.nextPresenceUpdate = 0
-    end,
-    function()
-        discordRPC = nil
-        print("Couldn't load Discord RPC.")
-    end
-)
-Try(
-    function()
-        https = require("https") -- https://github.com/love2d/lua-https
-    end,
-    function()
-        https = nil
-        print("Couldn't load https.")
-    end
-)
-Try(
-    function()
-        imgui = require("lib.cimgui")
-    end,
-    function()
-        imgui = nil
-        print("Couldn't load imgui.")
-    end
-)
 
 __inits = require("init")
 __WINDOW_WIDTH, __WINDOW_HEIGHT = __inits.__WINDOW_WIDTH, __inits.__WINDOW_HEIGHT
@@ -73,7 +75,9 @@ function love.load()
     xml = require("lib.xml")
     require("lib.lovefs.lovefs")
     require("lib.luafft")
-    Video = require("lib.aqua.Video")
+    if love.system.getOS() ~= "NX" then
+        require("lib.aqua.Video")
+    end
 
     if imgui then
         imgui.love.Init()

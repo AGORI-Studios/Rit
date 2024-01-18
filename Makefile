@@ -1,13 +1,14 @@
 # if no arguments are passed, run all
-default: all
+default: clean all
 
-all: clean win64 #win32 macos
+all: desktop console dist
 
-desktop: lovefile win32 win64 macos dist
+desktop: lovefile win64 macos dist
+console: lovefile switch
 linux: lovefile
 
 # define GameName = "GameName"
-GameName = "Rit"
+GameName = Rit
 
 clean:
 	rm -rf build
@@ -17,18 +18,6 @@ lovefile:
 	mkdir build/$(GameName)-lovefile
 	# zip all files in src/ into a love file
 	cd src && zip -9 -r ../build/$(GameName)-lovefile/$(GameName).love *
-
-win32: lovefile
-	mkdir build/$(GameName)-win32
-	cp -r requirements/win32/love/* build/$(GameName)-win32 
-	cp requirements/win32/discord-rpc.dll build/$(GameName)-win32
-	cp requirements/win32/luasteam.dll build/$(GameName)-win32
-	cp requirements/win32/steam_api.dll build/$(GameName)-win32
-	cp requirements/steam_appid.txt build/$(GameName)-win32
-	cp requirements/win32/https.dll build/$(GameName)-win32
-	cat build/$(GameName)-win32/love.exe build/$(GameName)-lovefile/$(GameName).love > build/$(GameName)-win32/$(GameName).exe
-	rm build/$(GameName)-win32/love.exe
-	rm build/$(GameName)-win32/lovec.exe
 
 win64: lovefile
 	mkdir build/$(GameName)-win64
@@ -53,9 +42,22 @@ macos: lovefile
 	mv build/$(GameName)-macos/love.app build/$(GameName)-macos/$(GameName).app
 	cp build/$(GameName)-lovefile/$(GameName).love build/$(GameName)-macos/$(GameName).app/Contents/Resources/
 
+# love nx loll
+switch: lovefile
+	rm -rf build/$(GameName)-switch
+	mkdir -p "build/$(GameName)-switch"
+
+	nacptool --create "Rit" "AGORI Studios" "$(shell cat src/__VERSION__.txt)" build/$(GameName)-switch/Rit.nacp
+	mkdir build/$(GameName)-switch/romfs
+	cp build/$(GameName)-lovefile/$(GameName).love build/$(GameName)-switch/romfs/game.love
+
+	elf2nro requirements/switch/love.elf build/$(GameName)-switch/Rit.nro --nacp=build/$(GameName)-switch/Rit.nacp --romfsdir=build/$(GameName)-switch/romfs
+
+	rm -r build/$(GameName)-switch/romfs
+	rm build/$(GameName)-switch/Rit.nacp
+
 dist:
 	mkdir build/dist
-	cd build/$(GameName)-win32 && zip -9 -r ../../build/dist/$(GameName)-win32.zip *
 	cd build/$(GameName)-win64 && zip -9 -r ../../build/dist/$(GameName)-win64.zip *
 	cd build/$(GameName)-macos && zip -9 -r ../../build/dist/$(GameName)-macos.zip *
 	cp build/$(GameName)-lovefile/$(GameName).love build/dist/$(GameName).love
