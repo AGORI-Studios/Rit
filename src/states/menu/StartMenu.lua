@@ -363,7 +363,7 @@ function StartMenu:mousepressed(x, y, b)
     end
 end
 
-function StartMenuL:touchpressed(id, x, y, dx, dy, pressure)
+function StartMenu:touchpressed(id, x, y, dx, dy, pressure)
     if state.inSubstate then return end
     local x, y = toGameScreen(x, y)
     if twitterLogo:isHovered(x, y) then
