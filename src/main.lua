@@ -76,7 +76,7 @@ function love.load()
     require("lib.lovefs.lovefs")
     require("lib.luafft")
     if love.system.getOS() ~= "NX" then
-        require("lib.aqua.Video")
+        Video = require("lib.aqua.Video")
     end
 
     if imgui then
