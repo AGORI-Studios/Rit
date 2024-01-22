@@ -142,6 +142,10 @@ function Options:mousepressed(x, y, id)
     loveframes.mousepressed(x, y, id)
 end
 
+function Options:touchpressed(id, x, y, dx, dy, pressure)
+    loveframes.mousepressed(x, y, 1) -- left click "simulation"
+end
+
 function Options:mousereleased(x, y, id)
     loveframes.mousereleased(x, y, id)
 end

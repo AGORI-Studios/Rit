@@ -244,7 +244,7 @@ function StartMenu:update(dt)
     logo.x = logoPos[1] + __inits.__GAME_WIDTH / 0.9 + px
     logo.y = logoPos[2] + __inits.__GAME_HEIGHT + py
 
-    bg.x, bg.y = px * 0.025, py * 0.025
+    bg.x, bg.y = px * 0.0125, py * 0.0125
 
     --[[ for i = 1, #balls do
         balls[i].x = balls[i].ogX + px * 0.09 + (0.05 * i * 5)
@@ -294,6 +294,14 @@ function StartMenu:update(dt)
                 )
             end
         end
+    end
+
+    if input:pressed("down") and curMenu == 2 then
+        curHover = curHover + 1
+        curHover = math.clamp(curHover, 1, #buttons)
+    elseif input:pressed("up") and curMenu == 2 then
+        curHover = curHover - 1
+        curHover = math.clamp(curHover, 1, #buttons)
     end
 
     if input:pressed("confirm") and curMenu == 1 then
@@ -352,6 +360,29 @@ function StartMenu:mousepressed(x, y, b)
         if b == 1 then
             enterFunc()
         end
+    end
+end
+
+function StartMenuL:touchpressed(id, x, y, dx, dy, pressure)
+    if state.inSubstate then return end
+    local x, y = toGameScreen(x, y)
+    if twitterLogo:isHovered(x, y) then
+        love.system.openURL("https://twitter.com/AGORIStudios")
+    elseif kofiLogo:isHovered(x, y) then
+        love.system.openURL("https://ko-fi.com/guglioisstupid")
+    elseif discordLogo:isHovered(x, y) then
+        love.system.openURL("https://discord.gg/y5zz2Dm7A2")
+    end
+
+    if curMenu == 2 then
+        for i = 1, #buttons do
+            if buttons[i].x < x and x < buttons[i].x + 500 and buttons[i].y < y and y < buttons[i].y + 100 then
+                buttons[i].action()
+                return
+            end
+        end
+    else
+        enterFunc()
     end
 end
 

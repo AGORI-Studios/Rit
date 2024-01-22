@@ -333,6 +333,35 @@ function love.mousemoved(x, y, dx, dy, istouch)
     state.mousemoved(x, y, dx, dy, istouch)
 end
 
+-- imgui doesn't support touch, so simulate mouse
+function love.touchpressed(id, x, y, dx, dy, pressure)
+    
+    if imgui then
+        love.mouse.setPosition(x, y)
+        imgui.love.MousePressed(1)
+        if imgui.love.GetWantCaptureMouse() then return end
+    end
+    state.touchpressed(id, x, y, dx, dy, pressure)
+end
+
+function love.touchreleased(id, x, y, dx, dy, pressure)
+    if imgui then
+        love.mouse.setPosition(x, y)
+        imgui.love.MouseReleased(1)
+        if imgui.love.GetWantCaptureMouse() then return end
+    end
+    state.touchreleased(id, x, y, dx, dy, pressure)
+end
+
+function love.touchmoved(id, x, y, dx, dy, pressure)
+    if imgui then
+        love.mouse.setPosition(x, y)
+        imgui.love.MouseMoved(x, y)
+        if imgui.love.GetWantCaptureMouse() then return end
+    end
+    state.touchmoved(id, x, y, dx, dy, pressure)
+end
+
 function toGameScreen(x, y)
     -- converts our mouse position to the game screen (canvas) with the correct ratio
     local ratio = 1

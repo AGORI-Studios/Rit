@@ -297,6 +297,59 @@ function SongMenu:mousepressed(x, y, b)
     end
 end
 
+function SongMenu:touchpressed(id, x, y, dx, dy, pressure)
+    if state.inSubstate then return end
+    local x, y = toGameScreen(x-10, y)
+    if gear:isHovered(x, y) then
+        state.substate(substates.menu.Options)
+    elseif home:isHovered(x, y) then
+        state.switch(states.menu.StartMenu)
+    elseif bars:isHovered(x, y) then
+        shakeObject(bars)
+    elseif import:isHovered(x, y) then
+        state.switch(states.screens.Importers.QuaverImportScreen)
+    end
+
+    y = y - lerpedSongPos
+
+    if categoryOpen:isHovered(x, y) and showCat then
+        inCat = not inCat
+    end
+
+    if showCat and inCat then
+        for i, type in ipairs(allTypes) do
+            if y > 8 + -36 * (-i + 2) and y < 8 + -36 * (-i + 2) + 36 then
+                curSongType = type
+                inCat = false
+                curSelected = 1
+            end
+        end
+    end
+
+    for i, btn in ipairs(songButtons[curSongType]) do
+        if btn:isHovered(x, y) then
+            curSelected = i
+            if curTab == "songs" then
+                lastCurSelected = curSelected
+                if songTimer then Timer.cancel(songTimer) end
+                songTimer = Timer.after(1, function()
+                    if songButtons[curSongType][lastCurSelected] then
+                        playSelectedSong(songButtons[curSongType][lastCurSelected])
+                        nowPlaying = songButtons[curSongType][lastCurSelected].name
+                    end
+                end)
+            end
+            if curTab == "diffs" then
+                for i, diffBtn in ipairs(btn.children) do
+                    if diffBtn:isHovered(x, y) then
+                        curSelected = i
+                    end
+                end
+            end
+        end
+    end
+end
+
 function SongMenu:keypressed(key)
 end
 
