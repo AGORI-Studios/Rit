@@ -5,6 +5,7 @@ local folderPath
 function osuLoader.load(chart, folderPath_, forDiff)
     curChart = "osu!"
     folderPath = folderPath_
+    currentBlockName = ""
 
     local chart = love.filesystem.read(chart)
     bpm = 120

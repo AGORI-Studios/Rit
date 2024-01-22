@@ -386,13 +386,12 @@ function love.quit()
 
     Settings.saveOptions()
 
-    if imgui then
-        imgui.love.Shutdown()
-    end
-
     if not isClosing then
         isClosing = true
         Timer.tween(0.5, winOpacity, {0}, "linear", function()
+            if imgui then
+                imgui.love.Shutdown()
+            end
             love.event.quit()
         end)
         Timer.tween(0.5, volume, {0}, "linear")

@@ -35,3 +35,5 @@ Keys.lua
 
 tools/QuaToRitc/*
 !tools/QuaToRitc/Convert.py
+
+src/TODO.txt

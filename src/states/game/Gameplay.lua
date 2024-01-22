@@ -53,6 +53,8 @@ Gameplay.bgLane = {
 
 Gameplay.events = {}
 
+Gameplay.lastNoteTime = 10000 -- safe number
+
 local lerpedScore = 0
 
 local comboTimer = {}
@@ -109,6 +111,9 @@ function Gameplay:reset()
     self.noteScore = 0
     self.soundManager = SoundManager()
     self.playfields = {}
+    self.hits = 0
+    self.misses = 0
+    self.lastNoteTime = 10000 -- safe number
 
     self.noteoffsets = {}
 
@@ -159,13 +164,16 @@ function Gameplay:doJudgement(time)
     local score = self.noteScore * judgement.scoreMultiplier
 
     self.score = self.score + score
-    self.accuracy = (self.hits / (self.hits + self.misses)) * 100
+    -- find max possible score
+    local maxScore = (self.misses + self.hits) * self.noteScore
+    self.accuracy = (self.score / maxScore) * 100
 
     self:remove2(self.judgement)
-    self.judgement = Sprite(75, 390, judgement.img)
+    self.judgement = Sprite(__inits.__GAME_WIDTH/2, 390, judgement.img)
     if judgeTimer.y then Timer.cancel(judgeTimer.y) end
     judgeTimer.y = Timer.tween(0.1, self.judgement, {y = 400}, "in-out-expo")
     self.judgement.origin.x = self.judgement.width / 2 -- Always center x origin
+    self.judgement.x = self.judgement.x - self.judgement.origin.x
     self:add2(self.judgement)
 
     -- combo shits
@@ -181,7 +189,9 @@ function Gameplay:doJudgement(time)
             local comboDigit = tostring(self.combo):sub(i, i)
             local sprite = Sprite(0, 0, "defaultSkins/skinThrowbacks/combo/COMBO" .. comboDigit .. ".png")
             local sprWidth = sprite.width * 1.25
+            --sprite.x = 180 - (#tostring(self.combo) * sprWidth/2) + (i * sprWidth) -- center to middle of screen lfmna 
             sprite.x = 180 - (#tostring(self.combo) * sprWidth/2) + (i * sprWidth)
+            sprite.x = sprite.x + (__inits.__GAME_WIDTH/2.55)
             sprite.y = 460
             sprite:setGraphicSize(math.floor(sprWidth))
             sprite.scale.y = sprite.scale.y + 0.2
@@ -198,8 +208,8 @@ function Gameplay:doJudgement(time)
             local comboDigit = tostring(self.missCombo):sub(i, i)
             local sprite = Sprite(0, 0, "defaultSkins/skinThrowbacks/combo/COMBO" .. comboDigit .. ".png")
             local sprWidth = sprite.width * 1.25
-            sprite.x = 180 - (#tostring(self.missCombo) * sprWidth/2) + (i * sprWidth)
-            sprite.y = 460
+            sprite.x = 180 - (#tostring(self.combo) * sprWidth/2) + (i * sprWidth)
+            sprite.x = sprite.x + (__inits.__GAME_WIDTH/2.55)
             sprite.color = {1, 0.2, 0.2}
             sprite:setGraphicSize(math.floor(sprWidth))
             sprite.scale.y = sprite.scale.y + 0.2
@@ -449,7 +459,7 @@ function Gameplay:update(dt)
         if musicTime >= 0 and not self.soundManager:isPlaying("music") and musicTime < 1000 then
             self.soundManager:play("music")
             musicTime = 0
-        elseif (musicTime > self.songDuration and not self.soundManager:isPlaying("music")) then
+        elseif (musicTime > self.lastNoteTime and not self.soundManager:isPlaying("music")) then
             state.switch(states.menu.SongMenu)
             self.background:release()
             return
@@ -460,7 +470,7 @@ function Gameplay:update(dt)
             self.updateTime = false
             return
         else
-            if (self.background and self.background.play) and (musicTime >= 0 and musicTime < self.songDuration-1000) and self.soundManager:isPlaying("music") then
+            if (self.background and self.background.play) and (musicTime >= 0 and musicTime < self.lastNoteTime-1000) and self.soundManager:isPlaying("music") then
                 self.background:play(musicTime/1000)
             end
             musicTime = musicTime + (love.timer.getTime() * 1000) - (previousFrameTime or (love.timer.getTime()*1000))
@@ -618,9 +628,11 @@ function Gameplay:goodNoteHit(note, time)
     end
 end
 
-function Gameplay:substateReturn()
+function Gameplay:substateReturn(restarted)
     self.inPause = false
-    self.soundManager:play("music")
+    if not restarted then
+        self.soundManager:play("music")
+    end
     self.updateTime = true
 end
 
@@ -664,8 +676,8 @@ function Gameplay:draw()
 
     local lastFont = love.graphics.getFont()
     love.graphics.setFont(Cache.members.font["menuBold"])
-    love.graphics.printf("Score: " .. math.floor(lerpedScore), 0, 0, 960, "right", 0, 2, 2)
-    love.graphics.printf("Accuracy: " .. math.floor(self.accuracy) .. "%", 0, 50, 960, "right", 0, 2, 2)
+    love.graphics.printf("Score: " .. math.round(lerpedScore), 0, 0, 960, "right", 0, 2, 2)
+    love.graphics.printf("Accuracy: " .. math.round(self.accuracy) .. "%", 0, 50, 960, "right", 0, 2, 2)
     love.graphics.setFont(lastFont)
 end
 
@@ -694,6 +706,9 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath)
     table.sort(self.unspawnNotes, function(a, b)
         return a.time < b.time
     end)
+
+    local lastNoteTime = #self.unspawnNotes > 0 and self.unspawnNotes[#self.unspawnNotes].time or 0
+    self.lastNoteTime = lastNoteTime
 
     self.songName = __title or "N/A"
     self.difficultyName = __diffName or "N/A"

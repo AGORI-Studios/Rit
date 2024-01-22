@@ -31,7 +31,7 @@ function Pause:update(dt)
         states.game.Gameplay.updateTime = true
         previousFrameTime = love.timer.getTime() * 1000
         states.game.Gameplay.escapeTimer = 0
-        state.killSubstate()
+        state.killSubstate(self.selection == 2)
     end
 end
 
