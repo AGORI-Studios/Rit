@@ -9,7 +9,7 @@ local tabs = {
 local tabButtons = {}
 local tabFrames = {}
 
-local loveframes = require("lib.LoveFrames")
+local loveframes = require("lib.loveframes")
 -- TEMPORARY OPTIONS MENU
 
 local tabsYOffset = 0
