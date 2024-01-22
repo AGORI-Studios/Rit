@@ -693,6 +693,8 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath)
         malodyLoader.load(songPath, folderPath)
     elseif chartType == "Rit" then
         ritLoader.load(songPath, folderPath)
+    elseif chartType == "CloneHero" then
+        cloneLoader.load(songPath, folderPath)
     end
 
     self.M_folderPath = folderPath -- used for mod scripting

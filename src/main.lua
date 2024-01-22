@@ -10,45 +10,47 @@ __InJukebox = false
 require("modules.Utilities")
 ffi = require("ffi")
 
-if not __DEBUG__ then
+if love.system.getOS() ~= "NX" then
+    if not __DEBUG__ then
+        Try(
+            function()
+                Steam = require("lib.sworks.main")
+            end,
+            function()
+                Steam = nil
+                print("Couldn't load Steamworks.")
+            end
+        )
+    end
     Try(
         function()
-            Steam = require("lib.sworks.main")
+            discordRPC = require("lib.discordRPC") -- https://github.com/pfirsich/lua-discordRPC
+            discordRPC.nextPresenceUpdate = 0
         end,
         function()
-            Steam = nil
-            print("Couldn't load Steamworks.")
+            discordRPC = nil
+            print("Couldn't load Discord RPC.")
+        end
+    )
+    Try(
+        function()
+            https = require("https") -- https://github.com/love2d/lua-https
+        end,
+        function()
+            https = nil
+            print("Couldn't load https.")
+        end
+    )
+    Try(
+        function()
+            imgui = require("lib.cimgui")
+        end,
+        function()
+            imgui = nil
+            print("Couldn't load imgui.")
         end
     )
 end
-Try(
-    function()
-        discordRPC = require("lib.discordRPC") -- https://github.com/pfirsich/lua-discordRPC
-        discordRPC.nextPresenceUpdate = 0
-    end,
-    function()
-        discordRPC = nil
-        print("Couldn't load Discord RPC.")
-    end
-)
-Try(
-    function()
-        https = require("https") -- https://github.com/love2d/lua-https
-    end,
-    function()
-        https = nil
-        print("Couldn't load https.")
-    end
-)
-Try(
-    function()
-        imgui = require("lib.cimgui")
-    end,
-    function()
-        imgui = nil
-        print("Couldn't load imgui.")
-    end
-)
 
 __inits = require("init")
 __WINDOW_WIDTH, __WINDOW_HEIGHT = __inits.__WINDOW_WIDTH, __inits.__WINDOW_HEIGHT
@@ -68,11 +70,14 @@ function love.load()
     state = require("lib.state")
     tinyyaml = require("lib.tinyyaml")
     ini = require("lib.ini")
+    clone = require("lib.clone")
     threadLoader = require("lib.loveloader")
     xml = require("lib.xml")
     require("lib.lovefs.lovefs")
     require("lib.luafft")
-    Video = require("lib.aqua.Video")
+    if love.system.getOS() ~= "NX" then
+        require("lib.aqua.Video")
+    end
 
     if imgui then
         imgui.love.Init()
@@ -113,6 +118,7 @@ function love.load()
     smLoader = require("modules.Parsers.Stepmania")
     malodyLoader = require("modules.Parsers.Malody")
     ritLoader = require("modules.Parsers.Rit")
+    cloneLoader = require("modules.Parsers.Clone")
 
     --Cache.members.font["default"] = love.graphics.newFont("assets/fonts/Dosis-SemiBold.ttf", 16)
     Cache.members.font["default"] = love.graphics.newFont("assets/fonts/TT-Interphases-Pro-Trial-Light.ttf", 16)
@@ -256,8 +262,10 @@ function love.focus(f)
 end
 
 function love.keypressed(key)
-    imgui.love.KeyPressed(key)
-    if imgui.love.GetWantCaptureKeyboard() then return end
+    if imgui then
+        imgui.love.KeyPressed(key)
+        if imgui.love.GetWantCaptureKeyboard() then return end
+    end
     state.keypressed(key)
 
     if __DEBUG__ then
@@ -273,8 +281,10 @@ function love.resize(w,h)
 end
 
 function love.wheelmoved(x, y)
-    imgui.love.WheelMoved(x, y)
-    if imgui.love.GetWantCaptureMouse() then return end
+    if imgui then
+        imgui.love.WheelMoved(x, y)
+        if imgui.love.GetWantCaptureMouse() then return end
+    end
     state.wheelmoved(x, y)
 
     if love.keyboard.isDown("lalt") then
@@ -284,32 +294,42 @@ function love.wheelmoved(x, y)
 end
 
 function love.mousepressed(x, y, b)
-    imgui.love.MousePressed(b)
-    if imgui.love.GetWantCaptureMouse() then return end
+    if imgui then
+        imgui.love.MousePressed(b)
+        if imgui.love.GetWantCaptureMouse() then return end
+    end
     state.mousepressed(x, y, b)
 end
 
 function love.mousereleased(x, y, b)
-    imgui.love.MouseReleased(b)
-    if imgui.love.GetWantCaptureMouse() then return end
+    if imgui then
+        imgui.love.MouseReleased(b)
+        if imgui.love.GetWantCaptureMouse() then return end
+    end
     state.mousereleased(x, y, b)
 end
 
 function love.textinput(t)
-    imgui.love.TextInput(t)
-    if imgui.love.GetWantCaptureKeyboard() then return end
+    if imgui then
+        imgui.love.TextInput(t)
+        if imgui.love.GetWantCaptureKeyboard() then return end
+    end
     state.textinput(t)
 end
 
 function love.keyreleased(key)
-    imgui.love.KeyReleased(key)
-    if imgui.love.GetWantCaptureKeyboard() then return end
+    if imgui then
+        imgui.love.KeyReleased(key)
+        if imgui.love.GetWantCaptureKeyboard() then return end
+    end
     state.keyreleased(key)
 end
 
 function love.mousemoved(x, y, dx, dy, istouch)
-    imgui.love.MouseMoved(x, y)
-    if imgui.love.GetWantCaptureMouse() then return end
+    if imgui then
+        imgui.love.MouseMoved(x, y)
+        if imgui.love.GetWantCaptureMouse() then return end
+    end
     state.mousemoved(x, y, dx, dy, istouch)
 end
 

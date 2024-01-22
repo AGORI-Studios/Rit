@@ -133,6 +133,43 @@ function loadSongs(path)
                             }
                         end
                         songList[title].type = "Malody"
+                    --[[ elseif song:sub(-6) == ".chart" then
+                        -- check for song.ini in same path
+                        local songIni = lf.getInfo(path .."/" .. file .. "/song.ini")
+                        local songMeta
+                        local chart = clone.parse(path .."/" .. file .. "/" .. song)
+                        if songIni then
+                            -- parse with ini.parse
+                            songMeta = ini.parse(path .."/" .. file .. "/song.ini")
+                        else
+                            -- ignore
+                            goto continue
+                        end
+                        local title = songMeta.Song.name
+                        local diffName = "ExpertSingle"
+                        local AudioFile = chart.meta.MusicStream:trim()
+                        local alreadyInList = false
+                        for _, song in ipairs(songList) do
+                            if song.title == title and song.difficultyName == diffName then
+                                alreadyInList = true
+                            end
+                        end
+                        if not alreadyInList then
+                            songList[title] = songList[title] or {}
+                            songList[title][diffName] = {
+                                filename = file,
+                                title = title,
+                                difficultyName = diffName,
+                                path = path .."/" .. file .. "/" .. song,
+                                folderPath = path .."/" .. file,
+                                type = "CloneHero",
+                                rating = "",
+                                ratingColour = {1,1,1},
+                                audioFile = path .."/" .. file .. "/" .. AudioFile
+                            }
+                        end
+                        songList[title].type = "CloneHero"
+                        ::continue:: ]]
                         -- With how stupid I am, stepmania is probably going to be the last thing I add
                     --[[ elseif song:sub(-3) == ".sm" then -- for stepmania, we have to call "smLoader.getDifficulties(chart)"
                         diffs = smLoader.getDifficulties(path .."/" .. file .. "/" .. song)

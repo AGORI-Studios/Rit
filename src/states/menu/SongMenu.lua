@@ -5,7 +5,8 @@ local songButtons = {
     ["Quaver"] = {},
     ["Malody"] = {},
     ["Rit"] = {},
-    ["Stepmania"] = {},
+    --["Stepmania"] = {},
+    --["CloneHero"] = {},
     ["All"] = {}
 }
 
@@ -39,7 +40,8 @@ local allTypes = {
     "Quaver",
     "osu!",
     "Malody",
-    "Stepmania"
+    --"Stepmania",
+    --"CloneHero",
 }
 
 function SongMenu:enter()
@@ -86,7 +88,8 @@ function SongMenu:enter()
         ["Quaver"] = {},
         ["Malody"] = {},
         ["Rit"] = {},
-        ["Stepmania"] = {},
+        --["Stepmania"] = {},
+        --["CloneHero"] = {},
         ["All"] = {}
     }
 

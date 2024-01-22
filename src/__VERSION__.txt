@@ -1,2 +1,1 @@
-# Ignore this file, this file may only be changed by the developer for a new release.
-v1.0.0-steam beta
+v1.0.0

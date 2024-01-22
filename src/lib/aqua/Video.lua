@@ -13,6 +13,7 @@ Try(
 local Video = Object:extend()
 
 function Video:new(fileData)
+    if not video then return nil, "Couldn't load video." end
     local vid = video.open(fileData:getPointer(), fileData:getSize())
     if not vid then return nil, "Couldn't open video." end
 

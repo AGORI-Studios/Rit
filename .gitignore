@@ -15,6 +15,7 @@ requirements/win64/*
 !requirements/win64/swresample-4.dll
 !requirements/win64/swscale-7.dll
 !requirements/win64/video.dll
+!requirements/win64/cimgui.dll
 
 requirements/win32/*
 !requirements/win32/dependencies.txt
@@ -29,6 +30,9 @@ requirements/macos/*
 !requirements/macos/luasteam.so
 !requirements/macos/libdiscord-rpc.dylib
 !requirements/macos/https.so
+
+requirements/switch/*
+!requirements/switch/dependencies.txt
 
 .env
 Keys.lua
