@@ -16,3 +16,7 @@ love.window._handle = love.window._sdl.SDL_GL_GetCurrentWindow()
 function love.window.setWindowOpacity(opacity)
     love.window._sdl.SDL_SetWindowOpacity(love.window._handle, opacity)
 end
+
+function love.window.setWindowSize(w, h)
+    love.window._sdl.SDL_SetWindowSize(love.window._handle, w, h)
+end

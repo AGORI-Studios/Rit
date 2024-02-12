@@ -70,7 +70,7 @@ function Results:draw()
             curRating
         ),
         0, 0,
-        __inits.__GAME_WIDTH,
+        Inits.GameWidth,
         "center",
         0, 3, 3
     )

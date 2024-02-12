@@ -169,7 +169,7 @@ function Gameplay:doJudgement(time)
     self.accuracy = (self.score / maxScore) * 100
 
     self:remove2(self.judgement)
-    self.judgement = Sprite(__inits.__GAME_WIDTH/2, 390, judgement.img)
+    self.judgement = Sprite(Inits.GameWidth/2, 390, judgement.img)
     if judgeTimer.y then Timer.cancel(judgeTimer.y) end
     judgeTimer.y = Timer.tween(0.1, self.judgement, {y = 400}, "in-out-expo")
     self.judgement.origin.x = self.judgement.width / 2 -- Always center x origin
@@ -191,7 +191,7 @@ function Gameplay:doJudgement(time)
             local sprWidth = sprite.width * 1.25
             --sprite.x = 180 - (#tostring(self.combo) * sprWidth/2) + (i * sprWidth) -- center to middle of screen lfmna 
             sprite.x = 180 - (#tostring(self.combo) * sprWidth/2) + (i * sprWidth)
-            sprite.x = sprite.x + (__inits.__GAME_WIDTH/2.55)
+            sprite.x = sprite.x + (Inits.GameWidth/2.55)
             sprite.y = 460
             sprite:setGraphicSize(math.floor(sprWidth))
             sprite.scale.y = sprite.scale.y + 0.2
@@ -209,7 +209,7 @@ function Gameplay:doJudgement(time)
             local sprite = Sprite(0, 0, "defaultSkins/skinThrowbacks/combo/COMBO" .. comboDigit .. ".png")
             local sprWidth = sprite.width * 1.25
             sprite.x = 180 - (#tostring(self.combo) * sprWidth/2) + (i * sprWidth)
-            sprite.x = sprite.x + (__inits.__GAME_WIDTH/2.55)
+            sprite.x = sprite.x + (Inits.GameWidth/2.55)
             sprite.color = {1, 0.2, 0.2}
             sprite:setGraphicSize(math.floor(sprWidth))
             sprite.scale.y = sprite.scale.y + 0.2

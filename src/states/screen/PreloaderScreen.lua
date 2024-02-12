@@ -48,14 +48,14 @@ function PreloaderScreen:draw()
         (not doneLoading and ("Precaching Resources..." .. threadLoader.loadedCount .. "/" .. threadLoader.resourceCount) 
             or "Loaded!") ..
         "\n"..math.floor(percent * 100).."%", 
-        0,__inits.__GAME_HEIGHT/2-100,__inits.__GAME_WIDTH/2, "center", 0, 2, 2
+        0,Inits.GameHeight/2-100,Inits.GameWidth/2, "center", 0, 2, 2
     )
     -- loading bar
-    love.graphics.rectangle("fill", (__inits.__GAME_WIDTH*0.05),__inits.__GAME_WIDTH/2, (__inits.__GAME_WIDTH*0.9) * percent, 50)
+    love.graphics.rectangle("fill", (Inits.GameWidth*0.05),Inits.GameWidth/2, (Inits.GameWidth*0.9) * percent, 50)
 
     -- flash
     love.graphics.setColor(0, 0, 0, fade)
-    love.graphics.rectangle("fill", 0, 0,__inits.__GAME_WIDTH,__inits.__GAME_HEIGHT)
+    love.graphics.rectangle("fill", 0, 0,Inits.GameWidth,Inits.GameHeight)
     love.graphics.setColor(1, 1, 1, 1)
 end    
 

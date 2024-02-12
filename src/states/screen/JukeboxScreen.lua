@@ -201,7 +201,7 @@ function Jukebox:enter()
     end
 
     -- top right
-    closeBtn = Sprite(__inits.__GAME_WIDTH - 75, 25, "assets/images/ui/menu/cross.png")
+    closeBtn = Sprite(Inits.GameWidth - 75, 25, "assets/images/ui/menu/cross.png")
     closeBtn.color = {1, 0, 0}
 
     --getNewSong()
@@ -234,7 +234,7 @@ function Jukebox:update(dt)
         bubble.ogY = bubble.ogY - bubble.velY * dt
 
         if bubble.ogY < -bubble.height then
-            bubble.ogY = __inits.__GAME_HEIGHT + 100
+            bubble.ogY = Inits.GameHeight + 100
             bubble.ogX = love.math.random(0, 1920 - bubble.width)
             bubble.velY = love.math.random(25, 50)
         end
@@ -306,9 +306,9 @@ function Jukebox:draw()
         local mediaWidth = #buttons * 100
         
         -- draw progress bar to right of media controls
-        love.graphics.rectangle("fill", mediaWidth + 100, 1030, __inits.__GAME_WIDTH - mediaWidth - 200, 100)
+        love.graphics.rectangle("fill", mediaWidth + 100, 1030, Inits.GameWidth - mediaWidth - 200, 100)
         love.graphics.setColor(0.50, 0.25, 0)
-        love.graphics.rectangle("fill", mediaWidth + 100, 1030, (__inits.__GAME_WIDTH - mediaWidth - 200) * percent, 100)
+        love.graphics.rectangle("fill", mediaWidth + 100, 1030, (Inits.GameWidth - mediaWidth - 200) * percent, 100)
     end
     -- show title above progress bar, left aligned
     love.graphics.setColor(1, 1, 1)
@@ -316,7 +316,7 @@ function Jukebox:draw()
     love.graphics.setFont(Cache.members.font["defaultBold"])
     love.graphics.printf(
         (curSong.title or "Unknown"),
-        __inits.__GAME_WIDTH/2-265, 990, __inits.__GAME_WIDTH, "left",
+        Inits.GameWidth/2-265, 990, Inits.GameWidth, "left",
         0, 2.25, 2.25
     )
 

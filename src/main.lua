@@ -52,8 +52,8 @@ if love.system.getOS() ~= "NX" then
     )
 end
 
-__inits = require("init")
-__WINDOW_WIDTH, __WINDOW_HEIGHT = __inits.__WINDOW_WIDTH, __inits.__WINDOW_HEIGHT
+Inits = require("init")
+__WINDOW_WIDTH, __WINDOW_HEIGHT = Inits.__WINDOW_WIDTH, Inits.__WINDOW_HEIGHT
 
 local winOpacity = {1}
 local volume = {1}
@@ -81,6 +81,16 @@ function love.load()
 
     if imgui then
         imgui.love.Init()
+    end
+
+    -- remove all os function EXCEPT non-harmful ones
+    -- don't want modscriptors to do anything bad :)
+    for k, v in pairs(os) do
+        if k ~= "clock" and k ~= "date" and k ~= "difftime" and 
+            k ~= "time" and k ~= "tmpname" and k ~= "getenv" and
+            k ~= "setlocale" then
+            os[k] = nil
+        end
     end
 
     -- Classes
@@ -197,7 +207,7 @@ function love.load()
     end
 
     -- need stencil for the game screen
-    gameScreen = love.graphics.newCanvas(__inits.__GAME_WIDTH, __inits.__GAME_HEIGHT)
+    gameScreen = love.graphics.newCanvas(Inits.GameWidth, Inits.GameHeight)
 
     MenuSoundManager = SoundManager()
 
@@ -365,11 +375,11 @@ end
 function toGameScreen(x, y)
     -- converts our mouse position to the game screen (canvas) with the correct ratio
     local ratio = 1
-    ratio = math.min(__WINDOW_WIDTH/__inits.__GAME_WIDTH, __WINDOW_HEIGHT/__inits.__GAME_HEIGHT)
+    ratio = math.min(__WINDOW_WIDTH/Inits.GameWidth, __WINDOW_HEIGHT/Inits.GameHeight)
 
     local x, y = x - __WINDOW_WIDTH/2, y - __WINDOW_HEIGHT/2
     x, y = x / ratio, y / ratio
-    x, y = x + __inits.__GAME_WIDTH/2, y + __inits.__GAME_HEIGHT/2
+    x, y = x + Inits.GameWidth/2, y + Inits.GameHeight/2
 
     return x, y
 end
@@ -382,10 +392,10 @@ function love.draw()
 
     -- ratio
     local ratio = 1
-    ratio = math.min(love.graphics.getWidth()/__inits.__GAME_WIDTH, love.graphics.getHeight()/__inits.__GAME_HEIGHT)
+    ratio = math.min(love.graphics.getWidth()/Inits.GameWidth, love.graphics.getHeight()/Inits.GameHeight)
     love.graphics.setColor(1,1,1,1)
     -- draw game screen with the calculated ratio and center it on the screen
-    love.graphics.draw(gameScreen, love.graphics.getWidth()/2, love.graphics.getHeight()/2, 0, ratio, ratio, __inits.__GAME_WIDTH/2, __inits.__GAME_HEIGHT/2)
+    love.graphics.draw(gameScreen, love.graphics.getWidth()/2, love.graphics.getHeight()/2, 0, ratio, ratio, Inits.GameWidth/2, Inits.GameHeight/2)
 
     for i, spr in ipairs(Modscript.funcs.sprites) do
         if spr.drawWithoutRes then
