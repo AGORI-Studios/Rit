@@ -200,8 +200,6 @@ function StartMenu:enter()
         }
     end
 
-    loadSongs("defaultSongs")
-    loadSongs("songs")
     if not MenuSoundManager:exists("music") then playRandomSong() end
 
     if MenuSoundManager:exists("music") then

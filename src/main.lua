@@ -61,7 +61,8 @@ local curVol = 1
 local isClosing = false
 
 function love.load()
-    __NOTE_OBJECT_WIDTH = 0
+    __NOTE_OBJECT_WIDTH = 0 -- Determined from the width of the noteskins note object.
+    
     -- Libraries 
     Object = require("lib.class")
     Timer = require("lib.timer")
@@ -107,6 +108,7 @@ function love.load()
     VersionChecker = require("modules.VersionChecker")
     Popup = require("modules.Popup")
     skin = require("modules.Game.SkinHandler")
+
     skinList = {}
     skin:loadSkins("skins")
     skin:loadSkins("defaultSkins")
@@ -131,6 +133,7 @@ function love.load()
     cloneLoader = require("modules.Parsers.Clone")
 
     --Cache.members.font["default"] = love.graphics.newFont("assets/fonts/Dosis-SemiBold.ttf", 16)
+    -- Load fonts
     Cache.members.font["default"] = love.graphics.newFont("assets/fonts/TT-Interphases-Pro-Trial-Light.ttf", 16)
     Cache.members.font["defaultBold"] = love.graphics.newFont("assets/fonts/TT-Interphases-Pro-Trial-Medium.ttf", 16)
     Cache.members.font["menu"] = love.graphics.newFont("assets/fonts/TT-Interphases-Pro-Trial-Light.ttf", 32)
@@ -173,6 +176,7 @@ function love.load()
             Jukebox = require("states.screen.JukeboxScreen"),
         }
     }
+    -- Substates
     substates = {
         game = {
             Pause = require("substates.game.Pause"),
@@ -182,7 +186,7 @@ function love.load()
         }
     }
 
-    if Steam then
+    if Steam then -- Steam initailization
         if not Steam.init() or not Steam.isRunning() then
             print("Steam is not running.")
             Steam = nil
@@ -200,17 +204,18 @@ function love.load()
         end
     end 
 
+    -- Parse the skin's data file
     skinData = ini.parse(love.filesystem.read(skin:format("skin.ini")))
 
-    if discordRPC then
+    if discordRPC then -- Discord RPC initialization
         discordRPC.initialize("785717724906913843", true)
     end
 
-    -- need stencil for the game screen
     gameScreen = love.graphics.newCanvas(Inits.GameWidth, Inits.GameHeight)
 
     MenuSoundManager = SoundManager()
 
+    -- Lastly, switch to the preloader screen to preload all of our needed assets
     state.switch(states.screens.PreloaderScreen)
 end
 
@@ -226,7 +231,7 @@ function switchState(newState, t, middleFunc)
 end
 
 function love.update(dt)
-    threadLoader.update()
+    threadLoader.update() -- update the threads for asset loading
     local dt = math.min(dt, 1/30) -- cap dt to 30fps
     Timer.update(dt)
     input:update()

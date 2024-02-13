@@ -288,6 +288,7 @@ end
 function playRandomSong()    
     -- get a random value with pairs
     local song = table.random(songList)
+    if not song then return end
     local diff = table.random(song)
 
     if not diff then playRandomSong() return end

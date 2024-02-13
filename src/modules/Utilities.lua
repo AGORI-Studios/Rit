@@ -1,3 +1,4 @@
+-- require math module
 for i, module in ipairs(love.filesystem.getDirectoryItems("modules/Lua")) do
     if module:sub(-4) == ".lua" then
         require("modules.Lua." .. module:sub(1, -5))
