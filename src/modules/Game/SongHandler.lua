@@ -1,7 +1,7 @@
 
 local lf = love.filesystem -- i use this a lot so i just made it a variable
 songList = {}
-function loadSongs(path)
+function loadSongs(path) -- Gross yucky way of loading all of our songs in the given folder path
     if not lf.getInfo("songs") then
         lf.createDirectory("songs")
         love.window.showMessageBox("Songs folder created!",

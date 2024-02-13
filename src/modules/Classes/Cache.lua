@@ -15,6 +15,7 @@ function Cache:clear()
 end
 
 function Cache:loadImage(...) -- so we can load multiple images at once
+    --                           also makes it so we don't re-load the same image
     for i, v in ipairs({...}) do
         if not self.members.image[v] then
             self.members.image[v] = love.graphics.newImage(v)

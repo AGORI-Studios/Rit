@@ -4,6 +4,7 @@ local fade = 0
 local allNoteImgs = {}
 
 function PreloaderScreen:enter()
+    -- Preload all non-skin textures, and load song data (Useful for when difficulty calculation is added)
     threadLoader.newImage(self, "logo", "assets/images/ui/menu/logo.png")
     threadLoader.newImage(self, "songButton", "assets/images/ui/menu/songBtn.png")
     threadLoader.newImage(self, "statsBox", "assets/images/ui/menu/statsBox.png")

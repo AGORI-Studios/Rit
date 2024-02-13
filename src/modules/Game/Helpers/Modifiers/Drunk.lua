@@ -15,6 +15,7 @@ function Drunk:update(dt, beat, playfield)
     if not self.enabled then return end
 
     for i = 1, states.game.Gameplay.mode do
+        -- Add a sine wave to the x position of each lane
         local xpos = self.amount * (math.cos(musicTime*0.001+i*(0.2)+1*(0.2))*__NOTE_OBJECT_WIDTH*0.5)
 
         states.game.Gameplay.playfields[playfield].lanes[i].x = xpos

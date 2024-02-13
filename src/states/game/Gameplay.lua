@@ -31,7 +31,7 @@ Gameplay.songDuration = 0
 Gameplay.escapeTimer = 0 -- how long the back button has been held for
 Gameplay.health = 0.5
 
-Gameplay.maxScore = 1000000 -- 1 million max score
+Gameplay.maxScore = 1000000 -- 1 million max score. Can be modified with mods (TODO)
 Gameplay.score = 0
 Gameplay.rating = 0
 Gameplay.accuracy = 0
@@ -42,9 +42,6 @@ Gameplay.noteScore = 0
 Gameplay.playfields = {}
 
 Gameplay.background = nil
-Gameplay.backgrounds = {
-    -- preloaded images/videos -- (Video WIP)
-}
 
 Gameplay.bgLane = {
     x = 0,
@@ -61,6 +58,7 @@ local comboTimer = {}
 local judgeTimer = {}
 
 function Gameplay:preloadAssets()
+    -- Preload our judgement assets
     for i = 0, 9 do
         Cache:loadImage("defaultSkins/skinThrowbacks/combo/COMBO" .. i .. ".png")
     end
@@ -73,6 +71,7 @@ function Gameplay:preloadAssets()
 end
 
 function Gameplay:reset()
+    -- Reset all variables to their default values
     self.strumX = 525
     self.spawnTime = 1000
     self.hitObjects = Group()
@@ -118,7 +117,6 @@ function Gameplay:reset()
     self.noteoffsets = {}
 
     self.background = nil
-    self.backgrounds = {}
 
     self.events = {}
 
@@ -144,6 +142,7 @@ function Gameplay:reset()
 end
 
 function Gameplay:addPlayfield(x, y)
+    -- Adds a playfield to the game screen
     local x = x or 0
     local y = y or 0
     local playfield = Playfield(x, y)
@@ -184,7 +183,7 @@ function Gameplay:doJudgement(time)
         self.misses = self.misses + 1
         self.missCombo = self.missCombo + 1
     end
-    if self.combo > 0 then
+    if self.combo > 0 then -- The normal combo
         for i = 1, #tostring(self.combo) do
             local comboDigit = tostring(self.combo):sub(i, i)
             local sprite = Sprite(0, 0, "defaultSkins/skinThrowbacks/combo/COMBO" .. comboDigit .. ".png")
@@ -203,7 +202,7 @@ function Gameplay:doJudgement(time)
             self.comboGroup:add(sprite)
         end
     end
-    if self.missCombo > 0 then
+    if self.missCombo > 0 then -- The miss combo (I find it a nice QoL feature)
         for i = 1, #tostring(self.missCombo) do
             local comboDigit = tostring(self.missCombo):sub(i, i)
             local sprite = Sprite(0, 0, "defaultSkins/skinThrowbacks/combo/COMBO" .. comboDigit .. ".png")
@@ -223,7 +222,7 @@ function Gameplay:doJudgement(time)
     end
 end
 
--- // Slider Velocity Functions (Quaver) \\ --
+-- // Slider Velocity Functions \\ --
 function Gameplay:initializePositionMarkers()
     if #self.sliderVelocities == 0 then return end
 
@@ -325,6 +324,7 @@ function Gameplay:updateNotePosition(offset, curTime)
         end
         hitObject.y = spritePosition
         if #hitObject.children > 0 then
+            -- Determine the hold notes position and scale
             hitObject.children[1].y = spritePosition + hitObject.height/2
             hitObject.children[2].y = spritePosition + hitObject.height/2
 
@@ -412,11 +412,11 @@ function Gameplay:enter()
 
     self:add2(self.comboGroup)
 
-    self:addPlayfield(0, 0)
+    self:addPlayfield(0, 0) -- Add the main playfield. We need at least one playfield to draw the notes
 
     Modscript:call("Start")
 
-    Timer.after(1.2, function()
+    Timer.after(1.2, function() -- forced delay to prevent potential desync's
         self.updateTime = true
         self.didTimer = true
         previousFrameTime = love.timer.getTime() * 1000
@@ -682,7 +682,8 @@ function Gameplay:draw()
 end
 
 function Gameplay:generateBeatmap(chartType, songPath, folderPath)
-    self.mode = 4
+    self.mode = 4 -- Amount of key lanes
+    -- icky but it works
     if chartType == "Quaver" then
         quaverLoader.load(songPath, folderPath)
     elseif chartType == "osu!" then
@@ -725,7 +726,7 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath)
         }
     end
 
-    -- detirmine noteScore (1m max score and how many notes)
+    -- determine noteScore (1m max score and how many notes)
     self.noteScore = self.maxScore / #self.unspawnNotes
 
     self.soundManager:setBeatCallback("music", function(beat)

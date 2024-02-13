@@ -18,6 +18,7 @@ function Playfield:update(dt)
 end
 
 function Playfield:draw(notes) 
+    -- Draw the receptors and notes on the playfield
     love.graphics.push()
     love.graphics.translate(self.x, self.y)
     love.graphics.scale(1, self.reversed and -1 or 1)

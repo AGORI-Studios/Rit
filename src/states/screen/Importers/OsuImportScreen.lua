@@ -6,6 +6,7 @@ local songsFolder = love.filesystem.getSaveDirectory() .. sep .. "songs"
 
 local path = ""
 local username = os_ == "Windows" and os.getenv("USERNAME") or os.getenv("USER")
+-- Figure out osu's install location and songs folder
 if os_ == "Windows" then
     path = "C:\\Users\\%username%\\AppData\\Local\\osu!\\Songs"
 elseif os_ == "Linux" then

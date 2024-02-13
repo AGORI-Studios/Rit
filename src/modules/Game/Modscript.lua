@@ -25,7 +25,8 @@ local modlist = {{}}
 local enabledMods = {{}}
 
 function Modscript:load(script)
-    print("Loading modscript " .. script)
+    --print("Loading modscript " .. script)
+    -- Set all of the functions for modscripting
     Try(
         function()
             chunk = love.filesystem.load(script)()

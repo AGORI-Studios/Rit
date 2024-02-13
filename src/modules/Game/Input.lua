@@ -1,4 +1,4 @@
-
+-- Painful way of adding all required inputs for the game
 input = (require "lib.baton").new({
     controls = {
         ["1k_game1"] = {"key:space"},

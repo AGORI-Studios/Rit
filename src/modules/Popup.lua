@@ -2,7 +2,7 @@ local Popup = Object:extend()
 Popup.popups = {}
 
 function Popup:new(dir, title, text, fadeTime, delay)
-    self.pos = dir or "bottom right" -- scrolls from the right
+    self.pos = dir or "bottom right"
     self.title = title or "Popup"
     self.text = text or "This is a popup."
     self.fadeTime = fadeTime or 0.5

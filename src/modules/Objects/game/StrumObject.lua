@@ -15,8 +15,6 @@ function StrumObject:new(x, y, data)
 
     self.graphic = Cache:loadImage(self.anims[1])
 
-    -- todo. different note images for different lanes (skin dependent)
-
     self:updateHitbox()
     self:setGraphicSize(math.floor(self.width * 0.925))
 
@@ -35,6 +33,7 @@ function StrumObject:postAddToGroup()
 end
 
 function StrumObject:playAnim(anim)
+    -- Update the graphic to the correct animation
     if anim == "pressed" then
         self.graphic = Cache:loadImage(self.anims[2])
     elseif anim == "unpressed" then

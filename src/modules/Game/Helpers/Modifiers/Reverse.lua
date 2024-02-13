@@ -5,6 +5,7 @@ Reverse.enabled = false
 
 function Reverse:enable()
     self.super.enable(self)
+    -- Simply just flips the playfield
     self.enabled = true
 end
 

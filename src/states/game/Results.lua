@@ -18,6 +18,8 @@ local ratings = {
 
 local curRating = "F"
 
+-- Todo, Finish results screen
+
 function Results:enter(_, ...)
     args = {...}
     now = os.time()
@@ -53,7 +55,7 @@ Rating: %s
 
     points = {}
     pointColors = {}
-    --todo, points for accuracy
+    --Todo, Points for accuracy
 end
 
 function Results:update(dt)

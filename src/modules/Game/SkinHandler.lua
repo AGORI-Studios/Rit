@@ -3,7 +3,6 @@ local skin = {}
 
 skin.name = Settings.options["General"].skin.name
 skin.path = Settings.options["General"].skin.path
-print(Settings.options["General"].skin.name)
 skin.skins = {}
 
 function skin:format(path)

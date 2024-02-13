@@ -13,8 +13,6 @@ function QuaverImportScreen:update(dt)
     frame = frame + 1 
 
     if frame == 2 then
-        -- use lovefs to print all the drives
-        --print(unpack(importer.drives))
         for _, drive in ipairs(importer.drives) do
             local path = drive .. "SteamLibrary"
             if importer:isDirectory(path) then

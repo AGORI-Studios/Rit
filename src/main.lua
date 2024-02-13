@@ -402,12 +402,6 @@ function love.draw()
     -- draw game screen with the calculated ratio and center it on the screen
     love.graphics.draw(gameScreen, love.graphics.getWidth()/2, love.graphics.getHeight()/2, 0, ratio, ratio, Inits.GameWidth/2, Inits.GameHeight/2)
 
-    for i, spr in ipairs(Modscript.funcs.sprites) do
-        if spr.drawWithoutRes then
-            spr:draw()
-        end
-    end
-
     -- info
     love.graphics.print(
         "FPS: " .. love.timer.getFPS() .. "\n" ..
