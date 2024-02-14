@@ -30,6 +30,9 @@ requirements/macos/*
 !requirements/macos/libdiscord-rpc.dylib
 !requirements/macos/https.so
 
+requirements/switch/*
+!requirements/switch/dependencies.txt
+
 .env
 Keys.lua
 
