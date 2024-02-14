@@ -112,6 +112,8 @@ function love.load()
 
     MenuSoundManager = SoundManager()
 
+    GameInit.SetupNetworking()
+
     -- Lastly, switch to the preloader screen to preload all of our needed assets
     state.switch(states.screens.PreloaderScreen)
 end
@@ -128,6 +130,18 @@ function switchState(newState, t, middleFunc)
 end
 
 function love.update(dt)
+    hub:enterFrame()
+    dtotal = dtotal + dt
+    if dtotal >= 3 then
+        dtotal = 0
+        hub:publish({
+            message = {
+                action = "ping",
+                id = md5(love.timer.getTime() .. math.random()),
+                timestamp = love.timer.getTime()
+            }
+        })
+    end
     threadLoader.update() -- update the threads for asset loading
     Timer.update(dt)
     input:update()
