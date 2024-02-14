@@ -122,10 +122,13 @@ function Sprite:load(graphic, animated, frameWidth, frameHeight)
 end
 
 function Sprite:mapBezier(bezier, graphic, resolution, meshMode)
+    if self.graphic then self.ogGraphic = self.graphic end
     if type(graphic) == "string" then
         graphic = Cache:loadImage(graphic)
+    else
+        graphic = graphic or self.ogGraphic
     end
-    image:setWrap("repeat", "clamp")
+    graphic:setWrap("repeat", "clamp")
 
     local resolution = resolution or 4
     local meshMode = meshMode or "fan"
@@ -199,7 +202,7 @@ function Sprite:mapBezier(bezier, graphic, resolution, meshMode)
         self.graphic = love.graphics.newMesh(vertices, "strip", static)
     end
 
-    self.graphic:setTexture(image)
+    self.graphic:setTexture(self.ogGraphic)
 
     self.width = self.graphic:getWidth()
     self.height = self.graphic:getHeight()

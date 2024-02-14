@@ -325,6 +325,26 @@ function Gameplay:updateNotePosition(offset, curTime)
             hitObject.endY = self:getNotePosition(offset, hitObject.endTrackPosition)
             local pixelDistance = hitObject.endY - hitObject.children[1].y + hitObject.children[2].height-- the distance of start and end we need
             hitObject.children[1].scale.y = (pixelDistance / hitObject.children[1].height)
+            -- create a bezier curve based off of self.playfields[1].beziers[hitObject.data] from the start y to the end y
+            -- get all the bezier points from start to end, then use Sprite:mapBezier(bezier, graphic, resolution, meshMode)
+            
+            -- get the points between start and end
+            local bez = self.playfields[1].beziers[hitObject.data]
+            local bezPoints = bez:render(6)
+            local points = {}
+            -- get three points, startY, endY, and the middle
+            table.insert(points, hitObject.children[1].x)
+            table.insert(points, hitObject.children[1].y)
+            table.insert(points, hitObject.children[1].x)
+            table.insert(points, hitObject.children[1].y + pixelDistance/2)
+            table.insert(points, hitObject.children[1].x)
+            table.insert(points, hitObject.children[1].y + pixelDistance)
+            -- create a bezier from the points
+            local newBez = love.math.newBezierCurve(points)
+            -- map the bezier to the graphic
+            hitObject.children[1]:mapBezier(newBez, hitObject.children[1].graphic, 4, "strip")
+            
+
 
             if Settings.options["General"].downscroll then
                 hitObject.children[2].y = hitObject.children[2].y + pixelDistance - hitObject.children[2].height
