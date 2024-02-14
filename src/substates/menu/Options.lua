@@ -124,6 +124,7 @@ function Options:enter()
         wip:SetText("WIP")
         wip:SetFont(Cache.members.font["default"])
         wip:SetSize(100, 25)
+
     end
 
     createGeneralTab()

@@ -7,10 +7,7 @@ local timers = {
     buttons = {}
 }
 
-local soundData
-
 local balls, bg, logo, twitterLogo, kofiLogo, discordLogo
-local equalizer
 
 local curMenu = 1
 local curLogoScale = {1.85}
@@ -201,14 +198,7 @@ function StartMenu:enter()
     end
 
     if not MenuSoundManager:exists("music") then playRandomSong() end
-
-    if MenuSoundManager:exists("music") then
-        soundData = MenuSoundManager:getSoundData("music")
-
-        -- equalizer that draws on top of the screen
-        equalizer = Spectrum(soundData)
-    end
-
+    
     -- setup button pos (right align) offscreen in curMenu 1
     local buttonWidth = 400
     local buttonHeight = 100
@@ -268,10 +258,6 @@ function StartMenu:update(dt)
 
         bubble.x = bubble.ogX + px * 0.09 + (0.05 * i * 5)
         bubble.y = bubble.ogY + py * 0.09 + (0.05 * i * 5)
-    end
-
-    if equalizer and MenuSoundManager:getChannel("music") then
-        equalizer:update(MenuSoundManager:getChannel("music").sound, soundData)
     end
 
     if state.inSubstate then return end
@@ -418,10 +404,6 @@ function StartMenu:draw()
     twitterLogo:draw()
     kofiLogo:draw()
     discordLogo:draw()
-
-    if equalizer then
-        equalizer:draw()
-    end
 end
 
 return StartMenu
