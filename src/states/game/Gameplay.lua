@@ -209,6 +209,7 @@ function Gameplay:doJudgement(time)
             local sprWidth = sprite.width * 1.25
             sprite.x = 180 - (#tostring(self.combo) * sprWidth/2) + (i * sprWidth)
             sprite.x = sprite.x + (Inits.GameWidth/2.55)
+            sprite.y = 460
             sprite.color = {1, 0.2, 0.2}
             sprite:setGraphicSize(math.floor(sprWidth))
             sprite.scale.y = sprite.scale.y + 0.2
