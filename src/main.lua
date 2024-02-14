@@ -128,9 +128,6 @@ function switchState(newState, t, middleFunc)
 end
 
 function love.update(dt)
-    -- cap min dt to 1/60
-    dt = math.min(dt, 1/60)
-
     threadLoader.update() -- update the threads for asset loading
     Timer.update(dt)
     input:update()
