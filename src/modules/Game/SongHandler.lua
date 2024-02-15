@@ -171,7 +171,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         songList[title].type = "CloneHero"
                         ::continue:: ]]
                         -- With how stupid I am, stepmania is probably going to be the last thing I add
-                    --[[ elseif song:sub(-3) == ".sm" then -- for stepmania, we have to call "smLoader.getDifficulties(chart)"
+                    --[[elseif song:sub(-3) == ".sm" then -- for stepmania, we have to call "smLoader.getDifficulties(chart)"
                         diffs = smLoader.getDifficulties(path .."/" .. file .. "/" .. song)
                         -- has a table in a table (holds name and songName)
 
@@ -196,7 +196,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                                     ratingColour = {1,1,1},
                                 }
                             end
-                        end ]]
+                        end --]]
                     end
                 end
             end

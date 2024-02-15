@@ -462,7 +462,7 @@ function Gameplay:update(dt)
             musicTime = 0
         elseif (musicTime > self.lastNoteTime and not self.soundManager:isPlaying("music")) then
             state.switch(states.menu.SongMenu)
-            self.background:release()
+            if self.background then self.background:release() end
             return
         elseif self.escapeTimer >= 0.7 then
             state.substate(substates.game.Pause)
