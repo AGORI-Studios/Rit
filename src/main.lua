@@ -90,7 +90,6 @@ function love.load()
     -- Parsers
     GameInit.LoadParsers()
 
-    --Cache.members.font["default"] = love.graphics.newFont("assets/fonts/Dosis-SemiBold.ttf", 16)
     -- Load fonts
     GameInit.LoadDefaultFonts()
     

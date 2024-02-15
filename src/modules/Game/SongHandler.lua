@@ -58,7 +58,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             end
                         end
                         local Mode = fileData:match("Mode:(.-)\r?\n"):trim()
-                        -- needs to be 3, else FUCK YOU!
+                        -- needs to be 3, else FUCK YOU! because 3 equals mania!!!
                         if Mode ~= "3" then goto continue end
                         if not alreadyInList then
                             songList[title] = songList[title] or {}
@@ -170,7 +170,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         end
                         songList[title].type = "CloneHero"
                         ::continue:: ]]
-                        -- With how stupid I am, stepmania is probably going to be the last thing I add
+                        -- With how stupid I am, stepmania is probably going to be the last thing I add (I say as clone hero is literally in the works too)
                     --[[elseif song:sub(-3) == ".sm" then -- for stepmania, we have to call "smLoader.getDifficulties(chart)"
                         diffs = smLoader.getDifficulties(path .."/" .. file .. "/" .. song)
                         -- has a table in a table (holds name and songName)

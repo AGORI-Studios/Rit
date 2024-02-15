@@ -60,6 +60,15 @@ function GI.LoadParsers()
     malodyLoader = require("modules.Parsers.Malody")
     ritLoader = require("modules.Parsers.Rit")
     cloneLoader = require("modules.Parsers.Clone")
+
+    Parsers = {
+        ["Quaver"] = quaverLoader,
+        ["osu!"] = osuLoader,
+        ["Stepmania"] = smLoader,
+        ["Malody"] = malodyLoader,
+        ["Rit"] = ritLoader,
+        ["CloneHero"] = cloneLoader
+    }
 end
 
 function GI.LoadDefaultFonts()

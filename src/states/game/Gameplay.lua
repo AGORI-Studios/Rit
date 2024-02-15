@@ -683,21 +683,9 @@ function Gameplay:draw()
 end
 
 function Gameplay:generateBeatmap(chartType, songPath, folderPath)
-    self.mode = 4 -- Amount of key lanes
-    -- icky but it works
-    if chartType == "Quaver" then
-        quaverLoader.load(songPath, folderPath)
-    elseif chartType == "osu!" then
-        osuLoader.load(songPath, folderPath)
-    elseif chartType == "Stepmania" then
-        smLoader.load(songPath, folderPath, false)
-    elseif chartType == "Malody" then
-        malodyLoader.load(songPath, folderPath)
-    elseif chartType == "Rit" then
-        ritLoader.load(songPath, folderPath)
-    elseif chartType == "CloneHero" then
-        cloneLoader.load(songPath, folderPath)
-    end
+    self.mode = 4 -- Amount of key lanes, reset to 4 until the chart specifies otherwise
+    
+    Parsers[chartType].load(songPath, folderPath)
 
     self.M_folderPath = folderPath -- used for mod scripting
     Modscript.vars = {sprites={}} -- reset modscript vars
