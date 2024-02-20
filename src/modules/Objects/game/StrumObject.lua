@@ -7,8 +7,9 @@ function StrumObject:new(x, y, data)
     self.data = data
 
     self.anims = {}
-    self.anims[1] = skin:format("notes/" .. tostring(states.game.Gameplay.mode) .. "K/receptor" .. data .. "-unpressed.png")
-    self.anims[2] = skin:format("notes/" .. tostring(states.game.Gameplay.mode) .. "K/receptor" .. data .. "-pressed.png")
+    self.anims[1] = skin:format("notes/" .. tostring(states.game.Gameplay.mode or states.screens.MapEditorScreen.map.meta.KeyAmount) .. "K/receptor" .. data .. "-unpressed.png")
+    self.anims[2] = skin:format("notes/" .. tostring(states.game.Gameplay.mode or states.screens.MapEditorScreen.map.meta.KeyAmount) .. "K/receptor" .. data .. "-pressed.png")
+    self.animTimer = 0
     
 
     Cache:loadImage(self.anims[1], self.anims[2])
@@ -23,6 +24,7 @@ end
 
 function StrumObject:update(dt)
     self.super.update(self, dt)
+    --self.animTimer = self.animTimer - dt
 end
 
 function StrumObject:postAddToGroup()
@@ -35,6 +37,7 @@ end
 function StrumObject:playAnim(anim)
     -- Update the graphic to the correct animation
     if anim == "pressed" then
+        --self.animTimer = 0.1
         self.graphic = Cache:loadImage(self.anims[2])
     elseif anim == "unpressed" then
         self.graphic = Cache:loadImage(self.anims[1])
