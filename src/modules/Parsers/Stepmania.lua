@@ -126,6 +126,7 @@ function stepmaniaLoader.load(chart, folderPath_, forDiff)
     stepmaniaLoader.parseChart(chart)
 
     __title = title
+    ---@diagnostic disable-next-line: undefined-global
     __diffName = diff
 end
 
@@ -236,6 +237,7 @@ function stepmaniaLoader.parseChart(chart)
     end
 
     __title = title
+    ---@diagnostic disable-next-line: undefined-global
     __diffName = diff
 end
 

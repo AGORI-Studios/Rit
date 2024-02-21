@@ -482,7 +482,7 @@ function Gameplay:update(dt)
         self:updateNotePosition(self.currentTrackPosition, musicTime)
     end
 
-    Modscript:update(self.soundManager:getBeat("music"))
+    Modscript:update(dt, self.soundManager:getBeat("music"))
 
     for i = 1, self.mode do
         self.strumLineObjects.members[i].offset = self.noteoffsets[i]

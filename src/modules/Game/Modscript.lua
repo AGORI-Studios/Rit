@@ -122,7 +122,7 @@ function Modscript:load(script)
     )
 end
 
-function Modscript:update(beat)
+function Modscript:update(dt, beat)
     for i, v in pairs(modlist) do
         for j, playfieldmods in ipairs(v) do
             if beat >= playfieldmods[3] then
@@ -137,7 +137,6 @@ function Modscript:update(beat)
         for j, mod in ipairs(v) do
             mod:update(dt, beat, i)
         end
-        --v:update(dt, beat)
     end
 end
 

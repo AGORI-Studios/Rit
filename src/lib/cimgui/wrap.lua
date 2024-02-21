@@ -1,3 +1,4 @@
+---@diagnostic disable: param-type-mismatch, undefined-global
 local env = {
     assert = assert,
     type = type,

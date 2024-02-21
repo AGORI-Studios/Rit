@@ -1,13 +1,11 @@
 local PreloaderScreen = state()
 local doneLoading = false
 local fade = {0}
-local allNoteImgs = {}
 
-local ritLogo = love.graphics.newImage("assets/images/ui/menu/logo.png")
+local ritLogo = Cache:loadImage("assets/images/ui/menu/logo.png")
 
 function PreloaderScreen:enter()
     -- Preload all non-skin textures, and load song data (Useful for when difficulty calculation is added)
-    threadLoader.newImage(self, "logo", "assets/images/ui/menu/logo.png")
     threadLoader.newImage(self, "songButton", "assets/images/ui/menu/songBtn.png")
     threadLoader.newImage(self, "statsBox", "assets/images/ui/menu/statsBox.png")
     threadLoader.newImage(self, "diffButton", "assets/images/ui/menu/diffBtn.png")
@@ -22,7 +20,7 @@ function PreloaderScreen:enter()
     threadLoader.newImage(self, "twitterLogo", "assets/images/ui/icons/twitter.png")
     threadLoader.newImage(self, "kofiLogo", "assets/images/ui/icons/ko-fi.png")
     threadLoader.newImage(self, "discordLogo", "assets/images/ui/icons/discord.png")
-    threadLoader.loadSongs(self, "songList", "defaultSongs")
+    threadLoader.loadSongs(self, "songList")
 
     for i = 1, 5 do
         threadLoader.newImage(self, "BGball" .. i, "assets/images/ui/menu/BGball" .. i .. ".png")

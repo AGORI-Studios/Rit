@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global
 --[[
 This package provides functions to carry out Fast Fourier Transformations.
 

@@ -17,7 +17,7 @@ local idChars = "0123456789abcdef"
 --@description Creates a new instance of the class
 --@param ... any
 --@return table
-function class:new() end
+function class:new(...) end
 
 --@name class.extend
 --@description Creates a new class that extends the current class

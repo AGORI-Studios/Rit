@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-field, cast-local-type
 local ffi = require("ffi")
 local path = (...):match("(.-)[^%.]+$")
 local callbacks = require(path.."callbacks")

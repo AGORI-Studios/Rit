@@ -128,13 +128,13 @@ function math.perlinNoise(x, y, z)
     local BA = p[B] + Z
     local BB = p[B + 1] + Z
 
-    return lerp(w, lerp(v, lerp(u, grad(p[AA], x, y, z),
-            grad(p[BA], x - 1, y, z)),
-            lerp(u, grad(p[AB], x, y - 1, z),
-                    grad(p[BB], x - 1, y - 1, z))),
-            lerp(v, lerp(u, grad(p[AA + 1], x, y, z - 1),
-                    grad(p[BA + 1], x - 1, y, z - 1)),
-                    lerp(u, grad(p[AB + 1], x, y - 1, z - 1),
-                            grad(p[BB + 1], x - 1, y - 1, z - 1))))
+    return math.lerp(w, math.lerp(v, math.lerp(u, math.grad(p[AA], x, y, z),
+        math.grad(p[BA], x - 1, y, z)),
+            math.lerp(u, math.grad(p[AB], x, y - 1, z),
+                    math.grad(p[BB], x - 1, y - 1, z))),
+            math.lerp(v, math.lerp(u, math.grad(p[AA + 1], x, y, z - 1),
+                math.grad(p[BA + 1], x - 1, y, z - 1)),
+                    math.lerp(u, math.grad(p[AB + 1], x, y - 1, z - 1),
+                        math.grad(p[BB + 1], x - 1, y - 1, z - 1))))
 end
 

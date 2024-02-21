@@ -1,3 +1,4 @@
+---@diagnostic disable: param-type-mismatch
 --@name string.split
 --@description Splits a string into a table
 --@param sep string
@@ -5,6 +6,7 @@
 function string.split(self, sep)
     local sep, fields = sep or ":", {}
     local pattern = string.format("([^%s]+)", sep)
+    ---@diagnostic disable-next-line: discard-returns
     self:gsub(pattern, function(c) fields[#fields+1] = c end)
     return fields
 end
@@ -75,6 +77,7 @@ end
 --@name string.reverse
 --@description Reverses a string
 --@return string
+---@diagnostic disable-next-line: duplicate-set-field
 function string.reverse(self)
     return self:splitAllCharacters():reverse():concat()
 end

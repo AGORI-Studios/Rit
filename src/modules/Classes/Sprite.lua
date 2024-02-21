@@ -124,7 +124,7 @@ function Sprite:mapBezier(bezier, graphic, resolution, meshMode)
     if type(graphic) == "string" then
         graphic = Cache:loadImage(graphic)
     end
-    image:setWrap("repeat", "clamp")
+    graphic:setWrap("repeat", "clamp")
 
     local resolution = resolution or 4
     local meshMode = meshMode or "fan"
@@ -158,24 +158,24 @@ function Sprite:mapBezier(bezier, graphic, resolution, meshMode)
         if x == 1 then
             dist = ((nv[1] - v[1]) ^ 2 + (nv[2] - v[2]) ^ 2) ^ 0.5
             vert = {
-                (nv[2] - v[2]) * width / (dist * 2),
-                -(nv[1] - v[1]) * height / (dist * 2)
+                (nv[2] - v[2]) * self.width / (dist * 2),
+                -(nv[1] - v[1]) * self.height / (dist * 2)
             }
         elseif x == #points - 1 then
             dist = ((v[1] - pv[1]) ^ 2 + (v[2] - pv[2]) ^ 2) ^ 0.5
             vert = {
-                (v[2] - pv[2]) * width / (dist * 2),
-                -(v[1] - pv[1]) * height / (dist * 2)
+                (v[2] - pv[2]) * self.width / (dist * 2),
+                -(v[1] - pv[1]) * self.height / (dist * 2)
             }
         else
             dist = ((nv[1] - pv[1]) ^ 2 + (nv[2] - pv[2]) ^ 2) ^ 0.5
             vert = {
-                (nv[2] - pv[2]) * width / (dist * 2),
-                -(nv[1] - pv[1]) * height / (dist * 2)
+                (nv[2] - pv[2]) * self.width / (dist * 2),
+                -(nv[1] - pv[1]) * self.height / (dist * 2)
             }
         end
 
-        u = u + dist / height / 2
+        u = u + dist / self.height / 2
 
         table.insert(vertices, {
             v[1] + vert[1],
@@ -196,10 +196,10 @@ function Sprite:mapBezier(bezier, graphic, resolution, meshMode)
     if meshMode then
         self.graphic = love.graphics.newMesh(vertices, "strip", meshMode)
     else
-        self.graphic = love.graphics.newMesh(vertices, "strip", static)
+        self.graphic = love.graphics.newMesh(vertices, "strip", "fan")
     end
 
-    self.graphic:setTexture(image)
+    self.graphic:setTexture(graphic)
 
     self.width = self.graphic:getWidth()
     self.height = self.graphic:getHeight()
@@ -263,7 +263,7 @@ function Sprite:update(dt) -- Updates the sprite
     end]]
 end
 
-function Sprite:play() -- Plays the current animation
+function Sprite:play(anim) -- Plays the current animation
     self.curAnim = self.animations[anim]
     self.indexFrame = 1
     self.animFinished = false
