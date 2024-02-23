@@ -141,10 +141,6 @@ function GI.InitSteam()
             if SteamUserImgSteamData then
                 SteamUserAvatarSmall = love.graphics.newImage(love.image.newImageData(width, height, "rgba8", SteamUserImgSteamData))
             end
-            local SteamUserImgSteamData, width, height = SteamUser:getAvatar("large")
-            if SteamUserImgSteamData then
-                SteamUserAvatarLarge = love.graphics.newImage(love.image.newImageData(width, height, "rgba8", SteamUserImgSteamData))
-            end
         end
     end 
 end
