@@ -421,6 +421,8 @@ function Gameplay:enter()
         self.updateTime = true
         self.didTimer = true
         previousFrameTime = love.timer.getTime() * 1000
+
+        MenuSoundManager:removeAllSounds() -- a final safe guard to remove any sounds that may have been left over
     end)
 end
 
