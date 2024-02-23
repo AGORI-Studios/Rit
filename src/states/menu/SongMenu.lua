@@ -1,3 +1,4 @@
+---@diagnostic disable: need-check-nil, param-type-mismatch
 local SongMenu = state()
 
 local songButtons = {
@@ -130,6 +131,7 @@ function SongMenu:update(dt)
     if curTab == "songs" then
         curSelected = math.clamp(curSelected, 1, #songButtons[curSongType])
         lerpedSongPos = math.fpsLerp(lerpedSongPos, (-(curSelected - 2.5)) * songButton.height * 1.1, 25, dt)
+        ---@class curButton : SongButton
         curButton = songButtons[curSongType][curSelected]
     else
         curSelected = math.clamp(curSelected, 1, #curButton.children)

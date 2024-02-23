@@ -1,3 +1,4 @@
+---@class SongButton
 local SongButton = Sprite:extend()
 
 function SongButton:new(y, diffs, bmType, name, creator)

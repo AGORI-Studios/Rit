@@ -1,3 +1,5 @@
+---@class Sprite
+---@diagnostic disable-next-line: assign-type-mismatch
 local Sprite = Object:extend()
 
 Sprite.frame = 1

@@ -26,10 +26,14 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN 
 
 ]]
 
+---@class state
 local state = {}
 state.__index = state
+---@type any
 local current = nil -- Current state
+---@type any
 local last = nil -- Last state
+---@type any
 local substate = nil -- Current substate
 local function nop() end -- Called when there is no function to call from the current state
 state.inSubstate = false
@@ -42,11 +46,11 @@ local function switch(newstate, ...)
     return current
 end
 
---@name state.switch
---@description Switches to a new state, returns the new state
---@param newstate table
---@param ... any
---@return table
+---@name state.switch
+---@description Switches to a new state, returns the new state
+---@param newstate table
+---@param ... any
+---@return class
 function state.switch(newstate, ...)
     assert(newstate, "Called state.switch with no state")
     assert(type(newstate) == "table", "Called state.switch with invalid state")
@@ -54,19 +58,19 @@ function state.switch(newstate, ...)
     return current
 end
 
---@name state.current
---@description Returns the current state
---@return table
+---@name state.current
+---@description Returns the current state
+---@return table
 function state.current() return current end
 
---@name state.last
---@description Returns the last state
---@return table
+---@name state.last
+---@description Returns the last state
+---@return table
 function state.last() return last end
 
---@name state.killSubstate
---@description Kills the current substate and calls current:substateReturn, returns nothing
---@param ... any
+---@name state.killSubstate
+---@description Kills the current substate and calls current:substateReturn, returns nothing
+---@param ... any
 function state.killSubstate(...)
     if substate and substate.exit then substate:exit() end
     substate = nil
@@ -75,26 +79,26 @@ function state.killSubstate(...)
     return
 end 
 
---@name state.currentSubstate
---@description Returns the current substate
---@return table
+---@name state.currentSubstate
+---@description Returns the current substate
+---@return table
 function state.currentSubstate() return substate end
 
 
---@name state.returnToLast
---@description Returns to the last state, returns the new state
---@return table
+---@name state.returnToLast
+---@description Returns to the last state, returns the new state
+---@return table
 function state.returnToLast()
     assert(last, "Called state.return with no last state")
     switch(last)
     return current
 end
 
---@name state.substate
---@description Switches to a new substate, returns the new substate
---@param newstate table
---@param ... any
---@return table
+---@name state.substate
+---@description Switches to a new substate, returns the new substate
+---@param newstate table
+---@param ... any
+---@return table
 function state.substate(newstate, ...)
     assert(newstate, "Called state.substate with no state")
     assert(type(newstate) == "table", "Called state.substate with invalid state") 

@@ -14,6 +14,8 @@ local beatTicks = 48
 local stepTicks = 12
 local curLine = 0
 
+---@class Tempo
+---@diagnostic disable-next-line: assign-type-mismatch
 local Tempo = Object:extend()
 local line
 
