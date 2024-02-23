@@ -262,6 +262,8 @@ function UGC:update(path, data, note, func)
       for i, v in ipairs(data.tags) do
         tags[i - 1] = v
       end
+      ---@class SteamParamStringArray_t
+      ---@diagnostic disable-next-line: assign-type-mismatch
       local sa = ffi.new("SteamParamStringArray_t")
       sa.m_ppStrings = tags
       sa.m_nNumStrings = #data.tags

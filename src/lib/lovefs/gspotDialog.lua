@@ -1,3 +1,4 @@
+---@diagnostic disable: duplicate-set-field
 --[[------------------------------------
 LoveFS Gspot Dialogs v1.2
 Pure Lua FileSystem Access - Loveframes interface

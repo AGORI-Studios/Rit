@@ -8,6 +8,7 @@ function ritLoader.load(chart, folderPath_, forDiff)
     curChart = "Rit"
     folderPath = folderPath_
 
+    ---@diagnostic disable-next-line: redefined-local
     local chart = love.filesystem.read(chart)
     bpm = 0
     crochet = 0
@@ -27,6 +28,7 @@ function ritLoader.processLine(line)
         currentBlock = _currentBlock
         ritLoader.processLine(lineEnd)
     else
+        ---@diagnostic disable-next-line: param-type-mismatch
         local currentBlock = currentBlock:trim()
         local trimmed = line:trim()
         if trimmed == "" then

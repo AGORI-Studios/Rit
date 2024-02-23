@@ -1,3 +1,4 @@
+---@diagnostic disable: need-check-nil
 local Jukebox = state()
 local curSong = nil
 local curDiff = nil

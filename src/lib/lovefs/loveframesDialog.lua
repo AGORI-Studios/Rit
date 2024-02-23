@@ -1,3 +1,4 @@
+---@diagnostic disable: duplicate-set-field
 --[[------------------------------------
 LoveFS LoveFrames Dialogs v1.1
 Pure Lua FileSystem Access - Loveframes interface

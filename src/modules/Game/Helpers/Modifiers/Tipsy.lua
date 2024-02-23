@@ -1,3 +1,5 @@
+---@class Tipsy
+---@diagnostic disable-next-line: assign-type-mismatch
 local Tipsy = Modscript.BaseModifier:extend()
 Tipsy.amount = 0
 Tipsy.name = "Tipsy"

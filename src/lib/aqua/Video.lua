@@ -10,6 +10,8 @@ Try(
     end
 )
 
+---@class Video
+---@diagnostic disable-next-line: assign-type-mismatch
 local Video = Object:extend()
 
 function Video:new(fileData)

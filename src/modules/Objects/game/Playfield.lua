@@ -1,3 +1,5 @@
+---@class Playfield
+---@diagnostic disable-next-line: assign-type-mismatch
 local Playfield = Object:extend()
 
 function Playfield:new(x, y, reversed)

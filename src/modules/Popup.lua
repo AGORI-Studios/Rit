@@ -1,3 +1,5 @@
+---@class Popup
+---@diagnostic disable-next-line: assign-type-mismatch
 local Popup = Object:extend()
 Popup.popups = {}
 

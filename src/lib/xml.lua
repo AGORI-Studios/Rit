@@ -14,6 +14,7 @@ local EXCLAIM, QUOT, APOS, MINUS, SLASH, LT, EQ, GT, QUESTION, LSQUARE, RSQUARE 
 
 -- TODO: expand numeric entities to UTF-8
 local function sub_hex_ent(s) return schar(tonumber(s, 16)) end
+---@diagnostic disable-next-line: param-type-mismatch
 local function sub_dec_ent(s) return schar(tonumber(s)) end
 
 local function unescape(s)

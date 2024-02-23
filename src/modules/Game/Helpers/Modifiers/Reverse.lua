@@ -1,3 +1,5 @@
+---@class Reverse : BaseModifier
+---@diagnostic disable-next-line: assign-type-mismatch
 local Reverse = Modscript.BaseModifier:extend()
 Reverse.name = "Reverse"
 Reverse.enabled = false

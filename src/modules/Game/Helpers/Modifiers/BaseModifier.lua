@@ -1,3 +1,5 @@
+---@class BaseModifier
+---@diagnostic disable-next-line: assign-type-mismatch
 local BaseModifier = Object:extend()
 BaseModifier.enabled = false
 
