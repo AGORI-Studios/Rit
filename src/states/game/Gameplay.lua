@@ -91,7 +91,8 @@ function Gameplay:reset()
     self.didTimer = false
     self.objectKillOffset = 350
     self.inputsArray = {false, false, false, false}
-    self.hitsound = love.audio.newSource("defaultSkins/skinThrowbacks/hitsound.wav", "static")
+    --[[ self.hitsound = love.audio.newSource("defaultSkins/skinThrowbacks/hitsound.wav", "static") ]]
+    self.hitsound = love.audio.newSource(skin:format("hitsound.wav"), "static")
     self.hitsound:setVolume(0.1)
     self.judgement = nil
     self.comboGroup = Group()
