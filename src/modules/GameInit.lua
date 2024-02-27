@@ -29,7 +29,6 @@ function GI.LoadClasses()
     Modscript = require("modules.Game.Modscript")
     Settings = require("modules.Game.Settings")
     Settings.loadOptions()
-    VersionChecker = require("modules.VersionChecker")
     Popup = require("modules.Popup")
     skin = require("modules.Game.SkinHandler")
 end
