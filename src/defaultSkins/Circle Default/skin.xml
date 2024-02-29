@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Skin>
+    <Metadata>
+        <Name>Circle Default</Name>
+        <Version>1.0</Version>
+        <Author>Getsaa</Author>
+        <Description>Default circle skin</Description>
+    </Metadata>
+
+    <UI>
+        <HealthBarColor r="255" g="255" b="255" a="255" />
+        <UiTextColor r="255" g="255" b="255" a="255" />
+        <TimeBarColor r="255" g="255" b="255" a="255" />
+    </UI>
+
+    <Gameplay>
+        <Score>
+            <Alignment>right</Alignment>
+            <X>0</X>
+            <Y>0</Y>
+        </Score>
+
+        <Accuracy>
+            <Alignment>right</Alignment>
+            <X>0</X>
+            <Y>0</Y>
+        </Accuracy>
+
+        <ScoreRating>
+            <Alignment>right</Alignment>
+            <X>0</X>
+            <Y>0</Y>
+        </ScoreRating>
+
+        <Rating>
+            <X>0</X>
+            <Y>0</Y>
+        </Rating>
+    </Gameplay>
+
+    <Menu>
+        <Spectrum>
+            <Colour r="255" g="255" b="255" a="255" />
+        </Spectrum>
+    </Menu>
+
+    <Difficulty>
+        <Diff1 r="255" g="255" b="255" a="255" />
+        <Diff2 r="255" g="255" b="255" a="255" />
+        <Diff3 r="255" g="255" b="255" a="255" />
+        <Diff4 r="255" g="255" b="255" a="255" />
+        <Diff5 r="255" g="255" b="255" a="255" />
+        <Diff6 r="255" g="255" b="255" a="255" />
+        <Diff7 r="255" g="255" b="255" a="255" />
+    </Difficulty>
+
+    <Misc>
+        <Hitsound path="hitsound.wav" volume="0.25" />
+        <NoteSize>0.85</NoteSize>
+        <AntiAliasing>true</AntiAliasing>
+    </Misc>
+</Skin>
