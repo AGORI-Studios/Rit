@@ -5,6 +5,21 @@ __DEBUG__ = not love.filesystem.isFused()
 if not __DEBUG__ then 
     function print() end -- disable print if not in debug mode, allows for better performance
 end
+
+local __isGit
+local __isGitFile = love.filesystem.getInfo("isgit.bool")
+if __isGitFile then
+   -- get first line of file
+    local file = love.filesystem.newFile("isgit.bool")
+    file:open("r")
+    __isGit = file:read()
+    file:close()
+    __isGit = __isGit:match("true") and true or false
+else
+    __isGit = false
+end
+print("isGit: " .. tostring(__isGit))
+
 __InJukebox = false
 
 require("modules.Utilities")
