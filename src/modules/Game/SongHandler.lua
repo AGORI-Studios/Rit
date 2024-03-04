@@ -103,7 +103,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             songList[title].type = "Rit"
                         end
                     elseif song:sub(-3) == ".mc" then
-                        local fileData = json(lf.read(path .."/" .. file .. "/" .. song))
+                        local fileData = json.decode(lf.read(path .."/" .. file .. "/" .. song))
                         local title = fileData.meta.song.title
                         local difficultyName = fileData.meta.version
                         local AudioFile

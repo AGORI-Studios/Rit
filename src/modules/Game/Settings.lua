@@ -16,7 +16,7 @@ Settings.options = {
 }
 
 function Settings.saveOptions()
-    love.filesystem.write("settings", json_encode(Settings.options))
+    love.filesystem.write("settings", json.encode(Settings.options))
 end
 
 function Settings.loadOptions()
@@ -25,7 +25,7 @@ function Settings.loadOptions()
     end
 
     --Settings.options = ini.parse("settings")
-    local savedOptions = json(love.filesystem.read("settings"))
+    local savedOptions = json.decode(love.filesystem.read("settings"))
     for i, type in pairs(savedOptions) do
         for j, setting in pairs(type) do
             Settings.options[i][j] = savedOptions[i][j]

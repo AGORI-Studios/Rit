@@ -3,8 +3,7 @@ local GI = {}
 function GI.LoadLibraries()
     Object = require("lib.class")
     Timer = require("lib.timer")
-    json = require("lib.json").decode
-    json_encode = require("lib.json").encode
+    json = require("lib.json")
     state = require("lib.state")
     tinyyaml = require("lib.tinyyaml")
     ini = require("lib.ini")
