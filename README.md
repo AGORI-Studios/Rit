@@ -71,7 +71,7 @@
 
 # Contact
 - [AGORI Discord](https://discord.gg/8RrzKnNtKW) / [GuglioIsStupid Discord](https://discord.gg/ehY5gMMPW8)
-- [AGORI Twitter](https://twitter.com/AGORIStudios) / [GuglioIsStupid Twitter](https://twitter.com/Saavvuu)
+- [AGORI Twitter](https://twitter.com/AGORIStudios) / [GuglioIsStupid Twitter](https://twitter.com/GuglioIsStupid)
 
 # Useful links
 - [Quaver](https://quavergame.com/)
