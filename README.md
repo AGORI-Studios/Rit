@@ -64,6 +64,7 @@
 - [Stepmania](https://www.stepmania.com/) - Inspiration
 - [Malody](https://m.mugzone.net/) - Inspiration
 - [Etterna](https://etternaonline.com/) - Inspiration
+- [Kenney.nl](https://kenney.nl/) - Some assets
 
 # License
 - [GNU License](/LICENSE)
