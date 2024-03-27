@@ -641,19 +641,28 @@ function Gameplay:draw()
         love.graphics.setColor(0.3, 0.3, 0.3)
         love.graphics.draw(self.background.image or self.background, 0, 0, 0, 1920/self.background:getWidth(), 1080/self.background:getHeight())
     end
+    
     for i, spr in pairs(Modscript.funcs.sprites) do
         if not spr.drawWithoutRes and not spr.drawOverNotes then
             spr:draw()
         end
     end
 
-    love.graphics.setColor(0,0,0)
-    love.graphics.rectangle("fill", self.bgLane.x, 0, self.bgLane.width, 1080)
-    love.graphics.setColor(1,1,1)
 
-    for i, playfield in ipairs(self.playfields) do
-        playfield:draw(self.hitObjects.members)
-    end
+    love.graphics.push()
+        -- scale if keymode is > 4
+        if self.mode > 4 then
+            love.graphics.translate(1920/2, 1080/2)
+            love.graphics.scale(4/(self.mode*0.6), 4/(self.mode*0.6))
+            love.graphics.translate(-1920/2, -1080/2)
+        end
+        love.graphics.setColor(0,0,0)
+        love.graphics.rectangle("fill", self.bgLane.x, -200, self.bgLane.width, 1080+400) -- 200 val to be safe when the screen is scaling for key's > 4
+        love.graphics.setColor(1,1,1)
+        for i, playfield in ipairs(self.playfields) do
+            playfield:draw(self.hitObjects.members)
+        end
+    love.graphics.pop()
 
     -- draw members2
     for i, member in ipairs(self.members2) do

@@ -8,7 +8,7 @@ Settings.options = {
         skin = {
             name = "Circle Default",
             path = "Circle Default"
-        }
+        }    
     },
     ["Meta"] = {
         __VERSION__ = 1

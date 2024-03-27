@@ -63,6 +63,7 @@ function quaverLoader.load(chart, folderPath, forDiff)
         if not startTime then goto continue end
 
         local ho = HitObject(startTime, lane, endTime)
+        ho.keySounds = hitObject.KeySounds or {}
         table.insert(states.game.Gameplay.unspawnNotes, ho)
         ::continue::
     end

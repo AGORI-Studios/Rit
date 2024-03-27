@@ -132,11 +132,32 @@ function osuLoader.addHitObject(line)
     note.startTime = tonumber(split[3]) or 0
     note.data = math.max(1, math.min(states.game.Gameplay.mode, math.floor(note.x/512*states.game.Gameplay.mode+1))) or 1
 
-    if split[6] then
+    --[[ if split[6] then
         note.endTime = tonumber(split[6]:split(":")[1]) or 0
+    end ]]
+    -- https://github.com/semyon422/chartbase/blob/b29e3e2922c2d5df86d8cf9da709de59a5fb30a8/osu/Osu.lua#L154
+    note.type = tonumber(split[4]) or 0
+    if bit.band(note.type, 2) == 2 then
+        -- what repeat count... why is osu stuff so wacky to me
+        local length = tonumber(split[8])
+        note.endTime = length and note.startTime + length or 0
+        addition = split[11] and split[11]:split(":") or {}
+    elseif bit.band(note.type, 128) == 128 then
+        addition = split[6] and split[6]:split(":") or {}
+        note.endTime = tonumber(addition[1]) or 0
+        table.remove(addition, 1)
+    elseif bit.band(note.type, 8) == 8 then
+        note.endTime = tonumber(split[6]) or 0
+        addition = split[7] and split[7]:split(":") or {}
+    else
+        addition = split[6] and split[6]:split(":") or {}
     end
 
     local ho = HitObject(note.startTime, note.data, note.endTime)
+
+    -- TODO: Add key sounds.
+    ho.keySounds = {}
+
     table.insert(states.game.Gameplay.unspawnNotes, ho)
 end
 
