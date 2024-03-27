@@ -31,7 +31,7 @@ Gameplay.songDuration = 0
 Gameplay.escapeTimer = 0 -- how long the back button has been held for
 Gameplay.health = 0.5
 
-Gameplay.maxScore = 1000000 -- 1 million max score
+Gameplay.maxScore = 1000000 -- 1 million max score. Can be modified with mods (TODO)
 Gameplay.score = 0
 Gameplay.rating = 0
 Gameplay.accuracy = 0
@@ -42,9 +42,6 @@ Gameplay.noteScore = 0
 Gameplay.playfields = {}
 
 Gameplay.background = nil
-Gameplay.backgrounds = {
-    -- preloaded images/videos -- (Video WIP)
-}
 
 Gameplay.bgLane = {
     x = 0,
@@ -61,6 +58,7 @@ local comboTimer = {}
 local judgeTimer = {}
 
 function Gameplay:preloadAssets()
+    -- Preload our judgement assets
     for i = 0, 9 do
         Cache:loadImage("defaultSkins/skinThrowbacks/combo/COMBO" .. i .. ".png")
     end
@@ -73,6 +71,7 @@ function Gameplay:preloadAssets()
 end
 
 function Gameplay:reset()
+    -- Reset all variables to their default values
     self.strumX = 525
     self.spawnTime = 1000
     self.hitObjects = Group()
@@ -92,7 +91,8 @@ function Gameplay:reset()
     self.didTimer = false
     self.objectKillOffset = 350
     self.inputsArray = {false, false, false, false}
-    self.hitsound = love.audio.newSource("defaultSkins/skinThrowbacks/hitsound.wav", "static")
+    --[[ self.hitsound = love.audio.newSource("defaultSkins/skinThrowbacks/hitsound.wav", "static") ]]
+    self.hitsound = love.audio.newSource(skin:format("hitsound.wav"), "static")
     self.hitsound:setVolume(0.1)
     self.judgement = nil
     self.comboGroup = Group()
@@ -118,7 +118,6 @@ function Gameplay:reset()
     self.noteoffsets = {}
 
     self.background = nil
-    self.backgrounds = {}
 
     self.events = {}
 
@@ -144,6 +143,7 @@ function Gameplay:reset()
 end
 
 function Gameplay:addPlayfield(x, y)
+    -- Adds a playfield to the game screen
     local x = x or 0
     local y = y or 0
     local playfield = Playfield(x, y)
@@ -169,7 +169,7 @@ function Gameplay:doJudgement(time)
     self.accuracy = (self.score / maxScore) * 100
 
     self:remove2(self.judgement)
-    self.judgement = Sprite(__inits.__GAME_WIDTH/2, 390, judgement.img)
+    self.judgement = Sprite(Inits.GameWidth/2, 390, judgement.img)
     if judgeTimer.y then Timer.cancel(judgeTimer.y) end
     judgeTimer.y = Timer.tween(0.1, self.judgement, {y = 400}, "in-out-expo")
     self.judgement.origin.x = self.judgement.width / 2 -- Always center x origin
@@ -184,14 +184,14 @@ function Gameplay:doJudgement(time)
         self.misses = self.misses + 1
         self.missCombo = self.missCombo + 1
     end
-    if self.combo > 0 then
+    if self.combo > 0 then -- The normal combo
         for i = 1, #tostring(self.combo) do
             local comboDigit = tostring(self.combo):sub(i, i)
             local sprite = Sprite(0, 0, "defaultSkins/skinThrowbacks/combo/COMBO" .. comboDigit .. ".png")
             local sprWidth = sprite.width * 1.25
             --sprite.x = 180 - (#tostring(self.combo) * sprWidth/2) + (i * sprWidth) -- center to middle of screen lfmna 
             sprite.x = 180 - (#tostring(self.combo) * sprWidth/2) + (i * sprWidth)
-            sprite.x = sprite.x + (__inits.__GAME_WIDTH/2.55)
+            sprite.x = sprite.x + (Inits.GameWidth/2.55)
             sprite.y = 460
             sprite:setGraphicSize(math.floor(sprWidth))
             sprite.scale.y = sprite.scale.y + 0.2
@@ -203,13 +203,14 @@ function Gameplay:doJudgement(time)
             self.comboGroup:add(sprite)
         end
     end
-    if self.missCombo > 0 then
+    if self.missCombo > 0 then -- The miss combo (I find it a nice QoL feature)
         for i = 1, #tostring(self.missCombo) do
             local comboDigit = tostring(self.missCombo):sub(i, i)
             local sprite = Sprite(0, 0, "defaultSkins/skinThrowbacks/combo/COMBO" .. comboDigit .. ".png")
             local sprWidth = sprite.width * 1.25
             sprite.x = 180 - (#tostring(self.combo) * sprWidth/2) + (i * sprWidth)
-            sprite.x = sprite.x + (__inits.__GAME_WIDTH/2.55)
+            sprite.x = sprite.x + (Inits.GameWidth/2.55)
+            sprite.y = 460
             sprite.color = {1, 0.2, 0.2}
             sprite:setGraphicSize(math.floor(sprWidth))
             sprite.scale.y = sprite.scale.y + 0.2
@@ -223,7 +224,7 @@ function Gameplay:doJudgement(time)
     end
 end
 
--- // Slider Velocity Functions (Quaver) \\ --
+-- // Slider Velocity Functions \\ --
 function Gameplay:initializePositionMarkers()
     if #self.sliderVelocities == 0 then return end
 
@@ -325,6 +326,7 @@ function Gameplay:updateNotePosition(offset, curTime)
         end
         hitObject.y = spritePosition
         if #hitObject.children > 0 then
+            -- Determine the hold notes position and scale
             hitObject.children[1].y = spritePosition + hitObject.height/2
             hitObject.children[2].y = spritePosition + hitObject.height/2
 
@@ -412,14 +414,16 @@ function Gameplay:enter()
 
     self:add2(self.comboGroup)
 
-    self:addPlayfield(0, 0)
+    self:addPlayfield(0, 0) -- Add the main playfield. We need at least one playfield to draw the notes
 
     Modscript:call("Start")
 
-    Timer.after(1.2, function()
+    Timer.after(1.2, function() -- forced delay to prevent potential desync's
         self.updateTime = true
         self.didTimer = true
         previousFrameTime = love.timer.getTime() * 1000
+
+        MenuSoundManager:removeAllSounds() -- a final safe guard to remove any sounds that may have been left over
     end)
 end
 
@@ -461,7 +465,7 @@ function Gameplay:update(dt)
             musicTime = 0
         elseif (musicTime > self.lastNoteTime and not self.soundManager:isPlaying("music")) then
             state.switch(states.menu.SongMenu)
-            self.background:release()
+            if self.background then self.background:release() end
             return
         elseif self.escapeTimer >= 0.7 then
             state.substate(substates.game.Pause)
@@ -481,7 +485,7 @@ function Gameplay:update(dt)
         self:updateNotePosition(self.currentTrackPosition, musicTime)
     end
 
-    Modscript:update(self.soundManager:getBeat("music"))
+    Modscript:update(dt, self.soundManager:getBeat("music"))
 
     for i = 1, self.mode do
         self.strumLineObjects.members[i].offset = self.noteoffsets[i]
@@ -691,20 +695,9 @@ function Gameplay:draw()
 end
 
 function Gameplay:generateBeatmap(chartType, songPath, folderPath)
-    self.mode = 4
-    if chartType == "Quaver" then
-        quaverLoader.load(songPath, folderPath)
-    elseif chartType == "osu!" then
-        osuLoader.load(songPath, folderPath)
-    elseif chartType == "Stepmania" then
-        smLoader.load(songPath, folderPath, false)
-    elseif chartType == "Malody" then
-        malodyLoader.load(songPath, folderPath)
-    elseif chartType == "Rit" then
-        ritLoader.load(songPath, folderPath)
-    elseif chartType == "CloneHero" then
-        cloneLoader.load(songPath, folderPath)
-    end
+    self.mode = 4 -- Amount of key lanes, reset to 4 until the chart specifies otherwise
+    
+    Parsers[chartType].load(songPath, folderPath)
 
     self.M_folderPath = folderPath -- used for mod scripting
     Modscript.vars = {sprites={}} -- reset modscript vars
@@ -734,7 +727,7 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath)
         }
     end
 
-    -- detirmine noteScore (1m max score and how many notes)
+    -- determine noteScore (1m max score and how many notes)
     self.noteScore = self.maxScore / #self.unspawnNotes
 
     self.soundManager:setBeatCallback("music", function(beat)

@@ -439,7 +439,7 @@ function Player:bindControlRelease(name, bind)
 end
 
 -- unbind control releases callback
-function Player:unbindControlPressed(name, bind)
+function Player:unbindControlRelease(name, bind)
 	if self._controls[name] then
 		local i = table.find(self._controls[name].releaseBinds, bind)
 		if i then

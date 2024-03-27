@@ -166,6 +166,7 @@ function newobject:mousereleased(x, y, button)
 	
 	if hover and down and clickable and button == 1 then
 		if enabled then
+---@diagnostic disable-next-line: redundant-parameter
 			onclick(self, x, y)
 		end
 	end

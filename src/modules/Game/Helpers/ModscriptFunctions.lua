@@ -7,7 +7,6 @@ MSFuncs.currentPlayfield = 1 -- default to one
 function MSFuncs:createSprite(name, path, x, y)
     local spr = Sprite(x, y, path)
     spr.name = name
-    spr.drawWithoutRes = false -- draws within push handling
     self.sprites[name] = spr
     return spr
 end

@@ -24,7 +24,7 @@ local function getMilliSeconds(beat, offset)
 end
 
 function malodyLoader.load(chart_, folderPath, forDiff)
-    chart = json(love.filesystem.read(chart_))
+    chart = json.decode(love.filesystem.read(chart_))
 
     local meta = chart.meta
 

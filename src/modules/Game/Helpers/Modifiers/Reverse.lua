@@ -1,3 +1,5 @@
+---@class Reverse : BaseModifier
+---@diagnostic disable-next-line: assign-type-mismatch
 local Reverse = Modscript.BaseModifier:extend()
 Reverse.name = "Reverse"
 Reverse.enabled = false
@@ -5,6 +7,7 @@ Reverse.enabled = false
 
 function Reverse:enable()
     self.super.enable(self)
+    -- Simply just flips the playfield
     self.enabled = true
 end
 

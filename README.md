@@ -64,13 +64,14 @@
 - [Stepmania](https://www.stepmania.com/) - Inspiration
 - [Malody](https://m.mugzone.net/) - Inspiration
 - [Etterna](https://etternaonline.com/) - Inspiration
+- [Kenney.nl](https://kenney.nl/) - Some assets
 
 # License
 - [GNU License](/LICENSE)
 
 # Contact
 - [AGORI Discord](https://discord.gg/8RrzKnNtKW) / [GuglioIsStupid Discord](https://discord.gg/ehY5gMMPW8)
-- [AGORI Twitter](https://twitter.com/AGORIStudios) / [GuglioIsStupid Twitter](https://twitter.com/Saavvuu)
+- [AGORI Twitter](https://twitter.com/AGORIStudios) / [GuglioIsStupid Twitter](https://twitter.com/GuglioIsStupid)
 
 # Useful links
 - [Quaver](https://quavergame.com/)

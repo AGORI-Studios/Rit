@@ -1,5 +1,10 @@
+---@class BaseModifier
+---@diagnostic disable-next-line: assign-type-mismatch
 local BaseModifier = Object:extend()
 BaseModifier.enabled = false
+
+-- Our base modifier class. 
+-- ! This is not meant to be used directly, but to be extended by other modifiers.
 
 function BaseModifier:enable(...)
     self.enabled = true

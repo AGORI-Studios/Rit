@@ -1,7 +1,7 @@
 
 local lf = love.filesystem -- i use this a lot so i just made it a variable
 songList = {}
-function loadSongs(path)
+function loadSongs(path) -- Gross yucky way of loading all of our songs in the given folder path
     if not lf.getInfo("songs") then
         lf.createDirectory("songs")
         love.window.showMessageBox("Songs folder created!",
@@ -58,7 +58,7 @@ function loadSongs(path)
                             end
                         end
                         local Mode = fileData:match("Mode:(.-)\r?\n"):trim()
-                        -- needs to be 3, else FUCK YOU!
+                        -- needs to be 3, else FUCK YOU! because 3 equals mania!!!
                         if Mode ~= "3" then goto continue end
                         if not alreadyInList then
                             songList[title] = songList[title] or {}
@@ -103,7 +103,7 @@ function loadSongs(path)
                             songList[title].type = "Rit"
                         end
                     elseif song:sub(-3) == ".mc" then
-                        local fileData = json(lf.read(path .."/" .. file .. "/" .. song))
+                        local fileData = json.decode(lf.read(path .."/" .. file .. "/" .. song))
                         local title = fileData.meta.song.title
                         local difficultyName = fileData.meta.version
                         local AudioFile
@@ -170,8 +170,8 @@ function loadSongs(path)
                         end
                         songList[title].type = "CloneHero"
                         ::continue:: ]]
-                        -- With how stupid I am, stepmania is probably going to be the last thing I add
-                    --[[ elseif song:sub(-3) == ".sm" then -- for stepmania, we have to call "smLoader.getDifficulties(chart)"
+                        -- With how stupid I am, stepmania is probably going to be the last thing I add (I say as clone hero is literally in the works too)
+                    --[[elseif song:sub(-3) == ".sm" then -- for stepmania, we have to call "smLoader.getDifficulties(chart)"
                         diffs = smLoader.getDifficulties(path .."/" .. file .. "/" .. song)
                         -- has a table in a table (holds name and songName)
 
@@ -196,7 +196,7 @@ function loadSongs(path)
                                     ratingColour = {1,1,1},
                                 }
                             end
-                        end ]]
+                        end --]]
                     end
                 end
             end
@@ -288,6 +288,7 @@ end
 function playRandomSong()    
     -- get a random value with pairs
     local song = table.random(songList)
+    if not song then return end
     local diff = table.random(song)
 
     if not diff then playRandomSong() return end

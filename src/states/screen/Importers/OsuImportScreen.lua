@@ -1,11 +1,15 @@
+---@diagnostic disable: param-type-mismatch
 local OsuImportScreen = state()
 local os_ = love.system.getOS()
 local importer = lovefs()
 local sep = os_ == "Windows" and "\\" or "/"
 local songsFolder = love.filesystem.getSaveDirectory() .. sep .. "songs"
 
+-- TODO: Make the following code work in a thread.
+
 local path = ""
 local username = os_ == "Windows" and os.getenv("USERNAME") or os.getenv("USER")
+-- Figure out osu's install location and songs folder
 if os_ == "Windows" then
     path = "C:\\Users\\%username%\\AppData\\Local\\osu!\\Songs"
 elseif os_ == "Linux" then
@@ -47,7 +51,7 @@ function OsuImportScreen:update(dt)
 end
 
 function OsuImportScreen:draw()
-    love.graphics.printf("Importing osu! songs...", 0, __inits.__GAME_HEIGHT/2-100, __inits.__GAME_WIDTH/2, "center", 0, 2, 2)
+    love.graphics.printf("Importing osu! songs...", 0, Inits.GameHeight/2-100, Inits.GameWidth/2, "center", 0, 2, 2)
 end
 
 return OsuImportScreen

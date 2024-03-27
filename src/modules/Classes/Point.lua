@@ -1,3 +1,4 @@
+-- Based off of haxeflixel's FlxPoint class
 local Point = Object:extend()
 
 function Point:new(x, y)

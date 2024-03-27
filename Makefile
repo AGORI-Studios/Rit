@@ -1,9 +1,21 @@
+# ISGIT argument true/false
 # if no arguments are passed, run all
-default: clean all
+ifeq ($(ISGIT), true)
+	ISGIT = true
+else
+	ISGIT = false
+endif
+default:
+	@echo "$(ISGIT)" > "src/isgit.bool"
+	@make clean
+	@make desktop
+	@make dist
+	@echo $(ISGIT)
+	@echo "false" > "src/isgit.bool"
 
 all: desktop console dist
 
-desktop: lovefile win64 macos dist
+desktop: lovefile win64 dist
 console: lovefile switch
 linux: lovefile
 
@@ -56,8 +68,15 @@ switch: lovefile
 	rm -r build/$(GameName)-switch/romfs
 	rm build/$(GameName)-switch/Rit.nacp
 
+appimage: lovefile
+	rm -rf build/$(GameName)-appimage
+	mkdir -p "build/$(GameName)-appimage"
+
+	# extract appimage (requirements/appimage/love.AppImage)
+	unzip requirements/appimage/love.AppImage -d build/$(GameName)-appimage
+	
+
 dist:
 	mkdir build/dist
 	cd build/$(GameName)-win64 && zip -9 -r ../../build/dist/$(GameName)-win64.zip *
-	cd build/$(GameName)-macos && zip -9 -r ../../build/dist/$(GameName)-macos.zip *
 	cp build/$(GameName)-lovefile/$(GameName).love build/dist/$(GameName).love

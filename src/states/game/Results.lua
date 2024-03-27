@@ -18,6 +18,8 @@ local ratings = {
 
 local curRating = "F"
 
+-- Todo, Finish results screen
+
 function Results:enter(_, ...)
     args = {...}
     now = os.time()
@@ -53,7 +55,7 @@ Rating: %s
 
     points = {}
     pointColors = {}
-    --todo, points for accuracy
+    --Todo, Points for accuracy
 end
 
 function Results:update(dt)
@@ -70,7 +72,7 @@ function Results:draw()
             curRating
         ),
         0, 0,
-        __inits.__GAME_WIDTH,
+        Inits.GameWidth,
         "center",
         0, 3, 3
     )

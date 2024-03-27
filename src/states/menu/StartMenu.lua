@@ -7,10 +7,7 @@ local timers = {
     buttons = {}
 }
 
-local soundData
-
 local balls, bg, logo, twitterLogo, kofiLogo, discordLogo
-local equalizer
 
 local curMenu = 1
 local curLogoScale = {1.85}
@@ -76,7 +73,7 @@ local function enterFunc()
             1 * (i / 6),
             buttons[i],
             {
-                x = __inits.__GAME_WIDTH - 400
+                x = Inits.GameWidth - 400
             },
             "out-quad",
             function()
@@ -131,7 +128,7 @@ local function backFunc()
     )
     for i = 1, #buttons do
         if timers.buttons["_" .. i] then Timer.cancel(timers.buttons["_" .. i]) end
-        buttons[i].x = __inits.__GAME_WIDTH + 400
+        buttons[i].x = Inits.GameWidth + 400
     end
 
     -- tween the logos to the right
@@ -188,8 +185,8 @@ function StartMenu:enter()
 
     logo.alignment = "center"
 
-    logo.y =__inits.__GAME_HEIGHT / 0.9
-    logo.x =__inits.__GAME_WIDTH / 1
+    logo.y =Inits.GameHeight / 0.9
+    logo.x =Inits.GameWidth / 1
     
     if discordRPC then
         discordRPC.presence = {
@@ -200,23 +197,14 @@ function StartMenu:enter()
         }
     end
 
-    loadSongs("defaultSongs")
-    loadSongs("songs")
     if not MenuSoundManager:exists("music") then playRandomSong() end
-
-    if MenuSoundManager:exists("music") then
-        soundData = MenuSoundManager:getSoundData("music")
-
-        -- equalizer that draws on top of the screen
-        equalizer = Spectrum(soundData)
-    end
-
+    
     -- setup button pos (right align) offscreen in curMenu 1
     local buttonWidth = 400
     local buttonHeight = 100
     local buttonSpacing = 50
-    buttonStartX = __inits.__GAME_WIDTH + buttonWidth
-    local buttonStartY = __inits.__GAME_HEIGHT / 2 - ((buttonHeight + buttonSpacing) * #buttons) / 2
+    buttonStartX = Inits.GameWidth + buttonWidth
+    local buttonStartY = Inits.GameHeight / 2 - ((buttonHeight + buttonSpacing) * #buttons) / 2
     
     for i = 1, #buttons do
         buttons[i].x = buttonStartX
@@ -241,8 +229,8 @@ function StartMenu:update(dt)
 
     -- Logo parallax
     local px, py = (-mx / 50), (-my / 50)
-    logo.x = logoPos[1] + __inits.__GAME_WIDTH / 0.9 + px
-    logo.y = logoPos[2] + __inits.__GAME_HEIGHT + py
+    logo.x = logoPos[1] + Inits.GameWidth / 0.9 + px
+    logo.y = logoPos[2] + Inits.GameHeight + py
 
     bg.x, bg.y = px * 0.0125, py * 0.0125
 
@@ -263,17 +251,13 @@ function StartMenu:update(dt)
         bubble.ogY = bubble.ogY - bubble.velY * dt
 
         if bubble.ogY < -bubble.height then
-            bubble.ogY = __inits.__GAME_HEIGHT + 100
+            bubble.ogY = Inits.GameHeight + 100
             bubble.ogX = love.math.random(0, 1920 - bubble.width)
             bubble.velY = love.math.random(25, 50)
         end
 
         bubble.x = bubble.ogX + px * 0.09 + (0.05 * i * 5)
         bubble.y = bubble.ogY + py * 0.09 + (0.05 * i * 5)
-    end
-
-    if equalizer and MenuSoundManager:getChannel("music") then
-        equalizer:update(MenuSoundManager:getChannel("music").sound, soundData)
     end
 
     if state.inSubstate then return end
@@ -285,7 +269,7 @@ function StartMenu:update(dt)
                     0.125,
                     buttons[i],
                     {
-                        x = __inits.__GAME_WIDTH - (curHover == i and 450 or 400)
+                        x = Inits.GameWidth - (curHover == i and 450 or 400)
                     },
                     "out-quad",
                     function()
@@ -420,10 +404,6 @@ function StartMenu:draw()
     twitterLogo:draw()
     kofiLogo:draw()
     discordLogo:draw()
-
-    if equalizer then
-        equalizer:draw()
-    end
 end
 
 return StartMenu

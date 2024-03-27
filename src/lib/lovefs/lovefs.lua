@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-field, param-type-mismatch, undefined-global
 --[[------------------------------------
 LoveFS v1.2
 Pure Lua FileSystem Access

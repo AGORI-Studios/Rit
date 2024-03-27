@@ -1,3 +1,5 @@
+---@class Tipsy
+---@diagnostic disable-next-line: assign-type-mismatch
 local Tipsy = Modscript.BaseModifier:extend()
 Tipsy.amount = 0
 Tipsy.name = "Tipsy"
@@ -15,6 +17,7 @@ function Tipsy:update(dt, beat, playfield)
     if not self.enabled then return end
 
     for i = 1, states.game.Gameplay.mode do
+        -- Add a sine wave to the y position of each lane
         local ypos = self.amount * (math.cos(musicTime*0.001+i*(1.2)+1*(1.2))*__NOTE_OBJECT_WIDTH*0.5)
 
         states.game.Gameplay.playfields[playfield].lanes[i].y = ypos

@@ -1,3 +1,4 @@
+---@diagnostic disable: redundant-parameter
 --[[------------------------------------------------
 	-- Love Frames - A GUI library for LOVE --
 	-- Copyright (c) 2012-2014 Kenny Shields --

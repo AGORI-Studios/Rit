@@ -1,3 +1,4 @@
+---@diagnostic disable: param-type-mismatch
 local osuLoader = {}
 local currentBlockName = ""
 local folderPath
@@ -25,6 +26,7 @@ function osuLoader.processLine(line)
         currentBlockName = _currentBlockName
         osuLoader.processLine(lineEnd)
     else
+        ---@diagnostic disable-next-line: redefined-local
         local currentBlockName = currentBlockName:trim()
         local trimmed = line:trim()
         if trimmed == "" then

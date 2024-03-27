@@ -2,6 +2,14 @@ require "love.filesystem"
 require "love.image"
 require "love.audio"
 require "love.sound"
+require "love.math"
+require "love.system"
+require "love.timer"
+require "love.window"
+local json = require "lib.json"
+local songList = {}
+require("modules.Game.SongHandler")
+require("modules.Utilities")
 
 local loader = {
   _VERSION     = 'love-loader v2.0.3',
@@ -103,6 +111,16 @@ local resourceKinds = {
     requestKey  = "rawDataPath",
     resourceKey = "rawData",
     constructor = love.filesystem.read
+  },
+  loadSongsData = {
+    requestKey  = "loadSongsData",
+    resourceKey = "songsData",
+    constructor = function() return "loadSongsData" end,
+    postProcess = function(data)
+      loadSongs("defaultSongs")
+      loadSongs("songs")
+      return songList
+    end
   }
 }
 
@@ -210,6 +228,10 @@ else
 
   function loader.read(holder, key, path)
     newResource('rawData', holder, key, path)
+  end
+
+  function loader.loadSongs(holder, key)
+    newResource('loadSongsData', holder, key)
   end
 
   function loader.start(allLoadedCallback, oneLoadedCallback)

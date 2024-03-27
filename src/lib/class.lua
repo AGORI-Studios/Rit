@@ -1,3 +1,4 @@
+---@class class 
 local class = {
   _NAME = "Class",
   _VERSION = "1.0.0",
@@ -9,19 +10,22 @@ local class = {
 }
 
 class.__index = class
+class.__ID = "Class: 0x0000000000000000"
 
 -- Recreate smth like "Table: 0x0000000000000000"
 local idChars = "0123456789abcdef"
 
---@name class.new
---@description Creates a new instance of the class
---@param ... any
---@return table
-function class:new() end
+--- class:new() gets override, so we need to show it here
+---
+---@name class.new
+---@description Creates a new instance of the class
+---@param ... any
+---@return any
+function class:new(...) end
 
---@name class.extend
---@description Creates a new class that extends the current class
---@return table
+---@name class.extend
+---@description Creates a new class that extends the current class
+---@return class --[[In reality, this is a table. But for the sake of the documentation, it's a class.]]
 function class:extend()
   local cls = {}
   for k, v in pairs(self) do
@@ -39,10 +43,10 @@ function class:extend()
   return cls
 end
 
---@name class.implement
---@description Implements a class into the current class
---@param ... table
---@return nil
+---@name class.implement
+---@description Implements a class into the current class
+---@param ... table
+---@return nil
 function class:implement(...) 
     for _, cls in pairs({...}) do
         for k, v in pairs(cls) do
@@ -54,10 +58,10 @@ function class:implement(...)
     return nil
 end
 
---@name class.isInstanceOf
---@description Checks if the current class is an instance of the given class
---@param class table
---@return boolean
+---@name class.isInstanceOf
+---@description Checks if the current class is an instance of the given class
+---@param cls class
+---@return boolean
 function class:isInstanceOf(cls)
     local m = getmetatable(self)
     while m do
@@ -67,17 +71,17 @@ function class:isInstanceOf(cls)
     return false
 end
 
---@name class.__tostring
---@description Returns the class ID
---@return string
+---@name class.__tostring
+---@description Returns the class ID
+---@return string
 function class:__tostring()
   return self.__ID
 end
 
---@name class.__call
---@description Creates a new instance of the class
---@param ... any
---@return table
+---@name class.__call
+---@description Creates a new instance of the class
+---@param ... any
+---@return any
 function class:__call(...)
   local inst = setmetatable({}, self)
   inst:new(...)

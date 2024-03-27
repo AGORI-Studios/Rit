@@ -36,13 +36,13 @@ function Pause:update(dt)
 end
 
 function Pause:mousemoved(x, y, dx, dy, istouch)
-    if x > 0 and x < __inits.__GAME_WIDTH and y > 0 and y < __inits.__GAME_HEIGHT then
+    if x > 0 and x < Inits.GameWidth and y > 0 and y < Inits.GameHeight then
         self.selection = math.floor((y - 200) / 50) + 1
     end
 end
 
 function Pause:mousepressed(x, y, button, istouch)
-    if x > 0 and x < __inits.__GAME_WIDTH and y > 0 and y < __inits.__GAME_HEIGHT then
+    if x > 0 and x < Inits.GameWidth and y > 0 and y < Inits.GameHeight then
         if self.selection == 1 then
             
         elseif self.selection == 2 then
@@ -61,7 +61,7 @@ end
 function Pause:draw() 
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.setFont(Cache.members.font["menuBig"])
-    love.graphics.printf("Paused", 0, 100, __inits.__GAME_WIDTH, "center")
+    love.graphics.printf("Paused", 0, 100, Inits.GameWidth, "center")
 
     love.graphics.setFont(Cache.members.font["menuMedium"])
     for i, v in ipairs(options) do
@@ -70,7 +70,7 @@ function Pause:draw()
         else
             love.graphics.setColor(0.5, 0.5, 0.5, 1)
         end
-        love.graphics.printf(v, 0, 200 + (i * 50), __inits.__GAME_WIDTH, "center")
+        love.graphics.printf(v, 0, 200 + (i * 50), Inits.GameWidth, "center")
     end
 
     love.graphics.setColor(1, 1, 1, 1)

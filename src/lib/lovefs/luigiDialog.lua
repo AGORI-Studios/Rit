@@ -1,3 +1,4 @@
+---@diagnostic disable: duplicate-set-field, undefined-global
 --[[------------------------------------
 LoveFS Luigi Dialogs v1.0
 Pure Lua FileSystem Access - Loveframes interface

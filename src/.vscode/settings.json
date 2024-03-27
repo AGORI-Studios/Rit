@@ -1,0 +1,10 @@
+{
+    "Lua.diagnostics.disable": [
+        "lowercase-global",
+        "undefined-field"
+    ],
+    "Lua.runtime.version": "LuaJIT",
+    "Lua.diagnostics.globals": [
+        "love"
+    ]
+}

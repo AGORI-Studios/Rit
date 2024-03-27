@@ -113,6 +113,7 @@ function Socket:receive()
     end
     if api.Networking.ReadP2PPacket(packet, n, size, sender, self.channel) then
       if not self.peer or self.peer.handle == sender[0].m_steamid.m_unAll64Bits then
+        ---@diagnostic disable-next-line: cast-local-type
         packet = (packet == ffi.NULL) and "" or ffi.string(packet, n)
         return packet, steam.getUser(sender[0].m_steamid.m_unAll64Bits)
       end

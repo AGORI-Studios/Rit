@@ -14,6 +14,8 @@ local beatTicks = 48
 local stepTicks = 12
 local curLine = 0
 
+---@class Tempo
+---@diagnostic disable-next-line: assign-type-mismatch
 local Tempo = Object:extend()
 local line
 
@@ -126,6 +128,7 @@ function stepmaniaLoader.load(chart, folderPath_, forDiff)
     stepmaniaLoader.parseChart(chart)
 
     __title = title
+    ---@diagnostic disable-next-line: undefined-global
     __diffName = diff
 end
 
@@ -162,7 +165,8 @@ function stepmaniaLoader.parseChart(chart)
         end
         if line:find("^#MUSIC:") then
             local value = line:gsub("^#MUSIC:", ""):gsub(";", "")
-            states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. value, 1, true, "stream")
+            print(folderPath .. "/" .. value)
+            states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. value:strip(), 1, true, "stream")
             line = readLine(lines)
             goto continue
         end
@@ -196,7 +200,7 @@ function stepmaniaLoader.parseChart(chart)
                     for i = 1, #measureNotes do
                         local notesRow = measureNotes[i]
                         for j = 1, #notesRow do
-                            if notesRow[j] == "1" or notesRow[j] == "2" or notesRow[j] == "4" then
+                            if notesRow[j] == "1" --[[ or notesRow[j] == "2" or notesRow[j] == "4" ]] then
                                 local time = tickToTime(sectionNum * measureTicks + (i-1) * ticksPerRow)
                                 local lane = j
                                 local endTime = 0
@@ -220,16 +224,23 @@ function stepmaniaLoader.parseChart(chart)
         ::continue::
     end
 
-    -- Now we convert the map into rit's format
     for i = 1, #allNotes do
-        local notes = allNotes[i]
-        for j = 1, #notes do
-            local note = notes[j]
-            local ho = HitObject(note[1], note[2], note[3])
+        for j = 1, #allNotes[i] do
+            local note = allNotes[i][j]
+            local startTime = note[1]
+            local lane = note[2]
+            local endTime = nil
+            if lane == 0 then goto continue end
+
+            local ho = HitObject(startTime, lane, endTime)
             table.insert(states.game.Gameplay.unspawnNotes, ho)
-            --print(ho.startTime, ho.endTime, ho.lane)
+            ::continue::
         end
     end
+
+    __title = title
+    ---@diagnostic disable-next-line: undefined-global
+    __diffName = diff
 end
 
 

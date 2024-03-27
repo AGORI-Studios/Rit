@@ -1,5 +1,6 @@
+---@class Sprite
+---@diagnostic disable-next-line: assign-type-mismatch
 local Sprite = Object:extend()
-local ton = tonumber
 
 Sprite.frame = 1
 Sprite.frameWidth = 0
@@ -22,8 +23,7 @@ Sprite.x, Sprite.y = 0, 0
 
 Sprite.type = "Image"
 
-
-local function NewFrame(FrameName, X, Y, W, H, Sw, Sh, Ox, Oy, Ow, Oh)
+local function NewFrame(FrameName, X, Y, W, H, Sw, Sh, Ox, Oy, Ow, Oh) -- Creates a new frame for a sprite
     local Aw, Ah = X + W, Y + H
     local frame = {
         name = FrameName,
@@ -35,7 +35,7 @@ local function NewFrame(FrameName, X, Y, W, H, Sw, Sh, Ox, Oy, Ow, Oh)
     return frame
 end
 
-local function GetFrames(graphic, xmldata)
+local function GetFrames(graphic, xmldata) -- Get's all the frames from an xml adobe sparrow
     local frames = {graphic = graphic, frames = {}}
     local sw, sh = graphic:getDimensions()
     for i, frame in ipairs(xmldata) do
@@ -45,7 +45,7 @@ local function GetFrames(graphic, xmldata)
             local w, h = frame.attr.width, frame.attr.height
             local frameX, frameY = frame.attr.frameX, frame.attr.frameY
             local frameW, frameH = frame.attr.frameWidth, frame.attr.frameHeight
-            table.insert(frames.frames, NewFrame(name, ton(x), ton(y), ton(w), ton(h), ton(sw), ton(sh), ton(frameX), ton(frameY), ton(frameW), ton(frameH)))
+            table.insert(frames.frames, NewFrame(name, tonumber(x), tonumber(y), tonumber(w), tonumber(h), tonumber(sw), tonumber(sh), tonumber(frameX), tonumber(frameY), tonumber(frameW), tonumber(frameH)))
         end
     end
 
@@ -87,10 +87,10 @@ function Sprite:new(x, y, graphic)
 
     self.alpha = 1
     self.color = {1, 1, 1}
-    self.angle = 0 -- in degrees
+    self.angle = 0 -- ! in degrees
 
-    self.frames = nil -- todo.
-    self.animations = nil -- todo.
+    self.frames = nil -- Todo.
+    self.animations = nil -- Todo.
 
     self.curAnim = nil
     self.curFrame = nil
@@ -122,10 +122,11 @@ function Sprite:load(graphic, animated, frameWidth, frameHeight)
 end
 
 function Sprite:mapBezier(bezier, graphic, resolution, meshMode)
+    -- Maps the image to a bezier curve
     if type(graphic) == "string" then
         graphic = Cache:loadImage(graphic)
     end
-    image:setWrap("repeat", "clamp")
+    graphic:setWrap("repeat", "clamp")
 
     local resolution = resolution or 4
     local meshMode = meshMode or "fan"
@@ -140,7 +141,7 @@ function Sprite:mapBezier(bezier, graphic, resolution, meshMode)
     local h = graphic:getHeight()
     local u = 0
 
-    for x = 1, #points -1, 2 do
+    for x = 1, #points -1, 2 do 
         local pv = {
             points[x-2], 
             points[x-1]
@@ -159,24 +160,24 @@ function Sprite:mapBezier(bezier, graphic, resolution, meshMode)
         if x == 1 then
             dist = ((nv[1] - v[1]) ^ 2 + (nv[2] - v[2]) ^ 2) ^ 0.5
             vert = {
-                (nv[2] - v[2]) * width / (dist * 2),
-                -(nv[1] - v[1]) * height / (dist * 2)
+                (nv[2] - v[2]) * self.width / (dist * 2),
+                -(nv[1] - v[1]) * self.height / (dist * 2)
             }
         elseif x == #points - 1 then
             dist = ((v[1] - pv[1]) ^ 2 + (v[2] - pv[2]) ^ 2) ^ 0.5
             vert = {
-                (v[2] - pv[2]) * width / (dist * 2),
-                -(v[1] - pv[1]) * height / (dist * 2)
+                (v[2] - pv[2]) * self.width / (dist * 2),
+                -(v[1] - pv[1]) * self.height / (dist * 2)
             }
         else
             dist = ((nv[1] - pv[1]) ^ 2 + (nv[2] - pv[2]) ^ 2) ^ 0.5
             vert = {
-                (nv[2] - pv[2]) * width / (dist * 2),
-                -(nv[1] - pv[1]) * height / (dist * 2)
+                (nv[2] - pv[2]) * self.width / (dist * 2),
+                -(nv[1] - pv[1]) * self.height / (dist * 2)
             }
         end
 
-        u = u + dist / height / 2
+        u = u + dist / self.height / 2
 
         table.insert(vertices, {
             v[1] + vert[1],
@@ -193,13 +194,14 @@ function Sprite:mapBezier(bezier, graphic, resolution, meshMode)
     table.remove(vertices, 1)
     table.remove(vertices, 1)
 
+    -- Create our textured mesh
     if meshMode then
         self.graphic = love.graphics.newMesh(vertices, "strip", meshMode)
     else
-        self.graphic = love.graphics.newMesh(vertices, "strip", static)
+        self.graphic = love.graphics.newMesh(vertices, "strip", "fan")
     end
 
-    self.graphic:setTexture(image)
+    self.graphic:setTexture(graphic)
 
     self.width = self.graphic:getWidth()
     self.height = self.graphic:getHeight()
@@ -221,6 +223,7 @@ function Sprite:setFrames(xmlPath)
 end
 
 function Sprite:addAnimation(name, prefix, framerate, looped)
+    -- Adds a new animation to the sprite
     local framerate = framerate or 30
     local looped = looped or true
 
@@ -242,14 +245,27 @@ function Sprite:addAnimation(name, prefix, framerate, looped)
     self.animations[name] = anim
 end
 
-function Sprite:getMidpoint()
+function Sprite:getMidpoint() -- Middle point of the sprite
     return Point(self.x + self.width / 2, self.y + self.height / 2)
 end
 
-function Sprite:update(dt)
+function Sprite:update(dt) -- Updates the sprite
+   --[[  if self.curAnim then
+        if not self.animPaused then
+            self.indexFrame = self.indexFrame + self.curAnim.framerate * dt
+            if self.indexFrame > #self.curAnim.frames then
+                if self.curAnim.looped then
+                    self.indexFrame = 1
+                else
+                    self.indexFrame = #self.curAnim.frames
+                    self.animFinished = true
+                end
+            end
+        end
+    end]]
 end
 
-function Sprite:play()
+function Sprite:play(anim) -- Plays the current animation
     self.curAnim = self.animations[anim]
     self.indexFrame = 1
     self.animFinished = false
@@ -299,7 +315,7 @@ function Sprite:setGraphicSize(w, h)
     return self
 end
 
-function Sprite:updateHitbox()
+function Sprite:updateHitbox() -- Updates the hitbox of the sprite
     local w, h = self:getFrameDimensions()
 
     self.width = math.abs(self.scale.x) * w
@@ -362,7 +378,7 @@ function Sprite:destroy()
     self.animPaused = false
 end
 
-function Sprite:isHovered(x, y)
+function Sprite:isHovered(x, y) -- Checks if the sprite is hovered by an x and y position
     local x = x or love.mouse.getX()
     local y = y or love.mouse.getY()
 
@@ -377,7 +393,7 @@ function Sprite:isHovered(x, y)
     return x >= self.x and x <= self.x + width and y >= self.y and y <= self.y + height
 end
 
-function Sprite:draw()
+function Sprite:draw() -- Draws the sprite, only if it's visible and exists
     if self.exists and self.alive and self.visible and self.graphic then
         local frame = self:getCurrentFrame()
 
@@ -417,7 +433,7 @@ function Sprite:draw()
     end
 end
 
-function Sprite:screenCenter(XY)
+function Sprite:screenCenter(XY) -- Centers the sprite on the screen
     local doX, doY = true, true
 
     if type(XY) == "string" then
@@ -426,10 +442,10 @@ function Sprite:screenCenter(XY)
     end
 
     if doX then
-        self.x = (push:getWidth() / 2) - (self.width / 2)
+        self.x = (Inits.GameWidth / 2) - (self.width / 2)
     end
     if doY then
-        self.y = (push:getHeight() / 2) - (self.height / 2)
+        self.y = (Inits.GameHeight / 2) - (self.height / 2)
     end
 
     return self

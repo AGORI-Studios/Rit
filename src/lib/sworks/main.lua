@@ -1,3 +1,4 @@
+---@diagnostic disable: need-check-nil
 local ffi = require("ffi")
 local path = (...):match("(.-)[^%.]+$")
 local api = require(path.."api")

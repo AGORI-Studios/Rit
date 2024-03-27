@@ -5,6 +5,8 @@ local sep = os == "Windows" and "\\" or "/"
 local songsFolder = love.filesystem.getSaveDirectory() .. sep .. "songs"
 local frame = 0 
 
+-- TODO: Make the following code work in a thread.
+
 function QuaverImportScreen:enter()
     frame = 0
 end
@@ -13,8 +15,6 @@ function QuaverImportScreen:update(dt)
     frame = frame + 1 
 
     if frame == 2 then
-        -- use lovefs to print all the drives
-        --print(unpack(importer.drives))
         for _, drive in ipairs(importer.drives) do
             local path = drive .. "SteamLibrary"
             if importer:isDirectory(path) then
@@ -67,7 +67,7 @@ function QuaverImportScreen:update(dt)
 end
 
 function QuaverImportScreen:draw()
-    love.graphics.printf("Importing Quaver songs...", 0, __inits.__GAME_HEIGHT/2-100, __inits.__GAME_WIDTH/2, "center", 0, 2, 2)
+    love.graphics.printf("Importing Quaver songs...", 0, Inits.GameHeight/2-100, Inits.GameWidth/2, "center", 0, 2, 2)
 end
 
 return QuaverImportScreen
