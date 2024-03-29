@@ -27,7 +27,7 @@ function Options:enter()
 
     local mainframe = loveframes.Create("frame")
 
-    mainframe:SetName("Options")
+    mainframe:SetName("Options | SUBJECT TO CHANGE. TEMPORARY PLACEHOLDER.")
     mainframe:SetSize(1720, 880)
     mainframe:SetPos(100, 100)
 
@@ -88,9 +88,33 @@ function Options:enter()
             Settings.options["General"].scrollspeed = value
         end
 
+        local scrollspeedLabel = loveframes.Create("text", settings)
+        scrollspeedLabel:SetPos(120, 40)
+        scrollspeedLabel:SetText("Scrollspeed")
+        scrollspeedLabel:SetFont(Cache.members.font["default"])
+        scrollspeedLabel:SetSize(100, 25)
+
+        local hitsoundVolume = loveframes.Create("numberbox", settings)
+        hitsoundVolume:SetPos(10, 70)
+        hitsoundVolume:SetSize(100, 25)
+        hitsoundVolume:SetMinMax(0, 1)
+        hitsoundVolume:SetIncreaseAmount(0.1)
+        hitsoundVolume:SetDecreaseAmount(0.1)
+        hitsoundVolume:SetDecimals(1)
+        hitsoundVolume:SetValue(Settings.options["General"].hitsoundVolume)
+        hitsoundVolume.OnValueChanged = function(object, value)
+            Settings.options["General"].hitsoundVolume = value
+        end
+
+        local hitsoundVolumeLabel = loveframes.Create("text", settings)
+        hitsoundVolumeLabel:SetPos(120, 70)
+        hitsoundVolumeLabel:SetText("Hitsound Volume")
+        hitsoundVolumeLabel:SetFont(Cache.members.font["default"])
+        hitsoundVolumeLabel:SetSize(200, 25)
+
         -- List for Settings.options["General"].skin (has skin.skins)
         local skinCollapse = loveframes.Create("collapsiblecategory", settings)
-        skinCollapse:SetPos(10, 70)
+        skinCollapse:SetPos(10, 100)
         skinCollapse:SetSize(100, 100)
         skinCollapse:SetText("Skin")
 

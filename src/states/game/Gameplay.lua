@@ -53,6 +53,7 @@ Gameplay.events = {}
 Gameplay.lastNoteTime = 10000 -- safe number
 
 local lerpedScore = 0
+local lerpedAccuracy = 0
 
 local comboTimer = {}
 local judgeTimer = {}
@@ -130,7 +131,7 @@ function Gameplay:reset()
 
     self.judgements = { -- Judgement 4 timings
         {name="marvellous", img="defaultSkins/skinThrowbacks/judgements/MARVELLOUS.png", time=22, scoreMultiplier=1},
-        {name="perfect", img="defaultSkins/skinThrowbacks/judgements/PERFECT.png", time=45, scoreMultiplier=0.9},
+        {name="perfect", img="defaultSkins/skinThrowbacks/judgements/PERFECT.png", time=45, scoreMultiplier=1},
         {name="great", img="defaultSkins/skinThrowbacks/judgements/GREAT.png", time=90, scoreMultiplier=0.7},
         {name="good", img="defaultSkins/skinThrowbacks/judgements/GOOD.png", time=135, scoreMultiplier=0.55},
         {name="bad", img="defaultSkins/skinThrowbacks/judgements/BAD.png", time=180, scoreMultiplier=0.3},
@@ -422,8 +423,6 @@ function Gameplay:enter()
         self.updateTime = true
         self.didTimer = true
         previousFrameTime = love.timer.getTime() * 1000
-
-        MenuSoundManager:removeAllSounds() -- a final safe guard to remove any sounds that may have been left over
     end)
 end
 
@@ -458,6 +457,7 @@ function Gameplay:generateStrums()
 end
 
 function Gameplay:update(dt)
+    MenuSoundManager:removeAllSounds() -- a final safe guard to remove any sounds that may have been left over
     if self.inPause then return end
     if self.updateTime then
         if musicTime >= 0 and not self.soundManager:isPlaying("music") and musicTime < 1000 then
@@ -538,7 +538,11 @@ function Gameplay:update(dt)
 end
 
 function Gameplay:keyPressed(key)
-    self.hitsound:clone():play()
+    --self.hitsound:clone():setVolume(Settings.options["General"].hitsoundVolume):play()
+    local cloned = self.hitsound:clone()
+    cloned:setVolume(Settings.options["General"].hitsoundVolume)
+    cloned:play()
+    cloned:release()
     if self.updateTime then
         if #self.hitObjects.members > 0 then
             local lastTime = musicTime
@@ -654,12 +658,6 @@ function Gameplay:draw()
 
 
     love.graphics.push()
-        -- scale if keymode is > 4
-        if self.mode > 4 then
-            love.graphics.translate(1920/2, 1080/2)
-            love.graphics.scale(4/(self.mode*0.6), 4/(self.mode*0.6))
-            love.graphics.translate(-1920/2, -1080/2)
-        end
         love.graphics.setColor(0,0,0)
         love.graphics.rectangle("fill", self.bgLane.x, -200, self.bgLane.width, 1080+400) -- 200 val to be safe when the screen is scaling for key's > 4
         love.graphics.setColor(1,1,1)
@@ -686,11 +684,12 @@ function Gameplay:draw()
     love.graphics.setColor(1,1,1,1)
 
     lerpedScore = math.lerp(lerpedScore, self.score, 0.05)
+    lerpedAccuracy = math.lerp(lerpedAccuracy, self.accuracy, 0.05)
 
     local lastFont = love.graphics.getFont()
     love.graphics.setFont(Cache.members.font["menuBold"])
     love.graphics.printf("Score: " .. math.round(lerpedScore), 0, 0, 960, "right", 0, 2, 2)
-    love.graphics.printf("Accuracy: " .. math.round(self.accuracy) .. "%", 0, 50, 960, "right", 0, 2, 2)
+    love.graphics.printf("Accuracy: " .. string.format("%.2f", lerpedAccuracy) .. "%", 0, 50, 960, "right", 0, 2, 2)
     love.graphics.setFont(lastFont)
 end
 

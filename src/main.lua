@@ -25,7 +25,7 @@ __InJukebox = false
 require("modules.Utilities")
 ffi = require("ffi")
 
-if love.system.getOS() ~= "NX" then
+if love.system.getOS() ~= "NX" then -- For obvious reasons, don't use c libraries on the nintendo switch.
     if not __DEBUG__ then
         Try(
             function()
@@ -90,8 +90,10 @@ function love.load()
     -- don't want modscriptors to do anything bad :)
     GameInit.ClearOSModule()
 
+    -- Classes
     GameInit.LoadClasses()
 
+    -- Skins, create skins directory if it doesn't exist
     skinList = {}
     skin:loadSkins("skins")
     skin:loadSkins("defaultSkins")
@@ -110,14 +112,15 @@ function love.load()
     
     -- States
     states = GameInit.LoadStates()
+
     -- Substates
     substates = GameInit.LoadSubstates()
-
-    GameInit.InitSteam()
 
     -- Parse the skin's data file
     skinData = ini.parse(love.filesystem.read(skin:format("skin.ini")))
 
+    -- Initialize 3rd party applications
+    GameInit.InitSteam()
     if discordRPC then -- Discord RPC initialization
         discordRPC.initialize("785717724906913843", true)
     end
