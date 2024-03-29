@@ -167,6 +167,7 @@ function love.wheelmoved(x, y)
         masterVolume = masterVolume + y * 5
     end
     masterVolume = math.clamp(masterVolume, 0, 100)
+    Settings.options["General"].globalVolume = masterVolume / 100
 end
 
 function love.mousepressed(x, y, b)

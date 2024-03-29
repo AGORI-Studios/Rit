@@ -130,6 +130,9 @@ function love.load()
     MenuSoundManager = SoundManager()
 
     -- Lastly, switch to the preloader screen to preload all of our needed assets
+
+    masterVolume = Settings.options["General"].globalVolume * 100
+    print("Master Volume: " .. masterVolume)
     state.switch(states.screens.PreloaderScreen)
 end
 
