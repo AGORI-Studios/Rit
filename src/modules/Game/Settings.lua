@@ -9,7 +9,7 @@ Settings.options = {
             name = "Circle Default",
             path = "Circle Default"
         },
-        hitsoundVolume = 1
+        hitsoundVolume = 0.1
     },
     ["Meta"] = {
         __VERSION__ = 1
