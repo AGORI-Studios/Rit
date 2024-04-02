@@ -10,7 +10,8 @@ Settings.options = {
             path = "Circle Default"
         },
         hitsoundVolume = 0.1,
-        globalVolume = 0.1
+        globalVolume = 0.1,
+        noScrollVelocity = false,
     },
     ["Events"] = {
         aprilFools = true,

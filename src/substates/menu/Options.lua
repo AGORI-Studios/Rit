@@ -112,10 +112,18 @@ function Options:enter()
         hitsoundVolumeLabel:SetFont(Cache.members.font["default"])
         hitsoundVolumeLabel:SetSize(200, 25)
 
+        local noScrollVelocity = loveframes.Create("checkbox", settings)
+        noScrollVelocity:SetPos(10, 110)
+        noScrollVelocity:SetText("No Scroll Velocity")
+        noScrollVelocity:SetChecked(Settings.options["General"].noScrollVelocity)
+        noScrollVelocity.OnChanged = function(object, checked)
+            Settings.options["General"].noScrollVelocity = checked
+        end
+
         if doAprilFools then
             -- setting for Settings.options["Events"].aprilFools
             local aprilFools = loveframes.Create("checkbox", settings)
-            aprilFools:SetPos(10, 110)
+            aprilFools:SetPos(10, 140)
             aprilFools:SetText("April Fools")
             aprilFools:SetChecked(Settings.options["Events"].aprilFools)
             aprilFools.OnChanged = function(object, checked)
@@ -125,7 +133,7 @@ function Options:enter()
 
         -- List for Settings.options["General"].skin (has skin.skins)
         local skinCollapse = loveframes.Create("collapsiblecategory", settings)
-        skinCollapse:SetPos(10, 100 + (doAprilFools and 40 or 0))
+        skinCollapse:SetPos(10, 140 + (doAprilFools and 30 or 0))
         skinCollapse:SetSize(100, 100)
         skinCollapse:SetText("Skin")
 

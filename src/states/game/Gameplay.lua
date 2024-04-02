@@ -251,6 +251,9 @@ function Gameplay:updateCurrentTrackPosition()
 end
 
 function Gameplay:GetPositionFromTime(time, index)
+    if Settings.options["General"].noScrollVelocity then
+        return time * self.trackRounding
+    end
     if index == 1 then
         return time * self.initialScrollVelocity * self.trackRounding
     end
