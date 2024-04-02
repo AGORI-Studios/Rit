@@ -35,7 +35,9 @@ local current = nil -- Current state
 local last = nil -- Last state
 ---@type any
 local substate = nil -- Current substate
+
 local function nop() end -- Called when there is no function to call from the current state
+
 state.inSubstate = false
 
 local function switch(newstate, ...)
