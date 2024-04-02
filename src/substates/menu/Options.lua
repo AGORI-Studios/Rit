@@ -194,6 +194,18 @@ function Options:mousereleased(x, y, id)
     loveframes.mousereleased(x, y, id)
 end
 
+function Options:textinput(text)
+    loveframes.textinput(text)
+end
+
+function Options:keypressed(key)
+    loveframes.keypressed(key)
+end
+
+function Options:keyreleased(key)
+    loveframes.keyreleased(key)
+end
+
 function Options:draw()
     loveframes.draw()
 end
