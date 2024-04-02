@@ -61,6 +61,8 @@ function ritLoader.addHitObject(line)
 
     if not startTime then goto continue end
 
+    if doAprilFools and Settings.options["Events"].aprilFools then lane = 1; states.game.Gameplay.mode = 1 end
+
     local ho = HitObject(startTime, lane, endTime)
     table.insert(states.game.Gameplay.unspawnNotes, ho)
 

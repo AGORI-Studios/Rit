@@ -55,6 +55,8 @@ function malodyLoader.load(chart_, folderPath, forDiff)
             local endTime = note.beatEnd and getMilliSeconds(getBeat(note.beatEnd), 0) or 0
             local lane = note.column + 1
 
+            if doAprilFools and Settings.options["Events"].aprilFools then lane = 1; states.game.Gameplay.mode = 1 end
+
             local ho = HitObject(startTime, lane, endTime)
         else
             states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. note.sound, 1, false)

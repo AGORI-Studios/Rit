@@ -15,6 +15,8 @@ function cloneLoader.load(chart, folderPath, forDiff)
         local lane = note.lane + 1
         if lane == 7 then goto continue end -- ignore "lane 7" because its a special all-lane
 
+        if doAprilFools and Settings.options["Events"].aprilFools then lane = 1; states.game.Gameplay.mode = 1 end
+
         local ho = HitObject(startTime, lane, endTime)
         table.insert(states.game.Gameplay.unspawnNotes, ho)
         ::continue::

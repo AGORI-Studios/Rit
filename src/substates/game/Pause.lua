@@ -37,7 +37,11 @@ end
 
 function Pause:mousemoved(x, y, dx, dy, istouch)
     if x > 0 and x < Inits.GameWidth and y > 0 and y < Inits.GameHeight then
-        self.selection = math.floor((y - 200) / 50) + 1
+        for i, v in ipairs(options) do
+            if y > 200 + (i * 50) and y < 200 + (i * 50) + 50 then
+                self.selection = i
+            end
+        end
     end
 end
 

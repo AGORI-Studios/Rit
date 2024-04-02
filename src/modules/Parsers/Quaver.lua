@@ -60,6 +60,8 @@ function quaverLoader.load(chart, folderPath, forDiff)
         local endTime = hitObject.EndTime or 0
         local lane = hitObject.Lane
 
+        if doAprilFools and Settings.options["Events"].aprilFools then lane = 1; states.game.Gameplay.mode = 1 end
+
         if not startTime then goto continue end
 
         local ho = HitObject(startTime, lane, endTime)

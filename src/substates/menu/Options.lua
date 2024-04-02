@@ -112,9 +112,20 @@ function Options:enter()
         hitsoundVolumeLabel:SetFont(Cache.members.font["default"])
         hitsoundVolumeLabel:SetSize(200, 25)
 
+        if doAprilFools then
+            -- setting for Settings.options["Events"].aprilFools
+            local aprilFools = loveframes.Create("checkbox", settings)
+            aprilFools:SetPos(10, 110)
+            aprilFools:SetText("April Fools")
+            aprilFools:SetChecked(Settings.options["Events"].aprilFools)
+            aprilFools.OnChanged = function(object, checked)
+                Settings.options["Events"].aprilFools = checked
+            end
+        end
+
         -- List for Settings.options["General"].skin (has skin.skins)
         local skinCollapse = loveframes.Create("collapsiblecategory", settings)
-        skinCollapse:SetPos(10, 100)
+        skinCollapse:SetPos(10, 100 + (doAprilFools and 40 or 0))
         skinCollapse:SetSize(100, 100)
         skinCollapse:SetText("Skin")
 

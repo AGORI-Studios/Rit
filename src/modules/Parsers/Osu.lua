@@ -155,6 +155,8 @@ function osuLoader.addHitObject(line)
         addition = split[6] and split[6]:split(":") or {}
     end
 
+    if doAprilFools and Settings.options["Events"].aprilFools then note.data = 1; states.game.Gameplay.mode = 1 end
+
     local ho = HitObject(note.startTime, note.data, note.endTime)
 
     -- TODO: Add key sounds.

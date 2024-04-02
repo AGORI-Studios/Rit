@@ -12,6 +12,9 @@ Settings.options = {
         hitsoundVolume = 0.1,
         globalVolume = 0.1
     },
+    ["Events"] = {
+        aprilFools = true,
+    },
     ["Meta"] = {
         __VERSION__ = 1
     }

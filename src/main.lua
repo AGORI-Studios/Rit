@@ -134,6 +134,11 @@ function love.load()
     masterVolume = Settings.options["General"].globalVolume * 100
     print("Master Volume: " .. masterVolume)
     state.switch(states.screens.PreloaderScreen)
+
+    local CurrentDateTime = os.date("*t") -- if april first, set the boolean "doAprilFools" to true
+    if CurrentDateTime.month == 4 and CurrentDateTime.day == 1 then
+        doAprilFools = true
+    end
 end
 
 function switchState(newState, t, middleFunc)
