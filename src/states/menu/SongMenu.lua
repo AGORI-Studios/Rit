@@ -360,7 +360,9 @@ function SongMenu:draw()
     --[[ for i, ball in ipairs(balls) do
         ball:draw()
     end ]]
-    statsBox:draw()
+    if curTab == "diffs" then
+        statsBox:draw()
+    end
     love.graphics.push()
     --[[ diffButton:draw()
     songButton:draw() ]]

@@ -36,6 +36,23 @@ function quaverLoader.load(chart, folderPath, forDiff)
             crochet = (60/bpm)*1000
             stepCrochet = crochet/4
         end
+
+        --[[ if timingPoint.Hidden then goto continue end
+
+        local msPerBeat = 60000 / math.min(math.abs(timingPoint.Bpm), 9999)
+        local signature = timingPoint.Signature or 4
+        local increment = signature * msPerBeat
+
+        if increment <= 0 then goto continue end
+
+        local target = #chart.TimingPoints > i and chart.TimingPoints[i + 1].StartTime - 1 or meta.length
+        for songPos = timingPoint.StartTime, target, increment do
+            local offset = states.game.Gameplay:GetPositionFromTime(songPos)
+            print(offset)
+            states.game.Gameplay.timingLines:add(TimingLine(offset))
+        end
+
+        ::continue:: ]]
     end
     states.game.Gameplay.soundManager:setBPM("music", bpm)
 

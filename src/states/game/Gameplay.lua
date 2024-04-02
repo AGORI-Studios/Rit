@@ -76,6 +76,7 @@ function Gameplay:reset()
     self.strumX = 525
     self.spawnTime = 1000
     self.hitObjects = Group()
+    self.timingLines = Group()
     self.unspawnNotes = {}
     self.sliderVelocities = {}
     self.strumLineObjects = Group()
@@ -126,6 +127,9 @@ function Gameplay:reset()
         x = 0,
         width = 0
     }
+
+    self.replay = {hits={}, meta={}, score={}, mods={}}
+    self.watchingReplay = false
 
     self:preloadAssets()
 
@@ -422,6 +426,33 @@ function Gameplay:enter()
 
     Modscript:call("Start")
 
+    if self.watchingReplay then
+        -- load most recent replay that has songName and songDifficulty with the highest time in it
+        local files = love.filesystem.getDirectoryItems("replays")
+        local replay = nil
+        local replayTimeCreated = 0
+        local allTimes = {}
+        -- formatted like "songname - songdifficulty - timecreated.json"
+        for i, file in ipairs(files) do
+            local replayData = json.decode(love.filesystem.read("replays/" .. file)).meta
+            if replayData.song == self.songName and replayData.difficulty == self.difficultyName then
+                local filenameData = file:split(" - ")
+                local time = tonumber(filenameData[#filenameData]:sub(1, -6))
+               
+                table.insert(allTimes, time)
+                if time > replayTimeCreated then
+                    replayTimeCreated = time
+                    replay = file
+                end
+            end
+        end
+
+        if replay then
+            self.replay = json.decode(love.filesystem.read("replays/" .. replay))
+        end
+
+    end
+
     Timer.after(1.2, function() -- forced delay to prevent potential desync's
         self.updateTime = true
         self.didTimer = true
@@ -467,6 +498,20 @@ function Gameplay:update(dt)
             self.soundManager:play("music")
             musicTime = 0
         elseif (musicTime > self.lastNoteTime and not self.soundManager:isPlaying("music")) then
+            --self.songName .. " - " .. self.difficultyName,
+            self.replay.meta = {
+                song = self.songName,
+                difficulty = self.difficultyName,
+            }
+            self.replay.score = {
+                score = self.score,
+                accuracy = self.accuracy,
+                misses = self.misses,
+                hits = self.hits,
+            }
+            if not self.watchingReplay then
+                love.filesystem.write("replays/" .. self.songName .. " - " .. self.difficultyName .. " - " .. os.time() .. ".json", json.encode(self.replay))
+            end
             state.switch(states.menu.SongMenu)
             if self.background then self.background:release() end
             return
@@ -506,7 +551,7 @@ function Gameplay:update(dt)
         self.escapeTimer = 0
     end
 
-    if self.didTimer and self.updateTime then
+    if self.updateTime then
         if #self.hitObjects.members > 0 then
             if self.didTimer then
                 for i, ho in ipairs(self.hitObjects.members) do
@@ -527,15 +572,34 @@ function Gameplay:update(dt)
         end
     end
 
-    for i = 1, self.mode do
-        if input:pressed(self.mode .. "k_game" .. i) then
-            self:keyPressed(i)
+    if not self.watchingReplay then
+        for i = 1, self.mode do
+            if input:pressed(self.mode .. "k_game" .. i) then
+                self:keyPressed(i)
+            end
+            if input:down(self.mode .. "k_game" .. i) then
+                self:keyDown(i)
+            end
+            if input:released(self.mode .. "k_game" .. i) then
+                self:keyReleased(i)
+            end
         end
-        if input:down(self.mode .. "k_game" .. i) then
-            self:keyDown(i)
-        end
-        if input:released(self.mode .. "k_game" .. i) then
-            self:keyReleased(i)
+    elseif self.watchingReplay and self.didTimer and self.updateTime then
+        for i, hit in ipairs(self.replay.hits) do
+            if hit.time <= musicTime and hit.releasedTime >= musicTime and not hit.press then
+                hit.press = true
+                self:keyPressed(hit.key)
+            end
+
+            -- key down
+            if hit.time <= musicTime and hit.releasedTime >= musicTime and hit.press then
+                self:keyDown(hit.key)
+            end
+
+            if hit.releasedTime <= musicTime and not hit.release then
+                hit.release = true
+                self:keyReleased(hit.key)
+            end
         end
     end
 end
@@ -546,6 +610,11 @@ function Gameplay:keyPressed(key)
     cloned:setVolume(Settings.options["General"].hitsoundVolume)
     cloned:play()
     cloned:release()
+
+    if not self.watchingReplay then
+        table.insert(self.replay.hits, {key=key, time=musicTime, releasedTime=musicTime})
+    end
+
     if self.updateTime then
         if #self.hitObjects.members > 0 then
             local lastTime = musicTime
@@ -587,6 +656,31 @@ function Gameplay:keyPressed(key)
     end
 end
 
+function Gameplay:keyReleased(key)
+    self.inputsArray[key] = false
+
+    -- find the last note that was pressed (same lane) for replay
+    if not self.watchingReplay then
+        for i = #self.replay.hits, 1, -1 do
+            if self.replay.hits[i].key == key then
+                self.replay.hits[i].releasedTime = musicTime
+                break
+            end
+        end
+    end
+
+    self.strumLineObjects.members[key]:playAnim("unpressed")
+
+    for i, ho in ipairs(self.hitObjects.members) do
+        if ho.data == key and not ho.moveWithScroll then
+            ho:kill()
+            ho:destroy()
+            self.hitObjects:remove(ho)
+            break
+        end
+    end
+end
+
 function Gameplay:keyDown(key)
     self.inputsArray[key] = true
 
@@ -603,21 +697,6 @@ function Gameplay:keyDown(key)
     end
 
     self.strumLineObjects.members[key]:playAnim("pressed")
-end
-
-function Gameplay:keyReleased(key)
-    self.inputsArray[key] = false
-
-    self.strumLineObjects.members[key]:playAnim("unpressed")
-
-    for i, ho in ipairs(self.hitObjects.members) do
-        if ho.data == key and not ho.moveWithScroll then
-            ho:kill()
-            ho:destroy()
-            self.hitObjects:remove(ho)
-            break
-        end
-    end
 end
 
 function Gameplay:goodNoteHit(note, time)
@@ -665,7 +744,7 @@ function Gameplay:draw()
         love.graphics.rectangle("fill", self.bgLane.x, -200, self.bgLane.width, 1080+400) -- 200 val to be safe when the screen is scaling for key's > 4
         love.graphics.setColor(1,1,1)
         for i, playfield in ipairs(self.playfields) do
-            playfield:draw(self.hitObjects.members)
+            playfield:draw(self.hitObjects.members, self.timingLines.members, self.bgLane.width)
         end
     love.graphics.pop()
 

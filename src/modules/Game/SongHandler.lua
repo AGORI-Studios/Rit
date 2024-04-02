@@ -2,12 +2,6 @@
 local lf = love.filesystem -- i use this a lot so i just made it a variable
 songList = {}
 function loadSongs(path) -- Gross yucky way of loading all of our songs in the given folder path
-    if not lf.getInfo("songs") then
-        lf.createDirectory("songs")
-        love.window.showMessageBox("Songs folder created!",
-        "songs folder has been created at " .. lf.getSaveDirectory() .. "/songs", "info")
-    end
-   
     for _, file in ipairs(lf.getDirectoryItems(path)) do
         --print("Checking " .. file)
         if lf.getInfo(path .."/" .. file).type == "directory" then

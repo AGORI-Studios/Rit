@@ -46,6 +46,7 @@ function GI.LoadObjects()
     StrumObject = require("modules.Objects.game.StrumObject")
     HitObject = require("modules.Objects.game.HitObject")
     Playfield = require("modules.Objects.game.Playfield")
+    TimingLine = require("modules.Objects.game.TimingLine")
 
     SongButton = require("modules.Objects.menu.SongButton")
     Spectrum = require("modules.Objects.menu.Spectrum")
@@ -154,6 +155,15 @@ function GI.UpdateDiscord()
         discordRPC.runCallbacks()
     end
 end
+
+function GI.CreateFolders()
+    if not love.filesystem.getInfo("songs") then
+        love.filesystem.createDirectory("songs")
+    end
+    if not love.filesystem.getInfo("replays") then
+        love.filesystem.createDirectory("replays")
+    end
+end 
 
 -- Love Functions
 function love.wheelmoved(x, y)

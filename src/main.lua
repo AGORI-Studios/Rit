@@ -93,6 +93,9 @@ function love.load()
     -- Classes
     GameInit.LoadClasses()
 
+    -- Create folders
+    GameInit.CreateFolders()
+
     -- Skins, create skins directory if it doesn't exist
     skinList = {}
     skin:loadSkins("skins")
