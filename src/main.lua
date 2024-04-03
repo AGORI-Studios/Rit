@@ -18,7 +18,6 @@ if __isGitFile then
 else
     __isGit = false
 end
-print("isGit: " .. tostring(__isGit))
 
 __InJukebox = false
 
@@ -135,7 +134,6 @@ function love.load()
     -- Lastly, switch to the preloader screen to preload all of our needed assets
 
     masterVolume = Settings.options["General"].globalVolume * 100
-    print("Master Volume: " .. masterVolume)
     state.switch(states.screens.PreloaderScreen)
 
     local CurrentDateTime = os.date("*t") -- if april first, set the boolean "doAprilFools" to true
@@ -205,6 +203,10 @@ function love.keypressed(key)
             state.switch(states.screens.MapEditorScreen)
         end
     end
+end
+
+function love.textinput(t)
+    state.textinput(t)
 end
 
 function love.resize(w,h)

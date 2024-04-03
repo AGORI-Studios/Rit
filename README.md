@@ -1,5 +1,7 @@
 # Rit
 
+### A rhythm game made in LÖVE.
+
 # How to run (Uncompiled)
 - Install [LÖVE](https://love2d.org/)
 - Head to the [requirements](/requirements/) folder, open your operating system's folder, and download the .dll/.so/.dylib files
@@ -27,19 +29,11 @@
 - Make your changes
 - Make a pull request
 
-# Project structure
-- All lua source files are PascalCase (e.g. `MainMenu.lua`)
-- Global/local variables are camelCase (e.g. `gameState`)
-- Functions are camelCase (e.g. `loadGame()`)
-- Classes are PascalCase (e.g. `MainMenu`)
-- Class functions are camelCase (e.g. `MainMenu:load()`)
-
 # Libraries (By me) - Free for use
 - [class.lua](/src/lib/class.lua)
 - [env.lua](/src/lib/env.lua)
 - [ini.lua](/src/lib/ini.lua)
 - [state.lua](/src/lib/state.lua)
-- [input.lua](/src/lib/input.lua)
 
 # Libraries Used (Not by me) 
 - [baton.lua](/src/lib/baton.lua)

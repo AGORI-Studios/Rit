@@ -68,13 +68,12 @@ switch: lovefile
 	rm -r build/$(GameName)-switch/romfs
 	rm build/$(GameName)-switch/Rit.nacp
 
-appimage: lovefile
+appimage:
 	rm -rf build/$(GameName)-appimage
 	mkdir -p "build/$(GameName)-appimage"
 
-	# extract appimage (requirements/appimage/love.AppImage)
 	unzip requirements/appimage/love.AppImage -d build/$(GameName)-appimage
-	
+
 
 dist:
 	mkdir build/dist
