@@ -15,4 +15,7 @@ jobs:
     steps: 
     - uses: actions/checkout@v3
     - name: create linux app image
-      run: make appimage
+      run: |
+        wget https://github.com/love2d/love/releases/download/11.5/love-11.5-x86_64.AppImage -O requirements/linux/love.AppImage
+        wget https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage -O requirements/linux/appimagetool-x86_64.AppImage
+        make appimage
