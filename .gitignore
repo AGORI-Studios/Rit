@@ -34,9 +34,6 @@ requirements/macos/*
 requirements/switch/*
 !requirements/switch/dependencies.txt
 
-requirements/appimage/*
-!requirements/appimage/dependencies.txt
-
 .env
 Keys.lua
 
