@@ -68,12 +68,16 @@ switch: lovefile
 	rm -r build/$(GameName)-switch/romfs
 	rm build/$(GameName)-switch/Rit.nacp
 
-appimage:
+appimage: lovefile
 	rm -rf build/$(GameName)-appimage
 	mkdir -p "build/$(GameName)-appimage"
 
-	unzip requirements/appimage/love.AppImage -d build/$(GameName)-appimage
+	./requirements/linux/love.AppImage --appimage-extract
+	cat ./requirements/linux/squashfs-root/bin/love build/$(GameName)-lovefile/$(GameName).love > ./requirements/linux/squashfs-root/bin/love
 
+	#repackage with appimagetool-x86_64.AppImage
+	./requirements/linux/appimagetool-x86_64.AppImage ./requirements/linux/squashfs-root/ build/$(GameName)-appimage/$(GameName).AppImage
+	rm -rf ./requirements/linux/squashfs-root
 
 dist:
 	mkdir build/dist
