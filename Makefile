@@ -13,7 +13,7 @@ default:
 	@echo $(ISGIT)
 	@echo "false" > "src/isgit.bool"
 
-all: desktop console dist
+all: clean desktop console dist
 
 desktop: lovefile win64 dist
 console: lovefile switch
@@ -33,7 +33,17 @@ lovefile:
 
 win64: lovefile
 	mkdir build/$(GameName)-win64
+
+	wget https://github.com/love2d/love/releases/download/11.5/love-11.5-win64.zip
+	mv -f love-11.5-win64.zip requirements/win64/
+	unzip requirements/win64/love-11.5-win64.zip -d requirements/win64
+	mv -f requirements/win64/love-11.5-win64 requirements/win64/love
+	
+	rm requirements/win64/love-11.5-win64.zip
+
 	cp -r requirements/win64/love/* build/$(GameName)-win64
+	rm -rf requirements/win64/love
+	
 	cp requirements/win64/discord-rpc.dll build/$(GameName)-win64
 	cp requirements/win64/luasteam.dll build/$(GameName)-win64
 	cp requirements/win64/steam_api64.dll build/$(GameName)-win64
@@ -81,6 +91,7 @@ appimage: lovefile
 	rm -rf ./requirements/appimage/squashfs-root
 
 dist:
+	rm -rf build/dist
 	mkdir build/dist
 	cd build/$(GameName)-win64 && zip -9 -r ../../build/dist/$(GameName)-win64.zip *
 	cp build/$(GameName)-lovefile/$(GameName).love build/dist/$(GameName).love

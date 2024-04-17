@@ -1,0 +1,30 @@
+name: Create Nightly Release
+
+env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+        - name: Nightly Release
+          run: |
+            make all
+            
+        - uses: andelf/nightly-release@main
+          with:
+            tag_name: nightly_release
+            name: "Rit Nightly Release $$"
+            prerelease: true
+            body: "This is a nightly release. May or may not work."
+            files: build/dist/*
+
