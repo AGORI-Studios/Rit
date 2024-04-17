@@ -172,8 +172,6 @@ local closeBtn
 
 function Jukebox:enter()
     orderedSongs = {}
-    loadSongs("defaultSongs")
-    loadSongs("songs")
     for i, song in pairs(songList) do
         local rndDiff = table.random(song)
         while (type(rndDiff) == "string") do
