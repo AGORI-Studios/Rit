@@ -418,7 +418,7 @@ function Gameplay:enter()
     self:updateNotePosition(self.currentTrackPosition, musicTime)
     self:addObjectsToGroups()
 
-    safeZoneOffset = (15 / 60) * 1000
+    safeZoneOffset = 225 -- start/end ms time for a note to be able to be hit
 
     self:add2(self.comboGroup)
 
