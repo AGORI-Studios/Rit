@@ -227,6 +227,7 @@ function toGameScreen(x, y)
 end
 
 function love.draw()
+    local lastFont = love.graphics.getFont()
     love.graphics.setCanvas({gameScreen, stencil = true})
         love.graphics.clear(0,0,0,1)
         state.draw()
@@ -239,7 +240,13 @@ function love.draw()
     -- draw game screen with the calculated ratio and center it on the screen
     love.graphics.draw(gameScreen, love.graphics.getWidth()/2, love.graphics.getHeight()/2, 0, ratio, ratio, Inits.GameWidth/2, Inits.GameHeight/2)
 
+    -- draw Popup.popups
+    for i, popup in ipairs(Popup.popups) do
+        popup:draw()
+    end
+
     -- info
+    love.graphics.setFont(lastFont)
     love.graphics.print(
         "FPS: " .. love.timer.getFPS() .. "\n" ..
 
@@ -259,11 +266,6 @@ function love.draw()
         (Steam and "Steam User: " .. SteamUserName .. "\n" or "") ..
         "Volume: " .. math.round(masterVolume, 2)
     )
-
-    -- draw Popup.popups
-    for i, popup in ipairs(Popup.popups) do
-        popup:draw()
-    end
 
     if imgui then
         imgui.Render()
