@@ -17,7 +17,7 @@ all: desktop console dist
 
 desktop: lovefile win64 dist
 console: lovefile switch
-linux: lovefile
+appimage: lovefile
 
 # define GameName = "GameName"
 GameName = Rit
@@ -68,12 +68,17 @@ switch: lovefile
 	rm -r build/$(GameName)-switch/romfs
 	rm build/$(GameName)-switch/Rit.nacp
 
-appimage:
+appimage: lovefile
 	rm -rf build/$(GameName)-appimage
 	mkdir -p "build/$(GameName)-appimage"
 
-	unzip requirements/appimage/love.AppImage -d build/$(GameName)-appimage
+	chmod +x ./requirements/appimage/appimagetool-x86_64.AppImage
+	./requirements/appimage/love.AppImage --appimage-extract
+	cat ./requirements/appimage/squashfs-root/bin/love build/$(GameName)-lovefile/$(GameName).love > ./requirements/appimage/squashfs-root/bin/love
 
+	chmod +x ./requirements/appimage/squashfs-root/bin/love
+	./requirements/appimage/appimagetool-x86_64.AppImage ./requirements/appimage/squashfs-root/ build/$(GameName)-appimage/$(GameName).AppImage
+	rm -rf ./requirements/appimage/squashfs-root
 
 dist:
 	mkdir build/dist
