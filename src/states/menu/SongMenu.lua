@@ -106,7 +106,10 @@ function SongMenu:enter()
                 songName = diff.title:trim()
                 bmType = diff.type
             else
-                bmType = diff
+                -- if diff is a key in songButtons, then don't set it
+                if songButtons[diff] then
+                    bmType = diff
+                end
             end
         end
         local y = #songButtons[bmType] * songButton.height * 1.1

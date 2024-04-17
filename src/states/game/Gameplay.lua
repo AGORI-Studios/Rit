@@ -134,12 +134,12 @@ function Gameplay:reset()
     self:preloadAssets()
 
     self.judgements = { -- Judgement 4 timings
-        {name="marvellous", img="defaultSkins/skinThrowbacks/judgements/MARVELLOUS.png", time=22, scoreMultiplier=1},
-        {name="perfect", img="defaultSkins/skinThrowbacks/judgements/PERFECT.png", time=45, scoreMultiplier=1},
-        {name="great", img="defaultSkins/skinThrowbacks/judgements/GREAT.png", time=90, scoreMultiplier=0.7},
-        {name="good", img="defaultSkins/skinThrowbacks/judgements/GOOD.png", time=135, scoreMultiplier=0.55},
-        {name="bad", img="defaultSkins/skinThrowbacks/judgements/BAD.png", time=180, scoreMultiplier=0.3},
-        {name="miss", img="defaultSkins/skinThrowbacks/judgements/MISS.png", time=225, scoreMultiplier=0},
+        {name="marvellous", img="defaultSkins/skinThrowbacks/judgements/MARVELLOUS.png", time=23, scoreMultiplier=1},
+        {name="perfect", img="defaultSkins/skinThrowbacks/judgements/PERFECT.png", time=40, scoreMultiplier=1},
+        {name="great", img="defaultSkins/skinThrowbacks/judgements/GREAT.png", time=74, scoreMultiplier=0.7},
+        {name="good", img="defaultSkins/skinThrowbacks/judgements/GOOD.png", time=103, scoreMultiplier=0.55},
+        {name="bad", img="defaultSkins/skinThrowbacks/judgements/BAD.png", time=127, scoreMultiplier=0.3},
+        {name="miss", img="defaultSkins/skinThrowbacks/judgements/MISS.png", time=160, scoreMultiplier=0},
     }
 
     musicTime = 0
@@ -418,7 +418,7 @@ function Gameplay:enter()
     self:updateNotePosition(self.currentTrackPosition, musicTime)
     self:addObjectsToGroups()
 
-    safeZoneOffset = (15 / 60) * 1000
+    safeZoneOffset = 160 -- start/end ms time for a note to be able to be hit
 
     self:add2(self.comboGroup)
 
