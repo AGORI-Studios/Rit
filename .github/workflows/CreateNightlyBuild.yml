@@ -16,9 +16,10 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
+        - uses: actions/checkout@v3
         - name: Nightly Release
           run: |
-            make all
+            make
             
         - uses: andelf/nightly-release@main
           with:
