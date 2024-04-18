@@ -475,8 +475,8 @@ function Gameplay:generateStrums()
     for i, ho in ipairs(self.unspawnNotes) do
         ho.x = self.strumX + ((ho.data - 1) * (__NOTE_OBJECT_WIDTH * 0.925)) + 32
         if #ho.children > 0 then
-            ho.children[1].x = self.strumX + ((ho.data - 1) * (__NOTE_OBJECT_WIDTH * 0.925)) + 32
-            ho.children[2].x = self.strumX + ((ho.data - 1) * (__NOTE_OBJECT_WIDTH * 0.925)) + 32
+            ho.children[1].x = ho.x - 4
+            ho.children[2].x = ho.x - 4
         end
     end
     for i = 1, self.mode do
