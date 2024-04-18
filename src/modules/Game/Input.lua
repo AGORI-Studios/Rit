@@ -83,7 +83,9 @@ input = (require "lib.baton").new({
         volUp = { "button:rightshoulder" },
         volDown = { "button:leftshoulder" },
 
-        quit = { "key:escape", "button:back" }
+        quit = { "key:escape", "button:back" },
+
+        Skip_Key = { "key:space" }
     },
     joystick = love.joystick.getJoysticks()[1]
 })

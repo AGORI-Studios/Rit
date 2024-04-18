@@ -76,6 +76,11 @@ local isClosing = false
 
 local GameInit = require("modules.GameInit")
 
+local function CheckAprilFools()
+    local CurrentDateTime = os.date("*t") -- if april first, set the boolean "doAprilFools" to true
+    return CurrentDateTime.month == 4 and CurrentDateTime.day == 1
+end
+
 function love.load()
     __NOTE_OBJECT_WIDTH = 0 -- Determined from the width of the noteskins note object.
     
@@ -131,15 +136,12 @@ function love.load()
 
     MenuSoundManager = SoundManager()
 
-    -- Lastly, switch to the preloader screen to preload all of our needed assets
-
     masterVolume = Settings.options["General"].globalVolume * 100
-    state.switch(states.screens.PreloaderScreen)
 
-    local CurrentDateTime = os.date("*t") -- if april first, set the boolean "doAprilFools" to true
-    if CurrentDateTime.month == 4 and CurrentDateTime.day == 1 then
-        doAprilFools = true
-    end
+    doAprilFools = CheckAprilFools()
+
+    -- Lastly, switch to the preloader screen to preload all of our needed assets
+    state.switch(states.screens.PreloaderScreen)
 end
 
 function switchState(newState, t, middleFunc)
@@ -203,10 +205,6 @@ function love.keypressed(key)
             state.switch(states.screens.MapEditorScreen)
         end
     end
-end
-
-function love.textinput(t)
-    state.textinput(t)
 end
 
 function love.resize(w,h)

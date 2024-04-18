@@ -116,6 +116,8 @@ function Gameplay:reset()
     self.hits = 0
     self.misses = 0
     self.lastNoteTime = 10000 -- safe number
+    self.firstNoteTime = 0
+    self.hasSkipPeriod = false
 
     self.noteoffsets = {}
 
@@ -135,7 +137,7 @@ function Gameplay:reset()
 
     self.judgements = { -- Judgement 4 timings
         {name="marvellous", img="defaultSkins/skinThrowbacks/judgements/MARVELLOUS.png", time=23, scoreMultiplier=1},
-        {name="perfect", img="defaultSkins/skinThrowbacks/judgements/PERFECT.png", time=40, scoreMultiplier=1},
+        {name="perfect", img="defaultSkins/skinThrowbacks/judgements/PERFECT.png", time=40, scoreMultiplier=0.9},
         {name="great", img="defaultSkins/skinThrowbacks/judgements/GREAT.png", time=74, scoreMultiplier=0.7},
         {name="good", img="defaultSkins/skinThrowbacks/judgements/GOOD.png", time=103, scoreMultiplier=0.55},
         {name="bad", img="defaultSkins/skinThrowbacks/judgements/BAD.png", time=127, scoreMultiplier=0.3},
@@ -529,6 +531,14 @@ function Gameplay:update(dt)
             self.soundManager:update(dt)
             previousFrameTime = love.timer.getTime() * 1000
         end
+        if musicTime <= self.firstNoteTime and self.hasSkipPeriod and input:pressed("Skip_Key") then
+            if (self.background and self.background.play) and (musicTime >= 0 and musicTime < self.lastNoteTime-1000) and self.soundManager:isPlaying("music") then
+                self.background:play(musicTime/1000)
+                self.soundManager:seek("music", musicTime/1000, "seconds")
+            end
+            musicTime = 2000
+            self.hasSkipPeriod = false
+        end
         self:updateCurrentTrackPosition()
         self:updateNotePosition(self.currentTrackPosition, musicTime)
     end
@@ -772,6 +782,13 @@ function Gameplay:draw()
     love.graphics.setFont(Cache.members.font["menuBold"])
     love.graphics.printf("Score: " .. math.round(lerpedScore), 0, 0, 960, "right", 0, 2, 2)
     love.graphics.printf("Accuracy: " .. string.format("%.2f", lerpedAccuracy) .. "%", 0, 50, 960, "right", 0, 2, 2)
+
+    if musicTime <= self.firstNoteTime and self.hasSkipPeriod and input:pressed("Skip_Key") then
+        -- right align
+        love.graphics.setColor(1,1,1,1)
+        love.graphics.printf("Press SPACE to skip intro", 0, Inits.GameWidth-50, 960, "right", 0, 2, 2)
+    end
+
     love.graphics.setFont(lastFont)
 end
 
@@ -794,6 +811,10 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath)
 
     local lastNoteTime = #self.unspawnNotes > 0 and self.unspawnNotes[#self.unspawnNotes].time or 0
     self.lastNoteTime = lastNoteTime
+    local firstNoteTime = #self.unspawnNotes > 0 and self.unspawnNotes[1].time or 0
+    self.firstNoteTime = firstNoteTime
+    self.hasSkipPeriod = firstNoteTime > 2500 -- if first note is after 7.5 seconds, then we have a skip period
+    print("First note time: " .. firstNoteTime .. "\nLast note time: " .. lastNoteTime .. "\nSkip period: " .. tostring(self.hasSkipPeriod))
 
     self.songName = __title or "N/A"
     self.difficultyName = __diffName or "N/A"
