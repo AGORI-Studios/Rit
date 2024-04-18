@@ -499,7 +499,7 @@ function Gameplay:update(dt)
         if musicTime >= 0 and not self.soundManager:isPlaying("music") and musicTime < 1000 then
             self.soundManager:play("music")
             musicTime = 0
-        elseif (musicTime > self.lastNoteTime and not self.soundManager:isPlaying("music")) then
+        elseif (musicTime > self.lastNoteTime+750) then
             --self.songName .. " - " .. self.difficultyName,
             self.replay.meta = {
                 song = self.songName,
