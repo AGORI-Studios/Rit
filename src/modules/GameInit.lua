@@ -430,10 +430,6 @@ function love.errorhandler(msg)
 		p = p .. "\nCopied to clipboard!"
 	end
 
-	if love.system then
-		p = p .. "\n\nPress Ctrl+C or tap to copy this error"
-	end
-
 	return function()
 		love.event.pump()
 
