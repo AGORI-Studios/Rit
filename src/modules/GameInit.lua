@@ -386,7 +386,14 @@ function love.errorhandler(msg)
                 for i, v in ipairs(buttons) do
                     love.graphics.setColor(51/255, 10/255, 41/255, 0.75)
                     local mx, my = love.mouse.getPosition()
-                    local buttonIsHovered = mx > (buttonWidth+15)*(i-1)+75 and mx < (buttonWidth+15)*(i-1)+75+buttonWidth and my > height+pos+35 and my < height+pos+35+50
+                    local buttonIsHovered = false
+                    -- same code as above, but account for scaling
+                    local scaleX = love.graphics.getWidth()/1280
+                    local scaleY = love.graphics.getHeight()/720
+                    buttonIsHovered = (
+                        mx > ((buttonWidth+15)*(i-1)+20)*scaleX and mx < ((buttonWidth+15)*(i-1)+20+buttonWidth)*scaleX and
+                        my > (height+pos+40)*scaleY and my < (height+pos+40+50)*scaleY
+                    )
                     if buttonIsHovered then
                         love.graphics.setColor(51/255, 10/255, 41/255, 1)
                     end
@@ -438,7 +445,15 @@ function love.errorhandler(msg)
             elseif e == "mousepressed" then
                 local mx, my = love.mouse.getPosition()
                 for i, v in ipairs(buttons) do
-                    local buttonIsHovered = mx > (_buttonWidth+15)*(i-1)+75 and mx < (_buttonWidth+15)*(i-1)+75+_buttonWidth and my > _height+70+35 and my < _height+70+35+50
+                    --[[ local buttonIsHovered = mx > (_buttonWidth+15)*(i-1)+75 and mx < (_buttonWidth+15)*(i-1)+75+_buttonWidth and my > _height+70+35 and my < _height+70+35+50 ]]
+                    local buttonIsHovered = false
+                    -- same code as above, but account for scaling
+                    local scaleX = love.graphics.getWidth()/1280
+                    local scaleY = love.graphics.getHeight()/720
+                    buttonIsHovered = (
+                        mx > ((buttonWidth+15)*(i-1)+20)*scaleX and mx < ((buttonWidth+15)*(i-1)+20+buttonWidth)*scaleX and
+                        my > (height+pos+40)*scaleY and my < (height+pos+40+50)*scaleY
+                    )
                     if buttonIsHovered then
                         v.func()
                     end
