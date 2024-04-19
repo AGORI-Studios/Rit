@@ -3,7 +3,10 @@ local osuLoader = {}
 local currentBlockName = ""
 local folderPath
 
+local _bpm = nil
+
 function osuLoader.load(chart, folderPath_, forDiff)
+    _bpm = nil
     curChart = "osu!"
     folderPath = folderPath_
     currentBlockName = ""
@@ -20,6 +23,8 @@ function osuLoader.load(chart, folderPath_, forDiff)
     end
 
     chart = nil
+
+    print(bpm)
 end
 
 function osuLoader.processLine(line)
@@ -87,7 +92,7 @@ function osuLoader.addTimingPoint(line)
     local split = line:split(",")
     local tp = {}
 
-    tp.offset = tonumber(split[1]) or 0
+    tp.offset = tonumber(split[1]) or 0 -- MS per beat
     tp.beatLength = tonumber(split[2]) or 0
     tp.timingSignature = math.max(0, math.min(8, tonumber(split[3]) or 4)) or 4
     tp.sampleSetId = tonumber(split[4]) or 0
@@ -102,16 +107,33 @@ function osuLoader.addTimingPoint(line)
 
     if tp.beatLength >= 0 then
         -- beat shit
+        tp.beatLength = math.abs(tp.beatLength)
+        tp.measureLength = math.abs(tp.beatLength * tp.timingSignature)
+        tp.timingChange = true
+        if tp.beatLength < 1e-3 then
+            tp.beatLength = 1
+        end
+        if tp.measureLength < 1e-3 then
+            tp.measureLength = 1
+        end
     else -- slider velocity (what we care about)
         tp.velocity = math.min(math.max(0.1, math.abs(-100 / tp.beatLength)), 10)
     end
 
-    if tp.velocity then
+    local isSV = tp.sampleVolume == 0 or tp.beatLength < 0
+
+    if isSV then
         local velocity = {
             startTime = tp.offset,
             multiplier = tp.velocity
         }
         table.insert(states.game.Gameplay.sliderVelocities, velocity)
+    else
+        if not _bpm then _bpm = 60000/tp.beatLength; bpm = _bpm end
+        table.insert(states.game.Gameplay.timingPoints, {
+            StartTime = tp.offset,
+            Bpm = 60000/tp.beatLength
+        })
     end
 end
 function osuLoader.processMetadata(line)

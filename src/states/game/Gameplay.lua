@@ -246,8 +246,12 @@ function Gameplay:initializePositionMarkers()
     table.insert(self.velocityPositionMakers, position)
     for i = 2, #self.sliderVelocities do
         local velocity = self.sliderVelocities[i]
-        position = position + (velocity.startTime - self.sliderVelocities[i - 1].startTime) 
-                * (self.sliderVelocities[i - 1] and self.sliderVelocities[i - 1].multiplier or 0) * self.trackRounding
+        --[[
+            position += (long)((Map.SliderVelocities[i].StartTime - Map.SliderVelocities[i - 1].StartTime)
+                                   * Map.SliderVelocities[i - 1].Multiplier * TrackRounding);
+        ]]
+        position = position + (velocity.startTime - (self.sliderVelocities[i - 1] and self.sliderVelocities[i - 1].startTime or 0)) 
+            * (self.sliderVelocities[i - 1] and self.sliderVelocities[i - 1].multiplier) * self.trackRounding
         table.insert(self.velocityPositionMakers, position)
     end
 end
@@ -269,7 +273,9 @@ function Gameplay:GetPositionFromTime(time, index)
     end
     index = index - 1
     local curPos = self.velocityPositionMakers[index]
-    curPos = curPos + ((time - self.sliderVelocities[index].startTime) * (self.sliderVelocities[index].multiplier or 0) * self.trackRounding)
+    print("CURRENT MULTIPLIER: " .. (self.sliderVelocities[index].multiplier or 0))
+    --curPos += (long)((time - Map.SliderVelocities[index].StartTime) * Map.SliderVelocities[index].Multiplier * TrackRounding);
+    curPos = curPos + (time - self.sliderVelocities[index].startTime) * (self.sliderVelocities[index].multiplier or 0) * self.trackRounding
     return curPos
 end
 
@@ -473,6 +479,50 @@ function Gameplay:normalizeSVs()
     self.bpmAffectsScrollVelocity = false
     self.initialScrollVelocity = initialSvMultiplier or 1
     self.sliderVelocities = normalizedScrollVelocities
+end
+
+function Gameplay:SVFactor()
+    local MIN_MULTIPLIER = 1e-3
+    local MAX_MULTIPLIER = 1e2
+
+    self:normalizeSVs()
+
+    local importantTimestamps = {}
+    for i = 1, #unspawnNotes do
+        local note = unspawnNotes[i]
+        table.insert(importantTimestamps, note.time)
+        if note.children[1] then
+            table.insert(importantTimestamps, note.endTime)
+        end
+    end
+    table.sort(importantTimestamps, function(a, b)
+        return a < b
+    end)
+    local nextImportantTimeStampIndex = 1
+
+    local sum = 0
+    for i = 2, #self.sliderVelocities do
+        local prevSv = self.sliderVelocities[i - 1]
+        local sv = self.sliderVelocities[i]
+
+        while (nextImportantTimeStampIndex < #importantTimestamps and importantTimestamps[nextImportantTimeStampIndex] < sv.startTime) do
+            nextImportantTimeStampIndex = nextImportantTimeStampIndex + 1
+        end
+
+        if (nextImportantTimeStampIndex >= #importantTimestamps or importantTimestamps[nextImportantTimeStampIndex] > sv.startTime + 1000) then
+            break
+        end
+
+        local prevMultiplier = math.min(math.max(math.abs(prevSv.multiplier), MIN_MULTIPLIER), MAX_MULTIPLIER)
+        local multiplier = math.min(math.max(math.abs(sv.multiplier), MIN_MULTIPLIER), MAX_MULTIPLIER)
+
+        local prevLogMultiplier = math.log(prevMultiplier)
+        local logMultiplier = math.log(multiplier)
+
+        sum = sum + math.abs(logMultiplier - prevLogMultiplier)
+    end
+
+    return sum
 end
 
 function Gameplay:initPositions()
