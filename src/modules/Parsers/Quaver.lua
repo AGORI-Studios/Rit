@@ -22,6 +22,7 @@ function quaverLoader.load(chart, folderPath, forDiff)
         inputMode = chart.Mode:gsub("Keys", ""),
     }
     states.game.Gameplay.mode = meta.inputMode
+    states.game.Gameplay.bpmAffectsScrollVelocity = not chart.BPMDoesNotAffectScrollVelocity
 
     --audioFile = love.audio.newSource(folderPath .. "/" .. meta.audioPath, "stream")
     --audioFile = love.audio.newSource(folderPath .. "/" .. meta.audioPath, "stream")
@@ -36,6 +37,7 @@ function quaverLoader.load(chart, folderPath, forDiff)
             crochet = (60/bpm)*1000
             stepCrochet = crochet/4
         end
+        table.insert(states.game.Gameplay.timingPoints, timingPoint)
 
         --[[ if timingPoint.Hidden then goto continue end
 

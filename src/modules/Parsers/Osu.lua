@@ -13,6 +13,8 @@ function osuLoader.load(chart, folderPath_, forDiff)
     crochet = (60/bpm)*1000
     stepCrochet = crochet/4
 
+    states.game.Gameplay.bpmAffectsScrollVelocity = true
+
     for _, line in ipairs(chart:split("\n")) do
         osuLoader.processLine(line)
     end
