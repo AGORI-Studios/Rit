@@ -67,6 +67,7 @@ function SongMenu:enter()
     gear = Sprite(0, 0, "assets/images/ui/buttons/gear.png")
     home = Sprite(80, 0, "assets/images/ui/buttons/home.png")
     import = Sprite(1760, -2, "assets/images/ui/buttons/import.png")
+    menuBar = Sprite(0, 0, "assets/images/ui/menu/menuBar.png")
 
     categoryOpen = Sprite(0, -125, "assets/images/ui/menu/catOpen.png")
     categoryClosed = Sprite(0, -125, "assets/images/ui/menu/catClosed.png")
@@ -434,26 +435,27 @@ function SongMenu:draw()
         love.graphics.printf(curSongType, -615, -108, 1920/2, "center", 0, 1.75, 1.75) -- Song type
     end
     love.graphics.pop()
-    love.graphics.setColor(51/255, 10/255, 41/255)
+    --[[ love.graphics.setColor(51/255, 10/255, 41/255)
     love.graphics.rectangle("fill", 0, 0, 1920, 70)
-    love.graphics.setColor(1, 1, 1)
+    love.graphics.setColor(1, 1, 1) ]]
+    menuBar:draw()
     gear:draw()
     home:draw()
     bars:draw()
     import:draw()
-    setFont("menuBold")
+    setFont("menuExtraBold")
     love.graphics.printf(SteamUserName or "Not Logged In", 180, 8, 1080/2, "left", 0, 2, 2) -- Steam name
     -- draw SteamUserAvatarSmall to the right of the name
     if SteamUserAvatarSmall then
-        love.graphics.draw(SteamUserAvatarSmall, 180 + (fontWidth("menuBold", SteamUserName)*2) + 10, 3, 0, 2, 2)
+        love.graphics.draw(SteamUserAvatarSmall, 180 + (fontWidth("menuExtraBold", SteamUserName)*2) + 10, 3, 0, 2, 2)
     end
     -- now playing text
-    if fontWidth("menuBold", "Now Playing: " .. nowPlaying) > 452 then
+    if fontWidth("menuExtraBold", "Now Playing: " .. nowPlaying) > 452 then
         local newWidth = 0
         local newString = ""
         for i = 1, #("Now Playing: " .. nowPlaying):splitAllCharacters() do
             local char = ("Now Playing: " .. nowPlaying):sub(i, i)
-            newWidth = newWidth + fontWidth("menuBold", char)
+            newWidth = newWidth + fontWidth("menuExtraBold", char)
             if newWidth > 452 then
                 -- break, remove last 3, and add "..."
                 newString = newString:sub(1, #newString - 3) .. "..."

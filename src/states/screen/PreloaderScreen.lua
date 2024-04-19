@@ -17,6 +17,8 @@ function PreloaderScreen:enter()
     threadLoader.newImage(self, "home", "assets/images/ui/buttons/home.png")
     threadLoader.newImage(self, "categoryOpen", "assets/images/ui/menu/catOpen.png")
     threadLoader.newImage(self, "categoryClosed", "assets/images/ui/menu/catClosed.png")
+    threadLoader.newImage(self, "menuBar", "assets/images/ui/menu/menuBar.png")
+
     threadLoader.newImage(self, "twitterLogo", "assets/images/ui/icons/twitter.png")
     threadLoader.newImage(self, "kofiLogo", "assets/images/ui/icons/ko-fi.png")
     threadLoader.newImage(self, "discordLogo", "assets/images/ui/icons/discord.png")
