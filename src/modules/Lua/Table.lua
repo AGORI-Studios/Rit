@@ -46,3 +46,18 @@ function table.randomize(table)
 
     return newTable
 end
+
+---@name table.find
+---@description Finds a value in a table
+---@param table table
+---@param value any
+---@return any
+function table.find(table, value)
+    for k, v in pairs(table) do
+        if v == value then
+            return v
+        end
+    end
+
+    return nil
+end

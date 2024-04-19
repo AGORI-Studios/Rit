@@ -52,6 +52,8 @@ Gameplay.events = {}
 
 Gameplay.lastNoteTime = 10000 -- safe number
 
+Gameplay.bpmAffectsScrollVelocity = false
+
 local lerpedScore = 0
 local lerpedAccuracy = 0
 
@@ -147,6 +149,8 @@ function Gameplay:reset()
     musicTime = 0
 
     self.escapeTimer = 0
+
+    self.timingPoints = {}
 end
 
 function Gameplay:addPlayfield(x, y)
@@ -304,6 +308,171 @@ function Gameplay:isSVNegative(time)
     end
 
     return self.sliderVelocities[i_].multiplier < 0
+end
+
+function Gameplay:getCommonBpm()
+    if #self.timingPoints == 0 then
+        print("No timing points found")
+        return 0
+    end
+
+    if #self.unspawnNotes == 0 then
+        print("No notes found")
+        return self.timingPoints[1].Bpm
+    end
+
+    --var lastObject = HitObjects.OrderByDescending(x => x.IsLongNote ? x.EndTime : x.StartTime).First();
+    -- gets the very last note, accounting for the endTime
+    local newNoteTable = {}
+    for i, note in ipairs(self.unspawnNotes) do
+        table.insert(newNoteTable, note)
+    end
+
+    -- table.sort
+    table.sort(newNoteTable, function(a, b)
+        if a.endTime and b.endTime then
+            return a.endTime > b.endTime
+        elseif a.endTime and not b.endTime then
+            return a.endTime > b.time
+        elseif not a.endTime and b.endTime then
+            return a.time > b.endTime
+        else
+            return a.time > b.time
+        end
+    end)
+    local lastObject = newNoteTable[1]
+    local lastTime = lastObject.endTime or lastObject.time
+
+    local durations = {}
+    for i = 1, #self.timingPoints do
+        local point = self.timingPoints[i]
+
+        if point.StartTime > lastTime then
+            break
+        end
+        local duration = (lastTime - (i == 1 and 0 or point.StartTime))
+        lastTime = point.StartTime
+
+        if table.find(durations, point.Bpm) then
+            durations[point.Bpm] = durations[point.Bpm] + duration
+        else
+            durations[point.Bpm] = duration
+        end
+    end
+
+    if #durations == 0 then
+        return self.timingPoints[1].Bpm
+    end
+
+    table.sort(durations, function(a, b)
+        return a > b
+    end)
+
+    print("Common BPM: " .. durations[1])
+
+    return durations[1]
+end
+
+function Gameplay:normalizeSVs()
+    if not self.bpmAffectsScrollVelocity then return end
+
+    print("Normalizing SVs")
+
+    local baseBpm = self:getCommonBpm()
+
+    local normalizedScrollVelocities = {}
+
+    local currentBpm = self.timingPoints[1].Bpm
+    local currentSvIndex = 1
+    local currentSvStartTime
+    local currentSvMultiplier = 1
+    local currentAdjustedSvMultiplier
+    local initialSvMultiplier
+
+    for i = 1, #self.timingPoints do
+        local timingPoint = self.timingPoints[i]
+
+        local nextTimingPointHasSameTimestamp = false
+        if (i + 1 < #self.timingPoints and self.timingPoints[i + 1].StartTime == timingPoint.StartTime) then
+            nextTimingPointHasSameTimestamp = true
+        end
+
+        while(true) do
+            if currentSvIndex >= #self.sliderVelocities then
+                break
+            end
+
+            local sv = self.sliderVelocities[currentSvIndex]
+            if sv.startTime > timingPoint.StartTime then
+                break
+            end
+
+            if (nextTimingPointHasSameTimestamp and sv.startTime == timingPoint.StartTime) then
+                break
+            end
+
+            if (sv.startTime < timingPoint.StartTime) then
+                local multiplier = sv.Multiplier * (currentBpm / baseBpm)
+
+                if not currentAdjustedSvMultiplier then
+                    currentAdjustedSvMultiplier = multiplier
+                    initialSvMultiplier = sv.Multiplier
+                end
+
+                if multiplier ~= currentAdjustedSvMultiplier then
+                    table.insert(normalizedScrollVelocities, {
+                        startTime = sv.startTime,
+                        multiplier = multiplier
+                    })
+                    currentAdjustedSvMultiplier = multiplier
+                end
+            end
+
+            currentSvStartTime = sv.startTime
+            currentSvMultiplier = sv.Multiplier
+            currentSvIndex = currentSvIndex + 1
+        end
+
+        if not currentSvStartTime or currentSvStartTime < timingPoint.StartTime then
+            currentSvMultiplier = 1
+        end
+        currentBpm = timingPoint.Bpm
+
+        local multiplierToo = currentSvMultiplier * (currentBpm/baseBpm)
+
+        if not currentAdjustedSvMultiplier then
+            currentAdjustedSvMultiplier = multiplierToo
+            initialSvMultiplier = currentSvMultiplier
+        end
+
+        if multiplierToo ~= currentAdjustedSvMultiplier then
+            table.insert(normalizedScrollVelocities, {
+                startTime = timingPoint.StartTime,
+                multiplier = multiplierToo
+            })
+            currentAdjustedSvMultiplier = multiplierToo
+        end
+    end
+
+    -- for (; currentSvIndex < SliderVelocities.Count; currentSvIndex++)
+    for i = currentSvIndex, #self.sliderVelocities do
+        local sv = self.sliderVelocities[i]
+        local multiplier = sv.multiplier * (currentBpm / baseBpm)
+
+        if multiplier ~= currentAdjustedSvMultiplier then
+            table.insert(normalizedScrollVelocities, {
+                startTime = sv.startTime,
+                multiplier = multiplier
+            })
+            currentAdjustedSvMultiplier = multiplier
+        end
+
+        currentSvIndex = currentSvIndex + 1
+    end
+
+    self.bpmAffectsScrollVelocity = false
+    self.initialScrollVelocity = initialSvMultiplier or 1
+    self.sliderVelocities = normalizedScrollVelocities
 end
 
 function Gameplay:initPositions()
@@ -796,6 +965,8 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath)
     self.mode = 4 -- Amount of key lanes, reset to 4 until the chart specifies otherwise
     
     Parsers[chartType].load(songPath, folderPath)
+
+    self:normalizeSVs()
 
     self.M_folderPath = folderPath -- used for mod scripting
     Modscript.vars = {sprites={}} -- reset modscript vars
