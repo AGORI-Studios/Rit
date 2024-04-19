@@ -320,6 +320,8 @@ function love.errorhandler(msg)
 	p = p:gsub("\t", "")
 	p = p:gsub("%[string \"(.-)\"%]", "%1")
 
+    love.filesystem.write("error.log", p)
+
     local bg = love.graphics.newImage("assets/images/ui/menu/BGsongList.png")
 
     local buttons = {
