@@ -484,7 +484,6 @@ function love.errorhandler(msg)
 	end
 
 end
-test = t()
 -- End of Love Functions
 
 return GI
