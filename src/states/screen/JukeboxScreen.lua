@@ -29,7 +29,7 @@ local function getNewSong()
     end
 
     MenuSoundManager:stop("music")
-    MenuSoundManager:removeAllSounds()
+    --[[ MenuSoundManager:removeAllSounds() ]]
     MenuSoundManager:newSound("music", curDiff.audioFile, 1, false, "stream")
     MenuSoundManager:play("music")
     MenuSoundManager:setLooping("music", false)
@@ -58,7 +58,7 @@ local function playSong()
     end
 
     MenuSoundManager:stop("music")
-    MenuSoundManager:removeAllSounds()
+    --[[ MenuSoundManager:removeAllSounds() ]]
     MenuSoundManager:newSound("music", curDiff.audioFile, 1, false, "stream")
     MenuSoundManager:play("music")
     MenuSoundManager:setLooping("music", false)
@@ -146,7 +146,7 @@ local buttons = {
         placeholderText = "Restart",
         onClick = function()
             MenuSoundManager:stop("music")
-            MenuSoundManager:removeAllSounds()
+            --[[ MenuSoundManager:removeAllSounds() ]]
             MenuSoundManager:newSound("music", curDiff.audioFile, 1, false, "stream")
             MenuSoundManager:play("music")
             MenuSoundManager:setLooping("music", false)
@@ -212,7 +212,12 @@ end
 function Jukebox:update(dt)
     time = time + 1000 * dt
     time2 = time2 + 1000 * dt
-    songTime = MenuSoundManager:tell("music")
+    --[[ songTime = MenuSoundManager:tell("music") ]]
+    if MenuSoundManager:exists("music") then
+        songTime = MenuSoundManager:tell("music")
+    else
+        songTime = 0
+    end
     local mx, my = love.mouse.getPosition()
     local px, py = (-mx / 50), (-my / 50)
 
@@ -242,7 +247,7 @@ function Jukebox:update(dt)
         bubble.y = bubble.ogY + py * 0.09 + (0.05 * i * 5)
     end
 
-    if not MenuSoundManager:isPlaying("music") and not MenuSoundManager:isPaused("music") then
+    if MenuSoundManager:exists("music") and (not MenuSoundManager:isPlaying("music") and not MenuSoundManager:isPaused("music")) then
 
         songIndex = songIndex + 1
         if songIndex > #orderedSongs then
