@@ -1015,7 +1015,7 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath)
     
     Parsers[chartType].load(songPath, folderPath)
 
-    self:normalizeSVs()
+    --self:normalizeSVs()
 
     self.M_folderPath = folderPath -- used for mod scripting
     Modscript.vars = {sprites={}} -- reset modscript vars
