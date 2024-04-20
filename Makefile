@@ -1,18 +1,3 @@
-# ISGIT argument true/false
-# if no arguments are passed, run all
-ifeq ($(ISGIT), true)
-	ISGIT = true
-else
-	ISGIT = false
-endif
-default:
-	@echo "$(ISGIT)" > "src/isgit.bool"
-	@make clean
-	@make desktop
-	@make dist
-	@echo $(ISGIT)
-	@echo "false" > "src/isgit.bool"
-
 all: clean desktop console dist
 
 desktop: lovefile win64 dist

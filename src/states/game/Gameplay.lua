@@ -273,7 +273,6 @@ function Gameplay:GetPositionFromTime(time, index)
     end
     index = index - 1
     local curPos = self.velocityPositionMakers[index]
-    print("CURRENT MULTIPLIER: " .. (self.sliderVelocities[index].multiplier or 0))
     --curPos += (long)((time - Map.SliderVelocities[index].StartTime) * Map.SliderVelocities[index].Multiplier * TrackRounding);
     curPos = curPos + (time - self.sliderVelocities[index].startTime) * (self.sliderVelocities[index].multiplier or 0) * self.trackRounding
     return curPos

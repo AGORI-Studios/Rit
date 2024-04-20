@@ -23,8 +23,6 @@ function osuLoader.load(chart, folderPath_, forDiff)
     end
 
     chart = nil
-
-    print(bpm)
 end
 
 function osuLoader.processLine(line)
