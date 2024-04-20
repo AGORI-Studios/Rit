@@ -1,4 +1,4 @@
-all: clean desktop console dist
+all: clean desktop dist
 
 desktop: lovefile win64 dist
 console: lovefile switch
