@@ -194,10 +194,19 @@ function love.focus(f)
 end
 
 function love.keypressed(key)
+    if key == "f11" then
+        love.window.setFullscreen(not love.window.getFullscreen())
+        return
+    elseif key == "return" and love.keyboard.isDown("lalt") then
+        love.window.setFullscreen(not love.window.getFullscreen())
+        return
+    end
+
     if imgui then
         imgui.love.KeyPressed(key)
         if imgui.love.GetWantCaptureKeyboard() then return end
     end
+
     state.keypressed(key)
 
     if __DEBUG__ then
