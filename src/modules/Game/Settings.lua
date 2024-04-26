@@ -15,6 +15,8 @@ Settings.options = {
 
         backgroundDim = 0.5,
         backgroundBlur = 2.5,
+
+        language = "en-US"
     },
     ["Events"] = {
         aprilFools = true,

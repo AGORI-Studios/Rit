@@ -19,7 +19,7 @@ local doingTransition, didTransition = false, false
 
 local buttons = {
     {
-        text = "Play",
+        text = localize.localize("Play"),
         action = function()
             state.switch(states.menu.SongMenu)
         end,
@@ -27,7 +27,7 @@ local buttons = {
         y = 0
     },
     {
-        text = "Jukebox",
+        text = localize.localize("Jukebox"),
         action = function()
             --love.window.showMessageBox("Jukebox - Coming Soon", "The Jukebox is currently in development. Please check back later!", "info")
             state.switch(states.screens.Jukebox)
@@ -36,7 +36,7 @@ local buttons = {
         y = 0
     },
     {
-        text = "Options",
+        text = localize.localize("Options"),
         action = function()
             state.substate(substates.menu.Options)
         end,
@@ -44,7 +44,7 @@ local buttons = {
         y = 0
     },
     {
-        text = "Quit",
+        text = localize.localize("Quit"),
         action = function()
             love.event.quit()
         end,

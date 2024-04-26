@@ -86,7 +86,7 @@ local buttons = {
         width = 100,
         height = 100,
         image = "assets/images/ui/menu/media/previous.png",
-        placeholderText = "Prev",
+        placeholderText = localize.localize("Prev"),
         onClick = function()
             songIndex = songIndex - 1
             if songIndex < 1 then
@@ -102,7 +102,7 @@ local buttons = {
         width = 100,
         height = 100,
         image = "assets/images/ui/menu/media/forward.png",
-        placeholderText = "Play/pause",
+        placeholderText = localize.localize("Play/Pause"),
         onClick = function()
             MenuSoundManager:play("music")
         end,
@@ -115,7 +115,7 @@ local buttons = {
         width = 100,
         height = 100,
         image = "assets/images/ui/menu/media/next.png",
-        placeholderText = "Next",
+        placeholderText = localize.localize("Next"),
         onClick = function()
             songIndex = songIndex + 1
             if songIndex > #orderedSongs then
@@ -131,7 +131,7 @@ local buttons = {
         width = 100,
         height = 100,
         image = "assets/images/ui/menu/media/stop.png",
-        placeholderText = "Stop",
+        placeholderText = localize.localize("Stop"),
         onClick = function()
             MenuSoundManager:pause("music")
         end,
@@ -143,7 +143,7 @@ local buttons = {
         width = 100,
         height = 100,
         image = "assets/images/ui/menu/media/rewind.png",
-        placeholderText = "Restart",
+        placeholderText = localize.localize("Restart"),
         onClick = function()
             MenuSoundManager:stop("music")
             --[[ MenuSoundManager:removeAllSounds() ]]
@@ -159,7 +159,7 @@ local buttons = {
         width = 100,
         height = 100,
         image = "assets/images/ui/menu/media/return.png",
-        placeholderText = "Loop",
+        placeholderText = localize.localize("Loop"),
         onClick = function()
             MenuSoundManager:setLooping("music", not MenuSoundManager:getLooping("music"))
         end,
@@ -319,7 +319,7 @@ function Jukebox:draw()
     local lastFont = love.graphics.getFont()
     love.graphics.setFont(Cache.members.font["defaultBold"])
     love.graphics.printf(
-        (curSong.title or "Unknown"),
+        (curSong.title or localize.localize("Unknown")),
         Inits.GameWidth/2-265, 990, Inits.GameWidth, "left",
         0, 2.25, 2.25
     )

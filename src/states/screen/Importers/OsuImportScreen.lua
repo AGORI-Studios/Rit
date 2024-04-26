@@ -46,12 +46,12 @@ function OsuImportScreen:update(dt)
         end
 
         state.switch(states.screens.PreloaderScreen)
-        Popup("bottom right", "Imported songs", "Imported all songs successfully!", 0.5, 1)
+        Popup("bottom right", localize.localize("Imported songs"), "Imported all songs successfully!", 0.5, 1)
     end
 end
 
 function OsuImportScreen:draw()
-    love.graphics.printf("Importing osu! songs...", 0, Inits.GameHeight/2-100, Inits.GameWidth/2, "center", 0, 2, 2)
+    love.graphics.printf(localize.localize("Importing osu! songs..."), 0, Inits.GameHeight/2-100, Inits.GameWidth/2, "center", 0, 2, 2)
 end
 
 return OsuImportScreen

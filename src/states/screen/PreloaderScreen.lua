@@ -56,11 +56,11 @@ function PreloaderScreen:draw()
         0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2
     ) ]]
     if threadLoader.loadedCount == threadLoader.resourceCount-1 then
-        love.graphics.printf("Loading Songs...", 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
+        love.graphics.printf(localize.localize("Loading Songs..."), 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
     elseif threadLoader.loadedCount == threadLoader.resourceCount then
-        love.graphics.printf("Loaded!", 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
+        love.graphics.printf(localize.localize("Loaded!"), 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
     else
-        love.graphics.printf("Precaching Resources..."..threadLoader.loadedCount.."/"..threadLoader.resourceCount.."\n"..math.floor(percent * 100).."%", 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
+        love.graphics.printf(localize.localize("Precaching Resources...")..threadLoader.loadedCount.."/"..threadLoader.resourceCount.."\n"..math.floor(percent * 100).."%", 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
     end
     -- loading bar
     --love.graphics.rectangle("fill", (Inits.GameWidth*0.05),Inits.GameWidth/2, (Inits.GameWidth*0.9) * percent, 50)

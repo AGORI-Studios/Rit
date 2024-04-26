@@ -30,6 +30,9 @@ function GI.LoadClasses()
     Settings.loadOptions()
     Popup = require("modules.Popup")
     skin = require("modules.Game.SkinHandler")
+    localize = require("modules.Game.Localize")
+
+    localize.loadLocale(Settings.options["General"].language)
 end
 
 function GI.LoadShaders()

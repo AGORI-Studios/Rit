@@ -444,17 +444,17 @@ function SongMenu:draw()
     bars:draw()
     import:draw()
     setFont("menuExtraBold")
-    love.graphics.printf(SteamUserName or "Not Logged In", 180, 8, 1080/2, "left", 0, 2, 2) -- Steam name
+    love.graphics.printf(SteamUserName or localize.localize("Not Logged In"), 180, 8, 1080/2, "left", 0, 2, 2) -- Steam name
     -- draw SteamUserAvatarSmall to the right of the name
     if SteamUserAvatarSmall then
         love.graphics.draw(SteamUserAvatarSmall, 180 + (fontWidth("menuExtraBold", SteamUserName)*2) + 10, 3, 0, 2, 2)
     end
     -- now playing text
-    if fontWidth("menuExtraBold", "Now Playing: " .. nowPlaying) > 452 then
+    if fontWidth("menuExtraBold", localize.localize("Now Playing: ") .. nowPlaying) > 452 then
         local newWidth = 0
         local newString = ""
-        for i = 1, #("Now Playing: " .. nowPlaying):splitAllCharacters() do
-            local char = ("Now Playing: " .. nowPlaying):sub(i, i)
+        for i = 1, #(localize.localize("Now Playing: ") .. nowPlaying):splitAllCharacters() do
+            local char = (localize.localize("Now Playing: ") .. nowPlaying):sub(i, i)
             newWidth = newWidth + fontWidth("menuExtraBold", char)
             if newWidth > 452 then
                 -- break, remove last 3, and add "..."
@@ -466,7 +466,7 @@ function SongMenu:draw()
         end
         love.graphics.printf(newString, 1920/2-65, 8, 1080/2, "left", 0, 2, 2)
     else
-        love.graphics.printf("Now Playing: " .. nowPlaying, 1920/2-65, 8, 1080/2, "left", 0, 2, 2)
+        love.graphics.printf(localize.localize("Now Playing: ") .. nowPlaying, 1920/2-65, 8, 1080/2, "left", 0, 2, 2)
     end
     setFont("default")
 end

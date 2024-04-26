@@ -1,0 +1,23 @@
+{
+    "Score: ": "Score: ",
+    "Accuracy: ": "Accuracy: ",
+    "Press SPACE to skip intro": "Press SPACE to skip intro",
+    "Now Playing: ": "Now Playing: ",
+
+    "Prev": "Prev",
+    "Play/Pause": "Play/Pause",
+    "Next": "Next",
+    "Stop": "Stop",
+    "Restart": "Restart",
+    "Loop": "Loop",
+    "Unknown": "Unknown",
+    "Not Logged In": "Not Logged In",
+    "Song Position: ": "Song Position: ",
+    "Loading Songs..." : "Loading Songs...",
+    "Loaded!": "Loaded!",
+    "Precaching Resources..." : "Precaching Resources...",
+    "Imported Songs": "Imported Songs",
+    "Importing osu! songs...": "Importing osu! songs...",
+    "Importing Quaver songs..." : "Importing Quaver songs...",
+    "Paused": "Paused"
+}

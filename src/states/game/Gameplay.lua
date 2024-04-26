@@ -1004,13 +1004,13 @@ function Gameplay:draw()
 
     local lastFont = love.graphics.getFont()
     love.graphics.setFont(Cache.members.font["menuBold"])
-    love.graphics.printf("Score: " .. math.round(lerpedScore), 0, 0, 960, "right", 0, 2, 2)
-    love.graphics.printf("Accuracy: " .. string.format("%.2f", lerpedAccuracy) .. "%", 0, 50, 960, "right", 0, 2, 2)
+    love.graphics.printf(localize.localize("Score: ") .. math.round(lerpedScore), 0, 0, 960, "right", 0, 2, 2)
+    love.graphics.printf(localize.localize("Accuracy: ") .. string.format("%.2f", lerpedAccuracy) .. "%", 0, 50, 960, "right", 0, 2, 2)
 
     if musicTime <= self.firstNoteTime and self.hasSkipPeriod and input:pressed("Skip_Key") then
         -- right align
         love.graphics.setColor(1,1,1,1)
-        love.graphics.printf("Press SPACE to skip intro", 0, Inits.GameWidth-50, 960, "right", 0, 2, 2)
+        love.graphics.printf(localize.localize("Press SPACE to skip intro"), 0, Inits.GameWidth-50, 960, "right", 0, 2, 2)
     end
 
     love.graphics.setFont(lastFont)
