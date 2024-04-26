@@ -123,6 +123,9 @@ function love.load()
     -- Substates
     substates = GameInit.LoadSubstates()
 
+    -- Shaders
+    shaders = GameInit.LoadShaders()
+
     -- Parse the skin's data file
     skinData = ini.parse(love.filesystem.read(skin:format("skin.ini")))
 

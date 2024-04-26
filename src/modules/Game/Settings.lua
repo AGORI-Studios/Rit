@@ -12,6 +12,9 @@ Settings.options = {
         hitsoundVolume = 0.1,
         globalVolume = 0.1,
         noScrollVelocity = false,
+
+        backgroundDim = 0.5,
+        backgroundBlur = 2.5,
     },
     ["Events"] = {
         aprilFools = true,

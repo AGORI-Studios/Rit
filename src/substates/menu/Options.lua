@@ -158,6 +158,43 @@ function Options:enter()
             end
             skin_1:AddItem(skinButton)
         end
+
+        -- backgroundDim and backgroundBlur
+        local backgroundDim = loveframes.Create("numberbox", settings)
+        backgroundDim:SetPos(10, 270 + (doAprilFools and 30 or 0))
+        backgroundDim:SetSize(100, 25)
+        backgroundDim:SetMinMax(0, 1)
+        backgroundDim:SetIncreaseAmount(0.1)
+        backgroundDim:SetDecreaseAmount(0.1)
+        backgroundDim:SetDecimals(1)
+        backgroundDim:SetValue(Settings.options["General"].backgroundDim)
+        backgroundDim.OnValueChanged = function(object, value)
+            Settings.options["General"].backgroundDim = value
+        end
+
+        local backgroundDimLabel = loveframes.Create("text", settings)
+        backgroundDimLabel:SetPos(120, 270 + (doAprilFools and 30 or 0))
+        backgroundDimLabel:SetText("Background Dim")
+        backgroundDimLabel:SetFont(Cache.members.font["default"])
+        backgroundDimLabel:SetSize(200, 25)
+        
+        local backgroundBlur = loveframes.Create("numberbox", settings)
+        backgroundBlur:SetPos(10, 300 + (doAprilFools and 30 or 0))
+        backgroundBlur:SetSize(100, 25)
+        backgroundBlur:SetMinMax(0, 1)
+        backgroundBlur:SetIncreaseAmount(0.1)
+        backgroundBlur:SetDecreaseAmount(0.1)
+        backgroundBlur:SetDecimals(1)
+        backgroundBlur:SetValue(Settings.options["General"].backgroundBlur)
+        backgroundBlur.OnValueChanged = function(object, value)
+            Settings.options["General"].backgroundBlur = value
+        end
+
+        local backgroundBlurLabel = loveframes.Create("text", settings) 
+        backgroundBlurLabel:SetPos(120, 300 + (doAprilFools and 30 or 0))
+        backgroundBlurLabel:SetText("Background Blur")
+        backgroundBlurLabel:SetFont(Cache.members.font["default"])
+        backgroundBlurLabel:SetSize(200, 25)
     end
 
     function createKeybindsTab()

@@ -32,6 +32,12 @@ function GI.LoadClasses()
     skin = require("modules.Game.SkinHandler")
 end
 
+function GI.LoadShaders()
+    return {
+        backgroundEffects = love.graphics.newShader("shaders/backgroundEffects.glsl"),
+    }
+end
+
 function GI.ClearOSModule()
     for k, v in pairs(os) do
         if k ~= "clock" and k ~= "date" and k ~= "difftime" and 

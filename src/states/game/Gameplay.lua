@@ -673,6 +673,9 @@ function Gameplay:enter()
 
     end
 
+    --shaders.backgroundEffects:send("bgDim", Settings.options["General"].backgroundDim)
+    --shaders.backgroundEffects:send("blurIntensity", 0.005)
+
     Timer.after(1.2, function() -- forced delay to prevent potential desync's
         self.updateTime = true
         self.didTimer = true
@@ -956,8 +959,11 @@ end
 
 function Gameplay:draw()
     if self.background and musicTime >= 0 then
-        love.graphics.setColor(0.3, 0.3, 0.3)
+        -- background dim is 0-1, 0 being no dim, 1 being full dim
+        love.graphics.setColor(1, 1, 1, Settings.options["General"].backgroundDim)
+        --[[ love.graphics.setShader(shaders.backgroundEffects) ]]
         love.graphics.draw(self.background.image or self.background, 0, 0, 0, 1920/self.background:getWidth(), 1080/self.background:getHeight())
+        --[[ love.graphics.setShader() ]]
     end
     
     for i, spr in pairs(Modscript.funcs.sprites) do
