@@ -1,0 +1,23 @@
+{
+    "Score: ": "Puntaje: ",
+    "Accuracy: ": "Precisión: ",
+    "Press SPACE to skip intro": "Presiona ESPACIO para omitir intro",
+    "Now Playing: ": "Estás escuchando: ",
+
+    "Prev": "Anterior",
+    "Play/Pause": "Reproducir/Pausar",
+    "Next": "Siguiente",
+    "Stop": "Parar",
+    "Restart": "Reiniciar",
+    "Loop": "En búcle",
+    "Unknown": "Desconocido",
+    "Not Logged In": "Sesión no iniciada",
+    "Song Position: ": "Posición de la canción: ",
+    "Loading Songs..." : "Cargando Canciones...",
+    "Loaded!": "Listo!",
+    "Precaching Resources..." : "Precargando Recursos...",
+    "Imported Songs": "Canciones Importadas",
+    "Importing osu! songs...": "Importando canciones de osu!...",
+    "Importing Quaver songs..." : "Importando canciones de Quaver...",
+    "Paused": "Pausado"
+}
