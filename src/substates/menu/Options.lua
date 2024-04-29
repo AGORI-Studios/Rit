@@ -195,6 +195,47 @@ function Options:enter()
         backgroundBlurLabel:SetText("Background Blur")
         backgroundBlurLabel:SetFont(Cache.members.font["default"])
         backgroundBlurLabel:SetSize(200, 25)
+
+        local localeLabel = loveframes.Create("text", settings)
+        localeLabel:SetPos(10, 330 + (doAprilFools and 30 or 0))
+        localeLabel:SetText("Locale")
+        localeLabel:SetFont(Cache.members.font["default"])
+        localeLabel:SetSize(100, 25)
+
+        local allLocales = love.filesystem.getDirectoryItems("locale/")
+        local localeList = {}
+        -- json files (e.g. en-UK.json)
+        for i, v in ipairs(allLocales) do
+            if v:sub(-5) == ".json" then
+                table.insert(localeList, v:sub(1, -6))
+            end
+        end
+
+        local localeCollapse = loveframes.Create("collapsiblecategory", settings)
+        localeCollapse:SetPos(10, 360 + (doAprilFools and 30 or 0))
+        localeCollapse:SetSize(100, 100)
+        localeCollapse:SetText("Locale")
+
+        local locale_1 = loveframes.Create("list")
+        locale_1:SetPos(0, 25)
+        locale_1:SetSize(100, 100)
+        locale_1:SetPadding(5)
+        locale_1:SetSpacing(5)
+        localeCollapse:SetObject(locale_1)
+        -- set size depending on how many locales there are
+        locale_1:SetSize(100, 25 + (#localeList * 30))
+
+        local localeList_2 = {}
+        for i, v in ipairs(localeList) do
+            local localeButton = loveframes.Create("button")
+            localeButton:SetText(v)
+            localeButton.OnClick = function()
+                Settings.options["General"].language = v
+                localize.loadLocale(v)
+                print("Switched to locale " .. v)
+            end
+            locale_1:AddItem(localeButton)
+        end
     end
 
     function createKeybindsTab()
