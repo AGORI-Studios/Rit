@@ -50,7 +50,8 @@
 - [cimgui](/src/lib/cimgui)
 
 # Credits
-- [Getsaa](https://twitter.com/GetsaaNG) - Menu design, UI design, and art
+- [Getsaa](https://twitter.com/GetsaaNG) - Menu design, UI design, and art, Spanish and Portuguese translation
+- [Lumaah](https://github.com/Lumaah) - French translation
 - [LÖVE](https://love2d.org/) - Game Framework
 - [Quaver](https://store.steampowered.com/app/980610/Quaver/) - Inspiration
 - [osu!](https://osu.ppy.sh/) - Inspiration
@@ -59,6 +60,8 @@
 - [Malody](https://m.mugzone.net/) - Inspiration
 - [Etterna](https://etternaonline.com/) - Inspiration
 - [Kenney.nl](https://kenney.nl/) - Some assets
+
+\* If you are not credited and you should be, please contact me on Discord or Twitter
 
 # License
 - [GNU License](/LICENSE)
