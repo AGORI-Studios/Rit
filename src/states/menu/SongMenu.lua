@@ -169,12 +169,16 @@ function SongMenu:update(dt)
             local chartver = diff.chartVer
             local folderpath = diff.folderPath
             local filename = diff.filename
+            local diffName = diff.name
             local mode = diff.mode
             love.filesystem.mount("songs/" .. filename, "song")
             if chartver ~= "FNF" then
                 states.game.Gameplay.chartVer = chartver
                 states.game.Gameplay.songPath = songPath
+                print("Song path: " .. songPath)
                 states.game.Gameplay.folderpath = folderpath
+                print("Folder path: " .. folderpath)
+                states.game.Gameplay.difficultyName = diffName
                 switchState(states.game.Gameplay, 0.3, nil)
             end
             MenuSoundManager:removeAllSounds()

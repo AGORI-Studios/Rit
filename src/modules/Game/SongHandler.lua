@@ -165,13 +165,13 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         songList[title].type = "CloneHero"
                         ::continue:: ]]
                         -- With how stupid I am, stepmania is probably going to be the last thing I add (I say as clone hero is literally in the works too)
-                    --[[elseif song:sub(-3) == ".sm" then -- for stepmania, we have to call "smLoader.getDifficulties(chart)"
-                        diffs = smLoader.getDifficulties(path .."/" .. file .. "/" .. song)
+                    elseif song:sub(-3) == ".sm" then -- for stepmania, we have to call "smLoader.getDifficulties(chart)"
+                        diffs = Parsers["Stepmania"].getDifficulties(path .."/" .. file .. "/" .. song)
                         -- has a table in a table (holds name and songName)
-
-                        for _, diff in ipairs(diffs) do
+                        for _, diff in pairs(diffs) do
                             local alreadyInList = false
                             for _, song in ipairs(songList) do
+                                print(song.title, diff.songName, song.difficultyName, diff.name)
                                 if song.title == diff.songName and song.difficultyName == diff.name then
                                     alreadyInList = true
                                 end
@@ -188,9 +188,10 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                                     type = "Stepmania",
                                     rating = "",
                                     ratingColour = {1,1,1},
+                                    audioFile = path .. "/" .. file .. "/" .. diff.audioPath
                                 }
                             end
-                        end --]]
+                        end 
                     end
                 end
             end

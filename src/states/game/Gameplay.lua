@@ -89,7 +89,6 @@ function Gameplay:reset()
     self.songScore = 0
     self.songHits = 0
     self.songName = ""
-    self.difficultyName = ""
     self.members = {}
     self.members2 = {}
     self.didTimer = false
@@ -626,7 +625,7 @@ function Gameplay:enter()
     self:add(self.strumLineObjects)
     self:add(self.hitObjects)
 
-    self:generateBeatmap(self.chartVer, self.songPath, self.folderpath)
+    self:generateBeatmap(self.chartVer, self.songPath, self.folderpath, self.difficultyName)
     self.mode = tonumber(self.mode)
     self:generateStrums()
 
@@ -1016,10 +1015,9 @@ function Gameplay:draw()
     love.graphics.setFont(lastFont)
 end
 
-function Gameplay:generateBeatmap(chartType, songPath, folderPath)
+function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName)
     self.mode = 4 -- Amount of key lanes, reset to 4 until the chart specifies otherwise
-    
-    Parsers[chartType].load(songPath, folderPath)
+    Parsers[chartType].load(songPath, folderPath, diffName)
 
     --self:normalizeSVs()
 
