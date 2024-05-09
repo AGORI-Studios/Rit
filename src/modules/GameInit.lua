@@ -14,6 +14,77 @@ function GI.LoadLibraries()
     require("lib.luafft")
     if love.system.getOS() ~= "NX" then
         Video = require("lib.aqua.Video")
+
+        if Steam then
+            noobhub = require("lib.networking.noobhub")
+            networking = {
+                latencies = {},
+                hub = noobhub.new({
+                    server = "127.0.0.1", -- Localhost
+                    port = 1337
+                }),
+                frameCount = 0,
+                connected = false,
+                currentServerID = 0,
+                currentServerData = {},
+                inMultiplayerGame = false
+            }
+
+            networking.connected = networking.hub:subscribe({
+                channel = "main-channel",
+                callback = function(message)
+                    --print("Received message: " .. json.encode(message))
+                    print(message.action)
+
+                    if message.action == "ping" then
+                        print("Sending test pong")
+                        networking.hub:publish({
+                            message = {
+                                action = "pong",
+                                id = message.id,
+                                original_timestamp = message.timestamp,
+                                timestamp = love.timer.getTime()
+                            }
+                        })
+                    elseif message.action == "pong" then
+                        print("Pong id " .. message.id .. " took " .. love.timer.getTime() - message.original_timestamp .. " seconds")
+                        table.insert(networking.latencies, love.timer.getTime() - message.original_timestamp)
+                        local sum, count = 0, 0
+                        for i, latency in ipairs(networking.latencies) do
+                            sum = sum + latency
+                            count = count + 1
+                        end
+
+                        print("Average latency: " .. sum / count)
+                    elseif message.action == "gotServers" then
+                        print("Got servers: " .. json.encode(message.servers))
+                        states.menu.Multiplayer.ServerMenu.serverList = message.servers
+                        state.switch(states.menu.Multiplayer.ServerMenu)
+                        --print(#states.menu.Multiplayer.ServerMenu.serverList)
+                    elseif message.action == "updateServerInfo_USERJOINED" then
+                        print("User joined: " .. message.user.steamID)
+                        networking.currentServerData = message.server
+                        state.switch(states.menu.Multiplayer.LobbyMenu, networking.currentServerData)
+                    elseif message.action == "getPlayersInfo_INGAME" then
+                        -- no state switch
+                        networking.currentServerData = message.server
+                        print("Got players info: " .. json.encode(message.server))
+                    end
+                end
+            })
+
+            if networking.connected then
+                networking.hub:publish({
+                    message = {
+                        action = "updateServerInfo_FORCEREMOVEUSER",
+                        user = {
+                            steamID = tostring(SteamID),
+                            name = tostring(SteamUserName)
+                        }
+                    }
+                })
+            end
+        end
     end
 end
 
@@ -58,6 +129,7 @@ function GI.LoadObjects()
     TimingLine = require("modules.Objects.game.TimingLine")
 
     SongButton = require("modules.Objects.menu.SongButton")
+    ServerButton = require("modules.Objects.menu.ServerButton")
     Spectrum = require("modules.Objects.menu.Spectrum")
 end
 
@@ -106,6 +178,10 @@ function GI.LoadStates()
         menu = {
             StartMenu = require("states.menu.StartMenu"),
             SongMenu = require("states.menu.SongMenu"),
+            Multiplayer = {
+                ServerMenu = require("states.menu.Multiplayer.ServerMenu"),
+                LobbyMenu = require("states.menu.Multiplayer.LobbyMenu"),
+            },
         },
         screens = {
             PreloaderScreen = require("states.screen.PreloaderScreen"),
@@ -138,6 +214,7 @@ function GI.InitSteam()
             Steam = nil
         else
             SteamUser = Steam.getUser()
+            SteamID = Steam.getUserId()
             SteamUserName = SteamUser:getName()
             local SteamUserImgSteamData, width, height = SteamUser:getAvatar("small")
             if SteamUserImgSteamData then
@@ -273,6 +350,18 @@ function love.errorhandler(msg)
 			return
 		end
 	end
+
+    if Steam and networking.connected and networking.currentServerData then
+        networking.hub:publish({
+            message = {
+                action = "updateServerInfo_FORCEREMOVEUSER",
+                user = {
+                    steamID = tostring(SteamID),
+                    name = tostring(SteamUserName)
+                }
+            }
+        })
+    end
 
 	-- Reset state.
 	if love.mouse then
@@ -458,8 +547,8 @@ function love.errorhandler(msg)
                     local scaleX = love.graphics.getWidth()/1280
                     local scaleY = love.graphics.getHeight()/720
                     buttonIsHovered = (
-                        mx > ((buttonWidth+15)*(i-1)+20)*scaleX and mx < ((buttonWidth+15)*(i-1)+20+buttonWidth)*scaleX and
-                        my > (height+pos+40)*scaleY and my < (height+pos+40+50)*scaleY
+                        mx > ((_buttonWidth+15)*(i-1)+20)*scaleX and mx < ((_buttonWidth+15)*(i-1)+20+_buttonWidth)*scaleX and
+                        my > (_height+70+40)*scaleY and my < (_height+70+40+50)*scaleY
                     )
                     if buttonIsHovered then
                         v.func()

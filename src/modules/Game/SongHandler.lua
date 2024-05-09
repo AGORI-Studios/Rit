@@ -331,3 +331,16 @@ function playSelectedSong(song)
         lf.unmount(diff.path)
     end
 end
+
+function getSongFromNameAndDiff(name, diff) -- pairs, not ipairs
+    for songName, song in pairs(songList) do
+        print(songName, name)
+        if songName == name then
+            for diffName, diffData in pairs(song) do
+                if diffName == diff then
+                    return diffData
+                end
+            end
+        end
+    end
+end

@@ -44,7 +44,7 @@ local function switch(newstate, ...)
     if current and current.exit then current:exit() end 
     last = current
     current = newstate
-    if current.enter then current:enter(...) end
+    if current.enter then current:enter(last, ...) end
     return current
 end
 

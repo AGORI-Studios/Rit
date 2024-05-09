@@ -27,6 +27,14 @@ local buttons = {
         y = 0
     },
     {
+        text = localize.localize("Multiplayer"),
+        action = function()
+            state.switch(states.menu.Multiplayer.ServerMenu)
+        end,
+        x = 0,
+        y = 0
+    },
+    {
         text = localize.localize("Jukebox"),
         action = function()
             --love.window.showMessageBox("Jukebox - Coming Soon", "The Jukebox is currently in development. Please check back later!", "info")

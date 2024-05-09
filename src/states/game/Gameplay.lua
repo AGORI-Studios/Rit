@@ -60,6 +60,8 @@ local lerpedAccuracy = 0
 local comboTimer = {}
 local judgeTimer = {}
 
+local networkingUpdateTime = 0 -- every 5 seconds, refresh players info
+
 function Gameplay:preloadAssets()
     -- Preload our judgement assets
     for i = 0, 9 do
@@ -177,6 +179,7 @@ function Gameplay:doJudgement(time)
     -- find max possible score
     local maxScore = (self.misses + self.hits) * self.noteScore
     self.accuracy = (self.score / maxScore) * 100
+    if tostring(self.accuracy) == "nan" then self.accuracy = 0 end
 
     self:remove2(self.judgement)
     self.judgement = Sprite(Inits.GameWidth/2, 390, judgement.img)
@@ -713,6 +716,23 @@ function Gameplay:generateStrums()
 end
 
 function Gameplay:update(dt)
+    networkingUpdateTime = networkingUpdateTime + dt
+    if networkingUpdateTime >= 1.25 and Steam and networking.inMultiplayerGame and networking.connected then
+        networkingUpdateTime = 0
+        networking.hub:publish({
+            message = {
+                action = "getPlayersInfo_INGAME",
+                id = networking.currentServerData.id,
+                user = {
+                    steamID = tostring(SteamID),
+                    name = tostring(SteamUserName),
+                    score = self.score,
+                    accuracy = self.accuracy,
+                }
+            }
+        })
+        print("UPDATING PLAYERS INFO")
+    end
     MenuSoundManager:removeAllSounds() -- a final safe guard to remove any sounds that may have been left over
     if self.inPause then return end
     if self.updateTime then
@@ -971,6 +991,20 @@ function Gameplay:draw()
         end
     end
 
+    local lastFont = love.graphics.getFont()
+    love.graphics.setFont(Cache.members.font["menuBold"])
+    if Steam and networking.inMultiplayerGame then
+        for i, player in ipairs(networking.currentServerData.players) do
+            love.graphics.setColor(0, 0, 0, 0.5)
+            -- small box for the players
+            love.graphics.rectangle("fill", 0, 400 + (i * 50), 300, 100)
+            love.graphics.setColor(1, 1, 1)
+            love.graphics.print(player.name, 10, 400 + (i * 50))
+            love.graphics.print("Score: " .. (player.score or 0), 10, 420 + (i * 50))
+            love.graphics.print("Accuracy: " .. (string.format("%.2f", player.accuracy or 0) .. "%"), 10, 440 + (i * 50))
+        end
+    end
+    love.graphics.setFont(lastFont)
 
     love.graphics.push()
         love.graphics.setColor(0,0,0)
@@ -1038,7 +1072,7 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName)
     local firstNoteTime = #self.unspawnNotes > 0 and self.unspawnNotes[1].time or 0
     self.firstNoteTime = firstNoteTime
     self.hasSkipPeriod = firstNoteTime > 2500 -- if first note is after 7.5 seconds, then we have a skip period
-    print("First note time: " .. firstNoteTime .. "\nLast note time: " .. lastNoteTime .. "\nSkip period: " .. tostring(self.hasSkipPeriod))
+    --print("First note time: " .. firstNoteTime .. "\nLast note time: " .. lastNoteTime .. "\nSkip period: " .. tostring(self.hasSkipPeriod))
 
     self.songName = __title or "N/A"
     self.difficultyName = __diffName or "N/A"

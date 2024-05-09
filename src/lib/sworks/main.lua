@@ -164,6 +164,10 @@ function steam.getUser(id)
   return user
 end
 
+function steam.getUserId()
+  return api.User.GetSteamID()
+end
+
 --- Requests an existing leaderboard based on name.
 -- This is an asynchronous request so the returned @{Board} object cannot be used right away.
 -- Please provide a callback function or wait for @{Board:onFind} before making additional requests.

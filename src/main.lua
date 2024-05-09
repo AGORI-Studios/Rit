@@ -25,17 +25,15 @@ require("modules.Utilities")
 ffi = require("ffi")
 
 if love.system.getOS() ~= "NX" then -- For obvious reasons, don't use c libraries on the nintendo switch.
-    if not __DEBUG__ then
-        Try(
-            function()
-                Steam = require("lib.sworks.main")
-            end,
-            function()
-                Steam = nil
-                print("Couldn't load Steamworks.")
-            end
-        )
-    end
+    Try(
+        function()
+            Steam = require("lib.sworks.main")
+        end,
+        function()
+            Steam = nil
+            print("Couldn't load Steamworks.")
+        end
+    )
     Try(
         function()
             discordRPC = require("lib.discordRPC") -- https://github.com/pfirsich/lua-discordRPC
@@ -83,7 +81,7 @@ end
 
 function love.load()
     __NOTE_OBJECT_WIDTH = 0 -- Determined from the width of the noteskins note object.
-    
+
     GameInit.LoadLibraries()
 
     if imgui then
@@ -159,6 +157,22 @@ function switchState(newState, t, middleFunc)
 end
 
 function love.update(dt)
+    if Steam and networking.connected then
+        networking.hub:enterFrame()
+        -- PING TESTING
+        --[[  
+        networking.frameCount = networking.frameCount + 1
+        if networking.frameCount >= 60 then
+            networking.frameCount = 0
+            networking.hub:publish({
+                message = {
+                    action = "ping",
+                    id = love.timer.getTime(),
+                    timestamp = love.timer.getTime()
+                }
+            })
+        end ]]
+    end
     threadLoader.update() -- update the threads for asset loading
     Timer.update(dt)
     input:update()
@@ -289,6 +303,18 @@ function love.quit()
     end
 
     Settings.saveOptions()
+
+    if Steam and networking.connected and networking.currentServerData then
+        networking.hub:publish({
+            message = {
+                action = "updateServerInfo_FORCEREMOVEUSER",
+                user = {
+                    steamID = tostring(SteamID),
+                    name = tostring(SteamUserName)
+                }
+            }
+        })
+    end
 
     if not isClosing then
         isClosing = true
