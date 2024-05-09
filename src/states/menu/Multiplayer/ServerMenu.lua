@@ -9,7 +9,11 @@ function ServerMenu:enter()
             message = {
                 action = "getServers",
                 id = love.timer.getTime(),
-                timestamp = love.timer.getTime()
+                timestamp = love.timer.getTime(),
+                user = {
+                    steamID = tostring(SteamID),
+                    name = tostring(SteamUserName)
+                }
             }
         })
     end

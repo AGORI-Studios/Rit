@@ -997,11 +997,11 @@ function Gameplay:draw()
         for i, player in ipairs(networking.currentServerData.players) do
             love.graphics.setColor(0, 0, 0, 0.5)
             -- small box for the players
-            love.graphics.rectangle("fill", 0, 400 + (i * 50), 300, 100)
+            love.graphics.rectangle("fill", 0, 400 + (i * 100), 300, 100)
             love.graphics.setColor(1, 1, 1)
-            love.graphics.print(player.name, 10, 400 + (i * 50))
-            love.graphics.print("Score: " .. (player.score or 0), 10, 420 + (i * 50))
-            love.graphics.print("Accuracy: " .. (string.format("%.2f", player.accuracy or 0) .. "%"), 10, 440 + (i * 50))
+            love.graphics.print(player.name, 10, 400 + (i * 100))
+            love.graphics.print("Score: " .. (math.floor(player.score) or 0), 10, 420 + (i * 100)) 
+            love.graphics.print("Accuracy: " .. (string.format("%.2f", player.accuracy or 0) .. "%"), 10, 440 + (i * 100))
         end
     end
     love.graphics.setFont(lastFont)
