@@ -30,13 +30,12 @@ function LobbyMenu:mousepressed(x, y, b)
         if networking.connected then
             networking.hub:publish({
                 message = {
-                    action = "startGame"
+                    action = "startGame",
+                    id = networking.currentServerID
                 }
             })
         end
-        networking.inMultiplayerGame = true
-
-        local song = getSongFromNameAndDiff(networking.currentServerData.currentSong.songName, networking.currentServerData.currentSong.songDiff)
+        --[[ local song = getSongFromNameAndDiff(networking.currentServerData.currentSong.songName, networking.currentServerData.currentSong.songDiff)
         local songPath = song.path
         local chartVer = song.type
         local folderPath = song.folderPath
@@ -49,7 +48,7 @@ function LobbyMenu:mousepressed(x, y, b)
         states.game.Gameplay.songPath = songPath
         states.game.Gameplay.folderpath = folderPath
         states.game.Gameplay.difficultyName = diffName
-        switchState(states.game.Gameplay, 0.3, nil)
+        switchState(states.game.Gameplay, 0.3, nil) ]]
     end
 end
 

@@ -79,6 +79,7 @@ function GI.LoadLibraries()
                     elseif message.action == "startGame" then
                         -- if user is in lobby (message.id)
                         if message.id == networking.currentServerData.id then
+                            networking.inMultiplayerGame = true
                             local song = getSongFromNameAndDiff(networking.currentServerData.currentSong.songName, networking.currentServerData.currentSong.songDiff)
                             local songPath = song.path
                             local chartVer = song.type
