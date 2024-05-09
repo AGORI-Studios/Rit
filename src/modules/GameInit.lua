@@ -76,6 +76,24 @@ function GI.LoadLibraries()
                             networking.currentServerData = message.server
                             print("Got players info: " .. json.encode(message.server))
                         end
+                    elseif message.action == "startGame" then
+                        -- if user is in lobby (message.id)
+                        if message.id == networking.currentServerData.id then
+                            local song = getSongFromNameAndDiff(networking.currentServerData.currentSong.songName, networking.currentServerData.currentSong.songDiff)
+                            local songPath = song.path
+                            local chartVer = song.type
+                            local folderPath = song.folderPath
+                            local filename = song.filename
+                            local diffName = song.difficultyName
+                            local mode = song.mode
+
+                            love.filesystem.mount("songs/" .. filename, "song")
+                            states.game.Gameplay.chartVer = chartVer
+                            states.game.Gameplay.songPath = songPath
+                            states.game.Gameplay.folderpath = folderPath
+                            states.game.Gameplay.difficultyName = diffName
+                            switchState(states.game.Gameplay, 0.3, nil)
+                        end
                     end
                 end
             })

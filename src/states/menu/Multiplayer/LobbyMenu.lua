@@ -26,7 +26,6 @@ end
 
 function LobbyMenu:mousepressed(x, y, b)
     local x, y = toGameScreen(x, y)
-    print(x, y)
     if x > 10 and x < 210 and y > 500 and y < 550 then
         if networking.connected then
             networking.hub:publish({
