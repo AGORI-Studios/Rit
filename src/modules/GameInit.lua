@@ -58,17 +58,24 @@ function GI.LoadLibraries()
                         print("Average latency: " .. sum / count)
                     elseif message.action == "gotServers" then
                         print("Got servers: " .. json.encode(message.servers))
-                        states.menu.Multiplayer.ServerMenu.serverList = message.servers
-                        state.switch(states.menu.Multiplayer.ServerMenu)
-                        --print(#states.menu.Multiplayer.ServerMenu.serverList)
+                        -- we don't want it to affect everyone, so only affect the person with the SteamID that matches
+                        if message.user.steamID == tostring(SteamID) then
+                            states.menu.Multiplayer.ServerMenu.serverList = message.servers
+                            state.switch(states.menu.Multiplayer.ServerMenu)
+                            --print(#states.menu.Multiplayer.ServerMenu.serverList)
+                        end
                     elseif message.action == "updateServerInfo_USERJOINED" then
-                        print("User joined: " .. message.user.steamID)
-                        networking.currentServerData = message.server
-                        state.switch(states.menu.Multiplayer.LobbyMenu, networking.currentServerData)
+                        if message.user.steamID == tostring(SteamID) then
+                            print("User joined: " .. message.user.steamID)
+                            networking.currentServerData = message.server
+                            state.switch(states.menu.Multiplayer.LobbyMenu, networking.currentServerData)
+                        end
                     elseif message.action == "getPlayersInfo_INGAME" then
-                        -- no state switch
-                        networking.currentServerData = message.server
-                        print("Got players info: " .. json.encode(message.server))
+                        if message.user.steamID == tostring(SteamID) then
+                            -- no state switch
+                            networking.currentServerData = message.server
+                            print("Got players info: " .. json.encode(message.server))
+                        end
                     end
                 end
             })
