@@ -432,7 +432,7 @@ function SongMenu:draw()
             else
                 btn.color = {1, 1, 1}
             end
-            btn:draw()
+            btn:draw(0, lerpedSongPos)
         end
         if btn.open then
             for j, diffBtn in ipairs(btn.children) do
@@ -441,7 +441,7 @@ function SongMenu:draw()
                 else
                     diffBtn.color = {1, 1, 1}
                 end
-                diffBtn:draw()
+                diffBtn:draw(0, lerpedSongPos)
 
                 love.graphics.setColor(1, 1, 1, 1)
                 local name = diffBtn.name

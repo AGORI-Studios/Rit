@@ -32,7 +32,9 @@ function SongButton:new(y, diffs, bmType, name, creator)
     self.type = bmType
 end
 
-function SongButton:draw()
+function SongButton:draw(transX, transY)
+    -- return if not on screen
+    if self.y + (transX or 0) < -self.height or self.y + (transY or 0) > Inits.GameHeight+self.height then return end
     self.super.draw(self)
 
     love.graphics.setColor(1, 1, 1, 1)
