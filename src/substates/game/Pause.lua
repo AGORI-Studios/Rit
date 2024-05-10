@@ -52,7 +52,20 @@ function Pause:mousepressed(x, y, button, istouch)
         elseif self.selection == 2 then
             state.switch(states.game.Gameplay)
         elseif self.selection == 3 then
-            state.switch(states.menu.SongMenu)
+            if networking.inMultiplayerGame then
+                networking.hub:publish({
+                    message = {
+                        action = "updateServerInfo_FORCEREMOVEUSER",
+                        user = {
+                            steamID = tostring(SteamID),
+                            name = tostring(SteamUserName)
+                        }
+                    }
+                })
+                state.switch(states.menu.Multiplayer.ServerMenu)
+            else
+                state.switch(states.menu.SongMenu)
+            end
         end
         states.game.Gameplay.inPause = false
         states.game.Gameplay.updateTime = true
