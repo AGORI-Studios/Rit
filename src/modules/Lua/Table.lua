@@ -61,3 +61,17 @@ function table.find(table, value)
 
     return nil
 end
+
+---@name table.concate
+---@description Concatenates a table to a string
+---@param table table
+---@param separator string
+---@return string
+function table.concate(table, separator)
+    local str = ""
+    for k, v in pairs(table) do
+        str = str .. v .. separator
+    end
+
+    return str:sub(1, #str - #separator)
+end
