@@ -68,7 +68,9 @@ function GI.LoadLibraries()
                             --print(#states.menu.Multiplayer.ServerMenu.serverList)
                         end
                     elseif message.action == "updateServerInfo_USERJOINED" then
-                        networking.currentServerData = message.server
+                        if message.id == networking.currentServerData.id then
+                            networking.currentServerData = message.server
+                        end
                         if message.user.steamID == tostring(SteamID) then
                             print("User joined: " .. message.user.steamID)
                             state.switch(states.menu.Multiplayer.LobbyMenu, networking.currentServerData)
