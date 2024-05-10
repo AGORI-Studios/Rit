@@ -4,12 +4,12 @@ local currentLocaleData = {}
 local function loadLocale(locale)
     currentLocale = locale
     local localeFile
-    if not love.filesystem.getInfo("locale/" .. locale .. ".json") then
+    if not love.filesystem.getInfo("locale/" .. locale .. ".locale.json") then
         print("Locale not found. Switching to en-US.")
         currentLocale = "en-US"
-        localeFile = love.filesystem.read("locale/en-US.json")
+        localeFile = love.filesystem.read("locale/en-US.locale.json")
     else
-        localeFile = love.filesystem.read("locale/" .. locale .. ".json")
+        localeFile = love.filesystem.read("locale/" .. locale .. ".locale.json")
     end
     
     currentLocaleData = json.decode(localeFile)

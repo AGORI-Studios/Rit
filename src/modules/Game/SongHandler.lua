@@ -320,8 +320,8 @@ function playSelectedSong(song)
     MenuSoundManager:stop("music")
     MenuSoundManager:removeAllSounds()
     --MenuSoundManager:newSound("music", diff.audioFile, 1, true, "stream")
-    threadLoader.newSoundData(baseSoundData, "music", diff.audioFile)
-    threadLoader.start(function()
+    threads.assets.newSoundData(baseSoundData, "music", diff.audioFile)
+    threads.assets.start(function()
         MenuSoundManager:newSound("music", baseSoundData.music, 1, true, "stream")
         MenuSoundManager:play("music")
         MenuSoundManager:setLooping("music", true)
@@ -343,4 +343,45 @@ function getSongFromNameAndDiff(name, diff) -- pairs, not ipairs
             end
         end
     end
+end
+
+function loadReplays()
+    -- replays are in replays/
+    -- file name format: Rude Buster - The $!$! Squad [Insane] - 1715357155.ritreplay
+    -- song name - difficulty - timestamp.ritreplay (its just a json file)
+    local replays = {}
+    local returnReplays = {}
+    
+    --[[ for _, file in ipairs(lf.getDirectoryItems("replays")) do
+        if file:sub(-10) == ".ritreplay" then
+            -- file has songname - diff then
+            -- split from - (since its a special character, we gotta do the lua regex way)
+            local splice = file:match("(.+)%s-%s(.+)%s-%s%d+%.ritreplay")
+            print(splice)
+            print(songName, songDiff, states.menu.SongMenu.songName, states.menu.SongMenu.songDiff)
+            print(songName:strip() == states.menu.SongMenu.songName:strip(), songDiff:strip() == states.menu.SongMenu.songDiff:strip())
+            if songName:strip() == states.menu.SongMenu.songName:strip() and songDiff:strip() == states.menu.SongMenu.songDiff:strip() then
+                local replayData = json.decode(lf.read("replays/" .. file))
+                replays[#replays + 1] = replayData
+            end 
+        end
+    end ]]
+    -- we only want the top 5 scores (replay.score.score)
+    table.sort(replays, function(a, b)
+        return a.score.score > b.score.score
+    end)
+    for i = 1, 5 do
+        if replays[i] then
+            returnReplays[#returnReplays + 1] = replays[i]
+        end
+    end
+    print(#returnReplays)
+    return returnReplays
+end
+
+function getSongReplays()
+    threads.replays.loadReplays(_G, "___REPLAYS")
+    threads.replays.start(function()
+        states.menu.SongMenu.replays = _G.___REPLAYS
+    end)
 end

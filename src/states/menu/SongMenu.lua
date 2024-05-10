@@ -33,6 +33,8 @@ local inSidebar = false
 
 local songTimer
 
+
+SongMenu.replays = {}
 local nowPlaying = ""
 
 local allTypes = {
@@ -151,6 +153,11 @@ function SongMenu:update(dt)
             curSelected = 1
             curButton.open = true
 
+            -- songName and songDiff
+            self.songName = curButton.name
+            self.songDiff = curButton.children[curSelected].name
+            getSongReplays(--[[ curButton.name, curButton.children[curSelected].name ]])
+
             for i, btn in ipairs(songButtons[curSongType]) do
                 Timer.tween(0.1, btn, {x = -btn.width}, "out-quad", function()
                     btn.x = -btn.width
@@ -212,6 +219,7 @@ function SongMenu:update(dt)
     if input:pressed("down") then 
         curSelected = curSelected + 1 
         if curTab == "songs" then
+            curSelected = math.clamp(curSelected, 1, #songButtons[curSongType])
             lastCurSelected = curSelected
             if songTimer then Timer.cancel(songTimer) end
             songTimer = Timer.after(1, function()
@@ -220,11 +228,17 @@ function SongMenu:update(dt)
                     nowPlaying = songButtons[curSongType][lastCurSelected].name
                 end
             end)
+        elseif curTab == "diffs" then
+            curSelected = math.clamp(curSelected, 1, #curButton.children)
+            self.songName = curButton.name
+            self.songDiff = curButton.children[curSelected].name
+            getSongReplays(--[[ curButton.name, curButton.children[curSelected].name ]])
         end
     end
     if input:pressed("up") then 
         curSelected = curSelected - 1 
         if curTab == "songs" then
+            curSelected = math.clamp(curSelected, 1, #songButtons[curSongType])
             lastCurSelected = curSelected
             if songTimer then Timer.cancel(songTimer) end
             songTimer = Timer.after(1, function()
@@ -233,6 +247,11 @@ function SongMenu:update(dt)
                     nowPlaying = songButtons[curSongType][lastCurSelected].name
                 end
             end)
+        elseif curTab == "diffs" then
+            curSelected = math.clamp(curSelected, 1, #curButton.children)
+            self.songName = curButton.name
+            self.songDiff = curButton.children[curSelected].name
+            getSongReplays(--[[ curButton.name, curButton.children[curSelected].name ]])
         end
     end
 end
@@ -369,7 +388,26 @@ function SongMenu:draw()
         ball:draw()
     end ]]
     if curTab == "diffs" then
-        statsBox:draw()
+        --statsBox:draw()
+        love.graphics.setColor(0.5, 0.5, 0.5)
+        love.graphics.setLineWidth(1)
+        love.graphics.rectangle("fill", 900, 125, 920, 800, 5, 5)
+        love.graphics.setColor(0, 0, 0)
+        love.graphics.setLineWidth(5)
+        love.graphics.rectangle("line", 900, 125, 920, 800, 5, 5)
+        love.graphics.setColor(1, 1, 1)
+
+        local diff = curButton.children[curSelected]
+        if diff then
+            love.graphics.setColor(1, 1, 1)
+            -- left align, only button info we display, is name and chart version
+            love.graphics.printf(diff.name:strip(), 905, 125, 920, "left", 0, 2, 2)
+            love.graphics.printf(diff.chartVer, 905, 125 + 50, 920, "left", 0, 2, 2)
+
+            love.graphics.setLineWidth(5)
+            love.graphics.line(905, 125 + 100, 1815, 125 + 100)
+
+        end
     end
     love.graphics.push()
     --[[ diffButton:draw()
@@ -431,6 +469,10 @@ function SongMenu:draw()
             love.graphics.setColor(0, 0, 0)
             love.graphics.printf(type, -180, 0 + -36 * (-i + 2), categoryOpen.width-45, "center", 0, 1.5, 1.5)
             love.graphics.setColor(1, 1, 1)
+
+            for i, replay in ipairs(self.replays) do
+                love.graphics.print(replay.name, 0, 0 + -36 * (-i + 2), 0, 2, 2)
+            end
         end
     elseif showCat then
         categoryClosed:draw()

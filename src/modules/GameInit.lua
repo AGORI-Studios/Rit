@@ -8,7 +8,10 @@ function GI.LoadLibraries()
     tinyyaml = require("lib.tinyyaml")
     ini = require("lib.ini")
     clone = require("lib.clone")
-    threadLoader = require("lib.loveloader")
+    threads = {
+        assets = require("lib.loveloader"),
+        replays = require("lib.loveloader")
+    }
     xml = require("lib.xml")
     require("lib.lovefs.lovefs")
     require("lib.luafft")
@@ -637,7 +640,7 @@ end
 
 love._fps_cap = 500
 
-love.run = love.system.getOS() ~= "NX" and function()
+love.run = love.system.getOS() ~= "NX" and function(arg)
     if love.math then
         love.math.setRandomSeed(os.time())
     end
@@ -646,6 +649,7 @@ love.run = love.system.getOS() ~= "NX" and function()
         love.event.pump()
     end
 
+    ---@diagnostic disable-next-line: redundant-parameter
     if love.load then love.load(arg) end
 
     -- We don't want the first frame's dt to include time taken by love.load.

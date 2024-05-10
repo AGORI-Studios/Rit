@@ -654,7 +654,7 @@ function Gameplay:enter()
         local replay = nil
         local replayTimeCreated = 0
         local allTimes = {}
-        -- formatted like "songname - songdifficulty - timecreated.json"
+        -- formatted like "songname - songdifficulty - timecreated.ritreplay"
         for i, file in ipairs(files) do
             local replayData = json.decode(love.filesystem.read("replays/" .. file)).meta
             if replayData.song == self.songName and replayData.difficulty == self.difficultyName then
@@ -754,7 +754,7 @@ function Gameplay:update(dt)
                 hits = self.hits,
             }
             if not self.watchingReplay then
-                love.filesystem.write("replays/" .. self.songName .. " - " .. self.difficultyName .. " - " .. os.time() .. ".json", json.encode(self.replay))
+                love.filesystem.write("replays/" .. self.songName .. " - " .. self.difficultyName .. " - " .. os.time() .. ".ritreplay", json.encode(self.replay))
             end
             if Steam and networking.connected and networking.currentServerData and networking.inMultiplayerGame then
                 state.switch(states.screens.Multiplayer.ResultsScreen, {score = self.score, accuracy = self.accuracy, misses = self.misses, maxCombo = self.combo})

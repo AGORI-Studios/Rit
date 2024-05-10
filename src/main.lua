@@ -161,7 +161,8 @@ function love.update(dt)
         networking.frameCount = networking.frameCount + 1
         networking.hub:enterFrame()
     end
-    threadLoader.update() -- update the threads for asset loading
+    threads.assets.update() -- update the threads for asset loading
+    threads.replays.update() -- update the threads for replay loading
     Timer.update(dt)
     input:update()
     if not isLoading then state.update(dt) end

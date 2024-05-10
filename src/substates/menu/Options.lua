@@ -204,9 +204,8 @@ function Options:enter()
 
         local allLocales = love.filesystem.getDirectoryItems("locale/")
         local localeList = {}
-        -- json files (e.g. en-UK.json)
         for i, v in ipairs(allLocales) do
-            if v:sub(-5) == ".json" then
+            if v:sub(-5) == ".locale.json" then
                 table.insert(localeList, v:sub(1, -6))
             end
         end

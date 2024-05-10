@@ -121,6 +121,14 @@ local resourceKinds = {
       loadSongs("songs")
       return songList
     end
+  },
+  loadSongsReplays = {
+    requestKey  = "loadSongsReplays",
+    resourceKey = "songsReplays",
+    constructor = function() return "loadSongsReplays" end,
+    postProcess = function(songName, songDiff)
+      return loadReplays(songName, songDiff)
+    end
   }
 }
 
@@ -232,6 +240,10 @@ else
 
   function loader.loadSongs(holder, key)
     newResource('loadSongsData', holder, key)
+  end
+
+  function loader.loadReplays(holder, key, songName, songDiff)
+    newResource('loadSongsReplays', holder, key, songName, songDiff)
   end
 
   function loader.start(allLoadedCallback, oneLoadedCallback)

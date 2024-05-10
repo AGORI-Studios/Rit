@@ -6,29 +6,29 @@ local ritLogo = Cache:loadImage("assets/images/ui/menu/logo.png")
 
 function PreloaderScreen:enter()
     -- Preload all non-skin textures, and load song data (Useful for when difficulty calculation is added)
-    threadLoader.newImage(self, "songButton", "assets/images/ui/menu/songBtn.png")
-    threadLoader.newImage(self, "statsBox", "assets/images/ui/menu/statsBox.png")
-    threadLoader.newImage(self, "diffButton", "assets/images/ui/menu/diffBtn.png")
-    threadLoader.newImage(self, "BGsongList", "assets/images/ui/menu/BGsongList.png")
-    threadLoader.newImage(self, "barsHorizontal", "assets/images/ui/buttons/barsHorizontal.png")
-    threadLoader.newImage(self, "download", "assets/images/ui/buttons/download.png")
-    threadLoader.newImage(self, "import", "assets/images/ui/buttons/import.png")
-    threadLoader.newImage(self, "gear", "assets/images/ui/buttons/gear.png")
-    threadLoader.newImage(self, "home", "assets/images/ui/buttons/home.png")
-    threadLoader.newImage(self, "categoryOpen", "assets/images/ui/menu/catOpen.png")
-    threadLoader.newImage(self, "categoryClosed", "assets/images/ui/menu/catClosed.png")
-    threadLoader.newImage(self, "menuBar", "assets/images/ui/menu/menuBar.png")
+    threads.assets.newImage(self, "songButton", "assets/images/ui/menu/songBtn.png")
+    threads.assets.newImage(self, "statsBox", "assets/images/ui/menu/statsBox.png")
+    threads.assets.newImage(self, "diffButton", "assets/images/ui/menu/diffBtn.png")
+    threads.assets.newImage(self, "BGsongList", "assets/images/ui/menu/BGsongList.png")
+    threads.assets.newImage(self, "barsHorizontal", "assets/images/ui/buttons/barsHorizontal.png")
+    threads.assets.newImage(self, "download", "assets/images/ui/buttons/download.png")
+    threads.assets.newImage(self, "import", "assets/images/ui/buttons/import.png")
+    threads.assets.newImage(self, "gear", "assets/images/ui/buttons/gear.png")
+    threads.assets.newImage(self, "home", "assets/images/ui/buttons/home.png")
+    threads.assets.newImage(self, "categoryOpen", "assets/images/ui/menu/catOpen.png")
+    threads.assets.newImage(self, "categoryClosed", "assets/images/ui/menu/catClosed.png")
+    threads.assets.newImage(self, "menuBar", "assets/images/ui/menu/menuBar.png")
 
-    threadLoader.newImage(self, "twitterLogo", "assets/images/ui/icons/twitter.png")
-    threadLoader.newImage(self, "kofiLogo", "assets/images/ui/icons/ko-fi.png")
-    threadLoader.newImage(self, "discordLogo", "assets/images/ui/icons/discord.png")
-    threadLoader.loadSongs(self, "songList")
+    threads.assets.newImage(self, "twitterLogo", "assets/images/ui/icons/twitter.png")
+    threads.assets.newImage(self, "kofiLogo", "assets/images/ui/icons/ko-fi.png")
+    threads.assets.newImage(self, "discordLogo", "assets/images/ui/icons/discord.png")
+    threads.assets.loadSongs(self, "songList")
 
     for i = 1, 5 do
-        threadLoader.newImage(self, "BGball" .. i, "assets/images/ui/menu/BGball" .. i .. ".png")
+        threads.assets.newImage(self, "BGball" .. i, "assets/images/ui/menu/BGball" .. i .. ".png")
     end
 
-    threadLoader.start(function()
+    threads.assets.start(function()
         doneLoading = true
         Timer.after(0.25, function()
             fade[1] = 0
@@ -48,23 +48,23 @@ end
 
 function PreloaderScreen:draw()
     local percent = 0
-    if threadLoader.resourceCount ~= 0 then percent = threadLoader.loadedCount / threadLoader.resourceCount end
+    if threads.assets.resourceCount ~= 0 then percent = threads.assets.loadedCount / threads.assets.resourceCount end
     --[[ love.graphics.printf(
-        (not doneLoading and ("Precaching Resources..." .. threadLoader.loadedCount .. "/" .. threadLoader.resourceCount) 
+        (not doneLoading and ("Precaching Resources..." .. threads.assets.loadedCount .. "/" .. threads.assets.resourceCount) 
             or "Loaded!") ..
         "\n"..math.floor(percent * 100).."%", 
         0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2
     ) ]]
-    if threadLoader.loadedCount == threadLoader.resourceCount-1 then
+    if threads.assets.loadedCount == threads.assets.resourceCount-1 then
         love.graphics.printf(localize.localize("Loading Songs..."), 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
-    elseif threadLoader.loadedCount == threadLoader.resourceCount then
+    elseif threads.assets.loadedCount == threads.assets.resourceCount then
         love.graphics.printf(localize.localize("Loaded!"), 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
     else
-        love.graphics.printf(localize.localize("Precaching Resources...")..threadLoader.loadedCount.."/"..threadLoader.resourceCount.."\n"..math.floor(percent * 100).."%", 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
+        love.graphics.printf(localize.localize("Precaching Resources...")..threads.assets.loadedCount.."/"..threads.assets.resourceCount.."\n"..math.floor(percent * 100).."%", 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
     end
     -- loading bar
     --love.graphics.rectangle("fill", (Inits.GameWidth*0.05),Inits.GameWidth/2, (Inits.GameWidth*0.9) * percent, 50)
-    love.graphics.setColor(1,1,1, (threadLoader.loadedCount / threadLoader.resourceCount))
+    love.graphics.setColor(1,1,1, (threads.assets.loadedCount / threads.assets.resourceCount))
     local ritScale = 0.5
     love.graphics.draw(ritLogo, Inits.GameWidth/2, Inits.GameHeight/2, 0, ritScale, ritScale, ritLogo:getWidth()/2, ritLogo:getHeight()/2)
     love.graphics.setColor(1,1,1,1)
