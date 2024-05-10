@@ -489,8 +489,8 @@ function Gameplay:SVFactor()
     self:normalizeSVs()
 
     local importantTimestamps = {}
-    for i = 1, #unspawnNotes do
-        local note = unspawnNotes[i]
+    for i = 1, #self.unspawnNotes do
+        local note = self.unspawnNotes[i]
         table.insert(importantTimestamps, note.time)
         if note.children[1] then
             table.insert(importantTimestamps, note.endTime)
@@ -660,9 +660,10 @@ function Gameplay:enter()
             if replayData.song == self.songName and replayData.difficulty == self.difficultyName then
                 local filenameData = file:split(" - ")
                 local time = tonumber(filenameData[#filenameData]:sub(1, -6))
-               
+
                 table.insert(allTimes, time)
                 if time > replayTimeCreated then
+                    ---@diagnostic disable-next-line: cast-local-type
                     replayTimeCreated = time
                     replay = file
                 end
@@ -799,7 +800,7 @@ function Gameplay:update(dt)
             member:update(dt)
         end
     end
-    
+
     if input:down("back") then
         self.escapeTimer = self.escapeTimer + (dt * 1.87)
     else
@@ -1087,8 +1088,14 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName)
     self.songDuration = self.soundManager:getDuration("music") * 1000
 
     if discordRPC then
+        local details = ""
+        if networking.inMultiplayerGame then
+            details = "In a multiplayer game - " .. networking.currentServerData.name .. " (" .. #networking.currentServerData.players .. "/" .. networking.currentServerData.maxPlayers .. ")"
+        else
+            details = "Playing a song"
+        end
         discordRPC.presence = {
-            details = "Playing a song",
+            details = details,
             state = self.songName .. " - " .. self.difficultyName,
             largeImageKey = "totallyreallogo",
             largeImageText = "Rit" .. (__DEBUG__ and " DEBUG MODE" or "")

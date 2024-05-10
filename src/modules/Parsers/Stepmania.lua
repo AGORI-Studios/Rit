@@ -1,5 +1,5 @@
+---@diagnostic disable: need-check-nil
 -- https://github.com/Quaver/Quaver.API/blob/f798abe059f966573086ab47438b7a6bff144b67/Quaver.API/Maps/Parsers/Stepmania/StepFile.cs
-
 local stepmaniaLoader = {}
 
 local title, subtitle, artist, titleTransLit, subtitleTransLit, artistTransLit, 
@@ -84,6 +84,7 @@ function stepmaniaLoader.load(chart, folderPath, diffName)
     local bpms = {}
     local stops = {}
 
+    ---@diagnostic disable-next-line: assign-type-mismatch
     bpm = nil
 
     local inBpms = false

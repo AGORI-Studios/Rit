@@ -7,6 +7,16 @@ function ServerMenu:enter()
     if Steam and networking.connected and #self.serverList == 0 and networking.connected then
         networking.hub:publish({
             message = {
+                action = "updateServerInfo_FORCEREMOVEUSER",
+                user = {
+                    steamID = tostring(SteamID),
+                    name = tostring(SteamUserName)
+                }
+            }
+        })
+
+        networking.hub:publish({
+            message = {
                 action = "getServers",
                 id = love.timer.getTime(),
                 timestamp = love.timer.getTime(),
@@ -27,6 +37,16 @@ function ServerMenu:enter()
         table.insert(self.serverButtons, ServerButton(server.name, server.maxPlayers, server.players, server.host, server.hasPassword, server))
 
         self.serverButtons[#self.serverButtons].y = 100 + (#self.serverButtons - 1) * 110
+    end
+
+    if discordRPC then
+        local details = ""
+        discordRPC.presence = {
+            details = "Browsing multiplayer lobbies",
+            state = "In the lobby list",
+            largeImageKey = "totallyreallogo",
+            largeImageText = "Rit" .. (__DEBUG__ and " DEBUG MODE" or "")
+        }
     end
 end
 

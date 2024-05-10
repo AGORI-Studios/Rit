@@ -65,9 +65,9 @@ function GI.LoadLibraries()
                             --print(#states.menu.Multiplayer.ServerMenu.serverList)
                         end
                     elseif message.action == "updateServerInfo_USERJOINED" then
+                        networking.currentServerData = message.server
                         if message.user.steamID == tostring(SteamID) then
                             print("User joined: " .. message.user.steamID)
-                            networking.currentServerData = message.server
                             state.switch(states.menu.Multiplayer.LobbyMenu, networking.currentServerData)
                         end
                     elseif message.action == "getPlayersInfo_INGAME" then
@@ -81,6 +81,7 @@ function GI.LoadLibraries()
                         if message.id == networking.currentServerData.id then
                             networking.inMultiplayerGame = true
                             local song = getSongFromNameAndDiff(networking.currentServerData.currentSong.songName, networking.currentServerData.currentSong.songDiff)
+                            print("Starting game with song: " .. tostring(song))
                             local songPath = song.path
                             local chartVer = song.type
                             local folderPath = song.folderPath
@@ -434,6 +435,7 @@ function love.errorhandler(msg)
 	for char in msg:gmatch(utf8.charpattern) do
 		table.insert(sanitizedmsg, char)
 	end
+    ---@diagnostic disable-next-line: cast-local-type
 	sanitizedmsg = table.concat(sanitizedmsg)
 
 	local err = {}
@@ -495,9 +497,10 @@ function love.errorhandler(msg)
             love.graphics.scale(love.graphics.getWidth()/1280, love.graphics.getHeight()/720)
             love.graphics.draw(bg, 0, 0, 0, 1280/bg:getWidth(), 720/bg:getHeight())
             love.graphics.setColor(0, 0, 0, 0.5)
-            
+         
             -- get length of sanitizedmsg
             local length = font:getWidth(p)
+            ---@diagnostic disable-next-line: param-type-mismatch
             local lines = #(string.split(p, "\n"))
             local height = (font:getHeight() * lines)*1.85
             _height = height

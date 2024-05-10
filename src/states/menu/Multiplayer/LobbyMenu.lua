@@ -37,6 +37,16 @@ function LobbyMenu:update(dt)
         end
         state.switch(states.menu.Multiplayer.ServerMenu)
     end
+
+    if discordRPC then
+        local details = ""
+        discordRPC.presence = {
+            details = "In a multiplayer lobby",
+            state = "Lobby: " .. networking.currentServerData.name .. " - " .. #networking.currentServerData.players .. "/" .. networking.currentServerData.maxPlayers,
+            largeImageKey = "totallyreallogo",
+            largeImageText = "Rit" .. (__DEBUG__ and " DEBUG MODE" or "")
+        }
+    end
 end
 
 function LobbyMenu:mousepressed(x, y, b)
