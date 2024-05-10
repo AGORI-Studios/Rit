@@ -8,6 +8,7 @@ function ServerMenu:enter()
         networking.hub:publish({
             message = {
                 action = "updateServerInfo_FORCEREMOVEUSER",
+                id = networking.currentServerID,
                 user = {
                     steamID = tostring(SteamID),
                     name = tostring(SteamUserName)

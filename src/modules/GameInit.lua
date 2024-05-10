@@ -68,12 +68,18 @@ function GI.LoadLibraries()
                             --print(#states.menu.Multiplayer.ServerMenu.serverList)
                         end
                     elseif message.action == "updateServerInfo_USERJOINED" then
-                        if message.id == networking.currentServerData.id then
+                        if networking.currentServerID and message.id == networking.currentServerData.id then
                             networking.currentServerData = message.server
+                            networking.currentServerID = message.id
                         end
                         if message.user.steamID == tostring(SteamID) then
                             print("User joined: " .. message.user.steamID)
                             state.switch(states.menu.Multiplayer.LobbyMenu, networking.currentServerData)
+                        end
+                    elseif message.action == "updateServerInfo_FORCEREMOVEUSER" then
+                        if networking.currentServerID and message.id == networking.currentServerData.id then
+                            networking.currentServerData = nil
+                            networking.currentServerID = nil
                         end
                     elseif message.action == "getPlayersInfo_INGAME" then
                         if message.user.steamID == tostring(SteamID) then
@@ -83,7 +89,7 @@ function GI.LoadLibraries()
                         end
                     elseif message.action == "startGame" then
                         -- if user is in lobby (message.id)
-                        if message.id == networking.currentServerData.id then
+                        if networking.currentServerID and message.id == networking.currentServerData.id then
                             networking.inMultiplayerGame = true
                             local song = getSongFromNameAndDiff(networking.currentServerData.currentSong.songName, networking.currentServerData.currentSong.songDiff)
                             print("Starting game with song: " .. tostring(song))
@@ -133,6 +139,7 @@ function GI.LoadLibraries()
                 networking.hub:publish({
                     message = {
                         action = "updateServerInfo_FORCEREMOVEUSER",
+                        id = networking.currentServerID or 0,
                         user = {
                             steamID = tostring(SteamID),
                             name = tostring(SteamUserName)
@@ -414,6 +421,7 @@ function love.errorhandler(msg)
         networking.hub:publish({
             message = {
                 action = "updateServerInfo_FORCEREMOVEUSER",
+                id = networking.currentServerData.id,
                 user = {
                     steamID = tostring(SteamID),
                     name = tostring(SteamUserName)

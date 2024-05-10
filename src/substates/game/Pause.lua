@@ -56,6 +56,7 @@ function Pause:mousepressed(x, y, button, istouch)
                 networking.hub:publish({
                     message = {
                         action = "updateServerInfo_FORCEREMOVEUSER",
+                        id = networking.currentServerID,
                         user = {
                             steamID = tostring(SteamID),
                             name = tostring(SteamUserName)
