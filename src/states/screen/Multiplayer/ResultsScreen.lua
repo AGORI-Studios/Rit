@@ -50,8 +50,8 @@ function ResultsScreen:draw()
             for i, player in ipairs(networking.currentServerData.players) do
                 -- Name -\nScore: score\nAccuracy: accuracy\nfinished/not finished
                 love.graphics.print(player.name .. " -", 10, 130 + i * 100)
-                love.graphics.print("Score: " .. player.score, 10, 150 + i * 100)
-                love.graphics.print("Accuracy: " .. player.accuracy, 10, 170 + i * 100)
+                love.graphics.print("Score: " .. math.floor(player.score), 10, 150 + i * 100)
+                love.graphics.print("Accuracy: " .. string.format("%.2f", player.accuracy) .. "%", 10, 170 + i * 100)
                 if player.completed then
                     love.graphics.print("Finished", 10, 190 + i * 100)
                 else
