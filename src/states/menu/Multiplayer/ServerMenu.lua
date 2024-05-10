@@ -59,6 +59,10 @@ function ServerMenu:draw()
         for _, button in ipairs(self.serverButtons) do
             button:draw()
         end
+
+        if not networking.connected then
+            love.graphics.print("Not connected to the server. Please try again later.", 10, 10)
+        end
     love.graphics.pop()
 end
 

@@ -50,20 +50,6 @@ function LobbyMenu:mousepressed(x, y, b)
                 }
             })
         end
-        --[[ local song = getSongFromNameAndDiff(networking.currentServerData.currentSong.songName, networking.currentServerData.currentSong.songDiff)
-        local songPath = song.path
-        local chartVer = song.type
-        local folderPath = song.folderPath
-        local filename = song.filename
-        local diffName = song.difficultyName
-        local mode = song.mode
-        --print(songPath, chartVer, folderPath, filename, diffName, mode)
-        love.filesystem.mount("songs/" .. filename, "song")
-        states.game.Gameplay.chartVer = chartVer
-        states.game.Gameplay.songPath = songPath
-        states.game.Gameplay.folderpath = folderPath
-        states.game.Gameplay.difficultyName = diffName
-        switchState(states.game.Gameplay, 0.3, nil) ]]
     end
 end
 
