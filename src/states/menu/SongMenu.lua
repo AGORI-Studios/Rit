@@ -407,6 +407,16 @@ function SongMenu:draw()
             love.graphics.setLineWidth(5)
             love.graphics.line(905, 125 + 100, 1815, 125 + 100)
 
+            for i, replay in ipairs(self.replays) do
+                love.graphics.setColor(0.5, 0.5, 0.5)
+                love.graphics.rectangle("fill", 905, 125 + 100 + 100 * (i-1), 920, 100)
+                love.graphics.setColor(0, 0, 0)
+                love.graphics.rectangle("line", 905, 125 + 100 + 100 * (i-1), 920, 100)
+                love.graphics.setColor(1, 1, 1)
+                love.graphics.printf(os.date("%Y-%m-%d %H:%M:%S", replay.time), 905, 125 + 100 + 100 * (i-1), 920, "left", 0, 2, 2)
+                love.graphics.printf("Score: " .. math.floor(replay.score.score), 905, 125 + 125 + 100 * (i-1), 920, "left", 0, 2, 2)
+                love.graphics.printf("Accuracy: " .. string.format("%.2f", replay.score.accuracy) .. "%", 905, 125 + 150 + 100 * (i-1), 920, "left", 0, 2, 2)
+            end
         end
     end
     love.graphics.push()
@@ -469,10 +479,6 @@ function SongMenu:draw()
             love.graphics.setColor(0, 0, 0)
             love.graphics.printf(type, -180, 0 + -36 * (-i + 2), categoryOpen.width-45, "center", 0, 1.5, 1.5)
             love.graphics.setColor(1, 1, 1)
-
-            for i, replay in ipairs(self.replays) do
-                love.graphics.print(replay.name, 0, 0 + -36 * (-i + 2), 0, 2, 2)
-            end
         end
     elseif showCat then
         categoryClosed:draw()

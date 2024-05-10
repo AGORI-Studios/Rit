@@ -189,7 +189,6 @@ function love.filedropped(file)
     
 end
 
-local lastFpsCap
 function love.focus(f)
     state.focus(f)
     if not f and volume then

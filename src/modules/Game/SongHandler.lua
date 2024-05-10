@@ -352,30 +352,28 @@ function loadReplays()
     local replays = {}
     local returnReplays = {}
     
-    --[[ for _, file in ipairs(lf.getDirectoryItems("replays")) do
+    for _, file in ipairs(lf.getDirectoryItems("replays")) do
         if file:sub(-10) == ".ritreplay" then
             -- file has songname - diff then
-            -- split from - (since its a special character, we gotta do the lua regex way)
-            local splice = file:match("(.+)%s-%s(.+)%s-%s%d+%.ritreplay")
-            print(splice)
-            print(songName, songDiff, states.menu.SongMenu.songName, states.menu.SongMenu.songDiff)
-            print(songName:strip() == states.menu.SongMenu.songName:strip(), songDiff:strip() == states.menu.SongMenu.songDiff:strip())
+            local songName, songDiff, timestamp = file:match("(.+) %- (.+) %- (%d+).ritreplay")
+            songName = songName:strip()
+            songDiff = songDiff:strip()
             if songName:strip() == states.menu.SongMenu.songName:strip() and songDiff:strip() == states.menu.SongMenu.songDiff:strip() then
                 local replayData = json.decode(lf.read("replays/" .. file))
+                replayData.time = timestamp
                 replays[#replays + 1] = replayData
             end 
         end
-    end ]]
+    end
     -- we only want the top 5 scores (replay.score.score)
     table.sort(replays, function(a, b)
         return a.score.score > b.score.score
     end)
     for i = 1, 5 do
         if replays[i] then
-            returnReplays[#returnReplays + 1] = replays[i]
+            table.insert(returnReplays, replays[i])
         end
     end
-    print(#returnReplays)
     return returnReplays
 end
 
