@@ -95,6 +95,18 @@ function GI.LoadLibraries()
                             states.game.Gameplay.folderpath = folderPath
                             states.game.Gameplay.difficultyName = diffName
                             switchState(states.game.Gameplay, 0.3, nil)
+
+                            networking.hub:publish({
+                                message = {
+                                    action = "updateServerInfo_INGAME_STARTEND",
+                                    user = {
+                                        steamID = tostring(SteamID),
+                                        name = tostring(SteamUserName)
+                                    },
+                                    id = networking.currentServerData.id,
+                                    started = true
+                                }
+                            })
                         end
                     elseif message.action == "resultScreen_NEWENTRY" then
                         if message.id == networking.currentServerData.id then

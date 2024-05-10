@@ -34,7 +34,7 @@ function ServerMenu:enter()
     ServerMenu.serverButtons = {}
 
     for _, server in ipairs(self.serverList) do
-        table.insert(self.serverButtons, ServerButton(server.name, server.maxPlayers, server.players, server.host, server.hasPassword, server))
+        table.insert(self.serverButtons, ServerButton(server.name, server.maxPlayers, server.players, server.host, server.hasPassword, server.started, server))
 
         self.serverButtons[#self.serverButtons].y = 100 + (#self.serverButtons - 1) * 110
     end

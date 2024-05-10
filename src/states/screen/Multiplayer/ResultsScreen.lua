@@ -23,6 +23,9 @@ function ResultsScreen:enter(last, results)
 end
 
 function ResultsScreen:update(dt)
+    if input:pressed("back") or input:pressed("confirm") then
+        state.switch(states.menu.Multiplayer.LobbyMenu)
+    end
 end
 
 function ResultsScreen:mousepressed(x, y, b)
