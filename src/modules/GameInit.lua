@@ -95,6 +95,18 @@ function GI.LoadLibraries()
                             states.game.Gameplay.difficultyName = diffName
                             switchState(states.game.Gameplay, 0.3, nil)
                         end
+                    elseif message.action == "resultScreen_NEWENTRY" then
+                        if message.id == networking.currentServerData.id then
+                            networking.currentServerData = message.server
+                            -- states.screens.Multiplayer.ResultsScreen.isEveryoneFinished
+                            states.screens.Multiplayer.ResultsScreen.isEveryoneFinished = true
+                            for i, player in ipairs(networking.currentServerData.players) do
+                                if not player.completed then
+                                    states.screens.Multiplayer.ResultsScreen.isEveryoneFinished = false
+                                    return
+                                end
+                            end
+                        end
                     end
                 end
             })
@@ -218,6 +230,9 @@ function GI.LoadStates()
                 OsuImportScreen = require("states.screen.Importers.OsuImportScreen"),
             },
             Jukebox = require("states.screen.JukeboxScreen"),
+            Multiplayer = {
+                ResultsScreen = require("states.screen.Multiplayer.ResultsScreen"),
+            }
         }
     }
 end

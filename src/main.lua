@@ -158,20 +158,8 @@ end
 
 function love.update(dt)
     if Steam and networking.connected then
-        networking.hub:enterFrame()
-        -- PING TESTING
-        --[[  
         networking.frameCount = networking.frameCount + 1
-        if networking.frameCount >= 60 then
-            networking.frameCount = 0
-            networking.hub:publish({
-                message = {
-                    action = "ping",
-                    id = love.timer.getTime(),
-                    timestamp = love.timer.getTime()
-                }
-            })
-        end ]]
+        networking.hub:enterFrame()
     end
     threadLoader.update() -- update the threads for asset loading
     Timer.update(dt)
@@ -270,26 +258,28 @@ function love.draw()
     end
 
     -- info
-    love.graphics.setFont(lastFont)
-    love.graphics.print(
-        "FPS: " .. love.timer.getFPS() .. "\n" ..
+    if Settings.options["General"].debugText then
+        love.graphics.setFont(lastFont)
+        love.graphics.print(
+            "FPS: " .. love.timer.getFPS() .. "\n" ..
 
-        -- debug info
-        (__DEBUG__ and 
+            -- debug info
+            (__DEBUG__ and 
+            
+                ("Music Time: " .. (musicTime or "N/A") .. "\n" ..
+                "Draw Calls: " .. love.graphics.getStats().drawcalls .. "\n" ..
+                "Memory: " .. math.floor(collectgarbage("count")) .. "KB\n" ..
+                "Graphics Memory: " .. math.floor(love.graphics.getStats().texturememory/1024/1024) .. "MB\n") 
+
+                or ""
+            ) ..
+            --
         
-            ("Music Time: " .. (musicTime or "N/A") .. "\n" ..
-            "Draw Calls: " .. love.graphics.getStats().drawcalls .. "\n" ..
-            "Memory: " .. math.floor(collectgarbage("count")) .. "KB\n" ..
-            "Graphics Memory: " .. math.floor(love.graphics.getStats().texturememory/1024/1024) .. "MB\n") 
-
-            or ""
-        ) ..
-        --
-       
-        "Steam: " .. (Steam and "true" or "false") .. "\n" ..
-        (Steam and "Steam User: " .. SteamUserName .. "\n" or "") ..
-        "Volume: " .. math.round(masterVolume, 2)
-    )
+            "Steam: " .. (Steam and "true" or "false") .. "\n" ..
+            (Steam and "Steam User: " .. SteamUserName .. "\n" or "") ..
+            "Volume: " .. math.round(masterVolume, 2)
+        )
+    end
 
     if imgui then
         imgui.Render()

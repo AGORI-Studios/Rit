@@ -728,6 +728,7 @@ function Gameplay:update(dt)
                     name = tostring(SteamUserName),
                     score = self.score,
                     accuracy = self.accuracy,
+                    completed = false
                 }
             }
         })
@@ -754,7 +755,11 @@ function Gameplay:update(dt)
             if not self.watchingReplay then
                 love.filesystem.write("replays/" .. self.songName .. " - " .. self.difficultyName .. " - " .. os.time() .. ".json", json.encode(self.replay))
             end
-            state.switch(states.menu.SongMenu)
+            if Steam and networking.connected and networking.currentServerData then
+                state.switch(states.screens.Multiplayer.ResultsScreen, {score = self.score, accuracy = self.accuracy, misses = self.misses, maxCombo = self.combo})
+            else
+                state.switch(states.menu.SongMenu)
+            end
             if self.background then self.background:release() end
             return
         elseif self.escapeTimer >= 0.7 then
@@ -794,12 +799,15 @@ function Gameplay:update(dt)
             member:update(dt)
         end
     end
-
+    
     if input:down("back") then
         self.escapeTimer = self.escapeTimer + (dt * 1.87)
     else
         self.escapeTimer = 0
     end
+    --[[ if input:pressed("back") then
+        state.switch(states.screens.Multiplayer.ResultsScreen, {score = 1000000, accuracy = 100, misses = 0, maxCombo = 0})
+    end ]]
 
     if self.updateTime then
         if #self.hitObjects.members > 0 then

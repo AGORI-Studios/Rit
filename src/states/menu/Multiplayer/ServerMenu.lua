@@ -12,7 +12,10 @@ function ServerMenu:enter()
                 timestamp = love.timer.getTime(),
                 user = {
                     steamID = tostring(SteamID),
-                    name = tostring(SteamUserName)
+                    name = tostring(SteamUserName),
+                    score = 0,
+                    accuracy = 0,
+                    completed = true
                 }
             }
         })
@@ -28,7 +31,9 @@ function ServerMenu:enter()
 end
 
 function ServerMenu:update(dt)
-
+    if input:pressed("back") then
+        state.switch(states.menu.StartMenu)
+    end
 end
 
 function ServerMenu:mousepressed(x, y, b)

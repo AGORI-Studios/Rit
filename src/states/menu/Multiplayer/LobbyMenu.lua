@@ -13,7 +13,8 @@ function LobbyMenu:enter(last, serverData)
                     steamID = tostring(SteamID),
                     name = tostring(SteamUserName),
                     score = 0,
-                    accuracy = 0
+                    accuracy = 0,
+                    completed = false
                 }
             }
         })
@@ -22,6 +23,20 @@ function LobbyMenu:enter(last, serverData)
 end
 
 function LobbyMenu:update(dt)
+    if input:pressed("back") then
+        if networking.connected then
+            networking.hub:publish({
+                message = {
+                    action = "updateServerInfo_FORCEREMOVEUSER",
+                    user = {
+                        steamID = tostring(SteamID),
+                        name = tostring(SteamUserName)
+                    }
+                }
+            })
+        end
+        state.switch(states.menu.Multiplayer.ServerMenu)
+    end
 end
 
 function LobbyMenu:mousepressed(x, y, b)
