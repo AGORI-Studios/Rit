@@ -1008,7 +1008,20 @@ function Gameplay:draw()
             -- small box for the players
             love.graphics.rectangle("fill", 0, 400 + (i * 100), 300, 100)
             love.graphics.setColor(1, 1, 1)
-            love.graphics.print(player.name, 10, 400 + (i * 100))
+            local text = player.name
+
+            if table.find(player.tags, "Owner") then -- Game owner
+                text = text .. " (Owner)"
+            elseif table.find(player.tags, "Admin") then -- Admin
+                text = text .. " (Admin)"
+            elseif table.find(player.tags, "Mod") then -- Moderator
+                text = text .. " (Mod)"
+            elseif table.find(player.tags, "Developer") then -- Developers
+                text = text .. " (Developer)"
+            elseif table.find(player.tags, "Supporter") then -- Supporters
+                text = text .. " (Supporter)"
+            end
+            love.graphics.print(text, 10, 400 + (i * 100))
             love.graphics.print("Score: " .. (math.floor(player.score) or 0), 10, 420 + (i * 100)) 
             love.graphics.print("Accuracy: " .. (string.format("%.2f", player.accuracy or 0) .. "%"), 10, 440 + (i * 100))
         end

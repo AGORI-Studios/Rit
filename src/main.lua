@@ -277,6 +277,7 @@ function love.draw()
         
             "Steam: " .. (Steam and "true" or "false") .. "\n" ..
             (Steam and "Steam User: " .. SteamUserName .. "\n" or "") ..
+            (Steam and "Steam ID: " .. tostring(SteamID) .. "\n" or "") ..
             "Volume: " .. math.round(masterVolume, 2)
         )
     end

@@ -80,13 +80,13 @@ function LobbyMenu:draw()
 
             if table.find(player.tags, "Owner") then -- Game owner
                 text = text .. " (Owner)"
-            elseif table.find(player.tags, "Admin") then -- Host
+            elseif table.find(player.tags, "Admin") then -- Admin
                 text = text .. " (Admin)"
             elseif table.find(player.tags, "Mod") then -- Moderator
                 text = text .. " (Mod)"
-            elseif table.find(player.tags, "Developer") then -- VIP
+            elseif table.find(player.tags, "Developer") then -- Developers
                 text = text .. " (Developer)"
-            elseif table.find(player.tags, "Supporter") then -- VIP
+            elseif table.find(player.tags, "Supporter") then -- Supporters
                 text = text .. " (Supporter)"
             end
 
