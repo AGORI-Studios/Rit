@@ -75,7 +75,22 @@ function LobbyMenu:draw()
         love.graphics.print("Host: " .. (networking.currentServerData.host or "Unknown"), 10, 70)
         love.graphics.print("Players: " .. #networking.currentServerData.players .. "/" .. networking.currentServerData.maxPlayers, 10, 90)
         for i, player in ipairs(networking.currentServerData.players) do
-            love.graphics.print(player.name, 10, 110 + i * 20)
+            -- player.tags (table)
+            local text = player.name
+
+            if table.find(player.tags, "Owner") then -- Game owner
+                text = text .. " (Owner)"
+            elseif table.find(player.tags, "Admin") then -- Host
+                text = text .. " (Admin)"
+            elseif table.find(player.tags, "Mod") then -- Moderator
+                text = text .. " (Mod)"
+            elseif table.find(player.tags, "Developer") then -- VIP
+                text = text .. " (Developer)"
+            elseif table.find(player.tags, "Supporter") then -- VIP
+                text = text .. " (Supporter)"
+            end
+
+            love.graphics.print(text, 10, 110 + i * 20)
         end
 
         -- Current song.songNamed and songDiff text
