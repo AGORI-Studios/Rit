@@ -756,7 +756,7 @@ function Gameplay:update(dt)
             if not self.watchingReplay then
                 love.filesystem.write("replays/" .. self.songName .. " - " .. self.difficultyName .. " - " .. os.time() .. ".json", json.encode(self.replay))
             end
-            if Steam and networking.connected and networking.currentServerData then
+            if Steam and networking.connected and networking.currentServerData and networking.inMultiplayerGame then
                 state.switch(states.screens.Multiplayer.ResultsScreen, {score = self.score, accuracy = self.accuracy, misses = self.misses, maxCombo = self.combo})
             else
                 state.switch(states.menu.SongMenu)
