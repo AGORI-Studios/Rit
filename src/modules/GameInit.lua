@@ -20,7 +20,7 @@ function GI.LoadLibraries()
             networking = {
                 latencies = {},
                 hub = noobhub.new({
-                    server = "127.0.0.1", -- Localhost
+                    server = "server.rit.agori.dev",
                     port = 1337
                 }),
                 frameCount = 0,

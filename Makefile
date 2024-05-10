@@ -28,12 +28,10 @@ win64: lovefile
 
 	cp -r requirements/win64/love/* build/$(GameName)-win64
 	rm -rf requirements/win64/love
-	
-	cp requirements/win64/discord-rpc.dll build/$(GameName)-win64
-	cp requirements/win64/luasteam.dll build/$(GameName)-win64
-	cp requirements/win64/steam_api64.dll build/$(GameName)-win64
+
+	cp requirements/win64/*.dll build/$(GameName)-win64
 	cp requirements/steam_appid.txt build/$(GameName)-win64
-	cp requirements/win64/https.dll build/$(GameName)-win64
+
 	cat build/$(GameName)-win64/love.exe build/$(GameName)-lovefile/$(GameName).love > build/$(GameName)-win64/$(GameName).exe
 	rm build/$(GameName)-win64/love.exe
 	rm build/$(GameName)-win64/lovec.exe
