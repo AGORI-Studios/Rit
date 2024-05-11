@@ -52,6 +52,14 @@ local buttons = {
         y = 0
     },
     {
+        text = localize.localize("Credits"),
+        action = function()
+            state.switch(states.menu.CreditsMenu)
+        end,
+        x = 0,
+        y = 0
+    },
+    {
         text = localize.localize("Quit"),
         action = function()
             love.event.quit()

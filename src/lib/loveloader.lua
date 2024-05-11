@@ -6,7 +6,7 @@ require "love.math"
 require "love.system"
 require "love.timer"
 require "love.window"
-local json = require "lib.json"
+
 local songList = {}
 require("modules.Game.SongHandler")
 require("modules.Utilities")

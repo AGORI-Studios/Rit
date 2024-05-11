@@ -3,7 +3,7 @@ local GI = {}
 function GI.LoadLibraries()
     Object = require("lib.class")
     Timer = require("lib.timer")
-    json = require("lib.json")
+    json = require("lib.jsonhybrid")
     state = require("lib.state")
     tinyyaml = require("lib.tinyyaml")
     ini = require("lib.ini")
@@ -255,6 +255,7 @@ function GI.LoadStates()
         menu = {
             StartMenu = require("states.menu.StartMenu"),
             SongMenu = require("states.menu.SongMenu"),
+            CreditsMenu = require("states.menu.CreditsMenu"),
             Multiplayer = {
                 ServerMenu = require("states.menu.Multiplayer.ServerMenu"),
                 LobbyMenu = require("states.menu.Multiplayer.LobbyMenu"),

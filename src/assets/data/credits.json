@@ -1,0 +1,88 @@
+[
+    {
+        "name": "GuglioIsStupid",
+        "description": "...",
+        "roles": [
+            "Lead Developer",
+            "Programmer"
+        ],
+        "links": [
+            {
+                "name": "GitHub",
+                "url": "https://github.com/GuglioIsStupid"
+            },
+            {
+                "name": "Twitter",
+                "url": "https://twitter.com/GuglioIsStupid"
+            },
+            {
+                "name": "Discord",
+                "url": "https://discord.gg/ehY5gMMPW8"
+            },
+            {
+                "name": "Ko-fi",
+                "url": "https://ko-fi.com/guglioisstupid"
+            }
+        ]
+    },
+    {
+        "name": "Getsaa",
+        "description": "...",
+        "roles": [
+            "UI Designer",
+            "Spanish/Portuguese Translation"
+        ],
+        "links": [
+            {
+                "name": "Ko-fi",
+                "url": "https://ko-fi.com/getsaa"
+            },
+            {
+                "name": "Twitter",
+                "url": "https://twitter.com/GetsaaNG"
+            }
+        ]
+    },
+    {
+        "name": "Dusty",
+        "description": "...",
+        "roles": [
+            "Music Composer",
+            "Sound Designer"
+        ],
+        "links": []
+    },
+    {
+        "name": "SMILY",
+        "description": "...",
+        "roles": [
+            "Music Composer"
+        ],
+        "links": []
+    },
+    {
+        "name": "Maia",
+        "description": "...",
+        "roles": [
+            "Music Composer"
+        ],
+        "links": []
+    },
+    {
+        "name": "H4chy",
+        "description": "...",
+        "links": [],
+        "roles": [
+            "Playtester",
+            "Mapper"
+        ]
+    },
+    {
+        "name": "Lumaah",
+        "description": "...",
+        "roles": [
+            "French Translation"
+        ],
+        "links": []
+    }
+]
