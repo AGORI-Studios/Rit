@@ -15,9 +15,9 @@ end
 ---@param catch_f function
 ---@return nil
 function Try(f, catch_f)
-    local returnedValue = pcall(f)
+    local returnedValue, error = pcall(f)
     if not returnedValue then
-        catch_f()
+        catch_f(error)
     end
 
     return returnedValue

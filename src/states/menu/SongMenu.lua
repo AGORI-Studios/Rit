@@ -3,14 +3,6 @@ local SongMenu = state()
 
 local songButtons = {}
 
-local function shakeObject(o)
-    Timer.tween(0.05, o, {x = o.x - 5}, "linear", function()
-        Timer.tween(0.05, o, {x = o.x + 10}, "linear", function()
-            Timer.tween(0.05, o, {x = o.x - 5})
-        end)
-    end)
-end
-
 local curSelected = 1
 local balls = {}
 local curSongType = "All"
@@ -50,23 +42,10 @@ function SongMenu:enter()
     end
     table.randomize(balls)
 
-    bars = Sprite(1830, 0, "assets/images/ui/buttons/barsHorizontal.png")
-    gear = Sprite(0, 0, "assets/images/ui/buttons/gear.png")
-    home = Sprite(80, 0, "assets/images/ui/buttons/home.png")
-    import = Sprite(1760, -2, "assets/images/ui/buttons/import.png")
-    barVert = Sprite(150, 0, "assets/images/ui/buttons/barIcon.png")
-    menuBar = Sprite(0, 0, "assets/images/ui/menu/menuBar.png")
-    menuBar.alpha = 0.75
-
     searchCatTab = Sprite(0, -140, "assets/images/ui/menu/searchCatTab.png")
     magnifyingGlass = Sprite(370, -132, "assets/images/ui/menu/magnifyingGlass.png")
     searchCatTab.blend = "screen"
 
-    bars:setScale(1.25)
-    gear:setScale(1.25)
-    home:setScale(1.25)
-    import:setScale(1.25)
-    barVert:setScale(1.25)
     magnifyingGlass:setScale(1.25)
 
     if discordRPC then
@@ -270,17 +249,8 @@ end
 function SongMenu:mousepressed(x, y, b)
     if state.inSubstate then return end
     local x, y = toGameScreen(x-10, y)
+    Header:mousepressed(x, y, b)
     if b == 1 then
-        if gear:isHovered(x, y) then
-            state.substate(substates.menu.Options)
-        elseif home:isHovered(x, y) then
-            state.switch(states.menu.StartMenu)
-        elseif bars:isHovered(x, y) then
-            shakeObject(bars)
-        elseif import:isHovered(x, y) then
-            state.switch(states.screens.Importers.QuaverImportScreen)
-        end
-
         y = y - lerpedSongPos
 
         if searchCatTab:isHovered(x, y) and showCat then
@@ -542,12 +512,7 @@ function SongMenu:draw()
     --[[ love.graphics.setColor(51/255, 10/255, 41/255)
     love.graphics.rectangle("fill", 0, 0, 1920, 70)
     love.graphics.setColor(1, 1, 1) ]]
-    menuBar:draw()
-    gear:draw()
-    home:draw()
-    barVert:draw()
-    bars:draw()
-    import:draw()
+    Header:draw()
     setFont("menuExtraBoldX2")
     love.graphics.setColor(132/255, 20/255, 88/255)
     love.graphics.printf(SteamUserName or localize.localize("Not Logged In"), 260, 12, 1080/2, "left", 0, 1, 1) -- Steam name

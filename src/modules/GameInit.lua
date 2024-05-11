@@ -36,9 +36,10 @@ function GI.LoadLibraries()
             networking.connected = networking.hub:subscribe({
                 channel = "main-channel",
                 callback = function(message)
+                    if message and (type(message) == "string" or type(message) == "number" or type(message) == "boolean") then
+                        return
+                    end
                     --print("Received message: " .. json.encode(message))
-                    print(message.action)
-
                     if message.action == "ping" then
                         print("Sending test pong")
                         networking.hub:publish({
@@ -198,6 +199,8 @@ function GI.LoadObjects()
     SongButton = require("modules.Objects.menu.SongButton")
     ServerButton = require("modules.Objects.menu.ServerButton")
     Spectrum = require("modules.Objects.menu.Spectrum")
+
+    Header = require("modules.Objects.menu.Header")
 end
 
 function GI.LoadParsers()

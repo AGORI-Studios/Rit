@@ -91,7 +91,17 @@ local noobhub = {
 						if (start and finish) then -- found a message!
 							local message = string.sub(self.buffer, start+15, finish-1)
 							self.buffer = string.sub(self.buffer, 1, start-1)  ..   string.sub(self.buffer, finish + 13 ) -- cutting our message from buffer
-							local data = json.decode(message)
+							local data --= --[[ json.decode(message) ]]
+							Try(
+								function()
+									data = json.decode(message)
+								end,
+								function(message)
+									data = {}
+									print("Error decoding JSON: "..message)
+								end
+							)
+
 							self.callback(  data  )
 						else
 							break

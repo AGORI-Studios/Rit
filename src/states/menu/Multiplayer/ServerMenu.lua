@@ -37,7 +37,7 @@ function ServerMenu:enter()
     for _, server in ipairs(self.serverList) do
         table.insert(self.serverButtons, ServerButton(server.name, server.maxPlayers, server.players, server.host, server.hasPassword, server.started, server))
 
-        self.serverButtons[#self.serverButtons].y = 100 + (#self.serverButtons - 1) * 110
+        self.serverButtons[#self.serverButtons].y = 190 + (#self.serverButtons - 1) * 110
     end
 
     if discordRPC then
@@ -60,6 +60,7 @@ end
 function ServerMenu:mousepressed(x, y, b)
     if state.inSubstate then return end
     local x, y = toGameScreen(x, y)
+    Header:mousepressed(x, y, b)
 
     for _, button in ipairs(self.serverButtons) do
         if button:mousepressed(x, y, b) then
@@ -71,10 +72,11 @@ function ServerMenu:mousepressed(x, y, b)
 end
 
 function ServerMenu:draw()
+    Header:draw()
     love.graphics.push()
         love.graphics.setColor(1, 1, 1)
         setFont("menuExtraBold")
-        love.graphics.print("Server List", 10, 10, 0, 2, 2)
+        love.graphics.print("Server List", 10, 100, 0, 2, 2)
         
         setFont("menuExtraBold")
         for _, button in ipairs(self.serverButtons) do
