@@ -11,6 +11,8 @@ local songList = {}
 require("modules.Game.SongHandler")
 require("modules.Utilities")
 
+if not json then json = require("lib.jsonhybrid") end
+
 local loader = {
   _VERSION     = 'love-loader v2.0.3',
   _DESCRIPTION = 'Threaded resource loading for LÖVE',
@@ -129,6 +131,42 @@ local resourceKinds = {
     postProcess = function()
       return loadReplays()
     end
+  },
+  decodeJSON = {
+    requestKey  = "decodeJSON",
+    resourceKey = "decodeJson",
+    constructor = function(data) return data end,
+    postProcess = function(data)
+      local jsondata
+      Try(
+        function()
+          jsondata = json.decode(data)
+        end,
+        function(message)
+          jsondata = {}
+          print("Error decoding JSON: "..message)
+        end
+      )
+      return jsondata
+    end
+  },
+  encodeJSON = {
+    requestKey  = "encodeJSON",
+    resourceKey = "encodeJson",
+    constructor = function(data) return data end,
+    postProcess = function(data)
+      local jsondata
+      Try(
+        function()
+          jsondata = json.encode(data)
+        end,
+        function(message)
+          jsondata = {}
+          print("Error encoding JSON: "..message)
+        end
+      )
+      return jsondata
+    end
   }
 }
 
@@ -147,7 +185,11 @@ if loaded == true then
       local loader = love.thread.getChannel(CHANNEL_PREFIX .. kind.requestKey)
       requestParams = loader:pop()
       if requestParams then
-        resource = kind.constructor(unpack(requestParams))
+        if type(requestParams) == "table" then
+          resource = kind.constructor(unpack(requestParams))
+        else
+          resource = kind.constructor(requestParams)
+        end
         local producer = love.thread.getChannel(CHANNEL_PREFIX .. kind.resourceKey)
         producer:push(resource)
       end
@@ -244,6 +286,14 @@ else
 
   function loader.loadReplays(holder, key, songName, songDiff)
     newResource('loadSongsReplays', holder, key, songName, songDiff)
+  end
+
+  function loader.decodeJSON(holder, key, data)
+    newResource('decodeJSON', holder, key, data)
+  end
+
+  function loader.encodeJSON(holder, key, data)
+    newResource('encodeJSON', holder, key, data)
   end
 
   function loader.start(allLoadedCallback, oneLoadedCallback)

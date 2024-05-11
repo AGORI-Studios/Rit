@@ -9,8 +9,8 @@
 -- License: WTFPL
 -- https://github.com/Overtorment/NoobHub
 --------------------
-
 socket = require("socket")
+local cache = {}
 local noobhub = {
 	new = function (params) -- constructor method
 		params = params or {}
@@ -55,19 +55,23 @@ local noobhub = {
 		end
 
 		function self:publish(message)
-				-- TODO: add retries
-				if (self.sock == nil) then
-					print "Network: Attempt to publish without valid subscription (bad socket)"
-					self:reconnect()
-					return false;
-				end
-				local send_result, message, num_bytes = self.sock:send("__JSON__START__"..json.encode(message.message).."__JSON__END__")
+			-- TODO: add retries
+			if (self.sock == nil) then
+				print "Network: Attempt to publish without valid subscription (bad socket)"
+				self:reconnect()
+				return false;
+			end
+			threads.networking.encodeJSON(cache, "encodedJSON", message.message)
+
+			threads.networking.start(function()
+				local send_result, message, num_bytes = self.sock:send("__JSON__START__"..cache.encodedJSON.."__JSON__END__")
 				if (send_result == nil) then
 					print("Network publish error: "..message..'  sent '..num_bytes..' bytes');
 					if (message == 'closed') then  self:reconnect() end
 					return false;
 				end
 				return true
+			end)
 		end
 
 		function self:enterFrame()
@@ -91,18 +95,12 @@ local noobhub = {
 						if (start and finish) then -- found a message!
 							local message = string.sub(self.buffer, start+15, finish-1)
 							self.buffer = string.sub(self.buffer, 1, start-1)  ..   string.sub(self.buffer, finish + 13 ) -- cutting our message from buffer
-							local data --= --[[ json.decode(message) ]]
-							Try(
-								function()
-									data = json.decode(message)
-								end,
-								function(message)
-									data = {}
-									print("Error decoding JSON: "..message)
-								end
-							)
-
-							self.callback(  data  )
+							local data
+							threads.networking.decodeJSON(cache, "decodedJSON", message)
+							
+							threads.networking.start(function()
+								self.callback(cache.decodedJSON)
+							end)
 						else
 							break
 						end

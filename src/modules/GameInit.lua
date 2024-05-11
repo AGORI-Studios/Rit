@@ -10,7 +10,8 @@ function GI.LoadLibraries()
     clone = require("lib.clone")
     threads = {
         assets = require("lib.loveloader"),
-        replays = require("lib.loveloader")
+        replays = require("lib.loveloader"),
+        networking = require("lib.loveloader")
     }
     xml = require("lib.xml")
     require("lib.lovefs.lovefs")
@@ -41,7 +42,6 @@ function GI.LoadLibraries()
                     end
                     --print("Received message: " .. json.encode(message))
                     if message.action == "ping" then
-                        print("Sending test pong")
                         networking.hub:publish({
                             message = {
                                 action = "pong",
@@ -51,7 +51,7 @@ function GI.LoadLibraries()
                             }
                         })
                     elseif message.action == "pong" then
-                        print("Pong id " .. message.id .. " took " .. love.timer.getTime() - message.original_timestamp .. " seconds")
+                        --print("Pong id " .. message.id .. " took " .. love.timer.getTime() - message.original_timestamp .. " seconds")
                         table.insert(networking.latencies, love.timer.getTime() - message.original_timestamp)
                         local sum, count = 0, 0
                         for i, latency in ipairs(networking.latencies) do
@@ -59,9 +59,9 @@ function GI.LoadLibraries()
                             count = count + 1
                         end
 
-                        print("Average latency: " .. sum / count)
+                        --print("Average latency: " .. sum / count)
                     elseif message.action == "gotServers" then
-                        print("Got servers: " .. json.encode(message.servers))
+                        --print("Got servers: " .. json.encode(message.servers))
                         -- we don't want it to affect everyone, so only affect the person with the SteamID that matches
                         if message.user.steamID == tostring(SteamID) then
                             states.menu.Multiplayer.ServerMenu.serverList = message.servers
@@ -74,7 +74,7 @@ function GI.LoadLibraries()
                             networking.currentServerID = message.id
                         end
                         if message.user.steamID == tostring(SteamID) then
-                            print("User joined: " .. message.user.steamID)
+                            --print("User joined: " .. message.user.steamID)
                             state.switch(states.menu.Multiplayer.LobbyMenu, networking.currentServerData)
                         end
                     elseif message.action == "updateServerInfo_FORCEREMOVEUSER" then
@@ -86,14 +86,14 @@ function GI.LoadLibraries()
                         if message.user.steamID == tostring(SteamID) then
                             -- no state switch
                             networking.currentServerData = message.server
-                            print("Got players info: " .. json.encode(message.server))
+                            --print("Got players info: " .. json.encode(message.server))
                         end
                     elseif message.action == "startGame" then
                         -- if user is in lobby (message.id)
                         if networking.currentServerID and message.id == networking.currentServerData.id then
                             networking.inMultiplayerGame = true
                             local song = getSongFromNameAndDiff(networking.currentServerData.currentSong.songName, networking.currentServerData.currentSong.songDiff)
-                            print("Starting game with song: " .. tostring(song))
+                            --print("Starting game with song: " .. tostring(song))
                             local songPath = song.path
                             local chartVer = song.type
                             local folderPath = song.folderPath

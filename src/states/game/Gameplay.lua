@@ -731,7 +731,6 @@ function Gameplay:update(dt)
                 }
             }
         })
-        print("UPDATING PLAYERS INFO")
     end
     MenuSoundManager:removeAllSounds() -- a final safe guard to remove any sounds that may have been left over
     if self.inPause then return end
@@ -1000,7 +999,7 @@ function Gameplay:draw()
 
     local lastFont = love.graphics.getFont()
     love.graphics.setFont(Cache.members.font["menuBold"])
-    if Steam and networking.inMultiplayerGame then
+    if Steam and networking.inMultiplayerGame and networking.currentServerData then
         for i, player in ipairs(networking.currentServerData.players) do
             love.graphics.setColor(0, 0, 0, 0.5)
             -- small box for the players

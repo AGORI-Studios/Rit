@@ -21,6 +21,8 @@ end
 
 __InJukebox = false
 
+PROF_CAPTURE = true
+
 require("modules.Utilities")
 ffi = require("ffi")
 
@@ -163,6 +165,7 @@ function love.update(dt)
     end
     threads.assets.update() -- update the threads for asset loading
     threads.replays.update() -- update the threads for replay loading
+    threads.networking.update() -- update the threads for networking
     Timer.update(dt)
     input:update()
     if not isLoading then state.update(dt) end
