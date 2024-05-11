@@ -112,6 +112,8 @@ function SongMenu:enter()
         playSelectedSong(songButtons[lastCurSelected])
     end
 
+    curSelected = lastCurSelected
+
     if curSelected > #songButtons then
         curSelected = #songButtons
     end
