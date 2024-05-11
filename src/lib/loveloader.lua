@@ -126,8 +126,8 @@ local resourceKinds = {
     requestKey  = "loadSongsReplays",
     resourceKey = "songsReplays",
     constructor = function() return "loadSongsReplays" end,
-    postProcess = function(songName, songDiff)
-      return loadReplays(songName, songDiff)
+    postProcess = function()
+      return loadReplays()
     end
   }
 }

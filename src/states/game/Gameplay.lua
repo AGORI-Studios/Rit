@@ -96,7 +96,6 @@ function Gameplay:reset()
     self.didTimer = false
     self.objectKillOffset = 350
     self.inputsArray = {false, false, false, false}
-    --[[ self.hitsound = love.audio.newSource("defaultSkins/skinThrowbacks/hitsound.wav", "static") ]]
     self.hitsound = love.audio.newSource(skin:format("hitsound.wav"), "static")
     self.hitsound:setVolume(0.1)
     self.judgement = nil
@@ -548,6 +547,9 @@ function Gameplay:updateNotePosition(offset, curTime)
     local spritePosition = 0
 
     for _, hitObject in ipairs(self.hitObjects.members) do
+        if hitObject.time - musicTime > 15000 then -- Only update notes that are within 15 seconds of the current time to prevent lag issues from too many notes
+            break
+        end
         spritePosition = self:getNotePosition(offset, hitObject.initialTrackPosition)
         if not hitObject.moveWithScroll then
             -- go to strumY (it's a hold)

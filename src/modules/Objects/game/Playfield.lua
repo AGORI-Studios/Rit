@@ -25,22 +25,16 @@ function Playfield:draw(notes, timingLines, timingLineWidth)
     love.graphics.translate(self.x, self.y)
     love.graphics.scale(1, self.reversed and -1 or 1)
     for i, timingLine in ipairs(timingLines) do
-        love.graphics.translate(0, timingLine.y)
         timingLine:draw(timingLineWidth)
-        love.graphics.translate(0, -timingLine.y)
     end
     for i, receptor in ipairs(states.game.Gameplay.strumLineObjects.members) do
         if receptor.draw then
-            love.graphics.translate(self.lanes[i].x, self.lanes[i].y)
             receptor:draw()
-            love.graphics.translate(-self.lanes[i].x, -self.lanes[i].y)
         end
     end
     for i, note in ipairs(notes) do
         if note.draw then
-            love.graphics.translate(self.lanes[note.data].x, self.lanes[note.data].y)
             note:draw()
-            love.graphics.translate(-self.lanes[note.data].x, -self.lanes[note.data].y)
         end
     end
     love.graphics.pop()

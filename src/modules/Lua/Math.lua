@@ -77,6 +77,7 @@ end
 ---@param dt number
 ---@return number
 function math.fpsLerp(a, b, t, dt)
+    local dt = dt or love.timer.getDelta()
     return math.lerp(a, b, 1 - math.exp(-t * dt))
 end
 

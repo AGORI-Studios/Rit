@@ -17,6 +17,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         local mode = fileData:match("Mode:(.-)\r?\n"):gsub("^%s*(.-)%s*$", "%1")
                         local Creator = fileData:match("Creator:(.-)\r?\n")
                         local AudioFile = fileData:match("AudioFile:(.-)\r?\n"):trim()
+                        local Artist = fileData:match("Artist:(.-)\r?\n")
                         local alreadyInList = false
                         for _, song in ipairs(songList) do
                             if song.title == title and song.difficultyName == difficultyName then
@@ -33,8 +34,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                                 folderPath = path .."/" .. file,
                                 type = "Quaver",
                                 rating = "",
-                                ratingColour = {1,1,1},
                                 creator = Creator,
+                                artist = Artist,
                                 mode = mode:match("%d+"),
                                 audioFile = path .."/" .. file .. "/" .. AudioFile
                             }
@@ -45,6 +46,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         local title = fileData:match("Title:(.-)\r?\n")
                         local difficultyName = fileData:match("Version:(.-)\r?\n")
                         local AudioFile = fileData:match("AudioFilename:(.-)\r?\n"):trim()
+                        local Creator = fileData:match("Creator:(.-)\r?\n")
+                        local Artist = fileData:match("Artist:(.-)\r?\n")
                         local alreadyInList = false
                         for _, song in ipairs(songList) do
                             if song.title == title and song.difficultyName == difficultyName then
@@ -64,7 +67,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                                 folderPath = path .."/" .. file,
                                 type = "osu!",
                                 rating = "",
-                                ratingColour = {1,1,1},
+                                creator = Creator,
+                                artist = Artist,
                                 audioFile = path .."/" .. file .. "/" .. AudioFile
                             }
                             songList[title].type = "osu!"
@@ -75,6 +79,9 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         local title = fileData:match("SongTitle:(.-)\r?\n")
                         local difficultyName = fileData:match("SongDiff:(.-)\r?\n")
                         local AudioFile = fileData:match("AudioFile:(.-)\r?\n"):trim()
+                        local Creator = fileData:match("Creator:(.-)\r?\n")
+                        local Artist = fileData:match("Artist:(.-)\r?\n")
+                        local description = fileData:match("Description:(.-)\r?\n")
                         local alreadyInList = false
                         for _, song in ipairs(songList) do
                             if song.title == title and song.difficultyName == difficultyName then
@@ -91,7 +98,9 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                                 folderPath = path .."/" .. file,
                                 type = "Rit",
                                 rating = "",
-                                ratingColour = {1,1,1},
+                                creator = Creator,
+                                artist = Artist,
+                                description = description,
                                 audioFile = path .."/" .. file .. "/" .. AudioFile
                             }
                             songList[title].type = "Rit"
@@ -101,6 +110,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         local title = fileData.meta.song.title
                         local difficultyName = fileData.meta.version
                         local AudioFile
+                        local Creator = "Unknown"
+                        local Artist = "Unknown"
                         for i, note in ipairs(fileData.note) do
                             if note.type == 1 then
                                 AudioFile = note.sound
@@ -123,6 +134,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                                 type = "Malody",
                                 rating = "",
                                 ratingColour = {1,1,1},
+                                creator = Creator,
+                                artist = Artist,
                                 audioFile = path .."/" .. file .. "/" .. AudioFile
                             }
                         end
@@ -206,6 +219,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                     local mode = fileData:match("Mode:(.-)\r?\n"):gsub("^%s*(.-)%s*$", "%1")
                     local Creator = fileData:match("Creator:(.-)\r?\n")
                     local AudioFile = fileData:match("AudioFile:(.-)\r?\n"):trim()
+                    local Artist = fileData:match("Artist:(.-)\r?\n")
                     local alreadyInList = false
                     for _, song in ipairs(songList) do
                         if song.title == title and song.difficultyName == difficultyName then
@@ -224,6 +238,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             rating = "",
                             ratingColour = {1,1,1},
                             creator = Creator,
+                            artist = Artist,
                             mode = mode:match("%d+"),
                             audioFile = "song/" .. AudioFile
                        }
@@ -236,6 +251,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                     local AudioFile = fileData:match("AudioFilename:(.-)\r?\n"):trim()
                     local alreadyInList = false
                     local Mode = fileData:match("Mode:(.-)\r?\n"):trim()
+                    local Creator = fileData:match("Creator:(.-)\r?\n")
+                    local Artist = fileData:match("Artist:(.-)\r?\n")
                     -- needs to be 3, else FUCK YOU!
                     if Mode ~= "3" then goto continue end
                     for _, song in ipairs(songList) do
@@ -254,6 +271,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             type = "osu!",
                             rating = "",
                             ratingColour = {1,1,1},
+                            creator = Creator,
+                            artist = Artist,
                             audioFile = "song/" .. AudioFile
                         }
                         songList[title].type = "osu!"

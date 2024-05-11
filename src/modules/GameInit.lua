@@ -131,6 +131,10 @@ function GI.LoadLibraries()
                                 end
                             end
                         end
+                    elseif message.action == "serverLobby_CHATMESSAGE" then
+                        if message.id == networking.currentServerData.id then
+                            networking.currentServerData = message.server -- update the server data and adds the message
+                        end
                     end
                 end
             })
@@ -213,10 +217,17 @@ function GI.LoadDefaultFonts()
     Cache.members.font["menu"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 32)
     Cache.members.font["menuBold"] = love.graphics.newFont("assets/fonts/Montserrat-Bold.ttf", 22)
     Cache.members.font["menuExtraBold"] = love.graphics.newFont("assets/fonts/Montserrat-ExtraBold.ttf", 22)
+    Cache.members.font["menuExtraBoldX1.5"] = love.graphics.newFont("assets/fonts/Montserrat-ExtraBold.ttf", 33)
+    Cache.members.font["menuExtraBoldX2"] = love.graphics.newFont("assets/fonts/Montserrat-ExtraBold.ttf", 44)
+    Cache.members.font["menuExtraBoldX2.5"] = love.graphics.newFont("assets/fonts/Montserrat-ExtraBold.ttf", 55)
+    Cache.members.font["menuExtraBoldX3"] = love.graphics.newFont("assets/fonts/Montserrat-ExtraBold.ttf", 66)
+    Cache.members.font["menuX1.5"] = love.graphics.newFont("assets/fonts/Montserrat-Light.ttf", 33)
+    Cache.members.font["menuBoldX1.5"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 33)
     Cache.members.font["menuBig"] = love.graphics.newFont("assets/fonts/Montserrat-Light.ttf", 64)
     Cache.members.font["menuBigBold"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 64)
     Cache.members.font["menuMedium"] = love.graphics.newFont("assets/fonts/Montserrat-Light.ttf", 48)
     Cache.members.font["menuMediumBold"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 48)
+    Cache.members.font["NatsRegular26"] = love.graphics.newFont("assets/fonts/NATS-Regular.otf", 26)
 
     -- some font functions
     function setFont(font)
@@ -284,7 +295,8 @@ function GI.InitSteam()
             SteamUserName = SteamUser:getName()
             local SteamUserImgSteamData, width, height = SteamUser:getAvatar("small")
             if SteamUserImgSteamData then
-                SteamUserAvatarSmall = love.graphics.newImage(love.image.newImageData(width, height, "rgba8", SteamUserImgSteamData))
+                SteamUserImgSteamData = love.image.newImageData(width, height, "rgba8", SteamUserImgSteamData)
+                SteamUserAvatarSmall = love.graphics.newImage(SteamUserImgSteamData)
             end
         end
     end 
@@ -488,7 +500,7 @@ function love.errorhandler(msg)
 
     love.filesystem.write("error.log", p)
 
-    local bg = love.graphics.newImage("assets/images/ui/menu/BGsongList.png")
+    local bg = love.graphics.newImage("assets/images/ui/menu/playBG.png")
 
     local buttons = {
         {
@@ -556,7 +568,6 @@ function love.errorhandler(msg)
                     love.graphics.setColor(51/255, 10/255, 41/255, 0.75)
                     local mx, my = love.mouse.getPosition()
                     local buttonIsHovered = false
-                    -- same code as above, but account for scaling
                     local scaleX = love.graphics.getWidth()/1280
                     local scaleY = love.graphics.getHeight()/720
                     buttonIsHovered = (
@@ -567,8 +578,6 @@ function love.errorhandler(msg)
                         love.graphics.setColor(51/255, 10/255, 41/255, 1)
                     end
                     love.graphics.rectangle("fill", (buttonWidth+15)*(i-1)+20, 0, buttonWidth, 50, 10)
-                    --[[ love.graphics.setColor(1, 1, 1)
-                    love.graphics.printf(v.text, (buttonWidth+10)*(i-1)+20, 10+5, buttonWidth, "center") ]]
                     for x = -1, 1 do
                         for y = -1, 1 do
                             love.graphics.setColor(0, 0, 0)
@@ -577,9 +586,6 @@ function love.errorhandler(msg)
                     end
                     love.graphics.setColor(1, 1, 1)
                     love.graphics.printf(v.text, (buttonWidth+15)*(i-1)+20, 10+5, buttonWidth, "center")
-                    --[[ if buttonIsHovered and love.mouse.isDown(1) then
-                        v.func()
-                    end ]]
                 end
             love.graphics.pop()
 

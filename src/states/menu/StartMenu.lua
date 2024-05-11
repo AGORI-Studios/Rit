@@ -67,15 +67,15 @@ local function enterFunc()
     didTransition = true
 
     curMenu = 2
-    if timers.logoPos then Timer.cancel(timers.logoPos) end
-    timers.logoPos = Timer.tween(
+    --if timers.logoPos then Timer.cancel(timers.logoPos) end
+    --[[ timers.logoPos = Timer.tween(
         0.5, logoPos,
         {
             [1] = -1250,
             [2] = -450
         },
         "in-out-cubic"
-    )
+    ) ]]
     for i = 1, #buttons do
         timers.buttons["_" .. i] = Timer.tween(
             1 * (i / 6),
@@ -171,9 +171,12 @@ end
 
 function StartMenu:enter()
     balls = {}
-    bg = Sprite(0, 0, "assets/images/ui/menu/BGsongList.png")
+    bg = Sprite(0, 0, "assets/images/ui/menu/playBG.png")
     for i = 1, 5 do
         balls[i] = Sprite(love.math.random(0, 1600), love.math.random(0, 720), "assets/images/ui/menu/BGball" .. i .. ".png")
+        balls[i].alpha = 0.71
+        balls[i].blend = "lighten"
+        balls[i].blendAlphaMode = "premultiplied"
         balls[i].ogX, balls[i].ogY = love.math.random(0, 1920 - balls[i].width), love.math.random(0, 1080 - balls[i].height)
         balls[i].velY = love.math.random(25, 50)
     end
@@ -352,29 +355,6 @@ function StartMenu:mousepressed(x, y, b)
         if b == 1 then
             enterFunc()
         end
-    end
-end
-
-function StartMenu:touchpressed(id, x, y, dx, dy, pressure)
-    if state.inSubstate then return end
-    local x, y = toGameScreen(x, y)
-    if twitterLogo:isHovered(x, y) then
-        love.system.openURL("https://twitter.com/AGORIStudios")
-    elseif kofiLogo:isHovered(x, y) then
-        love.system.openURL("https://ko-fi.com/guglioisstupid")
-    elseif discordLogo:isHovered(x, y) then
-        love.system.openURL("https://discord.gg/y5zz2Dm7A2")
-    end
-
-    if curMenu == 2 then
-        for i = 1, #buttons do
-            if buttons[i].x < x and x < buttons[i].x + 500 and buttons[i].y < y and y < buttons[i].y + 100 then
-                buttons[i].action()
-                return
-            end
-        end
-    else
-        enterFunc()
     end
 end
 

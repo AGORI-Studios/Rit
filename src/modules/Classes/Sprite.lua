@@ -97,6 +97,9 @@ function Sprite:new(x, y, graphic)
     self.animFinished = false
     self.indexFrame = 1
 
+    self.blend = "alpha"
+    self.blendAlphaMode = "alphamultiply"
+
     self.type = "Image"
 
     if graphic then self:load(graphic) end
@@ -409,6 +412,8 @@ function Sprite:draw() -- Draws the sprite, only if it's visible and exists
         sy = sy * (self.flipY and -1 or 1)
 
         local lastColor = {love.graphics.getColor()}
+        local lastBlend, lastAlphaMode = love.graphics.getBlendMode()
+        love.graphics.setBlendMode(self.blend, self.blendAlphaMode)
         love.graphics.setColor(self.color[1], self.color[2], self.color[3], self.alpha)
         x, y = x + ox - self.offset.x, y + oy - self.offset.y
 
@@ -430,6 +435,7 @@ function Sprite:draw() -- Draws the sprite, only if it's visible and exists
             love.graphics.setStencilTest()
         end
         love.graphics.setColor(lastColor)
+        love.graphics.setBlendMode(lastBlend, lastAlphaMode)
     end
 end
 

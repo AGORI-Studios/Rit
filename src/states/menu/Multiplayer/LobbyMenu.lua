@@ -39,8 +39,28 @@ function LobbyMenu:update(dt)
         state.switch(states.menu.Multiplayer.ServerMenu)
     end
 
-    if discordRPC then
-        local details = ""
+    if input:pressed("confirm") then
+        networking.hub:publish({
+            message = {
+                action = "serverLobby_CHATMESSAGE",
+                id = networking.currentServerID,
+                user = {
+                    steamID = tostring(SteamID),
+                    name = tostring(SteamUserName)
+                },
+                message = {
+                    user = {
+                        steamID = tostring(SteamID),
+                        name = tostring(SteamUserName)
+                    },
+                    message = "TESTING!",
+                    time = os.time()
+                }
+            }
+        })
+    end
+
+    if discordRPC and networking.currentServerData then
         discordRPC.presence = {
             details = "In a multiplayer lobby",
             state = "Lobby: " .. networking.currentServerData.name .. " - " .. #networking.currentServerData.players .. "/" .. networking.currentServerData.maxPlayers,
@@ -71,6 +91,7 @@ function LobbyMenu:draw()
         love.graphics.print("Lobby", 10, 10, 0, 2, 2)
 
         setFont("menuExtraBold")
+        if not networking.currentServerData then love.graphics.pop(); return end
         love.graphics.print("Server Name: " .. networking.currentServerData.name, 10, 50)
         
         love.graphics.print("Host: " .. (networking.currentServerData.host or "Unknown"), 10, 70)
