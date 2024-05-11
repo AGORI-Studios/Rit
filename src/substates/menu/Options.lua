@@ -152,7 +152,10 @@ function Options:enter()
             local skinButton = loveframes.Create("button")
             skinButton:SetText(v.name)
             skinButton.OnClick = function()
-                Settings.options["General"].skin = v.name
+                Settings.options["General"].skin = {
+                    name = v.name,
+                    path = v.path
+                }
                 skin.name = v.name
                 skin.path = v.path
             end
