@@ -85,9 +85,9 @@ function HitObject:update(dt)
     end
 end
 
-function HitObject:draw()
+function HitObject:draw(scale)
     -- Draws our note if it's within the screen's bounds
-    if self.y < 1080 and self.y > -(self.height * self.scale.y) then
+    if self.y < 1080/scale and self.y > -400 / scale then
         for i, child in ipairs(self.children) do
             child:draw()
         end

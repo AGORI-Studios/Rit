@@ -1027,12 +1027,24 @@ function Gameplay:draw()
     love.graphics.setFont(lastFont)
 
     love.graphics.push()
+        local scale = 1 - ((self.mode - 4) * 0.05)
         love.graphics.setColor(0,0,0)
-        love.graphics.rectangle("fill", self.bgLane.x, -200, self.bgLane.width, 1080+400) -- 200 val to be safe when the screen is scaling for key's > 4
+        --love.graphics.rectangle("fill", self.bgLane.x, -200, self.bgLane.width, 1080+400) -- 200 val to be safe when the screen is scaling for key's > 4
+        -- above rect, but accomodating for the scale
+        love.graphics.rectangle("fill", self.bgLane.x / scale, -200, self.bgLane.width * scale, 1080+400)
         love.graphics.setColor(1,1,1)
-        for i, playfield in ipairs(self.playfields) do
-            playfield:draw(self.hitObjects.members, self.timingLines.members, self.bgLane.width)
-        end
+        love.graphics.push()
+            love.graphics.translate(Inits.GameWidth/2, Inits.GameHeight/2)
+            -- scale based off of the mode,
+            -- the mid point is 4. 4 would be a scale of 1
+            love.graphics.scale(scale, scale)
+            love.graphics.translate(-Inits.GameWidth/2, -Inits.GameHeight/2)
+            -- move down the playfield based off scale, 4 = 0
+            love.graphics.translate(0, (self.mode - 4) * 25)
+            for i, playfield in ipairs(self.playfields) do
+                playfield:draw(self.hitObjects.members, self.timingLines.members, self.bgLane.width, scale, self.bgLane.x)
+            end
+        love.graphics.pop()
     love.graphics.pop()
 
     -- draw members2

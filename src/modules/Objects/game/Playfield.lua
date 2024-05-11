@@ -19,11 +19,15 @@ end
 function Playfield:update(dt)
 end
 
-function Playfield:draw(notes, timingLines, timingLineWidth)
-    -- Draw the receptors and notes on the playfield
+function Playfield:draw(notes, timingLines, timingLineWidth, scale, bgLaneX)
     love.graphics.push()
     love.graphics.translate(self.x, self.y)
     love.graphics.scale(1, self.reversed and -1 or 1)
+    if scale ~= 1 then -- literally the lazy way out
+        local firstReceptorX = states.game.Gameplay.strumLineObjects.members[1].x
+        local diff = firstReceptorX - bgLaneX
+        love.graphics.translate(-diff*2, 0)
+    end
     for i, timingLine in ipairs(timingLines) do
         timingLine:draw(timingLineWidth)
     end
@@ -34,7 +38,7 @@ function Playfield:draw(notes, timingLines, timingLineWidth)
     end
     for i, note in ipairs(notes) do
         if note.draw then
-            note:draw()
+            note:draw(scale)
         end
     end
     love.graphics.pop()
