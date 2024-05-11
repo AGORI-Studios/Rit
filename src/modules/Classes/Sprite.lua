@@ -437,6 +437,7 @@ function Sprite:draw() -- Draws the sprite, only if it's visible and exists
                 sx = sx * (self.flipX and -1 or 1)
                 sy = sy * (self.flipY and -1 or 1)
             end
+            
             love.graphics.draw(self.graphic, x, y, angle, sx, sy, ox, oy, self.shear.x, self.shear.y)
         love.graphics.pop()
 
