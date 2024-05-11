@@ -39,7 +39,7 @@ function LobbyMenu:update(dt)
         state.switch(states.menu.Multiplayer.ServerMenu)
     end
 
-    if input:pressed("confirm") then
+    --[[ if input:pressed("confirm") then
         networking.hub:publish({
             message = {
                 action = "serverLobby_CHATMESSAGE",
@@ -58,7 +58,7 @@ function LobbyMenu:update(dt)
                 }
             }
         })
-    end
+    end ]]
 
     if discordRPC and networking.currentServerData then
         discordRPC.presence = {
