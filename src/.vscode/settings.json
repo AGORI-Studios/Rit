@@ -6,5 +6,6 @@
     "Lua.runtime.version": "LuaJIT",
     "Lua.diagnostics.globals": [
         "love"
-    ]
+    ],
+    "Lua.completion.autoRequire": false
 }

@@ -12,6 +12,7 @@ require("modules.Game.SongHandler")
 require("modules.Utilities")
 
 if not json then json = require("lib.jsonhybrid") end
+if not NoteHelper then NoteHelper = require("modules.Game.NoteHelper") end
 
 local loader = {
   _VERSION     = 'love-loader v2.0.3',
@@ -167,6 +168,17 @@ local resourceKinds = {
       )
       return jsondata
     end
+  },
+  updateNotePosition = {
+    requestKey = "updateNotePosition",
+    resourceKey = "updateNotePosition",
+    constructor = function(offset, hitObjects, scrollSpeed, downscroll)
+      return {offset, hitObjects, scrollSpeed, downscroll}
+    end,
+    postProcess = function(data)
+      local offset, hitObjects, scrollSpeed, downscroll = unpack(data)
+      return NoteHelper:updateNotePosition(offset, hitObjects, scrollSpeed, downscroll)
+    end
   }
 }
 
@@ -294,6 +306,10 @@ else
 
   function loader.encodeJSON(holder, key, data)
     newResource('encodeJSON', holder, key, data)
+  end
+
+  function loader.updateNotePosition(holder, key, offset, hitObjects, scrollSpeed, downscroll)
+    newResource('updateNotePosition', holder, key, offset, hitObjects, scrollSpeed, downscroll)
   end
 
   function loader.start(allLoadedCallback, oneLoadedCallback)
