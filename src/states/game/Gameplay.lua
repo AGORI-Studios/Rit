@@ -558,17 +558,18 @@ function Gameplay:updateNotePosition(offset, curTime)
         hitObject.y = spritePosition
         if #hitObject.children > 0 then
             -- Determine the hold notes position and scale
-            hitObject.children[1].y = spritePosition + hitObject.height/2
-            hitObject.children[2].y = spritePosition + hitObject.height/2
+            hitObject.children[1].y = spritePosition + 95/2
+            hitObject.children[2].y = spritePosition + 95/2
 
             hitObject.endY = self:getNotePosition(offset, hitObject.endTrackPosition)
-            local pixelDistance = hitObject.endY - hitObject.children[1].y + hitObject.children[2].height-- the distance of start and end we need
-            hitObject.children[1].scale.y = (pixelDistance / hitObject.children[1].height)
+            local pixelDistance = hitObject.endY - hitObject.children[1].y + 95-- the distance of start and end we need
+            hitObject.children[1].dimensions = {width = 200, height = pixelDistance}
+            hitObject.children[2].dimensions = {width = 200, height = 95 * (Settings.options["General"].skin.flippedEnd and -1 or 1)}
 
             if Settings.options["General"].downscroll then
-                hitObject.children[2].y = hitObject.children[2].y + pixelDistance - hitObject.children[2].height
+                hitObject.children[2].y = hitObject.children[2].y + pixelDistance - 95
             else
-                hitObject.children[2].y = hitObject.children[2].y + pixelDistance + hitObject.children[2].height
+                hitObject.children[2].y = hitObject.children[2].y + pixelDistance + 95
             end
         end
     end
@@ -689,32 +690,28 @@ end
 
 function Gameplay:addObjectsToGroups()
     for i, ho in ipairs(self.unspawnNotes) do
+        ho.x = self.strumLineObjects.members[ho.data].x
+        if #ho.children > 0 then
+            ho.children[1].x = ho.x
+            ho.children[2].x = ho.x
+        end
         self.hitObjects:add(ho)
     end
 end
 
 function Gameplay:generateStrums()
-    -- strumX works with 4 keys by default, modify it for self.mode
-    self.strumX = self.strumX - ((self.mode - 4.5) * 100)
-    -- update hitobjects x position
-    for i, ho in ipairs(self.unspawnNotes) do
-        ho.x = self.strumX + ((ho.data - 1) * (__NOTE_OBJECT_WIDTH * 0.925)) + 32
-        if #ho.children > 0 then
-            ho.children[1].x = ho.x - 4
-            ho.children[2].x = ho.x - 4
-        end
-    end
+    self.bgLane.x = self.strumX - ((self.mode - 4) * (__NOTE_OBJECT_WIDTH * 0.0185))
     for i = 1, self.mode do
         self.noteoffsets[i] = {x=0, y=0}
         local strum = StrumObject(self.strumX, strumY, i)
 
         self.strumLineObjects:add(strum)
         strum:postAddToGroup()
+
+        self.bgLane.width = self.bgLane.width + 200 + 10
     end
 
-    -- generate lane
-    self.bgLane.x = self.strumX - ((self.mode - 4) * (__NOTE_OBJECT_WIDTH * 0.0185))
-    self.bgLane.width = (__NOTE_OBJECT_WIDTH) * self.mode 
+    self.bgLane.width = self.bgLane.width + 10
 end
 
 function Gameplay:update(dt)

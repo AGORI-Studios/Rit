@@ -22,6 +22,7 @@ function quaverLoader.load(chart, folderPath, forDiff)
         inputMode = chart.Mode:gsub("Keys", ""),
     }
     states.game.Gameplay.mode = meta.inputMode
+    states.game.Gameplay.strumX = states.game.Gameplay.strumX - ((states.game.Gameplay.mode - 4.5) * 100)
     states.game.Gameplay.bpmAffectsScrollVelocity = not chart.BPMDoesNotAffectScrollVelocity
 
     --audioFile = love.audio.newSource(folderPath .. "/" .. meta.audioPath, "stream")

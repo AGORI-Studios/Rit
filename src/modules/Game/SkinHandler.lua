@@ -1,8 +1,10 @@
 
 local skin = {}
 
-skin.name = Settings.options["General"].skin.name
-skin.path = Settings.options["General"].skin.path
+skin.name = Settings.options["General"].skin.name or "Circle Default"
+skin.path = Settings.options["General"].skin.path or "defaultSkins/Circle Default"
+skin.scale = Settings.options["General"].skin.scale or 1
+skin.flippedEnd = Settings.options["General"].skin.flippedEnd or false
 skin.skins = {}
 
 function skin:format(path)
@@ -33,10 +35,12 @@ function skin:loadSkins(baseDir)
             local skinData = ini.parse(skinPath .. "/skin.ini")
             local name = skinData.Metadata.name
             local creator = skinData.Metadata.creator
+            local scale = skinData.Misceallaneous.noteSize or 1
             local skin = {
                 name = name or skinFolder,
                 creator = creator or "Unknown",
-                path = skinFolder
+                path = skinFolder,
+                scale = scale or 1
             }
 
             table.insert(skinList, skin)

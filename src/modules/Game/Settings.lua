@@ -7,7 +7,8 @@ Settings.options = {
         backgroundVisibility = 1,
         skin = {
             name = "Circle Default",
-            path = "Circle Default"
+            path = "Circle Default",
+            scale = 1
         },
         hitsoundVolume = 0.1,
         globalVolume = 0.1,

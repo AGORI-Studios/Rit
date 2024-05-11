@@ -324,8 +324,8 @@ function Sprite:updateHitbox() -- Updates the hitbox of the sprite
     self.width = math.abs(self.scale.x) * w
     self.height = math.abs(self.scale.y) * h
 
-    self.offset = Point(-0.5 * (self.width - w), -0.5 * (self.height - h))
-    self:centerOrigin()
+    --self.offset = Point(-0.5 * (self.width - w), -0.5 * (self.height - h))
+    --self:centerOrigin()
 
     return self
 end
@@ -427,6 +427,15 @@ function Sprite:draw() -- Draws the sprite, only if it's visible and exists
                     func = Stencil.func
                 }
                 love.graphics.stencil(stencilFunc, "replace", 1, false)
+            end
+            if self.forcedDimensions then
+                -- use self.dimensions for new sx and sy
+                local w, h = self:getFrameDimensions()
+                sx = self.dimensions.width / w
+                sy = self.dimensions.height / h
+
+                sx = sx * (self.flipX and -1 or 1)
+                sy = sy * (self.flipY and -1 or 1)
             end
             love.graphics.draw(self.graphic, x, y, angle, sx, sy, ox, oy, self.shear.x, self.shear.y)
         love.graphics.pop()

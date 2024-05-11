@@ -154,10 +154,14 @@ function Options:enter()
             skinButton.OnClick = function()
                 Settings.options["General"].skin = {
                     name = v.name,
-                    path = v.path
+                    path = v.path, 
+                    scale = v.scale,
+                    flippedEnd = v.flippedEnd
                 }
                 skin.name = v.name
                 skin.path = v.path
+                skin.scale = v.scale
+                skin.flippedEnd = v.flippedEnd
             end
             skin_1:AddItem(skinButton)
         end

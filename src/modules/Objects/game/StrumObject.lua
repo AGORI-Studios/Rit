@@ -18,6 +18,10 @@ function StrumObject:new(x, y, data)
 
     self:updateHitbox()
     self:setGraphicSize(math.floor(self.width * 0.925))
+    self:updateHitbox()
+
+    self.forcedDimensions = true
+    self.dimensions = {width = 200, height = 200}
 
     return self
 end
@@ -29,7 +33,7 @@ end
 
 function StrumObject:postAddToGroup()
     self.graphic = Cache:loadImage(self.anims[1])
-    self.x = self.x + (self.width * 0.925) * (self.data - 1)
+    self.x = self.x + (200) * (self.data - 1)
     self.x = self.x + 25
     self.ID = self.data
 end

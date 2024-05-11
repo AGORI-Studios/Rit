@@ -20,7 +20,8 @@ function HitObject:new(time, data, endTime)
 
     self.moves = false
 
-    self.x = self.x + states.game.Gameplay.strumX + 25
+    self.x = states.game.Gameplay.strumX + (200) * (data-1)
+    self.x = self.x + 25
     self.y = -2000
 
     self.time = time
@@ -33,21 +34,35 @@ function HitObject:new(time, data, endTime)
     self:load(skin:format("notes/" .. tostring(states.game.Gameplay.mode) .. "K/note" .. data .. ".png"))
 
     self:setGraphicSize(math.floor(self.width * 0.925))
-    _G.__NOTE_OBJECT_WIDTH = self.width
+    self.forcedDimensions = true
+    self.dimensions = {width = 200, height = 200}
+    self:updateHitbox()
+    _G.__NOTE_OBJECT_WIDTH = 200
 
-    self.x = self.x + (self.width * 0.925+4) * (data-1)
+    self.x = self.x + (200) * (data-1)
 
     if self.endTime and self.endTime > self.time then
         local holdObj = Sprite():load(skin:format("notes/" .. tostring(states.game.Gameplay.mode) .. "K/note" .. data .. "-hold.png"))
         holdObj.endTime = self.endTime
+        holdObj:setGraphicSize(math.floor(holdObj.width * 0.925))
+        holdObj:updateHitbox()
+        holdObj.x = self.x + (200) / 2 - (200) / 2
+        holdObj.forcedDimensions = true
+        holdObj.dimensions = {width = 200, height = 200}
 
         table.insert(self.children, holdObj)
 
         local endObj = Sprite():load(skin:format("notes/" .. tostring(states.game.Gameplay.mode) .. "K/note" .. data .. "-end.png"))
         holdObj.endTime = self.endTime
+        endObj:setGraphicSize(math.floor(endObj.width * 0.925))
+        endObj:updateHitbox()
+        endObj.x = self.x + (200) / 2 - (200) / 2
+        endObj.flipY = skin.flippedEnd
         if not Settings.options["General"].downscroll then
             endObj.scale.y = -1
         end
+        endObj.forcedDimensions = true
+        endObj.dimensions = {width = 200, height = 200}
 
         table.insert(self.children, endObj)
     end
