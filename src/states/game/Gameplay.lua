@@ -1111,7 +1111,7 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName)
     self.M_folderPath = folderPath -- used for mod scripting
     Modscript.vars = {sprites={}} -- reset modscript vars
 
-    local modPath = folderPath .. "/mod/mod.lua"
+    local modPath = folderPath .. "/mod/main.ritmod"
     if love.filesystem.getInfo(modPath) then
         Modscript:load(modPath)
     end
