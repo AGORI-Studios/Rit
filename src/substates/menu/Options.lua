@@ -242,6 +242,43 @@ function Options:enter()
             end
             locale_1:AddItem(localeButton)
         end
+
+        -- noteScale and columnSpacing
+        local noteSize = loveframes.Create("numberbox", settings)
+        noteSize:SetPos(10, 390 + (doAprilFools and 30 or 0))
+        noteSize:SetSize(100, 25)
+        noteSize:SetMinMax(0.1, 2)
+        noteSize:SetIncreaseAmount(0.1)
+        noteSize:SetDecreaseAmount(0.1)
+        noteSize:SetDecimals(1)
+        noteSize:SetValue(Settings.options["General"].noteSize)
+        noteSize.OnValueChanged = function(object, value)
+            Settings.options["General"].noteSize = value
+        end
+        
+        local noteSizeLabel = loveframes.Create("text", settings)
+        noteSizeLabel:SetPos(120, 390 + (doAprilFools and 30 or 0))
+        noteSizeLabel:SetText("Note Size")
+        noteSizeLabel:SetFont(Cache.members.font["default"])
+        noteSizeLabel:SetSize(100, 25)
+
+        local columnSpacing = loveframes.Create("numberbox", settings)
+        columnSpacing:SetPos(10, 420 + (doAprilFools and 30 or 0))
+        columnSpacing:SetSize(100, 25)
+        columnSpacing:SetMinMax(0, 100)
+        columnSpacing:SetIncreaseAmount(1)
+        columnSpacing:SetDecreaseAmount(1)
+        columnSpacing:SetDecimals(0)
+        columnSpacing:SetValue(Settings.options["General"].columnSpacing)
+        columnSpacing.OnValueChanged = function(object, value)
+            Settings.options["General"].columnSpacing = value
+        end
+
+        local columnSpacingLabel = loveframes.Create("text", settings)
+        columnSpacingLabel:SetPos(120, 420 + (doAprilFools and 30 or 0))
+        columnSpacingLabel:SetText("Column Spacing")
+        columnSpacingLabel:SetFont(Cache.members.font["default"])
+        columnSpacingLabel:SetSize(100, 25)
     end
 
     function createKeybindsTab()

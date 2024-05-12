@@ -33,7 +33,10 @@ end
 
 function StrumObject:postAddToGroup()
     self.graphic = Cache:loadImage(self.anims[1])
-    self.x = self.x + (200) * (self.data - 1)
+    --[[ self.x = self.x + (200) * (self.data - 1)
+    self.x = self.x + 25 ]]
+    -- same as above, but also use Settings.options["General"].columnSpacing
+    self.x = states.game.Gameplay.strumX + (200 + Settings.options["General"].columnSpacing) * (self.data - 1)
     self.x = self.x + 25
     self.ID = self.data
 end

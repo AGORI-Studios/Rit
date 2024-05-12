@@ -20,6 +20,9 @@ Settings.options = {
         language = "en-US",
 
         debugText = false,
+
+        noteSize = 1, -- 100%
+        columnSpacing = 0, -- 0px
     },
     ["Events"] = {
         aprilFools = true,
@@ -39,7 +42,20 @@ function Settings.loadOptions()
     end
 
     --Settings.options = ini.parse("settings")
-    local savedOptions = json.decode(love.filesystem.read("settings"))
+    local savedOptions --= json.decode(love.filesystem.read("settings"))
+    Try(
+        function()
+            savedOptions = json.decode(love.filesystem.read("settings"))
+        end,
+        function()
+            love.window.showMessageBox(
+                "Error",
+                "There was an error loading the settings file. Your settings have been reset.",
+                "error"
+            )
+            Settings.saveOptions()
+        end
+    )
     for i, type in pairs(savedOptions) do
         for j, setting in pairs(type) do
             Settings.options[i][j] = savedOptions[i][j]

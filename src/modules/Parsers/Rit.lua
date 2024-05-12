@@ -77,7 +77,7 @@ function ritLoader.processMetadata(line)
         diff = value
     elseif key == "KeyAmount" then
         states.game.Gameplay.mode = tonumber(value)
-        states.game.Gameplay.strumX = states.game.Gameplay.strumX - ((states.game.Gameplay.mode - 4.5) * 100)
+        states.game.Gameplay.strumX = states.game.Gameplay.strumX - ((states.game.Gameplay.mode - 4.5) * (100 + Settings.options["General"].columnSpacing))
     elseif key == "AudioFile" then
         local value = value:trim()
         states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. value, 1, true, "stream")

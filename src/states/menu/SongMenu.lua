@@ -507,7 +507,6 @@ function SongMenu:draw()
                 else
                     btn.color = {1, 1, 1}
                 end
-                print(#songButtons)
                 btn:draw(0, lerpedSongPos, curSelected, #songButtons)
             end
         elseif btn.open then

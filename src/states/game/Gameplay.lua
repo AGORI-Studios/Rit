@@ -558,8 +558,8 @@ function Gameplay:updateNotePosition(offset, curTime)
         hitObject.y = spritePosition
         if #hitObject.children > 0 then
             -- Determine the hold notes position and scale
-            hitObject.children[1].y = spritePosition + 95/2
-            hitObject.children[2].y = spritePosition + 95/2
+            hitObject.children[1].y = spritePosition + 95
+            hitObject.children[2].y = spritePosition + 95
 
             hitObject.endY = self:getNotePosition(offset, hitObject.endTrackPosition)
             local pixelDistance = hitObject.endY - hitObject.children[1].y + 95-- the distance of start and end we need
@@ -700,18 +700,25 @@ function Gameplay:addObjectsToGroups()
 end
 
 function Gameplay:generateStrums()
-    self.bgLane.x = self.strumX - ((self.mode - 4) * (__NOTE_OBJECT_WIDTH * 0.0185))
+    --self.bgLane.x = self.strumX - ((self.mode - 4) * (200 * 0.0185))
+    -- above code, but with Settings.options["General"].columnSpacing
+    self.strumX = self.strumX - (self.mode * Settings.options["General"].columnSpacing) / 2
+    self.bgLane.x = self.strumX - ((self.mode - 4) * ((200 + Settings.options["General"].columnSpacing) * 0.0185))
     for i = 1, self.mode do
         self.noteoffsets[i] = {x=0, y=0}
         local strum = StrumObject(self.strumX, strumY, i)
 
         self.strumLineObjects:add(strum)
         strum:postAddToGroup()
-
-        self.bgLane.width = self.bgLane.width + 200 + 10
     end
 
-    self.bgLane.width = self.bgLane.width + 10
+    --self.bgLane.width = self.mode * (200 + Settings.options["General"].columnSpacing + 10)
+    -- 10 is for columnSpacing == 0, accomodate for that
+    -- do some math to convert the 10 to other values. Higher columnSpacing = higher number
+    -- Lower columnSpacing = lower number
+    local normalPadding = 12
+    normalPadding = normalPadding / (Settings.options["General"].columnSpacing * 1.25 + 1)
+    self.bgLane.width = self.mode * (200 + Settings.options["General"].columnSpacing + normalPadding)
 end
 
 function Gameplay:update(dt)
@@ -1027,21 +1034,16 @@ function Gameplay:draw()
 
     love.graphics.push()
         local scale = 1 - ((self.mode - 4) * 0.05)
-        love.graphics.setColor(0,0,0)
-        --love.graphics.rectangle("fill", self.bgLane.x, -200, self.bgLane.width, 1080+400) -- 200 val to be safe when the screen is scaling for key's > 4
-        -- above rect, but accomodating for the scale
-        love.graphics.rectangle("fill", self.bgLane.x / scale, -200, self.bgLane.width * scale, 1080+400)
-        love.graphics.setColor(1,1,1)
         love.graphics.push()
             love.graphics.translate(Inits.GameWidth/2, Inits.GameHeight/2)
             -- scale based off of the mode,
             -- the mid point is 4. 4 would be a scale of 1
-            love.graphics.scale(scale, scale)
+            love.graphics.scale(scale*Settings.options["General"].noteSize, scale*Settings.options["General"].noteSize)
             love.graphics.translate(-Inits.GameWidth/2, -Inits.GameHeight/2)
             -- move down the playfield based off scale, 4 = 0
             love.graphics.translate(0, (self.mode - 4) * 25)
             for i, playfield in ipairs(self.playfields) do
-                playfield:draw(self.hitObjects.members, self.timingLines.members, self.bgLane.width, scale, self.bgLane.x)
+                playfield:draw(self.hitObjects.members, self.timingLines.members, self.bgLane.width, scale*Settings.options["General"].noteSize, self.bgLane.x)
             end
         love.graphics.pop()
     love.graphics.pop()

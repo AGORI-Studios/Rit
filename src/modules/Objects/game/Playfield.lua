@@ -23,6 +23,9 @@ function Playfield:draw(notes, timingLines, timingLineWidth, scale, bgLaneX)
     love.graphics.push()
     love.graphics.translate(self.x, self.y)
     love.graphics.scale(1, self.reversed and -1 or 1)
+    love.graphics.setColor(0,0,0)
+    love.graphics.rectangle("fill", states.game.Gameplay.bgLane.x, -200, states.game.Gameplay.bgLane.width, 1080+400)
+    love.graphics.setColor(1,1,1)
     if scale ~= 1 then -- literally the lazy way out
         local firstReceptorX = states.game.Gameplay.strumLineObjects.members[1].x
         local diff = firstReceptorX - bgLaneX
@@ -38,7 +41,7 @@ function Playfield:draw(notes, timingLines, timingLineWidth, scale, bgLaneX)
     end
     for i, note in ipairs(notes) do
         if note.draw then
-            note:draw(scale)
+            note:draw(scale * Settings.options["General"].noteSize)
         end
     end
     love.graphics.pop()

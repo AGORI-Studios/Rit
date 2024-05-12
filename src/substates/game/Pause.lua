@@ -36,12 +36,10 @@ function Pause:update(dt)
 end
 
 function Pause:mousemoved(x, y, dx, dy, istouch)
+    local x, y = toGameScreen(x, y)
     if x > 0 and x < Inits.GameWidth and y > 0 and y < Inits.GameHeight then
-        for i, v in ipairs(options) do
-            if y > 200 + (i * 50) and y < 200 + (i * 50) + 50 then
-                self.selection = i
-            end
-        end
+        self.selection = math.floor((y - 250) / 50) + 1
+        self.selection = math.clamp(self.selection, 1, #options)
     end
 end
 
