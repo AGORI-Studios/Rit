@@ -137,9 +137,9 @@ function Gameplay:reset()
 
     self:preloadAssets()
 
-    self.judgements = { -- Judgement 4 timings
+    self.judgements = {
         {name="marvellous", img="defaultSkins/skinThrowbacks/judgements/MARVELLOUS.png", time=23, scoreMultiplier=1},
-        {name="perfect", img="defaultSkins/skinThrowbacks/judgements/PERFECT.png", time=40, scoreMultiplier=0.9},
+        {name="perfect", img="defaultSkins/skinThrowbacks/judgements/PERFECT.png", time=40, scoreMultiplier=0.93},
         {name="great", img="defaultSkins/skinThrowbacks/judgements/GREAT.png", time=74, scoreMultiplier=0.7},
         {name="good", img="defaultSkins/skinThrowbacks/judgements/GOOD.png", time=103, scoreMultiplier=0.55},
         {name="bad", img="defaultSkins/skinThrowbacks/judgements/BAD.png", time=127, scoreMultiplier=0.3},

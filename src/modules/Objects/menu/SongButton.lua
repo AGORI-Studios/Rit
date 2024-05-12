@@ -2,7 +2,7 @@
 ---@class SongButton
 local SongButton = Sprite:extend()
 
-function SongButton:new(y, diffs, bmType, name, artist, creator, description)
+function SongButton:new(y, diffs, bmType, name, artist, creator, description, tags)
     self.super.new(self)
     self.children = {} -- List of dificulties
     self.extendedChildren = {}
@@ -13,6 +13,7 @@ function SongButton:new(y, diffs, bmType, name, artist, creator, description)
     self.creator = creator
     self.description = description
     self.selected = false
+    self.tags = tags
 
     self.x = 0
     self.y = y

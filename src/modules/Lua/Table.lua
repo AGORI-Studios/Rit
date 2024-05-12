@@ -62,6 +62,8 @@ function table.find(table, value)
     return nil
 end
 
+table.contains = table.find
+
 ---@name table.concate
 ---@description Concatenates a table to a string
 ---@param table table

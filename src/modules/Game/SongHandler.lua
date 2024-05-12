@@ -18,6 +18,9 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         local Creator = fileData:match("Creator:(.-)\r?\n")
                         local AudioFile = fileData:match("AudioFile:(.-)\r?\n"):trim()
                         local Artist = fileData:match("Artist:(.-)\r?\n")
+                        local Tags = fileData:match("Tags:(.-)\r?\n"):strip()
+                        Tags = Tags:split(" ")
+
                         local alreadyInList = false
                         for _, song in ipairs(songList) do
                             if song.title == title and song.difficultyName == difficultyName then
@@ -36,6 +39,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                                 rating = "",
                                 creator = Creator,
                                 artist = Artist,
+                                tags = Tags,
                                 mode = mode:match("%d+"),
                                 audioFile = path .."/" .. file .. "/" .. AudioFile
                             }
@@ -48,6 +52,9 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         local AudioFile = fileData:match("AudioFilename:(.-)\r?\n"):trim()
                         local Creator = fileData:match("Creator:(.-)\r?\n")
                         local Artist = fileData:match("Artist:(.-)\r?\n")
+                        local Tags = fileData:match("Tags:(.-)\r?\n"):strip()
+                        Tags = Tags:split(" ")
+
                         local alreadyInList = false
                         for _, song in ipairs(songList) do
                             if song.title == title and song.difficultyName == difficultyName then
@@ -69,6 +76,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                                 rating = "",
                                 creator = Creator,
                                 artist = Artist,
+                                tags = Tags,
                                 audioFile = path .."/" .. file .. "/" .. AudioFile
                             }
                             songList[title].type = "osu!"
@@ -82,6 +90,9 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         local Creator = fileData:match("Creator:(.-)\r?\n")
                         local Artist = fileData:match("Artist:(.-)\r?\n")
                         local description = fileData:match("Description:(.-)\r?\n")
+                        local Tags = fileData:match("Tags:(.-)\r?\n"):strip()
+                        Tags = Tags:split(" ")
+
                         local alreadyInList = false
                         for _, song in ipairs(songList) do
                             if song.title == title and song.difficultyName == difficultyName then
@@ -101,6 +112,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                                 creator = Creator,
                                 artist = Artist,
                                 description = description,
+                                tags = Tags,
                                 audioFile = path .."/" .. file .. "/" .. AudioFile
                             }
                             songList[title].type = "Rit"
@@ -112,6 +124,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         local AudioFile
                         local Creator = "Unknown"
                         local Artist = "Unknown"
+                        local Tags = {"malody"}
                         for i, note in ipairs(fileData.note) do
                             if note.type == 1 then
                                 AudioFile = note.sound
@@ -136,6 +149,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                                 ratingColour = {1,1,1},
                                 creator = Creator,
                                 artist = Artist,
+                                tags = Tags,
                                 audioFile = path .."/" .. file .. "/" .. AudioFile
                             }
                         end
@@ -220,6 +234,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                     local Creator = fileData:match("Creator:(.-)\r?\n")
                     local AudioFile = fileData:match("AudioFile:(.-)\r?\n"):trim()
                     local Artist = fileData:match("Artist:(.-)\r?\n")
+                    local Tags = fileData:match("Tags:(.-)\r?\n"):strip()
+                    Tags = Tags:split(" ")
                     local alreadyInList = false
                     for _, song in ipairs(songList) do
                         if song.title == title and song.difficultyName == difficultyName then
@@ -240,6 +256,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             creator = Creator,
                             artist = Artist,
                             mode = mode:match("%d+"),
+                            tags = Tags,
                             audioFile = "song/" .. AudioFile
                        }
                         songList[title].type = "Quaver"
@@ -253,6 +270,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                     local Mode = fileData:match("Mode:(.-)\r?\n"):trim()
                     local Creator = fileData:match("Creator:(.-)\r?\n")
                     local Artist = fileData:match("Artist:(.-)\r?\n")
+                    local Tags = fileData:match("Tags:(.-)\r?\n"):strip()
+                    Tags = Tags:split(" ")
                     -- needs to be 3, else FUCK YOU!
                     if Mode ~= "3" then goto continue end
                     for _, song in ipairs(songList) do
@@ -273,6 +292,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             ratingColour = {1,1,1},
                             creator = Creator,
                             artist = Artist,
+                            tags = Tags,
                             audioFile = "song/" .. AudioFile
                         }
                         songList[title].type = "osu!"

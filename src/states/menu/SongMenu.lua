@@ -11,20 +11,23 @@ local lerpedSongPos = 0
 local transitioning = false
 local curButton = nil
 local lastCurSelected = 1
-local inCat = false
 local showCat = true
 local inSidebar = false
 
 local songTimer
-
+local typing = false
+local searchText = ""
 SongMenu.replays = {}
 
+local utf8 = require("utf8")
+
 function SongMenu:enter()
+    typing = false
+    searchText = ""
     curTab = "songs"
     lerpedSongPos = 0
     curButton = nil
     showCat = true
-    inCat = false
     inSidebar = false
     songButton = Sprite(0, 0, "assets/images/ui/menu/songBtn.png")
     statsBox = Sprite(900, 125, "assets/images/ui/menu/statsBox.png")
@@ -66,6 +69,7 @@ function SongMenu:enter()
         local creator = nil
         local artist = nil
         local description = nil
+        local tags = nil
         for j, diff in pairs(song) do
             if type(diff) == "table" then
                 table.insert(diffs, diff)
@@ -74,6 +78,7 @@ function SongMenu:enter()
                 creator = diff.creator
                 artist = diff.artist
                 description = diff.description
+                tags = diff.tags
             else
                 -- if diff is a key in songButtons, then don't set it
                 if songButtons[diff] then
@@ -82,10 +87,12 @@ function SongMenu:enter()
             end
         end
         local y = #songButtons * songButton.height * 0.75
-        local btn = SongButton(y, diffs, bmType, songName, artist, creator, description or "This map has no description.")
+        local btn = SongButton(y, diffs, bmType, songName, artist, creator, description or "This map has no description.", tags or {})
         btn.x = -125
         table.insert(songButtons, btn)
     end
+
+    SearchAlgorithm:setUpSongButtons(songButtons)
 
     if songButtons[lastCurSelected] then
         playSelectedSong(songButtons[lastCurSelected])
@@ -134,23 +141,45 @@ function SongMenu:update(dt)
     
     if input:pressed("confirm") and not transitioning then
         if curTab == "songs" then
-            showCat = false
-            transitioning = true
-            curTab = "diffs"
-            lastCurSelected = curSelected
-            curSelected = 1
-            curButton.open = true
+            if typing then
+                typing = false
+                if searchText == "" then 
+                    songButtons = SearchAlgorithm.allSongButtons
+                    curButton.selected = false
+                    for i, btn in ipairs(songButtons) do
+                        btn.y = (i - 1) * songButton.height * 0.75
+                    end
+                    curButton = songButtons[curSelected]
+                else
+                    songButtons = SearchAlgorithm:doSearch(searchText)
+                    for i, btn in ipairs(songButtons) do
+                        btn.y = (i - 1) * songButton.height * 0.75
+                    end
+                    curSelected = 1
+                    curButton = songButtons[curSelected]
+                    if curButton then
+                        playSelectedSong(curButton)
+                    end
+                end
+            elseif not typing then
+                showCat = false
+                transitioning = true
+                curTab = "diffs"
+                lastCurSelected = curSelected
+                curSelected = 1
+                curButton.open = true
 
-            -- songName and songDiff
-            self.songName = curButton.name
-            self.songDiff = curButton.children[curSelected].name
-            getSongReplays()
+                -- songName and songDiff
+                self.songName = curButton.name
+                self.songDiff = curButton.children[curSelected].name
+                getSongReplays()
 
-            for i, diff in ipairs(curButton.children) do
-                Timer.tween(0.1, diff, {x = 0}, "out-quad", function()
-                    diff.x = 0
-                    transitioning = false
-                end)
+                for i, diff in ipairs(curButton.children) do
+                    Timer.tween(0.1, diff, {x = 0}, "out-quad", function()
+                        diff.x = 0
+                        transitioning = false
+                    end)
+                end
             end
         elseif curTab == "diffs" then
             local diff = curButton.children[curSelected]
@@ -164,9 +193,7 @@ function SongMenu:update(dt)
             if chartver ~= "FNF" then
                 states.game.Gameplay.chartVer = chartver
                 states.game.Gameplay.songPath = songPath
-                print("Song path: " .. songPath)
                 states.game.Gameplay.folderpath = folderpath
-                print("Folder path: " .. folderpath)
                 states.game.Gameplay.difficultyName = diffName
                 switchState(states.game.Gameplay, 0.3, nil)
             end
@@ -254,7 +281,7 @@ function SongMenu:mousepressed(x, y, b)
         y = y - lerpedSongPos
 
         if searchCatTab:isHovered(x, y) and showCat then
-            inCat = not inCat
+            typing = not typing
         end
 
         for i, btn in ipairs(songButtons) do
@@ -275,9 +302,7 @@ function SongMenu:mousepressed(x, y, b)
                             if chartver ~= "FNF" then
                                 states.game.Gameplay.chartVer = chartver
                                 states.game.Gameplay.songPath = songPath
-                                print("Song path: " .. songPath)
                                 states.game.Gameplay.folderpath = folderpath
-                                print("Folder path: " .. folderpath)
                                 states.game.Gameplay.difficultyName = diffName
                                 switchState(states.game.Gameplay, 0.3, nil)
                             end
@@ -323,6 +348,18 @@ function SongMenu:mousepressed(x, y, b)
 end
 
 function SongMenu:keypressed(key)
+    if key == "backspace" and typing then
+        local byteoffset = utf8.offset(searchText, -1)
+        if byteoffset then
+            searchText = string.sub(searchText, 1, byteoffset - 1)
+        end
+    end
+end
+
+function SongMenu:textinput(t)
+    if typing then
+        searchText = searchText .. t
+    end
 end
 
 function SongMenu:draw()
@@ -470,6 +507,7 @@ function SongMenu:draw()
                 else
                     btn.color = {1, 1, 1}
                 end
+                print(#songButtons)
                 btn:draw(0, lerpedSongPos, curSelected, #songButtons)
             end
         elseif btn.open then
@@ -506,6 +544,7 @@ function SongMenu:draw()
     end
     if showCat then
         magnifyingGlass:draw()
+        love.graphics.print(searchText, 30, -132, 0, 1.25, 1.25)
         searchCatTab:draw()
     end
     love.graphics.pop()

@@ -268,7 +268,7 @@ function L.RenderDrawLists()
             love.mouse.setVisible(false) -- Hide OS mouse cursor if ImGui is drawing it
         else
             love.mouse.setVisible(true)
-            love.mouse.setCursor(cursor)
+            --love.mouse.setCursor(cursor)
         end
     end
 

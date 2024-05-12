@@ -143,6 +143,11 @@ function love.load()
 
     doAprilFools = CheckAprilFools()
 
+    cursor = love.mouse.newCursor("assets/images/ui/cursor/cursor.png", 0, 0)
+    --love.mouse.setCursor(cursor)
+
+    love.keyboard.setKeyRepeat(true)
+
     -- Lastly, switch to the preloader screen to preload all of our needed assets
     state.switch(states.screens.PreloaderScreen)
 end
