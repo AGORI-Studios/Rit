@@ -31,7 +31,7 @@ function Pause:update(dt)
         states.game.Gameplay.updateTime = true
         previousFrameTime = love.timer.getTime() * 1000
         states.game.Gameplay.escapeTimer = 0
-        state.killSubstate(self.selection == 2)
+        state.killSubstate(self.selection == 2, self.selection == 3)
     end
 end
 
@@ -57,7 +57,7 @@ function Pause:touchpressed(id, x, y, dx, dy, pressure)
         states.game.Gameplay.updateTime = true
         previousFrameTime = love.timer.getTime() * 1000
         states.game.Gameplay.escapeTimer = 0
-        state.killSubstate()
+        state.killSubstate(self.selection == 2, self.selection == 3)
     end
 end
 
@@ -82,6 +82,7 @@ function Pause:mousepressed(x, y, button, istouch)
                -- state.switch(states.menu.Multiplayer.ServerMenu)
                switchState(states.menu.Multiplayer.ServerMenu, 0.3)
             else
+                states.game.Gameplay.soundManager:removeAllSounds()
                 switchState(states.menu.SongMenu, 0.3)
             end
         end
@@ -89,7 +90,7 @@ function Pause:mousepressed(x, y, button, istouch)
         states.game.Gameplay.updateTime = true
         previousFrameTime = love.timer.getTime() * 1000
         states.game.Gameplay.escapeTimer = 0
-        state.killSubstate()
+        state.killSubstate(self.selection == 2, self.selection == 3)
     end
 end
 

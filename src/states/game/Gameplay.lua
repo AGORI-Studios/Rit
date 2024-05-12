@@ -978,9 +978,9 @@ function Gameplay:goodNoteHit(note, time)
     end
 end
 
-function Gameplay:substateReturn(restarted)
+function Gameplay:substateReturn(restarted, leftGame)
     self.inPause = false
-    if not restarted then
+    if not restarted or not leftGame then
         self.soundManager:play("music")
     end
     self.updateTime = true

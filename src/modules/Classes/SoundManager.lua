@@ -30,6 +30,7 @@ function SoundManager:newSound(name, path, volume, loop, type)
 end
 
 function SoundManager:play(name, clone)
+    if not self.channel[name] then return end
     self.channel[name].paused = false
     if clone then
         local clone = self.channel[name].sound:clone()
