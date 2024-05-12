@@ -22,10 +22,10 @@ function Pause:update(dt)
     if input:pressed("confirm") then
         if self.selection == 1 then
             
-        elseif self.selection == 2 then
-            state.switch(states.game.Gameplay)
+        elseif self.selection == 2 and not networking.inMultiplayerGame then
+            switchState(states.game.Gameplay, 0.3)
         elseif self.selection == 3 then
-            state.switch(states.menu.SongMenu)
+            switchState(states.menu.SongMenu, 0.3)
         end
         states.game.Gameplay.inPause = false
         states.game.Gameplay.updateTime = true
@@ -48,10 +48,10 @@ function Pause:touchpressed(id, x, y, dx, dy, pressure)
     if x > 0 and x < Inits.GameWidth and y > 0 and y < Inits.GameHeight then
         if self.selection == 1 then
             
-        elseif self.selection == 2 then
-            state.switch(states.game.Gameplay)
+        elseif self.selection == 2 and not networking.inMultiplayerGame then
+            switchState(states.game.Gameplay, 0.3)
         elseif self.selection == 3 then
-            state.switch(states.menu.SongMenu)
+            switchState(states.menu.SongMenu, 0.3)
         end
         states.game.Gameplay.inPause = false
         states.game.Gameplay.updateTime = true
@@ -65,8 +65,8 @@ function Pause:mousepressed(x, y, button, istouch)
     if x > 0 and x < Inits.GameWidth and y > 0 and y < Inits.GameHeight then
         if self.selection == 1 then
             
-        elseif self.selection == 2 then
-            state.switch(states.game.Gameplay)
+        elseif self.selection == 2 and not networking.inMultiplayerGame then
+            switchState(states.game.Gameplay, 0.3)
         elseif self.selection == 3 then
             if networking.inMultiplayerGame then
                 networking.hub:publish({
@@ -79,9 +79,10 @@ function Pause:mousepressed(x, y, button, istouch)
                         }
                     }
                 })
-                state.switch(states.menu.Multiplayer.ServerMenu)
+               -- state.switch(states.menu.Multiplayer.ServerMenu)
+               switchState(states.menu.Multiplayer.ServerMenu, 0.3)
             else
-                state.switch(states.menu.SongMenu)
+                switchState(states.menu.SongMenu, 0.3)
             end
         end
         states.game.Gameplay.inPause = false
@@ -103,6 +104,9 @@ function Pause:draw()
             love.graphics.setColor(1, 1, 1, 1)
         else
             love.graphics.setColor(0.5, 0.5, 0.5, 1)
+        end
+        if i == 2 and networking.inMultiplayerGame then
+            love.graphics.setColor(0.6, 0.6, 0.6, 1)
         end
         love.graphics.printf(v, 0, 200 + (i * 50), Inits.GameWidth, "center")
     end

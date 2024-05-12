@@ -249,10 +249,6 @@ function Gameplay:initializePositionMarkers()
     table.insert(self.velocityPositionMakers, position)
     for i = 2, #self.sliderVelocities do
         local velocity = self.sliderVelocities[i]
-        --[[
-            position += (long)((Map.SliderVelocities[i].StartTime - Map.SliderVelocities[i - 1].StartTime)
-                                   * Map.SliderVelocities[i - 1].Multiplier * TrackRounding);
-        ]]
         position = position + (velocity.startTime - (self.sliderVelocities[i - 1] and self.sliderVelocities[i - 1].startTime or 0)) 
             * (self.sliderVelocities[i - 1] and self.sliderVelocities[i - 1].multiplier or 0) * self.trackRounding
         table.insert(self.velocityPositionMakers, position)
@@ -304,7 +300,7 @@ function Gameplay:isSVNegative(time)
     i_ = i_ - 1
 
     for i = i_, 1, -1 do
-        if self.sliderVelocities[i].multiplier ~= 0 then
+        if (self.sliderVelocities[i].multiplier or 0) ~= 0 then
             i_ = i
             break
         end
@@ -314,7 +310,7 @@ function Gameplay:isSVNegative(time)
         return self.initialScrollVelocity < 0
     end
 
-    return self.sliderVelocities[i_].multiplier < 0
+    return (self.sliderVelocities[i_].multiplier or 0) < 0
 end
 
 function Gameplay:getCommonBpm()
@@ -419,11 +415,11 @@ function Gameplay:normalizeSVs()
             end
 
             if (sv.startTime < timingPoint.StartTime) then
-                local multiplier = sv.Multiplier * (currentBpm / baseBpm)
+                local multiplier = (sv.Multiplier or 0) * (currentBpm / baseBpm)
 
                 if not currentAdjustedSvMultiplier then
                     currentAdjustedSvMultiplier = multiplier
-                    initialSvMultiplier = sv.Multiplier
+                    initialSvMultiplier = (sv.Multiplier or 0)
                 end
 
                 if multiplier ~= currentAdjustedSvMultiplier then
@@ -436,7 +432,7 @@ function Gameplay:normalizeSVs()
             end
 
             currentSvStartTime = sv.startTime
-            currentSvMultiplier = sv.Multiplier
+            currentSvMultiplier = (sv.Multiplier or 0)
             currentSvIndex = currentSvIndex + 1
         end
 
@@ -464,7 +460,7 @@ function Gameplay:normalizeSVs()
     -- for (; currentSvIndex < SliderVelocities.Count; currentSvIndex++)
     for i = currentSvIndex, #self.sliderVelocities do
         local sv = self.sliderVelocities[i]
-        local multiplier = sv.multiplier * (currentBpm / baseBpm)
+        local multiplier = (sv.multiplier or 0) * (currentBpm / baseBpm)
 
         if multiplier ~= currentAdjustedSvMultiplier then
             table.insert(normalizedScrollVelocities, {
@@ -514,8 +510,8 @@ function Gameplay:SVFactor()
             break
         end
 
-        local prevMultiplier = math.min(math.max(math.abs(prevSv.multiplier), MIN_MULTIPLIER), MAX_MULTIPLIER)
-        local multiplier = math.min(math.max(math.abs(sv.multiplier), MIN_MULTIPLIER), MAX_MULTIPLIER)
+        local prevMultiplier = math.min(math.max(math.abs((prevSv.multiplier or 0)), MIN_MULTIPLIER), MAX_MULTIPLIER)
+        local multiplier = math.min(math.max(math.abs((sv.multiplier or 0)), MIN_MULTIPLIER), MAX_MULTIPLIER)
 
         local prevLogMultiplier = math.log(prevMultiplier)
         local logMultiplier = math.log(multiplier)
@@ -763,11 +759,13 @@ function Gameplay:update(dt)
                 love.filesystem.write("replays/" .. self.songName .. " - " .. self.difficultyName .. " - " .. os.time() .. ".ritreplay", json.encode(self.replay))
             end
             if Steam and networking.connected and networking.currentServerData and networking.inMultiplayerGame then
-                state.switch(states.screens.Multiplayer.ResultsScreen, {score = self.score, accuracy = self.accuracy, misses = self.misses, maxCombo = self.combo})
+                switchState(states.menu.StartMenu, 0.3, nil, {score = self.score, accuracy = self.accuracy, misses = self.misses, maxCombo = self.combo})
+                MenuSoundManager:removeAllSounds()
+                self.soundManager:removeAllSounds()
             else
-                state.switch(states.menu.SongMenu)
+                switchState(states.menu.StartMenu, 0.3)
+                MenuSoundManager:removeAllSounds()
             end
-            if self.background then self.background:release() end
             return
         elseif self.escapeTimer >= 0.7 then
             state.substate(substates.game.Pause)
@@ -812,9 +810,6 @@ function Gameplay:update(dt)
     else
         self.escapeTimer = 0
     end
-    --[[ if input:pressed("back") then
-        state.switch(states.screens.Multiplayer.ResultsScreen, {score = 1000000, accuracy = 100, misses = 0, maxCombo = 0})
-    end ]]
 
     if self.updateTime then
         if #self.hitObjects.members > 0 then

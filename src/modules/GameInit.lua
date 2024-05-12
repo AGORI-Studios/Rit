@@ -276,6 +276,7 @@ function GI.LoadObjects()
     ServerButton = require("modules.Objects.menu.ServerButton")
     Spectrum = require("modules.Objects.menu.Spectrum")
 
+    HeaderButton = require("modules.Objects.menu.HeaderButton")
     Header = require("modules.Objects.menu.Header")
 end
 

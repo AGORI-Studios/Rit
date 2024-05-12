@@ -47,7 +47,7 @@ function OsuImportScreen:update(dt)
             end
         end
 
-        state.switch(states.screens.PreloaderScreen)
+        switchState(states.menu.StartMenu, 0.3)
         Popup("bottom right", localize.localize("Imported songs"), "Imported all songs successfully!", 0.5, 1)
     end
 end

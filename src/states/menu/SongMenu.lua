@@ -91,6 +91,15 @@ function SongMenu:enter()
         btn.x = -125
         table.insert(songButtons, btn)
     end
+    
+    -- sort the songButtons by name
+    table.sort(songButtons, function(a, b)
+        return a.name < b.name
+    end)
+
+    for i, btn in ipairs(songButtons) do
+        btn.y = (i - 1) * songButton.height * 0.75
+    end
 
     SearchAlgorithm:setUpSongButtons(songButtons)
 

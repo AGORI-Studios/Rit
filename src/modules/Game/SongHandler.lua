@@ -19,6 +19,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         local AudioFile = fileData:match("AudioFile:(.-)\r?\n"):trim()
                         local Artist = fileData:match("Artist:(.-)\r?\n")
                         local Tags = fileData:match("Tags:(.-)\r?\n"):strip()
+                        local bpm = fileData:match("Bpm: (%d+)")
                         Tags = Tags:split(" ")
 
                         local alreadyInList = false
@@ -41,6 +42,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                                 artist = Artist,
                                 tags = Tags,
                                 mode = mode:match("%d+"),
+                                bpm = bpm,
                                 audioFile = path .."/" .. file .. "/" .. AudioFile
                             }
                             songList[title].type = "Quaver"
@@ -53,6 +55,52 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         local Creator = fileData:match("Creator:(.-)\r?\n")
                         local Artist = fileData:match("Artist:(.-)\r?\n")
                         local Tags = fileData:match("Tags:(.-)\r?\n"):strip()
+                        -- osu's bpm is really stupid so we have to calculate it ourselves
+                        -- like... THIS IS THEIR BPM SYSTEM?????
+                        --[[
+                            [TimingPoints]
+                            2133,270.002700027,4,1,0,30,1,0
+                        ]]
+                        local timingPoints = fileData:match("%[TimingPoints%]\r?\n(.-)\r?\n%[HitObjects%]")
+                        local bpm = 120
+                        for line in timingPoints:gmatch("[^\r\n]+") do
+                            local split = line:split(",")
+                            local tp = {}
+
+                            tp.offset = tonumber(split[1]) or 0 -- MS per beat
+                            tp.beatLength = tonumber(split[2]) or 0
+                            tp.timingSignature = math.max(0, math.min(8, tonumber(split[3]) or 4)) or 4
+                            tp.sampleSetId = tonumber(split[4]) or 0
+                            tp.customSampleIndex = tonumber(split[5]) or 0
+                            tp.sampleVolume = tonumber(split[6]) or 0
+                            tp.timingChange = tonumber(split[7]) or 1
+                            tp.kiaiTimeActive = tonumber(split[8]) or 0
+
+                            if tp.timingSignature == 0 then
+                                tp.timingSignature = 4
+                            end
+
+                            if tp.beatLength >= 0 then
+                                -- beat shit
+                                tp.beatLength = math.abs(tp.beatLength)
+                                tp.measureLength = math.abs(tp.beatLength * tp.timingSignature)
+                                tp.timingChange = true
+                                if tp.beatLength < 1e-3 then
+                                    tp.beatLength = 1
+                                end
+                                if tp.measureLength < 1e-3 then
+                                    tp.measureLength = 1
+                                end
+                            else -- slider velocity (what we care about)
+                                tp.velocity = math.min(math.max(0.1, math.abs(-100 / tp.beatLength)), 10)
+                            end
+
+                            local isSV = tp.sampleVolume == 0 or tp.beatLength < 0
+
+                            if not isSV then
+                                bpm = 60000/tp.beatLength
+                            end
+                        end
                         Tags = Tags:split(" ")
 
                         local alreadyInList = false
@@ -77,6 +125,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                                 creator = Creator,
                                 artist = Artist,
                                 tags = Tags,
+                                bpm = bpm,
                                 audioFile = path .."/" .. file .. "/" .. AudioFile
                             }
                             songList[title].type = "osu!"
@@ -91,6 +140,9 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         local Artist = fileData:match("Artist:(.-)\r?\n")
                         local description = fileData:match("Description:(.-)\r?\n")
                         local Tags = fileData:match("Tags:(.-)\r?\n"):strip()
+                        local bpm = fileData:match("%[Timings%]\r?\n(.-)\r?\n%[Hits%]")
+                        bpm = bpm:split("\r?\n")
+                        bpm = bpm[1]:split(":")[2]
                         Tags = Tags:split(" ")
 
                         local alreadyInList = false
@@ -113,6 +165,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                                 artist = Artist,
                                 description = description,
                                 tags = Tags,
+                                bpm = bpm,
                                 audioFile = path .."/" .. file .. "/" .. AudioFile
                             }
                             songList[title].type = "Rit"
@@ -150,6 +203,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                                 creator = Creator,
                                 artist = Artist,
                                 tags = Tags,
+                                bpm = 120,
                                 audioFile = path .."/" .. file .. "/" .. AudioFile
                             }
                         end
@@ -235,6 +289,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                     local AudioFile = fileData:match("AudioFile:(.-)\r?\n"):trim()
                     local Artist = fileData:match("Artist:(.-)\r?\n")
                     local Tags = fileData:match("Tags:(.-)\r?\n"):strip()
+                    local Bpm = fileData:match("Bpm: (%d+)")
                     Tags = Tags:split(" ")
                     local alreadyInList = false
                     for _, song in ipairs(songList) do
@@ -257,6 +312,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             artist = Artist,
                             mode = mode:match("%d+"),
                             tags = Tags,
+                            bpm = Bpm,
                             audioFile = "song/" .. AudioFile
                        }
                         songList[title].type = "Quaver"
@@ -271,6 +327,46 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                     local Creator = fileData:match("Creator:(.-)\r?\n")
                     local Artist = fileData:match("Artist:(.-)\r?\n")
                     local Tags = fileData:match("Tags:(.-)\r?\n"):strip()
+                    local timingPoints = fileData:match("%[TimingPoints%]\r?\n(.-)\r?\n%[HitObjects%]")
+                    local bpm = 120
+                    for line in timingPoints:gmatch("[^\r\n]+") do
+                        local split = line:split(",")
+                        local tp = {}
+
+                        tp.offset = tonumber(split[1]) or 0 -- MS per beat
+                        tp.beatLength = tonumber(split[2]) or 0
+                        tp.timingSignature = math.max(0, math.min(8, tonumber(split[3]) or 4)) or 4
+                        tp.sampleSetId = tonumber(split[4]) or 0
+                        tp.customSampleIndex = tonumber(split[5]) or 0
+                        tp.sampleVolume = tonumber(split[6]) or 0
+                        tp.timingChange = tonumber(split[7]) or 1
+                        tp.kiaiTimeActive = tonumber(split[8]) or 0
+
+                        if tp.timingSignature == 0 then
+                            tp.timingSignature = 4
+                        end
+
+                        if tp.beatLength >= 0 then
+                            -- beat shit
+                            tp.beatLength = math.abs(tp.beatLength)
+                            tp.measureLength = math.abs(tp.beatLength * tp.timingSignature)
+                            tp.timingChange = true
+                            if tp.beatLength < 1e-3 then
+                                tp.beatLength = 1
+                            end
+                            if tp.measureLength < 1e-3 then
+                                tp.measureLength = 1
+                            end
+                        else -- slider velocity (what we care about)
+                            tp.velocity = math.min(math.max(0.1, math.abs(-100 / tp.beatLength)), 10)
+                        end
+
+                        local isSV = tp.sampleVolume == 0 or tp.beatLength < 0
+
+                        if not isSV then
+                            bpm = 60000/tp.beatLength
+                        end
+                     end
                     Tags = Tags:split(" ")
                     -- needs to be 3, else FUCK YOU!
                     if Mode ~= "3" then goto continue end
@@ -293,6 +389,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             creator = Creator,
                             artist = Artist,
                             tags = Tags,
+                            bpm = bpm,
                             audioFile = "song/" .. AudioFile
                         }
                         songList[title].type = "osu!"
@@ -337,6 +434,8 @@ function playRandomSong()
     MenuSoundManager:newSound("music", diff.audioFile, 1, true, "stream")
     MenuSoundManager:play("music")
     MenuSoundManager:setLooping("music", true)
+
+    menuBPM = diff.bpm
 
     if diff.audioFile:startsWith("song/") then
         lf.unmount(diff.path)

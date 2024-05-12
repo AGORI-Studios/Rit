@@ -24,7 +24,7 @@ end
 
 function ResultsScreen:update(dt)
     if input:pressed("back") or input:pressed("confirm") then
-        state.switch(states.menu.Multiplayer.LobbyMenu, networking.currentServerData)
+        switchState(states.menu.Multiplayer.LobbyMenu, 0.3, nil, networking.currentServerData)
     end
 end
 

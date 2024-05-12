@@ -24,6 +24,31 @@ __InJukebox = false
 require("modules.Utilities")
 ffi = require("ffi")
 
+Inits = require("init")
+__WINDOW_WIDTH, __WINDOW_HEIGHT = Inits.__WINDOW_WIDTH, Inits.__WINDOW_HEIGHT
+
+_TRANSITION = {
+    x = Inits.GameWidth,
+    width = Inits.GameWidth,
+    y = 0,
+    timer = nil, -- Timer.tween
+}
+
+function switchState(newState, t, middleFunc, data)
+    local t = t or 0.3
+    isLoading = true
+    Timer.tween(t, _TRANSITION, {x = 0}, "out-quart", function()
+        if middleFunc then middleFunc() end
+        state.switch(newState, data)
+        isLoading = false
+        Timer.after(0.01, function()
+            Timer.tween(t, _TRANSITION, {x = -Inits.GameWidth}, "out-quart", function()
+                _TRANSITION.x = Inits.GameWidth
+            end)
+        end)
+    end)
+end
+
 DRAW_VIRTUAL_CONTROLLER = love.system.getOS() == "Android" or love.system.getOS() == "iOS"
 
 if love.system.getOS() == "Windows" then
@@ -65,9 +90,6 @@ if love.system.getOS() == "Windows" then
         end
     )
 end
-
-Inits = require("init")
-__WINDOW_WIDTH, __WINDOW_HEIGHT = Inits.__WINDOW_WIDTH, Inits.__WINDOW_HEIGHT
 
 local winOpacity = {1}
 local volume = {1}
@@ -150,17 +172,6 @@ function love.load()
 
     -- Lastly, switch to the preloader screen to preload all of our needed assets
     state.switch(states.screens.PreloaderScreen)
-end
-
-function switchState(newState, t, middleFunc)
-    local t = t or 0.3
-    isLoading = true
-    Timer.tween(t, _G, {fade = 0}, "linear", function()
-        if middleFunc then middleFunc() end
-        state.switch(newState)
-        isLoading = false
-        Timer.tween(t, _G, {fade = 1}, "linear")
-    end)
 end
 
 function love.update(dt)
@@ -253,6 +264,9 @@ function love.draw()
     love.graphics.setCanvas({gameScreen, stencil = true})
         love.graphics.clear(0,0,0,1)
         state.draw()
+        love.graphics.setColor(0,0,0,1)
+        love.graphics.rectangle("fill", _TRANSITION.x, _TRANSITION.y, _TRANSITION.width, Inits.GameHeight)
+        love.graphics.setColor(1,1,1,1)
         if DRAW_VIRTUAL_CONTROLLER then
             currentController:draw()
         end

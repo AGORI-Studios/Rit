@@ -13,18 +13,20 @@ end
 local bars, gear, home, import, barVert, menuBar
 
 function Header:new()
-    bars = Sprite(1830, 0, "assets/images/ui/buttons/barsHorizontal.png")
+    --[[ bars = Sprite(1830, 0, "assets/images/ui/buttons/barsHorizontal.png")
     gear = Sprite(0, 0, "assets/images/ui/buttons/gear.png")
     home = Sprite(80, 0, "assets/images/ui/buttons/home.png")
     import = Sprite(1760, -2, "assets/images/ui/buttons/import.png")
     barVert = Sprite(150, 0, "assets/images/ui/buttons/barIcon.png")
+    menuBar = Sprite(0, 0, "assets/images/ui/menu/menuBar.png") ]]
+    bars = HeaderButton(1830, 0, "assets/images/ui/buttons/barsHorizontal.png")
+    gear = HeaderButton(0, 0, "assets/images/ui/buttons/gear.png")
+    home = HeaderButton(80, 0, "assets/images/ui/buttons/home.png")
+    import = HeaderButton(1760, -2, "assets/images/ui/buttons/import.png")
+    barVert = Sprite(150, 0, "assets/images/ui/buttons/barIcon.png")
     menuBar = Sprite(0, 0, "assets/images/ui/menu/menuBar.png")
     menuBar.alpha = 0.75
 
-    bars:setScale(1.25)
-    gear:setScale(1.25)
-    home:setScale(1.25)
-    import:setScale(1.25)
     barVert:setScale(1.25)
 
     return self
@@ -38,7 +40,7 @@ function Header:mousepressed(x, y, b)
             shakeObject(gear)
         end
     elseif home:isHovered(x, y) then
-        state.switch(states.menu.StartMenu)
+        switchState(states.menu.StartMenu, 0.3)
         if networking.connected then
             networking.hub:publish({
                 message = {
@@ -55,7 +57,7 @@ function Header:mousepressed(x, y, b)
         shakeObject(bars)
     elseif import:isHovered(x, y) then
         if love.system.getOS() ~= "Android" and love.system.getOS() ~= "iOS" then
-            state.switch(states.screens.Importers.QuaverImportScreen)
+            switchState(states.screens.Importers.QuaverImportScreen, 0.3)
             if networking.connected then
                 networking.hub:publish({
                     message = {

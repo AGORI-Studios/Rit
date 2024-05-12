@@ -14,7 +14,7 @@ function SplashScreen:enter()
 
         Timer.after(1.5, function()
             Timer.tween(0.75, fade, {0}, "out-quad", function()
-                state.switch(states.menu.StartMenu)
+                switchState(states.menu.StartMenu, 0.3)
             end)
         end)
     end)

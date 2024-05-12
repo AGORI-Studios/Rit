@@ -28,7 +28,12 @@ local function localize(text)
     end
 end
 
+local function getLocaleName()
+    return currentLocale
+end
+
 return {
     loadLocale = loadLocale,
-    localize = localize
+    localize = localize,
+    getLocaleName = getLocaleName
 }

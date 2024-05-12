@@ -272,7 +272,7 @@ function Jukebox:mousepressed(x, y, button)
         end
 
         if x > closeBtn.x and x < closeBtn.x + closeBtn.width and y > closeBtn.y and y < closeBtn.y + closeBtn.height then
-            state.switch(states.menu.StartMenu)
+            switchState(states.menu.StartMenu, 0.3)
         end
     end
 end

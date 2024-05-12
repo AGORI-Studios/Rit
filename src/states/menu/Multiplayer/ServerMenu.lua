@@ -53,7 +53,7 @@ end
 
 function ServerMenu:update(dt)
     if input:pressed("back") then
-        state.switch(states.menu.StartMenu)
+        switchState(states.menu.StartMenu, 0.3)
     end
 end
 
@@ -64,9 +64,7 @@ function ServerMenu:mousepressed(x, y, b)
 
     for _, button in ipairs(self.serverButtons) do
         if button:mousepressed(x, y, b) then
-            --[[ networking.currentServerID = button.serverData.id
-            networking.currentServerData = button.serverData ]]
-            state.switch(states.menu.Multiplayer.LobbyMenu, button.serverData)
+            switchState(states.menu.Multiplayer.LobbyMenu, 0.3, nil, button.serverData)
         end
     end
 end

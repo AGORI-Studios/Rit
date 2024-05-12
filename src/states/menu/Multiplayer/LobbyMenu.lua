@@ -36,7 +36,7 @@ function LobbyMenu:update(dt)
                 }
             })
         end
-        state.switch(states.menu.Multiplayer.ServerMenu)
+        switchState(states.menu.Multiplayer.ServerMenu, 0.3)
     end
 
     --[[ if input:pressed("confirm") then
