@@ -32,8 +32,11 @@ function env.parse(env)
 
     if love.filesystem.getInfo(env) then
         str = love.filesystem.read(env)
-    else
+    elseif not env:find(".env") then
         str = env
+    else
+        -- file doesn't exist
+        return {}
     end
 
     if not str then str = "key=default" end -- The default key.

@@ -172,6 +172,9 @@ function GI.LoadClasses()
     Popup = require("modules.Popup")
     skin = require("modules.Game.SkinHandler")
     localize = require("modules.Game.Localize")
+    
+    -- API Stuff
+    RequestJsonData = require("modules.API.RequestJsonData")
 
     localize.loadLocale(Settings.options["General"].language)
 end
