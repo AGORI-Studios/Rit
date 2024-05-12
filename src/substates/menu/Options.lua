@@ -278,7 +278,24 @@ function Options:enter()
         columnSpacingLabel:SetPos(120, 420 + (doAprilFools and 30 or 0))
         columnSpacingLabel:SetText("Column Spacing")
         columnSpacingLabel:SetFont(Cache.members.font["default"])
-        columnSpacingLabel:SetSize(100, 25)
+        columnSpacingLabel:SetSize(100, 200)
+
+        -- keybinds (text input), Settings.options["General"].k4Binds
+        -- max 4 characters
+        local k4Binds = loveframes.Create("textinput", settings)
+        k4Binds:SetPos(10, 460 + (doAprilFools and 30 or 0))
+        k4Binds:SetSize(100, 25)
+        k4Binds:SetLimit(4)
+        k4Binds:SetText(Settings.options["General"].k4Binds)
+        k4Binds.OnEnter = function(object, text)
+            Settings.options["General"].k4Binds = text
+        end
+
+        local k4BindsLabel = loveframes.Create("text", settings)
+        k4BindsLabel:SetPos(120, 460 + (doAprilFools and 30 or 0))
+        k4BindsLabel:SetText("4K Binds")
+        k4BindsLabel:SetFont(Cache.members.font["default"])
+        k4BindsLabel:SetSize(100, 25)
     end
 
     function createKeybindsTab()
@@ -301,6 +318,10 @@ end
 
 function Options:update(dt)
     loveframes.update(dt)
+
+    if input:pressed("back") then
+        state.killSubstate()
+    end
 end
 
 function Options:mousepressed(x, y, id)
@@ -329,6 +350,13 @@ end
 
 function Options:draw()
     loveframes.draw()
+end
+
+function Options:exit()
+    local k4Binds = Settings.options["General"].k4Binds:splitAllCharacters()
+    for i = 1, 4 do
+        input:rebindControl("4k_game" .. i, { "key:" .. k4Binds[i]})
+    end
 end
 
 return Options

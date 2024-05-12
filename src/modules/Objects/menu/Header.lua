@@ -32,7 +32,11 @@ end
 
 function Header:mousepressed(x, y, b)
     if gear:isHovered(x, y) then
-        state.substate(substates.menu.Options)
+        if love.system.getOS() ~= "Android" and love.system.getOS() ~= "iOS" then
+            state.substate(substates.menu.Options)
+        else
+            shakeObject(gear)
+        end
     elseif home:isHovered(x, y) then
         state.switch(states.menu.StartMenu)
         if networking.connected then
@@ -50,18 +54,22 @@ function Header:mousepressed(x, y, b)
     elseif bars:isHovered(x, y) then
         shakeObject(bars)
     elseif import:isHovered(x, y) then
-        state.switch(states.screens.Importers.QuaverImportScreen)
-        if networking.connected then
-            networking.hub:publish({
-                message = {
-                    action = "updateServerInfo_FORCEREMOVEUSER",
-                    id = networking.currentServerID,
-                    user = {
-                        steamID = tostring(SteamID),
-                        name = tostring(SteamUserName)
+        if love.system.getOS() ~= "Android" and love.system.getOS() ~= "iOS" then
+            state.switch(states.screens.Importers.QuaverImportScreen)
+            if networking.connected then
+                networking.hub:publish({
+                    message = {
+                        action = "updateServerInfo_FORCEREMOVEUSER",
+                        id = networking.currentServerID,
+                        user = {
+                            steamID = tostring(SteamID),
+                            name = tostring(SteamUserName)
+                        }
                     }
-                }
-            })
+                })
+            end
+        else
+            shakeObject(import)
         end
     end
 end

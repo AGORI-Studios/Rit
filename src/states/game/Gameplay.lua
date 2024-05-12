@@ -151,6 +151,8 @@ function Gameplay:reset()
     self.escapeTimer = 0
 
     self.timingPoints = {}
+
+    currentController = gameController
 end
 
 function Gameplay:addPlayfield(x, y)
@@ -1136,6 +1138,7 @@ end
 
 function Gameplay:exit()
     musicTime = 0
+    currentController = menuController
 end
 
 return Gameplay

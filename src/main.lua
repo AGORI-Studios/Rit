@@ -21,12 +21,12 @@ end
 
 __InJukebox = false
 
-PROF_CAPTURE = true
-
 require("modules.Utilities")
 ffi = require("ffi")
 
-if love.system.getOS() ~= "NX" then -- For obvious reasons, don't use c libraries on the nintendo switch.
+DRAW_VIRTUAL_CONTROLLER = love.system.getOS() == "Android" or love.system.getOS() == "iOS"
+
+if love.system.getOS() == "Windows" then
     Try(
         function()
             Steam = require("lib.sworks.main")
@@ -253,6 +253,9 @@ function love.draw()
     love.graphics.setCanvas({gameScreen, stencil = true})
         love.graphics.clear(0,0,0,1)
         state.draw()
+        if DRAW_VIRTUAL_CONTROLLER then
+            currentController:draw()
+        end
     love.graphics.setCanvas()
 
     -- ratio

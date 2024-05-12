@@ -8,7 +8,7 @@ local songsFolder = love.filesystem.getSaveDirectory() .. sep .. "songs"
 -- TODO: Make the following code work in a thread.
 
 local path = ""
-local username = os_ == "Windows" and os.getenv("USERNAME") or os.getenv("USER")
+local username = os_ == "Windows" and os.getenv("USERNAME") or os.getenv("USER") or "user"
 -- Figure out osu's install location and songs folder
 if os_ == "Windows" then
     path = "C:\\Users\\%username%\\AppData\\Local\\osu!\\Songs"
@@ -19,7 +19,9 @@ elseif os_ == "OS X" then
 end
 
 -- replace $USER and %username% with the actual username
-path = path:gsub("$USER", username):gsub("%%username%%", username)
+if love.system.getOS() ~= "Android" and love.system.getOS() ~= "iOS" then
+    path = path:gsub("$USER", username):gsub("%%username%%", username)
+end
 
 local frame = 0
 

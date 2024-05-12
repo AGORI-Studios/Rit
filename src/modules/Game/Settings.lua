@@ -23,6 +23,7 @@ Settings.options = {
 
         noteSize = 1, -- 100%
         columnSpacing = 0, -- 0px
+        k4Binds = "dfjk"
     },
     ["Events"] = {
         aprilFools = true,

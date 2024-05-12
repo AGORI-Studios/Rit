@@ -492,6 +492,8 @@ function SongMenu:draw()
                 love.graphics.printf("Accuracy: " .. string.format("%.2f", replay.score.accuracy) .. "%", 905, 125 + 150 + 100 * (i-1), 920, "left", 0, 2, 2)
             end
         end
+
+        love.graphics.setLineWidth(1)
     end
     love.graphics.push()
     --[[ diffButton:draw()

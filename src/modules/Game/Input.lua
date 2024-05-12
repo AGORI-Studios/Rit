@@ -1,4 +1,7 @@
 -- Painful way of adding all required inputs for the game
+
+local k4Binds = Settings.options["General"]["k4Binds"]:splitAllCharacters()
+
 input = (require "lib.baton").new({
     controls = {
         ["1k_game1"] = {"key:space"},
@@ -10,10 +13,10 @@ input = (require "lib.baton").new({
         ["3k_game2"] = { "key:space" },
         ["3k_game3"] = { "key:j" },
 
-        ["4k_game1"] = { "axis:triggerleft+", "axis:leftx-", "axis:rightx-", "button:dpleft", "button:x", "key:d" },
-        ["4k_game2"] = { "axis:lefty+", "axis:righty+", "button:leftshoulder", "button:dpdown", "button:a", "key:f" },
-        ["4k_game3"] = { "axis:lefty-", "axis:righty-", "button:rightshoulder", "button:dpup", "button:y", "key:j" },
-        ["4k_game4"] = { "axis:triggerright+", "axis:leftx+", "axis:rightx+", "button:dpright", "button:b", "key:k" },
+        ["4k_game1"] = { "key:" .. string.lower(k4Binds[1]) },
+        ["4k_game2"] = { "key:" .. string.lower(k4Binds[2]) },
+        ["4k_game3"] = { "key:" .. string.lower(k4Binds[3]) },
+        ["4k_game4"] = { "key:" .. string.lower(k4Binds[4]) },
 
         ["5k_game1"] = { "key:d" },
         ["5k_game2"] = { "key:f" },
