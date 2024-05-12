@@ -54,6 +54,8 @@ Gameplay.lastNoteTime = 10000 -- safe number
 
 Gameplay.bpmAffectsScrollVelocity = false
 
+Gameplay.allJudgements = {}
+
 local lerpedScore = 0
 local lerpedAccuracy = 0
 
@@ -138,13 +140,18 @@ function Gameplay:reset()
     self:preloadAssets()
 
     self.judgements = {
-        {name="marvellous", img="defaultSkins/skinThrowbacks/judgements/MARVELLOUS.png", time=23, scoreMultiplier=1},
-        {name="perfect", img="defaultSkins/skinThrowbacks/judgements/PERFECT.png", time=40, scoreMultiplier=0.93},
-        {name="great", img="defaultSkins/skinThrowbacks/judgements/GREAT.png", time=74, scoreMultiplier=0.7},
-        {name="good", img="defaultSkins/skinThrowbacks/judgements/GOOD.png", time=103, scoreMultiplier=0.55},
-        {name="bad", img="defaultSkins/skinThrowbacks/judgements/BAD.png", time=127, scoreMultiplier=0.3},
-        {name="miss", img="defaultSkins/skinThrowbacks/judgements/MISS.png", time=160, scoreMultiplier=0},
+        { name = "marvellous",  img = "defaultSkins/skinThrowbacks/judgements/MARVELLOUS.png",  time = 23,   scoreMultiplier = 1,     weight = 125.000 },
+        { name = "perfect",     img = "defaultSkins/skinThrowbacks/judgements/PERFECT.png",     time = 40,   scoreMultiplier = 0.93,  weight = 122.950 },
+        { name = "great",       img = "defaultSkins/skinThrowbacks/judgements/GREAT.png",       time = 74,   scoreMultiplier = 0.7,   weight =  81.963 },
+        { name = "good",        img = "defaultSkins/skinThrowbacks/judgements/GOOD.png",        time = 103,  scoreMultiplier = 0.55,  weight =  40.975 },
+        { name = "bad",         img = "defaultSkins/skinThrowbacks/judgements/BAD.png",         time = 127,  scoreMultiplier = 0.3,   weight =  20.488 },
+        { name = "miss",        img = "defaultSkins/skinThrowbacks/judgements/MISS.png",        time = 160,  scoreMultiplier = 0,     weight =   0.000 }
     }
+
+    self.allJudgements = {}
+    for i, judge in ipairs(self.judgements) do
+        self.allJudgements[judge.name] = 0 -- judgement count (Used for accuracy calculation)
+    end
 
     musicTime = 0
 
@@ -153,6 +160,21 @@ function Gameplay:reset()
     self.timingPoints = {}
 
     currentController = gameController
+end
+
+function Gameplay:calculateAccuracy()
+    local marvCount, perfCount, greatCount, goodCount, badCount, missCount = self.allJudgements.marvellous, self.allJudgements.perfect, self.allJudgements.great,
+                                                                            self.allJudgements.good, self.allJudgements.bad, self.allJudgements.miss
+
+    local marvWeight, perfWeight, greatWeight, goodWeight, badWeight, missWeight = self.judgements[1].weight, self.judgements[2].weight, self.judgements[3].weight,
+                                                                                    self.judgements[4].weight, self.judgements[5].weight, self.judgements[6].weight
+
+    local hits = marvCount + perfCount + greatCount + goodCount + badCount + missCount
+
+    local CUR = (marvCount * marvWeight) + (perfCount * perfWeight) + (greatCount * greatWeight) + (goodCount * goodWeight) + (badCount * badWeight)
+    local MAX = hits * marvWeight
+    
+    return (CUR / MAX) * 100
 end
 
 function Gameplay:addPlayfield(x, y)
@@ -177,10 +199,11 @@ function Gameplay:doJudgement(time)
     local score = self.noteScore * judgement.scoreMultiplier
 
     self.score = self.score + score
-    -- find max possible score
-    local maxScore = (self.misses + self.hits) * self.noteScore
-    self.accuracy = (self.score / maxScore) * 100
+
+    self.accuracy = self:calculateAccuracy() 
     if tostring(self.accuracy) == "nan" then self.accuracy = 0 end
+
+    self.allJudgements[judgement.name] = self.allJudgements[judgement.name] + 1
 
     self:remove2(self.judgement)
     self.judgement = Sprite(Inits.GameWidth/2, 390, judgement.img)
@@ -676,8 +699,8 @@ function Gameplay:enter()
 
     end
 
-    --shaders.backgroundEffects:send("bgDim", Settings.options["General"].backgroundDim)
-    --shaders.backgroundEffects:send("blurIntensity", 0.005)
+    shaders.backgroundEffects:send("dim", Settings.options["General"].backgroundDim)
+    --[[ shaders.backgroundEffects:send("radius", 0.5) ]]
 
     Timer.after(1.2, function() -- forced delay to prevent potential desync's
         self.updateTime = true
@@ -989,10 +1012,10 @@ end
 function Gameplay:draw()
     if self.background and musicTime >= 0 then
         -- background dim is 0-1, 0 being no dim, 1 being full dim
-        love.graphics.setColor(1, 1, 1, Settings.options["General"].backgroundDim)
-        --[[ love.graphics.setShader(shaders.backgroundEffects) ]]
+        --love.graphics.setColor(1, 1, 1, Settings.options["General"].backgroundDim)
+        love.graphics.setShader(shaders.backgroundEffects)
         love.graphics.draw(self.background.image or self.background, 0, 0, 0, 1920/self.background:getWidth(), 1080/self.background:getHeight())
-        --[[ love.graphics.setShader() ]]
+        love.graphics.setShader()
     end
     
     for i, spr in pairs(Modscript.funcs.sprites) do
