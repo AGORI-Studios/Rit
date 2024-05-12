@@ -89,7 +89,6 @@ function Modscript:load(script)
     self:set(
         "SetMod",
         function(modifier, beat, amount)
-            print(modifier, beat, amount, self.modifiers[modifier])
             if self.modifiers[modifier] then
                 self.modifiers[modifier]:enable(amount, beat)
                 table.insert(modlist[self.funcs.currentPlayfield], {modifier, amount, beat, self.funcs.currentPlayfield})
@@ -103,7 +102,6 @@ function Modscript:load(script)
             table.insert(modlist, {}) -- add a new mods table for the new playfield
             table.insert(enabledMods, {})
             states.game.Gameplay:addPlayfield(x, y)
-            print(#states.game.Gameplay.playfields)
         end
     )
 

@@ -173,7 +173,7 @@ function Gameplay:calculateAccuracy()
 
     local CUR = (marvCount * marvWeight) + (perfCount * perfWeight) + (greatCount * greatWeight) + (goodCount * goodWeight) + (badCount * badWeight)
     local MAX = hits * marvWeight
-    
+
     return (CUR / MAX) * 100
 end
 
@@ -700,7 +700,7 @@ function Gameplay:enter()
     end
 
     shaders.backgroundEffects:send("dim", Settings.options["General"].backgroundDim)
-    --[[ shaders.backgroundEffects:send("radius", 0.5) ]]
+    --shaders.backgroundEffects:send("blurIntensity", 0)
 
     Timer.after(1.2, function() -- forced delay to prevent potential desync's
         self.updateTime = true

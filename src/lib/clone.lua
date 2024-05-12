@@ -106,7 +106,6 @@ function clone.parse(clonestr)
                         local time = line:match("(.+)=")
                         local note = line:match("=(.+)")
                         local _, lane, hold = note:match("(.)(.)(.+)")
-                        print(lane)
                         table.insert(data.notes[currentSection], {
                             time = tonumber(time),
                             note = note,

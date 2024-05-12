@@ -470,9 +470,8 @@ function playSelectedSong(song)
     end
 end
 
-function getSongFromNameAndDiff(name, diff) -- pairs, not ipairs
+function getSongFromNameAndDiff(name, diff)
     for songName, song in pairs(songList) do
-        print(songName, name)
         if songName == name then
             for diffName, diffData in pairs(song) do
                 if diffName == diff then

@@ -163,8 +163,6 @@ function StartMenu:enter()
     end
 
     if not MenuSoundManager:exists("music") then playRandomSong() end
-    
-    print(menuBPM)
 end
 
 function StartMenu:update(dt)

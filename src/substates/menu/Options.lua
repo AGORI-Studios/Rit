@@ -238,7 +238,6 @@ function Options:enter()
             localeButton.OnClick = function()
                 Settings.options["General"].language = v
                 localize.loadLocale(v)
-                print("Switched to locale " .. v)
             end
             locale_1:AddItem(localeButton)
         end
