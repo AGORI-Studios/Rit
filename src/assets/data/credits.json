@@ -61,10 +61,18 @@
         "links": []
     },
     {
-        "name": "Maia",
+        "name": "Maiandraw",
         "description": "...",
         "roles": [
             "Music Composer"
+        ],
+        "links": []
+    },
+    {
+        "name": "CharaWhy",
+        "description": "...",
+        "roles": [
+            "Guest Composer"
         ],
         "links": []
     },
