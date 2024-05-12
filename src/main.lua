@@ -6,17 +6,10 @@ if not __DEBUG__ then
     function print() end -- disable print if not in debug mode, allows for better performance
 end
 
-local __isGit
-local __isGitFile = love.filesystem.getInfo("isgit.bool")
-if __isGitFile then
-   -- get first line of file
-    local file = love.filesystem.newFile("isgit.bool")
-    file:open("r")
-    __isGit = file:read()
-    file:close()
-    __isGit = __isGit:match("true") and true or false
+if love.filesystem.getInfo("__VERSION__.txt") then
+    __VERSION__ = love.filesystem.read("__VERSION__.txt")
 else
-    __isGit = false
+    __VERSION__ = "vUnknown"
 end
 
 __InJukebox = false

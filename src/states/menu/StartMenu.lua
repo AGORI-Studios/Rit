@@ -79,7 +79,7 @@ local buttons = {
         color = {1, 1, 1},
         down = false,
         action = function()
-            state.substate(substates.menu.Options)
+            switchState(states.menu.OptionsMenu, 0.3)
         end
     },
     {
@@ -284,7 +284,7 @@ function StartMenu:draw()
     local lastFont = love.graphics.getFont()
     love.graphics.setColor(0, 0, 0, 0.13)
     love.graphics.rectangle("fill", Inits.GameWidth - 895, Inits.GameHeight/2 - 300, 650, 600, 90, 90)
-    setFont("NatsRegular26")
+    setFont("menuBold")
     for i = 1, #buttons do
         local x, y = buttons[i].x, buttons[i].y
         local borderX = x
@@ -298,10 +298,10 @@ function StartMenu:draw()
         local textX, textY = x + buttons[i].textX, y + buttons[i].textY
         if type(buttons[i].text) == "string" then
             -- center text
-            local width = fontWidth("NatsRegular26", buttons[i].text)
-            local height = fontHeight("NatsRegular26", buttons[i].text)
+            local width = fontWidth("menuBold", buttons[i].text)
+            local height = fontHeight("menuBold", buttons[i].text)
             textX = textX + (buttons[i].img:getWidth() * buttons[i].scale - width * buttons[i].scale) / 2
-            textY = textY + (buttons[i].img:getHeight() * buttons[i].scale - height * buttons[i].scale) / 2 + 5
+            textY = textY + (buttons[i].img:getHeight() * buttons[i].scale - height * buttons[i].scale) / 2 - 2
         else
             textX = textX + (buttons[i].img:getWidth() * buttons[i].scale - buttons[i].text:getWidth() * buttons[i].scale) / 2
             textY = textY + (buttons[i].img:getHeight() * buttons[i].scale - buttons[i].text:getHeight() * buttons[i].scale) / 2
@@ -322,6 +322,11 @@ function StartMenu:draw()
             end
         end
     end
+
+    setFont("NatsRegular26")
+    love.graphics.setColor(0.7, 0.7, 0.7)
+    love.graphics.print("Rit " .. __VERSION__, 10, Inits.GameHeight - 75)
+
     love.graphics.setColor(lastColor)
     love.graphics.setFont(lastFont)
     

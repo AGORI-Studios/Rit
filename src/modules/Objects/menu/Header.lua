@@ -13,12 +13,6 @@ end
 local bars, gear, home, import, barVert, menuBar
 
 function Header:new()
-    --[[ bars = Sprite(1830, 0, "assets/images/ui/buttons/barsHorizontal.png")
-    gear = Sprite(0, 0, "assets/images/ui/buttons/gear.png")
-    home = Sprite(80, 0, "assets/images/ui/buttons/home.png")
-    import = Sprite(1760, -2, "assets/images/ui/buttons/import.png")
-    barVert = Sprite(150, 0, "assets/images/ui/buttons/barIcon.png")
-    menuBar = Sprite(0, 0, "assets/images/ui/menu/menuBar.png") ]]
     bars = HeaderButton(1830, 0, "assets/images/ui/buttons/barsHorizontal.png")
     gear = HeaderButton(0, 0, "assets/images/ui/buttons/gear.png")
     home = HeaderButton(80, 0, "assets/images/ui/buttons/home.png")
@@ -35,7 +29,7 @@ end
 function Header:mousepressed(x, y, b)
     if gear:isHovered(x, y) then
         if love.system.getOS() ~= "Android" and love.system.getOS() ~= "iOS" then
-            state.substate(substates.menu.Options)
+           switchState(states.menu.OptionsMenu, 0.3)
         else
             shakeObject(gear)
         end

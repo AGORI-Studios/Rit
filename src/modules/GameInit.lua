@@ -294,6 +294,8 @@ end
 function GI.LoadDefaultFonts()
     Cache.members.font["default"] = love.graphics.newFont("assets/fonts/Montserrat-Light.ttf", 16)
     Cache.members.font["defaultBold"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 16)
+    Cache.members.font["defaultBoldX1.25"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 20)
+    Cache.members.font["defaultBoldX1.5"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 24)
     Cache.members.font["menu"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 32)
     Cache.members.font["menuBold"] = love.graphics.newFont("assets/fonts/Montserrat-Bold.ttf", 22)
     Cache.members.font["menuExtraBold"] = love.graphics.newFont("assets/fonts/Montserrat-ExtraBold.ttf", 22)
@@ -308,6 +310,7 @@ function GI.LoadDefaultFonts()
     Cache.members.font["menuMedium"] = love.graphics.newFont("assets/fonts/Montserrat-Light.ttf", 48)
     Cache.members.font["menuMediumBold"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 48)
     Cache.members.font["NatsRegular26"] = love.graphics.newFont("assets/fonts/NATS-Regular.otf", 26)
+    Cache.members.font["NatsRegular16"] = love.graphics.newFont("assets/fonts/NATS-Regular.otf", 16)
 
     -- some font functions
     function setFont(font)
@@ -333,6 +336,7 @@ function GI.LoadStates()
             StartMenu = require("states.menu.StartMenu"),
             SongMenu = require("states.menu.SongMenu"),
             CreditsMenu = require("states.menu.CreditsMenu"),
+            OptionsMenu = require("states.menu.OptionsMenu"),
             Multiplayer = {
                 ServerMenu = require("states.menu.Multiplayer.ServerMenu"),
                 LobbyMenu = require("states.menu.Multiplayer.LobbyMenu"),

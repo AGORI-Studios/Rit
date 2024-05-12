@@ -7,16 +7,29 @@ appimage: lovefile
 # define GameName = "GameName"
 GameName = Rit
 
+# get src/__VERSION__template.txt
+# Replace text contents <commit> with the current commit hash
+# and add date to the file (dd/mm/yyyy)
+# and save it to src/__VERSION__.txt
+# delete old __VERSION__.txt and __DATE__.txt if they exist
+update_version:
+	rm -f src/__VERSION__.txt
+	rm -f src/__DATE__.txt
+	cp src/__VERSION__template.txt src/__VERSION__.txt
+	sed -i 's/<commit>/$(shell git rev-parse --short HEAD)/g' src/__VERSION__.txt
+	date +"%d/%m/%Y" > src/__DATE__.txt
+	echo $(shell cat src/__DATE__.txt) >> src/__VERSION__.txt
+
 clean:
 	rm -rf build
 
-lovefile:
+lovefile: update_version
 	mkdir build
 	mkdir build/$(GameName)-lovefile
 	# zip all files in src/ into a love file
 	cd src && zip -9 -r ../build/$(GameName)-lovefile/$(GameName).love *
 
-win64: lovefile
+win64: update_version lovefile
 	mkdir build/$(GameName)-win64
 
 	wget https://github.com/love2d/love/releases/download/11.5/love-11.5-win64.zip
@@ -36,7 +49,7 @@ win64: lovefile
 	rm build/$(GameName)-win64/love.exe
 	rm build/$(GameName)-win64/lovec.exe
 
-macos: lovefile
+macos: update_version lovefile
 	mkdir build/$(GameName)-macos
 	cp -r requirements/macos/love.app build/$(GameName)-macos
 	cp requirements/macos/libdiscord-rpc.dylib build/$(GameName)-macos/love.app/Contents/MacOS
@@ -48,7 +61,7 @@ macos: lovefile
 	cp build/$(GameName)-lovefile/$(GameName).love build/$(GameName)-macos/$(GameName).app/Contents/Resources/
 
 # love nx loll
-switch: lovefile
+switch: update_version lovefile
 	rm -rf build/$(GameName)-switch
 	mkdir -p "build/$(GameName)-switch"
 
@@ -61,7 +74,7 @@ switch: lovefile
 	rm -r build/$(GameName)-switch/romfs
 	rm build/$(GameName)-switch/Rit.nacp
 
-appimage: lovefile
+appimage: update_version lovefile
 	rm -rf build/$(GameName)-appimage
 	mkdir -p "build/$(GameName)-appimage"
 
