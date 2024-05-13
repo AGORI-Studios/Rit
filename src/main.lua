@@ -22,9 +22,10 @@ __WINDOW_WIDTH, __WINDOW_HEIGHT = Inits.__WINDOW_WIDTH, Inits.__WINDOW_HEIGHT
 
 _TRANSITION = {
     x = Inits.GameWidth,
-    width = Inits.GameWidth,
+    width = Inits.GameWidth+200,
     y = 0,
     timer = nil, -- Timer.tween
+    ovalHeight = 0
 }
 
 function switchState(newState, t, middleFunc, data)
@@ -259,6 +260,7 @@ function love.draw()
         state.draw()
         love.graphics.setColor(0,0,0,1)
         love.graphics.rectangle("fill", _TRANSITION.x, _TRANSITION.y, _TRANSITION.width, Inits.GameHeight)
+        love.graphics.setStencilTest()
         love.graphics.setColor(1,1,1,1)
         if DRAW_VIRTUAL_CONTROLLER then
             currentController:draw()

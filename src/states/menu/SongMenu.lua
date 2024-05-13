@@ -127,9 +127,15 @@ function SongMenu:update(dt)
         end
         ---@class curButton : SongButton
         curButton = songButtons[curSelected]
-        curButton.selected = true
+        if curButton then
+            curButton.selected = true
+        end
     else
-        curSelected = math.clamp(curSelected, 1, #curButton.children)
+        if curButton then
+            curSelected = math.clamp(curSelected, 1, #curButton.children)
+        else
+            curSelected = 1
+        end
         lerpedSongPos = math.fpsLerp(lerpedSongPos, (-(curSelected - 2.5)) * diffButton.height * 1.1, 25, dt)
     end
 
@@ -154,9 +160,11 @@ function SongMenu:update(dt)
                 typing = false
                 if searchText == "" then 
                     songButtons = SearchAlgorithm.allSongButtons
-                    curButton.selected = false
-                    for i, btn in ipairs(songButtons) do
-                        btn.y = (i - 1) * songButton.height * 0.75
+                    if curButton then
+                        curButton.selected = false
+                        for i, btn in ipairs(songButtons) do
+                            btn.y = (i - 1) * songButton.height * 0.75
+                        end
                     end
                     curButton = songButtons[curSelected]
                 else
@@ -170,13 +178,13 @@ function SongMenu:update(dt)
                         playSelectedSong(curButton)
                     end
                 end
-            elseif not typing then
+            elseif not typing and curButton then
                 showCat = false
                 transitioning = true
                 curTab = "diffs"
                 lastCurSelected = curSelected
                 curSelected = 1
-                curButton.open = true
+                 curButton.open = true
 
                 -- songName and songDiff
                 self.songName = curButton.name
@@ -214,7 +222,9 @@ function SongMenu:update(dt)
             transitioning = true
             curTab = "songs"
             curSelected = lastCurSelected
-            curButton.open = false
+            if curButton then
+                curButton.open = false
+            end
             
             for _, btn in ipairs(songButtons) do
                 for _, diff in ipairs(btn.children) do
@@ -242,9 +252,13 @@ function SongMenu:update(dt)
                 end
             end)
         elseif curTab == "diffs" then
-            curSelected = math.clamp(curSelected, 1, #curButton.children)
-            self.songName = curButton.name
-            self.songDiff = curButton.children[curSelected].name
+            if curButton then
+                curSelected = math.clamp(curSelected, 1, #curButton.children)
+                self.songName = curButton.name
+                self.songDiff = curButton.children[curSelected].name
+            else
+                curSelected = 1
+            end
             getSongReplays()
         end
     end
@@ -260,9 +274,11 @@ function SongMenu:update(dt)
                 end
             end)
         elseif curTab == "diffs" then
-            curSelected = math.clamp(curSelected, 1, #curButton.children)
-            self.songName = curButton.name
-            self.songDiff = curButton.children[curSelected].name
+            if curButton then
+                curSelected = math.clamp(curSelected, 1, #curButton.children)
+                self.songName = curButton.name
+                self.songDiff = curButton.children[curSelected].name
+            end
             getSongReplays()
         end
     end
@@ -323,7 +339,7 @@ function SongMenu:mousepressed(x, y, b)
                 end
             elseif curTab == "songs" then
                 if btn:isHovered(x, y) then
-                    if curSelected == i then
+                    if curSelected == i and curButton then
                         showCat = false
                         transitioning = true
                         curTab = "diffs"
@@ -379,93 +395,94 @@ function SongMenu:draw()
     playTab:draw()
     if curTab == "songs" then
         local lastFont = love.graphics.getFont()
-        if not curButton then return end
-        local name = (curButton.name or "Unknown"):strip()
-        local artist = (curButton.artist or "Unknown"):strip()
-        local mapper = (curButton.creator or "Unknown"):strip()
-        local desc = (curButton.description or "This map has no description."):strip()
-        local descLength = #desc:splitAllCharacters()
-        local maxLength = ("Hi this is testing a \"very long\" description in rit to see how it displays. Look off? Please report it. Description's should look no longer than this.")
-        if descLength > #maxLength:splitAllCharacters() then
-            desc = desc:sub(1, #maxLength) .. "..."
-        end
-        --1920/1.7, 85
-        love.graphics.setColor(0, 0, 0, 0.25)
-        love.graphics.rectangle("fill", 1920/1.15, 310, 1920/9, 425, 25, 25)
-
-        love.graphics.setColor(0, 0, 0, 0.6)
-        love.graphics.rectangle("fill", 1920/1.625, 775, 1920/2.74, 235, 25, 25)
-
-        love.graphics.setColor(1, 0.8, 0.8, 0.15)
-        love.graphics.rectangle("fill", 1920/1.625, 275, 1920/2.74, 4, 10, 10)
-
-        love.graphics.rectangle("fill", 1920/1.1, 125, 125, 125, 10, 10)
-        
-        love.graphics.setColor(1, 1, 1)
-        setFont("menuExtraBoldX2.5")
-
-        if fontWidth("menuExtraBoldX2.5", name) > 550 then
-            local newWidth = 0
-            local newString = ""
-            for i = 1, #name:splitAllCharacters() do
-                local char = name:sub(i, i)
-                newWidth = newWidth + fontWidth("menuExtraBoldX2.5", char)
-                if newWidth > 550 then
-                    -- break, remove last 3, and add "..."
-                    newString = newString:sub(1, #newString - 3) .. "..."
-                    break
-                else
-                    newString = newString .. char
-                end
+        if curButton then
+            local name = (curButton.name or "Unknown"):strip()
+            local artist = (curButton.artist or "Unknown"):strip()
+            local mapper = (curButton.creator or "Unknown"):strip()
+            local desc = (curButton.description or "This map has no description."):strip()
+            local descLength = #desc:splitAllCharacters()
+            local maxLength = ("Hi this is testing a \"very long\" description in rit to see how it displays. Look off? Please report it. Description's should look no longer than this.")
+            if descLength > #maxLength:splitAllCharacters() then
+                desc = desc:sub(1, #maxLength) .. "..."
             end
-            name = newString
-        end
-        love.graphics.print(name, 1920/1.625, 105, 0, 1, 1)
+            --1920/1.7, 85
+            love.graphics.setColor(0, 0, 0, 0.25)
+            love.graphics.rectangle("fill", 1920/1.15, 310, 1920/9, 425, 25, 25)
 
-        setFont("menuExtraBoldX1.5")
-        if fontWidth("menuExtraBoldX1.5", artist) > 400 then
-            local newWidth = 0
-            local newString = ""
-            for i = 1, #artist:splitAllCharacters() do
-                local char = artist:sub(i, i)
-                newWidth = newWidth + fontWidth("menuExtraBoldX1.5", char)
-                if newWidth > 317 then
-                    newString = newString:sub(1, #newString - 3) .. "..."
-                    break
-                else
-                    newString = newString .. char
+            love.graphics.setColor(0, 0, 0, 0.6)
+            love.graphics.rectangle("fill", 1920/1.625, 775, 1920/2.74, 235, 25, 25)
+
+            love.graphics.setColor(1, 0.8, 0.8, 0.15)
+            love.graphics.rectangle("fill", 1920/1.625, 275, 1920/2.74, 4, 10, 10)
+
+            love.graphics.rectangle("fill", 1920/1.1, 125, 125, 125, 10, 10)
+            
+            love.graphics.setColor(1, 1, 1)
+            setFont("menuExtraBoldX2.5")
+
+            if fontWidth("menuExtraBoldX2.5", name) > 550 then
+                local newWidth = 0
+                local newString = ""
+                for i = 1, #name:splitAllCharacters() do
+                    local char = name:sub(i, i)
+                    newWidth = newWidth + fontWidth("menuExtraBoldX2.5", char)
+                    if newWidth > 550 then
+                        -- break, remove last 3, and add "..."
+                        newString = newString:sub(1, #newString - 3) .. "..."
+                        break
+                    else
+                        newString = newString .. char
+                    end
                 end
+                name = newString
             end
-            artist = newString
-        end
+            love.graphics.print(name, 1920/1.625, 105, 0, 1, 1)
 
-        love.graphics.setColor(200/255, 80/255, 104/255)
-        love.graphics.print("By " .. (artist or "Unknown"), 1920/1.625, 125 + 40, 0, 1, 1)
-        
-        setFont("menuBoldX1.5")
-
-        if fontWidth("menuBoldX1.5", mapper) > 400 then
-            local newWidth = 0
-            local newString = ""
-            for i = 1, #mapper:splitAllCharacters() do
-                local char = mapper:sub(i, i)
-                newWidth = newWidth + fontWidth("menuBoldX1.5", char)
-                if newWidth > 317 then
-                    newString = newString:sub(1, #newString - 3) .. "..."
-                    break
-                else
-                    newString = newString .. char
+            setFont("menuExtraBoldX1.5")
+            if fontWidth("menuExtraBoldX1.5", artist) > 400 then
+                local newWidth = 0
+                local newString = ""
+                for i = 1, #artist:splitAllCharacters() do
+                    local char = artist:sub(i, i)
+                    newWidth = newWidth + fontWidth("menuExtraBoldX1.5", char)
+                    if newWidth > 317 then
+                        newString = newString:sub(1, #newString - 3) .. "..."
+                        break
+                    else
+                        newString = newString .. char
+                    end
                 end
+                artist = newString
             end
-            mapper = newString
+
+            love.graphics.setColor(200/255, 80/255, 104/255)
+            love.graphics.print("By " .. (artist or "Unknown"), 1920/1.625, 125 + 40, 0, 1, 1)
+            
+            setFont("menuBoldX1.5")
+
+            if fontWidth("menuBoldX1.5", mapper) > 400 then
+                local newWidth = 0
+                local newString = ""
+                for i = 1, #mapper:splitAllCharacters() do
+                    local char = mapper:sub(i, i)
+                    newWidth = newWidth + fontWidth("menuBoldX1.5", char)
+                    if newWidth > 317 then
+                        newString = newString:sub(1, #newString - 3) .. "..."
+                        break
+                    else
+                        newString = newString .. char
+                    end
+                end
+                mapper = newString
+            end
+
+            love.graphics.setColor(225/255, 105/255, 129/255)
+            love.graphics.print("Mapped by " .. (mapper or "Unknown"), 1920/1.625, 125 + 75, 0, 1, 1)
+
+            setFont("NatsRegular26")
+            love.graphics.setColor(1, 1, 1)
+            love.graphics.printf(desc, 1920/1.6, 800, 1920/4, "left", 0, 1.5, 1.5)
         end
-
-        love.graphics.setColor(225/255, 105/255, 129/255)
-        love.graphics.print("Mapped by " .. (mapper or "Unknown"), 1920/1.625, 125 + 75, 0, 1, 1)
-
-        setFont("NatsRegular26")
-        love.graphics.setColor(1, 1, 1)
-        love.graphics.printf(desc, 1920/1.6, 800, 1920/4, "left", 0, 1.5, 1.5)
 
         love.graphics.setFont(lastFont)
     end
@@ -480,25 +497,27 @@ function SongMenu:draw()
         love.graphics.rectangle("line", 900, 125, 920, 800, 5, 5)
         love.graphics.setColor(1, 1, 1)
 
-        local diff = curButton.children[curSelected]
-        if diff then
-            love.graphics.setColor(1, 1, 1)
-            -- left align, only button info we display, is name and chart version
-            love.graphics.printf(curButton.name:strip() .. " | " .. diff.name:strip(), 905, 125, 920, "left", 0, 2, 2)
-            love.graphics.printf(diff.chartVer, 905, 125 + 50, 920, "left", 0, 2, 2)
-
-            love.graphics.setLineWidth(5)
-            love.graphics.line(905, 125 + 100, 1815, 125 + 100)
-
-            for i, replay in ipairs(self.replays) do
-                love.graphics.setColor(0.5, 0.5, 0.5)
-                love.graphics.rectangle("fill", 905, 125 + 100 + 100 * (i-1), 920, 100)
-                love.graphics.setColor(0, 0, 0)
-                love.graphics.rectangle("line", 905, 125 + 100 + 100 * (i-1), 920, 100)
+        if curButton then
+            local diff = curButton.children[curSelected]
+            if diff then
                 love.graphics.setColor(1, 1, 1)
-                love.graphics.printf(os.date("%Y-%m-%d %H:%M:%S", replay.time), 905, 125 + 100 + 100 * (i-1), 920, "left", 0, 2, 2)
-                love.graphics.printf("Score: " .. math.floor(replay.score.score), 905, 125 + 125 + 100 * (i-1), 920, "left", 0, 2, 2)
-                love.graphics.printf("Accuracy: " .. string.format("%.2f", replay.score.accuracy) .. "%", 905, 125 + 150 + 100 * (i-1), 920, "left", 0, 2, 2)
+                -- left align, only button info we display, is name and chart version
+                love.graphics.printf(curButton.name:strip() .. " | " .. diff.name:strip(), 905, 125, 920, "left", 0, 2, 2)
+                love.graphics.printf(diff.chartVer, 905, 125 + 50, 920, "left", 0, 2, 2)
+
+                love.graphics.setLineWidth(5)
+                love.graphics.line(905, 125 + 100, 1815, 125 + 100)
+
+                for i, replay in ipairs(self.replays) do
+                    love.graphics.setColor(0.5, 0.5, 0.5)
+                    love.graphics.rectangle("fill", 905, 125 + 100 + 100 * (i-1), 920, 100)
+                    love.graphics.setColor(0, 0, 0)
+                    love.graphics.rectangle("line", 905, 125 + 100 + 100 * (i-1), 920, 100)
+                    love.graphics.setColor(1, 1, 1)
+                    love.graphics.printf(os.date("%Y-%m-%d %H:%M:%S", replay.time), 905, 125 + 100 + 100 * (i-1), 920, "left", 0, 2, 2)
+                    love.graphics.printf("Score: " .. math.floor(replay.score.score), 905, 125 + 125 + 100 * (i-1), 920, "left", 0, 2, 2)
+                    love.graphics.printf("Accuracy: " .. string.format("%.2f", replay.score.accuracy) .. "%", 905, 125 + 150 + 100 * (i-1), 920, "left", 0, 2, 2)
+                end
             end
         end
 
