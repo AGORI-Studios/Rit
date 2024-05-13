@@ -33,15 +33,11 @@ end
 function RequestJsonData.createUser(id)
     -- POST request
     local code, body, headers = https.request(API_SERVER_URL .. "users", {
-        --[[ data = {
-            id = id,
-            API_KEY = API_ACCESS
-        }, ]]
-        data = urlencode({
+        --[[ data = urlencode({
             id = id,
             API_KEY = API_ACCESS
         }),
-        method = "POST"
+        method = "POST" ]]
     })
 
     body = json.decode(body)

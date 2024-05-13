@@ -94,14 +94,8 @@ function love.load(args)
     GameInit.LoadLibraries()
     importer = lovefs()
 
-    -- remove all os function EXCEPT non-harmful ones
-    -- don't want modscriptors to do anything bad :)
     GameInit.ClearOSModule()
-
-    -- Classes
     GameInit.LoadClasses()
-
-    -- Create folders
     GameInit.CreateFolders()
 
     -- Skins, create skins directory if it doesn't exist
@@ -114,20 +108,10 @@ function love.load(args)
 
     -- Objects
     GameInit.LoadObjects()
-
-    -- Parsers
     GameInit.LoadParsers()
-
-    -- Load fonts
     GameInit.LoadDefaultFonts()
-    
-    -- States
     states = GameInit.LoadStates()
-
-    -- Substates
     substates = GameInit.LoadSubstates()
-
-    -- Shaders
     shaders = GameInit.LoadShaders()
 
     -- Parse the skin's data file
@@ -142,12 +126,11 @@ function love.load(args)
     gameScreen = love.graphics.newCanvas(Inits.GameWidth, Inits.GameHeight)
 
     MenuSoundManager = SoundManager()
-
     masterVolume = Settings.options["General"].globalVolume * 100
 
     doAprilFools = CheckAprilFools()
 
-    cursor = love.mouse.newCursor("assets/images/ui/cursor/cursor.png", 0, 0)
+    --cursor = love.mouse.newCursor("assets/images/ui/cursor/cursor.png", 0, 0)
     --love.mouse.setCursor(cursor)
 
     love.keyboard.setKeyRepeat(true)

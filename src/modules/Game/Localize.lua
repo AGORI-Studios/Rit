@@ -21,11 +21,7 @@ local function loadLocale(locale)
 end
 
 local function localize(text)
-    if currentLocaleData[text] then
-        return currentLocaleData[text]
-    else
-        return text
-    end
+    return currentLocaleData[text] or text
 end
 
 local function getLocaleName()

@@ -170,27 +170,3 @@ local defaultBinds = {
         input10 = ";",
     },
 }
-
-if not love.filesystem.getInfo("keybinds_config.ini") then
-    ini.save(defaultBinds, "keybinds_config.ini")
-else
-    local binds = ini.parse("keybinds_config.ini")
-    for i, v in pairs(binds) do
-        for i2, v2 in pairs(v) do
-            local i2 = i2:gsub("input", "")
-            if i ~= "4k" then
-                input:rebindControl(i .. "_game" .. i2, {"key:" .. v2})
-            else
-                if i2 == "1" then
-                    input:rebindControl(i .. "_game" .. i2, {"axis:triggerleft+", "axis:leftx-", "axis:rightx-", "button:dpleft", "button:x", "key:" .. v2})
-                elseif i2 == "2" then
-                    input:rebindControl(i .. "_game" .. i2, {"axis:lefty+", "axis:righty+", "button:leftshoulder", "button:dpdown", "button:a", "key:" .. v2})
-                elseif i2 == "3" then
-                    input:rebindControl(i .. "_game" .. i2, {"axis:lefty-", "axis:righty-", "button:rightshoulder", "button:dpup", "button:y", "key:" .. v2})
-                elseif i2 == "4" then
-                    input:rebindControl(i .. "_game" .. i2, {"axis:triggerright+", "axis:leftx+", "axis:rightx+", "button:dpright", "button:b", "key:" .. v2})
-                end
-            end
-        end
-    end
-end

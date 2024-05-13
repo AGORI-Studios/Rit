@@ -7,7 +7,7 @@ local balls, bg
 
 local time, time2, songTime = 0, 0, 0
 
-local equalizer
+--local equalizer
 
 local orderedSongs = {}
 local songIndex = 1
@@ -40,12 +40,12 @@ local function getNewSong()
         love.filesystem.unmount(curDiff.path)
     end
 
-    if MenuSoundManager:exists("music") then
+    --[[ if MenuSoundManager:exists("music") then
         soundData = MenuSoundManager:getSoundData("music")
 
         -- equalizer that draws on top of the screen
         equalizer = Spectrum(soundData)
-    end
+    end ]]
 end
 
 local function playSong()
@@ -72,12 +72,12 @@ local function playSong()
         love.filesystem.unmount(curDiff.path)
     end
 
-    if MenuSoundManager:exists("music") then
+    --[[ if MenuSoundManager:exists("music") then
         soundData = MenuSoundManager:getSoundData("music")
 
         -- equalizer that draws on top of the screen
         equalizer = Spectrum(soundData)
-    end
+    end ]]
 end
 
 local buttons = {
@@ -261,9 +261,9 @@ function Jukebox:update(dt)
         playSong()
     end
 
-    if equalizer and MenuSoundManager:getChannel("music") then
+    --[[ if equalizer and MenuSoundManager:getChannel("music") then
         equalizer:update(MenuSoundManager:getChannel("music").sound, soundData)
-    end
+    end ]]
 
 end
 
@@ -288,9 +288,9 @@ function Jukebox:draw()
         bubble:draw()
     end
 
-    if equalizer then
+    --[[ if equalizer then
         equalizer:draw()
-    end
+    end ]]
 
     -- media controls
     for i, button in ipairs(buttons) do

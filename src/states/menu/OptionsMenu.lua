@@ -50,7 +50,7 @@ local tabs = {
     ["draw_language"] = function()
         
     end,
-    ["update_language"] = function()
+    ["update_language"] = function(dt)
 
     end,
     ["mousepressed_language"] = function()

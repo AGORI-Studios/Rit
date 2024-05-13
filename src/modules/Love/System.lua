@@ -6,24 +6,6 @@ function love.system.getProcessorArchitecture()
             return "64"
         end
     else
-        return "32"
-    end
-end
-
-function love.system.getOS()
-    if jit then
-        if jit.os == "Windows" then
-            return "Windows"
-        elseif jit.os == "Linux" then
-            return "Linux"
-        elseif jit.os == "OSX" then
-            return "OSX"
-        elseif jit.os == "BSD" then
-            return "BSD"
-        elseif jit.os == "POSIX" then
-            return "POSIX"
-        end
-    else
-        return "Unknown"
+        return "64" -- Hoping and praying that the user has a 64-bit processor
     end
 end
