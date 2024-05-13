@@ -9,9 +9,7 @@ function GI.LoadLibraries()
     ini = require("lib.ini")
     clone = require("lib.clone")
     threads = {
-        assets = require("lib.loveloader"),
-        replays = require("lib.loveloader"),
-        networking = require("lib.loveloader")
+        assets = require("lib.loveloader")
     }
     xml = require("lib.xml")
     require("lib.lovefs.lovefs")

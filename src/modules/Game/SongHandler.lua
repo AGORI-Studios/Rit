@@ -515,8 +515,8 @@ function loadReplays()
 end
 
 function getSongReplays()
-    threads.replays.loadReplays(_G, "___REPLAYS")
-    threads.replays.start(function()
+    threads.assets.loadReplays(_G, "___REPLAYS")
+    threads.assets.start(function()
         states.menu.SongMenu.replays = _G.___REPLAYS
     end)
 end

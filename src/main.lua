@@ -22,7 +22,7 @@ __WINDOW_WIDTH, __WINDOW_HEIGHT = Inits.__WINDOW_WIDTH, Inits.__WINDOW_HEIGHT
 
 _TRANSITION = {
     x = Inits.GameWidth,
-    width = Inits.GameWidth+200,
+    width = Inits.GameWidth,
     y = 0,
     timer = nil, -- Timer.tween
     ovalHeight = 0
@@ -157,13 +157,11 @@ function love.load(args)
 end
 
 function love.update(dt)
-    if Steam and networking.connected then
+    if Steam and networking.connected and networking.frameCount % 60 == 0 then
         networking.frameCount = networking.frameCount + 1
         networking.hub:enterFrame()
     end
     threads.assets.update() -- update the threads for asset loading
-    threads.replays.update() -- update the threads for replay loading
-    threads.networking.update() -- update the threads for networking
     Timer.update(dt)
     input:update()
     if not isLoading then state.update(dt) end

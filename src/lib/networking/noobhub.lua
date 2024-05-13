@@ -61,9 +61,9 @@ local noobhub = {
 				self:reconnect()
 				return false;
 			end
-			threads.networking.encodeJSON(cache, "encodedJSON", message.message)
+			threads.assets.encodeJSON(cache, "encodedJSON", message.message)
 
-			threads.networking.start(function()
+			threads.assets.start(function()
 				local send_result, message, num_bytes = self.sock:send("__JSON__START__"..cache.encodedJSON.."__JSON__END__")
 				if (send_result == nil) then
 					print("Network publish error: "..message..'  sent '..num_bytes..' bytes');
@@ -96,9 +96,9 @@ local noobhub = {
 							local message = string.sub(self.buffer, start+15, finish-1)
 							self.buffer = string.sub(self.buffer, 1, start-1)  ..   string.sub(self.buffer, finish + 13 ) -- cutting our message from buffer
 							local data
-							threads.networking.decodeJSON(cache, "decodedJSON", message)
+							threads.assets.decodeJSON(cache, "decodedJSON", message)
 							
-							threads.networking.start(function()
+							threads.assets.start(function()
 								self.callback(cache.decodedJSON)
 							end)
 						else
