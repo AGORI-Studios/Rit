@@ -77,3 +77,17 @@ function table.concate(table, separator)
 
     return str:sub(1, #str - #separator)
 end
+
+---@name table.protect
+---@description Protects a table from being modified. Similar to lua 5.4's constants
+---@param table table
+---@return table
+function table.protect(table)
+    return setmetatable({}, {
+        __index = table,
+        __newindex = function(t, key, value)
+            error("Attempting to change protected value " .. key .. " to " .. value .. " in " .. tostring(t))
+        end,
+        __metatable = false
+    })
+end

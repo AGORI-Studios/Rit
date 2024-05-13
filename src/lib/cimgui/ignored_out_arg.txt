@@ -1,3 +1,0 @@
-ImFontAtlas_GetMouseCursorTexData: ImVec2[2] out_uv_border
-ImFontAtlas_GetMouseCursorTexData: ImVec2[2] out_uv_fill
-ImGuiTextRange_split: ImVector_ImGuiTextRange* out

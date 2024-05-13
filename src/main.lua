@@ -74,15 +74,6 @@ if love.system.getOS() == "Windows" then
             print("Couldn't load https.")
         end
     )
-    Try(
-        function()
-            imgui = require("lib.cimgui")
-        end,
-        function()
-            imgui = nil
-            print("Couldn't load imgui.")
-        end
-    )
 end
 
 local winOpacity = {1}
@@ -102,10 +93,6 @@ function love.load(args)
 
     GameInit.LoadLibraries()
     importer = lovefs()
-
-    if imgui then
-        imgui.love.Init()
-    end
 
     -- remove all os function EXCEPT non-harmful ones
     -- don't want modscriptors to do anything bad :)
@@ -192,11 +179,6 @@ function love.update(dt)
     GameInit.UpdateDiscord()
 
     MenuSoundManager:update(dt)
-
-    if imgui then
-        imgui.love.Update(dt)
-        imgui.NewFrame()
-    end
 end
 
 function love.filedropped(file)
@@ -221,11 +203,6 @@ function love.keypressed(key)
     elseif key == "return" and love.keyboard.isDown("lalt") then
         love.window.setFullscreen(not love.window.getFullscreen())
         return
-    end
-
-    if imgui then
-        imgui.love.KeyPressed(key)
-        if imgui.love.GetWantCaptureKeyboard() then return end
     end
 
     state.keypressed(key)
@@ -303,11 +280,6 @@ function love.draw()
             (Steam and "Steam ID: " .. tostring(SteamID) .. "\n" or "") ..
             "Volume: " .. math.round(masterVolume, 2)
         )
-    end
-
-    if imgui then
-        imgui.Render()
-        imgui.love.RenderDrawLists()
     end
 end
 

@@ -410,10 +410,6 @@ end
 
 -- Love Functions
 function love.wheelmoved(x, y)
-    if imgui then
-        imgui.love.WheelMoved(x, y)
-        if imgui.love.GetWantCaptureMouse() then return end
-    end
     state.wheelmoved(x, y)
 
     if love.keyboard.isDown("lalt") then
@@ -424,77 +420,40 @@ function love.wheelmoved(x, y)
 end
 
 function love.mousepressed(x, y, b)
-    if imgui then
-        imgui.love.MousePressed(b)
-        if imgui.love.GetWantCaptureMouse() then return end
-    end
     state.mousepressed(x, y, b)
     --currentController:touchpressed(0, x, y, 0, 0, 0)
 end
 
 function love.mousereleased(x, y, b)
-    if imgui then
-        imgui.love.MouseReleased(b)
-        if imgui.love.GetWantCaptureMouse() then return end
-    end
     state.mousereleased(x, y, b)
     --currentController:touchreleased(0, x, y, 0, 0, 0)
 end
 
 function love.mousemoved(x, y, dx, dy, istouch)
-    if imgui then
-        imgui.love.MouseMoved(x, y)
-        if imgui.love.GetWantCaptureMouse() then return end
-    end
     state.mousemoved(x, y, dx, dy, istouch)
     --currentController:touchmoved(0, x, y, dx, dy, 0)
 end
 
--- imgui doesn't support touch, so simulate mouse
 function love.touchpressed(id, x, y, dx, dy, pressure)
-    
-    if imgui then
-        love.mouse.setPosition(x, y)
-        imgui.love.MousePressed(1)
-        if imgui.love.GetWantCaptureMouse() then return end
-    end
     state.touchpressed(id, x, y, dx, dy, pressure)
     currentController:touchpressed(id, x, y, dx, dy, pressure)
 end
 
 function love.touchreleased(id, x, y, dx, dy, pressure)
-    if imgui then
-        love.mouse.setPosition(x, y)
-        imgui.love.MouseReleased(1)
-        if imgui.love.GetWantCaptureMouse() then return end
-    end
     state.touchreleased(id, x, y, dx, dy, pressure)
     currentController:touchreleased(id, x, y, dx, dy, pressure)
 end
 
 function love.touchmoved(id, x, y, dx, dy, pressure)
-    if imgui then
-        love.mouse.setPosition(x, y)
-        imgui.love.MouseMoved(x, y)
-        if imgui.love.GetWantCaptureMouse() then return end
-    end
     state.touchmoved(id, x, y, dx, dy, pressure)
     currentController:touchmoved(id, x, y, dx, dy, pressure)
 end
 
 function love.textinput(t)
-    if imgui then
-        imgui.love.TextInput(t)
-        if imgui.love.GetWantCaptureKeyboard() then return end
-    end
     state.textinput(t)
 end
 
 function love.keyreleased(key)
-    if imgui then
-        imgui.love.KeyReleased(key)
-        if imgui.love.GetWantCaptureKeyboard() then return end
-    end
     state.keyreleased(key)
 end
 
