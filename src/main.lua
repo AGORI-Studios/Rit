@@ -157,9 +157,12 @@ function love.load(args)
 end
 
 function love.update(dt)
-    if Steam and networking.connected and networking.frameCount % 60 == 0 then
+    if Steam and networking.connected then
         networking.frameCount = networking.frameCount + 1
-        networking.hub:enterFrame()
+        if networking.frameCount == 60 then
+            networking.hub:enterFrame()
+            networking.frameCount = 0
+        end
     end
     threads.assets.update() -- update the threads for asset loading
     Timer.update(dt)
