@@ -12,6 +12,8 @@ local equalizer
 local orderedSongs = {}
 local songIndex = 1
 
+local rpcTimer = 0
+
 local function getNewSong()
     local lastSong = curSong
 
@@ -221,7 +223,9 @@ function Jukebox:update(dt)
     local mx, my = love.mouse.getPosition()
     local px, py = (-mx / 50), (-my / 50)
 
-    if discordRPC then
+    rpcTimer = rpcTimer + dt
+    if discordRPC and rpcTimer > 1 then
+        rpcTimer = 0
         local formattedTime = string.format("%02d:%02d", math.floor(songTime / 60), math.floor(songTime % 60))
         discordRPC.presence = {
             details = "In the Jukebox",
@@ -230,6 +234,7 @@ function Jukebox:update(dt)
             largeImageKey = "totallyreallogo",
             largeImageText = "Rit" .. (__DEBUG__ and " DEBUG MODE" or ""),
         }
+        GameInit.UpdateDiscord()
     end
 
     for i, bubble in ipairs(balls) do

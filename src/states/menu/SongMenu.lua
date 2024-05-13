@@ -58,6 +58,7 @@ function SongMenu:enter()
             largeImageKey = "totallyreallogo",
             largeImageText = "Rit" .. (__DEBUG__ and " DEBUG MODE" or "")
         }
+        GameInit.UpdateDiscord()
     end
 
     songButtons = {}

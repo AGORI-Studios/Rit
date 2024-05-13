@@ -72,6 +72,16 @@ function GI.LoadLibraries()
                         if networking.currentServerID and message.id == networking.currentServerData.id then
                             networking.currentServerData = message.server
                             networking.currentServerID = message.id
+
+                            if discordRPC and networking.currentServerData then
+                                discordRPC.presence = {
+                                    details = "In a multiplayer lobby",
+                                    state = "Lobby: " .. networking.currentServerData.name .. " - " .. #networking.currentServerData.players .. "/" .. networking.currentServerData.maxPlayers,
+                                    largeImageKey = "totallyreallogo",
+                                    largeImageText = "Rit" .. (__DEBUG__ and " DEBUG MODE" or "")
+                                }
+                                GI.UpdateDiscord()
+                            end
                         end
                         if message.user.steamID == tostring(SteamID) then
                             --print("User joined: " .. message.user.steamID)
@@ -389,11 +399,8 @@ end
 
 function GI.UpdateDiscord()
     if discordRPC then
-        if love.timer.getTime() or 0 > discordRPC.nextPresenceUpdate then
-            if discordRPC.presence then
-                discordRPC.updatePresence(discordRPC.presence)
-            end
-            discordRPC.nextPresenceUpdate = love.timer.getTime() + 2.0
+        if discordRPC.presence then
+            discordRPC.updatePresence(discordRPC.presence)
         end
         discordRPC.runCallbacks()
     end

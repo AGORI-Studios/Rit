@@ -81,7 +81,7 @@ local volume = {1}
 local curVol = 1
 local isClosing = false
 
-local GameInit = require("modules.GameInit")
+GameInit = require("modules.GameInit")
 
 local function CheckAprilFools()
     local CurrentDateTime = os.date("*t") -- if april first, set the boolean "doAprilFools" to true
@@ -175,8 +175,6 @@ function love.update(dt)
     if isClosing then 
         love.window.setWindowOpacity(winOpacity[1]) 
     end
-
-    GameInit.UpdateDiscord()
 
     MenuSoundManager:update(dt)
 end

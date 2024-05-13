@@ -1147,6 +1147,7 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName)
             largeImageKey = "totallyreallogo",
             largeImageText = "Rit" .. (__DEBUG__ and " DEBUG MODE" or "")
         }
+        GameInit.UpdateDiscord()
     end
 
     -- determine noteScore (1m max score and how many notes)

@@ -160,6 +160,7 @@ function StartMenu:enter()
             largeImageKey = "totallyreallogo",
             largeImageText = "Rit" .. (__DEBUG__ and " DEBUG MODE" or "")
         }
+        GameInit.UpdateDiscord()
     end
 
     if not MenuSoundManager:exists("music") then playRandomSong() end
