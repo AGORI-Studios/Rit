@@ -743,11 +743,11 @@ function love.errorhandler(msg)
 		end
 	end
 
-end
+end 
 
 love._fps_cap = 500
 
-love.run = love.system.getOS() ~= "NX" and function(arg)
+love.run = love.system.getOS() ~= "NX" and function()
     if love.math then
         love.math.setRandomSeed(os.time())
     end
@@ -757,7 +757,7 @@ love.run = love.system.getOS() ~= "NX" and function(arg)
     end
 
     ---@diagnostic disable-next-line: redundant-parameter
-    if love.load then love.load(arg) end
+    if love.load then love.load(love.arg.parseGameArguments(arg), arg) end
 
     -- We don't want the first frame's dt to include time taken by love.load.
     if love.timer then love.timer.step() end

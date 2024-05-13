@@ -1003,6 +1003,9 @@ end
 
 function Gameplay:substateReturn(restarted, leftGame)
     self.inPause = false
+    if restarted then
+        self.soundManager:removeAllSounds()
+    end
     if not restarted or not leftGame then
         self.soundManager:play("music")
     end

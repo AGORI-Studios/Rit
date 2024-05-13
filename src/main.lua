@@ -97,10 +97,11 @@ local function CheckAprilFools()
     return CurrentDateTime.month == 4 and CurrentDateTime.day == 1
 end
 
-function love.load()
+function love.load(args)
     __NOTE_OBJECT_WIDTH = 0 -- Determined from the width of the noteskins note object.
 
     GameInit.LoadLibraries()
+    importer = lovefs()
 
     if imgui then
         imgui.love.Init()
@@ -165,7 +166,7 @@ function love.load()
     love.keyboard.setKeyRepeat(true)
 
     -- Lastly, switch to the preloader screen to preload all of our needed assets
-    state.switch(states.screens.PreloaderScreen)
+    state.switch(states.screens.PreloaderScreen, args)
 end
 
 function love.update(dt)

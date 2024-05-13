@@ -1,6 +1,5 @@
 local QuaverImportScreen = state()
 local os = love.system.getOS()
-local importer = lovefs()
 local sep = os == "Windows" and "\\" or "/"
 local songsFolder = love.filesystem.getSaveDirectory() .. sep .. "songs"
 local frame = 0 

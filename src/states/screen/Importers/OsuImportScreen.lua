@@ -1,7 +1,6 @@
 ---@diagnostic disable: param-type-mismatch
 local OsuImportScreen = state()
 local os_ = love.system.getOS()
-local importer = lovefs()
 local sep = os_ == "Windows" and "\\" or "/"
 local songsFolder = love.filesystem.getSaveDirectory() .. sep .. "songs"
 

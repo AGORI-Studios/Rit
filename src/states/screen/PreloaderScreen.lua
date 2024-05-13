@@ -4,7 +4,7 @@ local fade = {0}
 
 local ritLogo = Cache:loadImage("assets/images/ui/menu/logo.png")
 
-function PreloaderScreen:enter()
+function PreloaderScreen:enter(last, args)
     -- Preload all non-skin textures, and load song data (Useful for when difficulty calculation is added)
     threads.assets.newImage(self, "songButton", "assets/images/ui/menu/songBtn.png")
     threads.assets.newImage(self, "statsBox", "assets/images/ui/menu/statsBox.png")

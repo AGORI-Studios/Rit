@@ -46,6 +46,8 @@ win64: update_version lovefile
 	cp requirements/steam_appid.txt build/$(GameName)-win64
 
 	cat build/$(GameName)-win64/love.exe build/$(GameName)-lovefile/$(GameName).love > build/$(GameName)-win64/$(GameName).exe
+	cp requirements/icon.ico build/$(GameName)-win64/$(GameName).ico
+	cp -r requirements/scripts build/$(GameName)-win64/
 	rm build/$(GameName)-win64/love.exe
 	rm build/$(GameName)-win64/lovec.exe
 
