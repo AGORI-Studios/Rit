@@ -1,73 +1,82 @@
 -- Painful way of adding all required inputs for the game
 
-local k4Binds = Settings.options["General"]["k4Binds"]:splitAllCharacters()
+local k1Binds = Settings.options["Keybinds"]["1kBinds"]:gsub(" ", "space"):splitAllCharacters()
+local k2Binds = Settings.options["Keybinds"]["2kBinds"]:gsub(" ", "space"):splitAllCharacters()
+local k3Binds = Settings.options["Keybinds"]["3kBinds"]:gsub(" ", "space"):splitAllCharacters()
+local k4Binds = Settings.options["Keybinds"]["4kBinds"]:gsub(" ", "space"):splitAllCharacters()
+local k5Binds = Settings.options["Keybinds"]["5kBinds"]:gsub(" ", "space"):splitAllCharacters()
+local k6Binds = Settings.options["Keybinds"]["6kBinds"]:gsub(" ", "space"):splitAllCharacters()
+local k7Binds = Settings.options["Keybinds"]["7kBinds"]:gsub(" ", "space"):splitAllCharacters()
+local k8Binds = Settings.options["Keybinds"]["8kBinds"]:gsub(" ", "space"):splitAllCharacters()
+local k9Binds = Settings.options["Keybinds"]["9kBinds"]:gsub(" ", "space"):splitAllCharacters()
+local k10Binds = Settings.options["Keybinds"]["10kBinds"]:gsub(" ", "space"):splitAllCharacters()
 
 input = (require "lib.baton").new({
     controls = {
-        ["1k_game1"] = {"key:space"},
+        ["1k_game1"] = { "key:" .. string.lower(k1Binds[1])},
 
-        ["2k_game1"] = { "key:f" },
-        ["2k_game2"] = { "key:j" },
+        ["2k_game1"] = { "key:" .. string.lower(k2Binds[1])},
+        ["2k_game2"] = { "key:" .. string.lower(k2Binds[2])},
 
-        ["3k_game1"] = { "key:d" },
-        ["3k_game2"] = { "key:space" },
-        ["3k_game3"] = { "key:j" },
+        ["3k_game1"] = { "key:" .. string.lower(k3Binds[1])},
+        ["3k_game2"] = { "key:" .. string.lower(k3Binds[2])},
+        ["3k_game3"] = { "key:" .. string.lower(k3Binds[3])},
 
-        ["4k_game1"] = { "key:" .. string.lower(k4Binds[1]) },
-        ["4k_game2"] = { "key:" .. string.lower(k4Binds[2]) },
-        ["4k_game3"] = { "key:" .. string.lower(k4Binds[3]) },
-        ["4k_game4"] = { "key:" .. string.lower(k4Binds[4]) },
+        ["4k_game1"] = { "key:" .. string.lower(k4Binds[1])},
+        ["4k_game2"] = { "key:" .. string.lower(k4Binds[2])},
+        ["4k_game3"] = { "key:" .. string.lower(k4Binds[3])},
+        ["4k_game4"] = { "key:" .. string.lower(k4Binds[4])},
 
-        ["5k_game1"] = { "key:d" },
-        ["5k_game2"] = { "key:f" },
-        ["5k_game3"] = { "key:space" },
-        ["5k_game4"] = { "key:j" },
-        ["5k_game5"] = { "key:k" },
+        ["5k_game1"] = { "key:" .. string.lower(k5Binds[1])},
+        ["5k_game2"] = { "key:" .. string.lower(k5Binds[2])},
+        ["5k_game3"] = { "key:" .. string.lower(k5Binds[3])},
+        ["5k_game4"] = { "key:" .. string.lower(k5Binds[4])},
+        ["5k_game5"] = { "key:" .. string.lower(k5Binds[5])},
 
-        ["6k_game1"] = { "key:s" },
-        ["6k_game2"] = { "key:d" },
-        ["6k_game3"] = { "key:f" },
-        ["6k_game4"] = { "key:j" },
-        ["6k_game5"] = { "key:k" },
-        ["6k_game6"] = { "key:l" },
+        ["6k_game1"] = { "key:" .. string.lower(k6Binds[1])},
+        ["6k_game2"] = { "key:" .. string.lower(k6Binds[2])},
+        ["6k_game3"] = { "key:" .. string.lower(k6Binds[3])},
+        ["6k_game4"] = { "key:" .. string.lower(k6Binds[4])},
+        ["6k_game5"] = { "key:" .. string.lower(k6Binds[5])},
+        ["6k_game6"] = { "key:" .. string.lower(k6Binds[6])},
 
-        ["7k_game1"] = { "key:s" },
-        ["7k_game2"] = { "key:d" },
-        ["7k_game3"] = { "key:f" },
-        ["7k_game4"] = { "key:space" },
-        ["7k_game5"] = { "key:j" },
-        ["7k_game6"] = { "key:k" },
-        ["7k_game7"] = { "key:l" },
+        ["7k_game1"] = { "key:" .. string.lower(k7Binds[1])},
+        ["7k_game2"] = { "key:" .. string.lower(k7Binds[2])},
+        ["7k_game3"] = { "key:" .. string.lower(k7Binds[3])},
+        ["7k_game4"] = { "key:" .. string.lower(k7Binds[4])},
+        ["7k_game5"] = { "key:" .. string.lower(k7Binds[5])},
+        ["7k_game6"] = { "key:" .. string.lower(k7Binds[6])},
+        ["7k_game7"] = { "key:" .. string.lower(k7Binds[7])},
 
-        ["8k_game1"] = { "key:a" },
-        ["8k_game2"] = { "key:s" },
-        ["8k_game3"] = { "key:d" },
-        ["8k_game4"] = { "key:f" },
-        ["8k_game5"] = { "key:j" },
-        ["8k_game6"] = { "key:k" },
-        ["8k_game7"] = { "key:l" },
-        ["8k_game8"] = { "key:;" },
+        ["8k_game1"] = { "key:" .. string.lower(k8Binds[1])},
+        ["8k_game2"] = { "key:" .. string.lower(k8Binds[2])},
+        ["8k_game3"] = { "key:" .. string.lower(k8Binds[3])},
+        ["8k_game4"] = { "key:" .. string.lower(k8Binds[4])},
+        ["8k_game5"] = { "key:" .. string.lower(k8Binds[5])},
+        ["8k_game6"] = { "key:" .. string.lower(k8Binds[6])},
+        ["8k_game7"] = { "key:" .. string.lower(k8Binds[7])},
+        ["8k_game8"] = { "key:" .. string.lower(k8Binds[8])},
 
-        ["9k_game1"] = { "key:a" },
-        ["9k_game2"] = { "key:s" },
-        ["9k_game3"] = { "key:d" },
-        ["9k_game4"] = { "key:f" },
-        ["9k_game5"] = { "key:space" },
-        ["9k_game6"] = { "key:j" },
-        ["9k_game7"] = { "key:k" },
-        ["9k_game8"] = { "key:l" },
-        ["9k_game9"] = { "key:;" },
+        ["9k_game1"] = { "key:" .. string.lower(k9Binds[1])},
+        ["9k_game2"] = { "key:" .. string.lower(k9Binds[2])},
+        ["9k_game3"] = { "key:" .. string.lower(k9Binds[3])},
+        ["9k_game4"] = { "key:" .. string.lower(k9Binds[4])},
+        ["9k_game5"] = { "key:" .. string.lower(k9Binds[5])},
+        ["9k_game6"] = { "key:" .. string.lower(k9Binds[6])},
+        ["9k_game7"] = { "key:" .. string.lower(k9Binds[7])},
+        ["9k_game8"] = { "key:" .. string.lower(k9Binds[8])},
+        ["9k_game9"] = { "key:" .. string.lower(k9Binds[9])},
 
-        ["10k_game1"] = { "key:a" },
-        ["10k_game2"] = { "key:s" },
-        ["10k_game3"] = { "key:d" },
-        ["10k_game4"] = { "key:f" },
-        ["10k_game5"] = { "key:v" },
-        ["10k_game6"] = { "key:n" },
-        ["10k_game7"] = { "key:j" },
-        ["10k_game8"] = { "key:k" },
-        ["10k_game9"] = { "key:l" },
-        ["10k_game10"] = { "key:;" },
+        ["10k_game1"] = { "key:" .. string.lower(k10Binds[1])},
+        ["10k_game2"] = { "key:" .. string.lower(k10Binds[2])},
+        ["10k_game3"] = { "key:" .. string.lower(k10Binds[3])},
+        ["10k_game4"] = { "key:" .. string.lower(k10Binds[4])},
+        ["10k_game5"] = { "key:" .. string.lower(k10Binds[5])},
+        ["10k_game6"] = { "key:" .. string.lower(k10Binds[6])},
+        ["10k_game7"] = { "key:" .. string.lower(k10Binds[7])},
+        ["10k_game8"] = { "key:" .. string.lower(k10Binds[8])},
+        ["10k_game9"] = { "key:" .. string.lower(k10Binds[9])},
+        ["10k_game10"] = { "key:" .. string.lower(k10Binds[10])},
 
         -- UI
         up = { "key:up", "button:dpup", "axis:lefty-" },

@@ -22,8 +22,20 @@ Settings.options = {
         debugText = false,
 
         noteSize = 1, -- 100%
-        columnSpacing = 0, -- 0px
-        k4Binds = "dfjk"
+        columnSpacing = 0 -- 0px
+    },
+    ["Keybinds"] = {
+        -- Characters like " " get converted to the text "space"
+        ["1kBinds"] = " ",
+        ["2kBinds"] = "fj",
+        ["3kBinds"] = "f j",
+        ["4kBinds"] = "df jk",
+        ["5kBinds"] = "df jk",
+        ["6kBinds"] = "sdfjkl",
+        ["7kBinds"] = "sdf jkl",
+        ["8kBinds"] = "asdfjkl;",
+        ["9kBinds"] = "asdf jkl;",
+        ["10kBinds"] = "asdfvnjkl;"
     },
     ["Events"] = {
         aprilFools = true,
