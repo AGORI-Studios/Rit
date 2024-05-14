@@ -46,6 +46,10 @@ local buttons = {
     }
 }
 
+local tabOptions = {
+    
+}
+
 local tabs = {
     ["draw_language"] = function()
         

@@ -488,7 +488,7 @@ function SongMenu:draw()
         love.graphics.setFont(lastFont)
     end
 
-    if curTab == "diffs" then
+    --[[ if curTab == "diffs" then
         --statsBox:draw()
         love.graphics.setColor(0.5, 0.5, 0.5)
         love.graphics.setLineWidth(1)
@@ -523,7 +523,7 @@ function SongMenu:draw()
         end
 
         love.graphics.setLineWidth(1)
-    end
+    end ]]
     love.graphics.push()
     --[[ diffButton:draw()
     songButton:draw() ]]

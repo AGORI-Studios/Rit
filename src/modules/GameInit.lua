@@ -286,6 +286,7 @@ function GI.LoadObjects()
 
     HeaderButton = require("modules.Objects.menu.HeaderButton")
     Header = require("modules.Objects.menu.Header")
+    Switch = require("modules.Objects.menu.options.Switch")
 end
 
 function GI.LoadParsers()
