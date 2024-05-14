@@ -716,11 +716,11 @@ function love.errorhandler(msg)
 
 end 
 
-love._fps_cap = 500
-
 local ChannelEvent = love.thread.getChannel("EventThread")
 local ChannelActive = love.thread.getChannel("EventThreadActive")
 local EventThread
+
+local dt, fps = 0, 0
 
 function love.run()
     EventThread = love.thread.newThread("modules/EventThread.lua")
@@ -728,8 +728,10 @@ function love.run()
 
 	-- We don't want the first frame's dt to include time taken by love.load.
 	if love.timer then love.timer.step() end
+    collectgarbage()
 
-	local dt = 0
+	local focused, clock, nextDraw, cap = true, 0, 0, 0 
+    local prevFpsUpdate, sinceLastFps, frames = 0, 0, 0
     local t = {}
     local a = true
 
@@ -768,23 +770,44 @@ function love.run()
         end
 
         love.event.pump()
+        for name, a, b, c, d, e, f in love.event.poll() do
+            a, b = doEvent(name, a, b, c, d, e, f)
+            if a then return a, b end
+        end
 
-		-- Update dt, as we'll be passing it to update
-		if love.timer then dt = love.timer.step() end
+        cap, b = 1 / (love._fps_cap or 60), false
+        dt, clock = love.timer.step(), love.timer.getTime()
 
-		-- Call update and draw
-		if love.update then love.update(dt) end -- will pass 0 if love.timer is disabled
+		if love.update then 
+            love.update(dt)
+        end
+        if love.graphics.isActive() and (b or clock > nextDraw - dt) then
+            love.graphics.origin()
+            love.graphics.clear(0, 0, 0)
+            if love.draw then love.draw() end
+            love.graphics.present()
+            nextDraw, sinceLastFps, frames = clock + cap, clock - prevFpsUpdate, frames + 1
+            if sinceLastFps > .5 then
+                fps, prevFpsUpdate, frames = math.round(frames / sinceLastFps), clock, 0
+            end
+        end
 
-		if love.graphics and love.graphics.isActive() then
-			love.graphics.origin()
-			love.graphics.clear(love.graphics.getBackgroundColor())
-
-			if love.draw then love.draw() end
-
-			love.graphics.present()
-		end
-
-		if love.timer then love.timer.sleep(0.001) end
+        if love.window.hasFocus() then
+            if b then
+                love.timer.sleep(cap - dt)
+            else
+                love.timer.sleep(dt < 0.001 and 0.001 or 0)
+            end
+            focused = true
+        else
+            if focused then
+                collectgarbage()
+                collectgarbage()
+            else
+                collectgarbage("step")
+            end
+            focused = love.timer.sleep(cap)
+        end
 	end
 end
 
