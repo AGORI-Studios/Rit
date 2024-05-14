@@ -223,7 +223,7 @@ function GI.LoadClasses()
     currentController = menuController
 
     -- only do 4k and 7k for now,,,
-    local keybinds = Settings.options["General"].k4Binds:splitAllCharacters()
+    local keybinds = Settings.options["Keybinds"]["4kBinds"]:splitAllCharacters()
 
     -- each key is a width of 1920/4 = 480
     local keys = {

@@ -15,7 +15,8 @@ function Switch:new(tag, state, optionTag, option)
 end
 
 function Switch:update(dt)
-
+    self.sprite.x, self.sprite.y = self.x + 450, self.y + 2
+    self.sprite:setGraphicSize(self.sprite.width * 0.5)
 end
 
 function Switch:toggle()
@@ -28,9 +29,8 @@ function Switch:toggle()
 end
 
 function Switch:draw()
-    love.graphics.setColor(1, 1, 1)
     love.graphics.print(self.tag, self.x, self.y + 10)
-    love.graphics.draw(self.sprite.image, self.x + 200, self.y, 0, 0.5, 0.5)
+    self.sprite:draw()
 end
 
 return Switch

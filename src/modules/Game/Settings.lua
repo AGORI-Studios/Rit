@@ -24,12 +24,15 @@ Settings.options = {
         noteSize = 1, -- 100%
         columnSpacing = 0 -- 0px
     },
+    ["Video"] = {
+        ["VSYNC"] = false,
+    },
     ["Keybinds"] = {
         -- Characters like " " get converted to the text "space"
         ["1kBinds"] = " ",
         ["2kBinds"] = "fj",
         ["3kBinds"] = "f j",
-        ["4kBinds"] = "df jk",
+        ["4kBinds"] = "dfjk",
         ["5kBinds"] = "df jk",
         ["6kBinds"] = "sdfjkl",
         ["7kBinds"] = "sdf jkl",
