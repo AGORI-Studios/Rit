@@ -1,3 +1,5 @@
+io.stdout:setvbuf("no")
+jit.on()
 local GI = {}
 
 function GI.LoadLibraries()
@@ -14,6 +16,10 @@ function GI.LoadLibraries()
     xml = require("lib.xml")
     require("lib.lovefs.lovefs")
     require("lib.luafft")
+    if love.system.getOS() == "Windows" then
+        windowUtil = require("lib.windows.window")
+        windowUtil.setDarkMode(true)
+    end
     if love.system.getOS() ~= "NX" then
         Video = require("lib.aqua.Video")
 
@@ -712,61 +718,75 @@ end
 
 love._fps_cap = 500
 
-love.run = love.system.getOS() ~= "NX" and function()
-    if love.math then
-        love.math.setRandomSeed(os.time())
+local ChannelEvent = love.thread.getChannel("EventThread")
+local ChannelActive = love.thread.getChannel("EventThreadActive")
+local EventThread
+
+function love.run()
+    EventThread = love.thread.newThread("modules/EventThread.lua")
+	if love.load then love.load(love.arg.parseGameArguments(arg), arg) end
+
+	-- We don't want the first frame's dt to include time taken by love.load.
+	if love.timer then love.timer.step() end
+
+	local dt = 0
+    local t = {}
+    local a = true
+
+    local function doEvent(name, a, ...)
+        if name == "quit" and not love.quit() then
+            ChannelEvent:clear()
+            ChannelActive:clear()
+            ChannelActive:push(0)
+            return a or 0, ...
+        end
+
+        return love.handlers[name](...)
     end
 
-    if love.event then
-        love.event.pump()
-    end
-
-    ---@diagnostic disable-next-line: redundant-parameter
-    if love.load then love.load(love.arg.parseGameArguments(arg), arg) end
-
-    -- We don't want the first frame's dt to include time taken by love.load.
-    if love.timer then love.timer.step() end
-
-    local dt = 0
-
-    -- Main loop time.
-    while true do
-        local m1 = love.timer.getTime() -- measure the time at the beginning of the main iteration
-        -- Process events.
-        if love.event then
-            love.event.pump()
-            for e,a,b,c,d in love.event.poll() do
-                if e == "quit" then
-                    if not love.quit or not love.quit() then
-                        if love.audio then
-                            love.audio.stop()
-                        end
-                        return
-                    end
+	-- Main loop time.
+	return function()
+        if EventThread:isRunning() then
+            ChannelActive:clear()
+            ChannelActive:push(1)
+            out = ChannelEvent:pop()
+            while out do
+                clock, v = ChannelEvent:demand(), ChannelEvent:demand()
+                for i = 1, v do
+                    t[i] = ChannelEvent:demand()
                 end
-                love.handlers[e](a,b,c,d)
+                n, out, v = v, doEvent(out, unpack(t, 1, v))
+                if out then
+                    love.event.pump()
+                    return out, v
+                end
             end
+        elseif a then
+            EventThread:start()
+            ChannelEvent:clear()
+            ChannelActive:clear()
         end
 
-        -- Update dt, as we'll be passing it to update
-        if love.timer then
-            love.timer.step()
-            dt = love.timer.getDelta()
-        end
+        love.event.pump()
 
-        -- Call update and draw
-        if love.update then love.update(dt) end -- will pass 0 if love.timer is disabled
+		-- Update dt, as we'll be passing it to update
+		if love.timer then dt = love.timer.step() end
 
-        if love.window and love.graphics and love.window.isOpen() then
-            love.graphics.clear()
-            love.graphics.origin()
-            if love.draw then love.draw() end
-            love.graphics.present()
-        end
-	    local delta1 = love.timer.getTime() - m1 -- measure the time at the end of the main iteration and calculate delta
-        if love.timer then love.timer.sleep(1/love._fps_cap-delta1) end
-    end
-end or love.run
+		-- Call update and draw
+		if love.update then love.update(dt) end -- will pass 0 if love.timer is disabled
+
+		if love.graphics and love.graphics.isActive() then
+			love.graphics.origin()
+			love.graphics.clear(love.graphics.getBackgroundColor())
+
+			if love.draw then love.draw() end
+
+			love.graphics.present()
+		end
+
+		if love.timer then love.timer.sleep(0.001) end
+	end
+end
 
 function love.setFpsCap(fps)
     love._fps_cap = fps or 60
