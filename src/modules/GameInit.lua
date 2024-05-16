@@ -743,7 +743,11 @@ function love.run()
             return a or 0, ...
         end
 
-        return love.handlers[name](...)
+        if type(a) == "string" then
+            return love.handlers[name](...)
+        else
+            return love.handlers[name](a, ...)
+        end
     end
 
 	-- Main loop time.

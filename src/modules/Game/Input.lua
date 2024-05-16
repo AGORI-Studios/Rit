@@ -1,15 +1,32 @@
 -- Painful way of adding all required inputs for the game
 
-local k1Binds = Settings.options["Keybinds"]["1kBinds"]:gsub(" ", "space"):splitAllCharacters()
-local k2Binds = Settings.options["Keybinds"]["2kBinds"]:gsub(" ", "space"):splitAllCharacters()
-local k3Binds = Settings.options["Keybinds"]["3kBinds"]:gsub(" ", "space"):splitAllCharacters()
-local k4Binds = Settings.options["Keybinds"]["4kBinds"]:gsub(" ", "space"):splitAllCharacters()
-local k5Binds = Settings.options["Keybinds"]["5kBinds"]:gsub(" ", "space"):splitAllCharacters()
-local k6Binds = Settings.options["Keybinds"]["6kBinds"]:gsub(" ", "space"):splitAllCharacters()
-local k7Binds = Settings.options["Keybinds"]["7kBinds"]:gsub(" ", "space"):splitAllCharacters()
-local k8Binds = Settings.options["Keybinds"]["8kBinds"]:gsub(" ", "space"):splitAllCharacters()
-local k9Binds = Settings.options["Keybinds"]["9kBinds"]:gsub(" ", "space"):splitAllCharacters()
-local k10Binds = Settings.options["Keybinds"]["10kBinds"]:gsub(" ", "space"):splitAllCharacters()
+__k1Binds = Settings.options["Keybinds"]["1kBinds"]:splitAllCharacters()
+__k2Binds = Settings.options["Keybinds"]["2kBinds"]:splitAllCharacters()
+__k3Binds = Settings.options["Keybinds"]["3kBinds"]:splitAllCharacters()
+__k4Binds = Settings.options["Keybinds"]["4kBinds"]:splitAllCharacters()
+__k5Binds = Settings.options["Keybinds"]["5kBinds"]:splitAllCharacters()
+__k6Binds = Settings.options["Keybinds"]["6kBinds"]:splitAllCharacters()
+__k7Binds = Settings.options["Keybinds"]["7kBinds"]:splitAllCharacters()
+__k8Binds = Settings.options["Keybinds"]["8kBinds"]:splitAllCharacters()
+__k9Binds = Settings.options["Keybinds"]["9kBinds"]:splitAllCharacters()
+__k10Binds = Settings.options["Keybinds"]["10kBinds"]:splitAllCharacters()
+
+for i = 1, 10 do
+    for j = 1, #_G["__k" .. i .. "Binds"] do
+        _G["__k" .. i .. "Binds"][j] = _G["__k" .. i .. "Binds"][j] == " " and "space" or _G["__k" .. i .. "Binds"][j]
+    end
+end
+
+local k1Binds = __k1Binds
+local k2Binds = __k2Binds
+local k3Binds = __k3Binds
+local k4Binds = __k4Binds
+local k5Binds = __k5Binds
+local k6Binds = __k6Binds
+local k7Binds = __k7Binds
+local k8Binds = __k8Binds
+local k9Binds = __k9Binds
+local k10Binds = __k10Binds
 
 input = (require "lib.baton").new({
     controls = {
@@ -102,7 +119,7 @@ input = (require "lib.baton").new({
     joystick = love.joystick.getJoysticks()[1]
 })
 
-local defaultBinds = {
+__defaultBinds = {
     ["1k"] = {
         input1 = "space"
     },

@@ -119,6 +119,9 @@ function SongMenu:enter()
 end
 
 function SongMenu:update(dt)
+    if states.game.Gameplay.soundManager then
+        states.game.Gameplay.soundManager:removeAllSounds()
+    end
     if state.inSubstate then return end
     if curTab == "songs" then
         curSelected = math.clamp(curSelected, 1, #songButtons)
