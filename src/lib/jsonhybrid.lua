@@ -64,12 +64,13 @@ end
 local space_chars   = create_set(" ", "\t", "\r", "\n")
 local delim_chars   = create_set(" ", "\t", "\r", "\n", "]", "}", ",")
 local escape_chars  = create_set("\\", "/", '"', "b", "f", "n", "r", "t", "u")
-local literals      = create_set("true", "false", "null")
+local literals      = create_set("true", "false", "null", "undefined") -- added undefined, but it is not a standard JSON literal... this is only so the game doesn't crash if it is used for some reason
 
 local literal_map = {
   [ "true"  ] = true,
   [ "false" ] = false,
   [ "null"  ] = nil,
+  [ "undefined" ] = nil,
 }
 
 
