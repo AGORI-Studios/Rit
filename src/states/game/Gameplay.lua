@@ -437,7 +437,7 @@ function Gameplay:normalizeSVs()
                 break
             end
 
-            if (sv.startTime < timingPoint.StartTime) then
+            if (sv.startTime <= timingPoint.StartTime) then
                 local multiplier = (sv.Multiplier or 0) * (currentBpm / baseBpm)
 
                 if not currentAdjustedSvMultiplier then
@@ -496,7 +496,6 @@ function Gameplay:normalizeSVs()
         currentSvIndex = currentSvIndex + 1
     end
 
-    self.bpmAffectsScrollVelocity = false
     self.initialScrollVelocity = initialSvMultiplier or 1
     self.sliderVelocities = normalizedScrollVelocities
 end
@@ -1110,6 +1109,7 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName)
     Parsers[chartType].load(songPath, folderPath, diffName)
 
     --self:normalizeSVs()
+    --self:SVFactor()
 
     self.M_folderPath = folderPath -- used for mod scripting
     Modscript.vars = {sprites={}} -- reset modscript vars
