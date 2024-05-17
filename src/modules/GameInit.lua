@@ -740,7 +740,7 @@ Please describe what you were doing when this error occurred.
 
 end 
 
-local ChannelEvent = love.thread.getChannel("EventThread")
+--[[ local ChannelEvent = love.thread.getChannel("EventThread")
 local ChannelActive = love.thread.getChannel("EventThreadActive")
 local EventThread
 
@@ -837,7 +837,7 @@ function love.run()
             focused = love.timer.sleep(cap)
         end
 	end
-end
+end ]]
 
 function love.setFpsCap(fps)
     love._fps_cap = fps or 60
