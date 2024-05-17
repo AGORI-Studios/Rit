@@ -564,6 +564,26 @@ function love.errorhandler(msg)
 
     local bg = love.graphics.newImage("assets/images/ui/menu/playBG.png")
 
+    local gitURL = "https://github.com/AGORI-Studios/Rit/issues/new"
+    -- automatically format an issue with os, renderer, version, and error
+    local gitIssueFormat = [[
+**OS**: %s
+**Renderer Info**: %s
+**Version**: %s
+**Error**:
+```lua
+%s
+```
+
+Please describe what you were doing when this error occurred.
+|INSERT DESCRIPTION HERE|
+
+    ]]
+
+    local function encodeToURL(str)
+        return str:gsub("\n", "%%0A"):gsub(" ", "%%20")
+    end
+
     local buttons = {
         {
             text = "Quit",
@@ -580,7 +600,11 @@ function love.errorhandler(msg)
         {
             text = "Go to GitHub",
             func = function()
-                love.system.openURL("https://github.com/AGORI-Studios/Rit/issues")
+                local namer, versionr, vendorr, devicer = love.graphics.getRendererInfo( )
+                local versionStr = "LOVE: " .. love._version .. " (" .. love._version_codename .. ")"
+                versionStr = versionStr .. " | Game Version " .. __VERSION__
+                local issue = string.format(gitIssueFormat, love.system.getOS(), (namer .. ", " .. versionr .. ", " .. vendorr .. ", " .. devicer), versionStr, p)
+                love.system.openURL(gitURL .. "?body=" .. encodeToURL(issue))
             end
         }
     }
