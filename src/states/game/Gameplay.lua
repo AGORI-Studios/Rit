@@ -302,7 +302,7 @@ end
 function Gameplay:getPositionFromTime(time)
     local _i = 1
     for i = 1, #self.sliderVelocities do
-        if time < self.sliderVelocities[i].startTime then
+        if time <= self.sliderVelocities[i].startTime then
             _i = i
             break
         end
