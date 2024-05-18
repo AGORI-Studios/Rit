@@ -1,6 +1,6 @@
 # Rit
 
-### A rhythm game made in LÖVE.
+### A VSRG rhythm game made in LÖVE.
 
 # How to run (Uncompiled)
 - Install [LÖVE](https://love2d.org/)

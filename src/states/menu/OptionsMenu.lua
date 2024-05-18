@@ -100,6 +100,7 @@ local curBindTab = "4k"
 
 local tabs = {
     ["draw_language"] = function()
+        
     end,
     ["update_language"] = function(dt)
 
