@@ -387,7 +387,7 @@ end
 
 function SongMenu:textinput(t)
     if typing then
-        searchText = searchText .. t
+        searchText = searchText .. (t or "")
     end
 end
 

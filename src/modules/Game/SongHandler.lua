@@ -22,31 +22,23 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         local bpm = fileData:match("Bpm: (%d+)")
                         Tags = Tags:split(" ")
 
-                        local alreadyInList = false
-                        for _, song in ipairs(songList) do
-                            if song.title == title and song.difficultyName == difficultyName then
-                                alreadyInList = true
-                            end
-                        end
-                        if not alreadyInList then
-                            songList[title] = songList[title] or {}
-                            songList[title][difficultyName] = {
-                                filename = file,
-                                title = title,
-                                difficultyName = difficultyName,
-                                path = path .."/" .. file .. "/" .. song,
-                                folderPath = path .."/" .. file,
-                                type = "Quaver",
-                                rating = "",
-                                creator = Creator,
-                                artist = Artist,
-                                tags = Tags,
-                                mode = mode:match("%d+"),
-                                bpm = bpm,
-                                audioFile = path .."/" .. file .. "/" .. AudioFile
-                            }
-                            songList[title].type = "Quaver"
-                        end
+                        songList[title..Creator] = songList[title..Creator] or {}
+                        songList[title..Creator][difficultyName] = {
+                            filename = file,
+                            title = title,
+                            difficultyName = difficultyName,
+                            path = path .."/" .. file .. "/" .. song,
+                            folderPath = path .."/" .. file,
+                            type = "Quaver",
+                            rating = "",
+                            creator = Creator,
+                            artist = Artist,
+                            tags = Tags,
+                            mode = mode:match("%d+"),
+                            bpm = bpm,
+                            audioFile = path .."/" .. file .. "/" .. AudioFile
+                        }
+                        songList[title..Creator].type = "Quaver"
                     elseif song:sub(-4) == ".osu" then
                         local fileData = lf.read(path .."/" .. file .. "/" .. song)
                         local title = fileData:match("Title:(.-)\r?\n")
@@ -103,33 +95,25 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         end
                         Tags = Tags:split(" ")
 
-                        local alreadyInList = false
-                        for _, song in ipairs(songList) do
-                            if song.title == title and song.difficultyName == difficultyName then
-                                alreadyInList = true
-                            end
-                        end
                         local Mode = fileData:match("Mode:(.-)\r?\n"):trim()
                         -- needs to be 3, else FUCK YOU! because 3 equals mania!!!
                         if Mode ~= "3" then goto continue end
-                        if not alreadyInList then
-                            songList[title] = songList[title] or {}
-                            songList[title][difficultyName] = {
-                                filename = file,
-                                title = title,
-                                difficultyName = difficultyName,
-                                path = path .."/" .. file .. "/" .. song,
-                                folderPath = path .."/" .. file,
-                                type = "osu!",
-                                rating = "",
-                                creator = Creator,
-                                artist = Artist,
-                                tags = Tags,
-                                bpm = bpm,
-                                audioFile = path .."/" .. file .. "/" .. AudioFile
-                            }
-                            songList[title].type = "osu!"
-                        end
+                        songList[title..Creator] = songList[title..Creator] or {}
+                        songList[title..Creator][difficultyName] = {
+                            filename = file,
+                            title = title,
+                            difficultyName = difficultyName,
+                            path = path .."/" .. file .. "/" .. song,
+                            folderPath = path .."/" .. file,
+                            type = "osu!",
+                            rating = "",
+                            creator = Creator,
+                            artist = Artist,
+                            tags = Tags,
+                            bpm = bpm,
+                            audioFile = path .."/" .. file .. "/" .. AudioFile
+                        }
+                        songList[title..Creator].type = "osu!"
                         ::continue::
                     elseif song:sub(-5) == ".ritc" then
                         local fileData = lf.read(path .."/" .. file .. "/" .. song)
@@ -145,31 +129,23 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         bpm = bpm[1]:split(":")[2]
                         Tags = Tags:split(" ")
 
-                        local alreadyInList = false
-                        for _, song in ipairs(songList) do
-                            if song.title == title and song.difficultyName == difficultyName then
-                                alreadyInList = true
-                            end
-                        end
-                        if not alreadyInList then
-                            songList[title] = songList[title] or {}
-                            songList[title][difficultyName] = {
-                                filename = file,
-                                title = title,
-                                difficultyName = difficultyName,
-                                path = path .."/" .. file .. "/" .. song,
-                                folderPath = path .."/" .. file,
-                                type = "Rit",
-                                rating = "",
-                                creator = Creator,
-                                artist = Artist,
-                                description = description,
-                                tags = Tags,
-                                bpm = bpm,
-                                audioFile = path .."/" .. file .. "/" .. AudioFile
-                            }
-                            songList[title].type = "Rit"
-                        end
+                        songList[title..Creator] = songList[title..Creator] or {}
+                        songList[title..Creator][difficultyName] = {
+                            filename = file,
+                            title = title,
+                            difficultyName = difficultyName,
+                            path = path .."/" .. file .. "/" .. song,
+                            folderPath = path .."/" .. file,
+                            type = "Rit",
+                            rating = "",
+                            creator = Creator,
+                            artist = Artist,
+                            description = description,
+                            tags = Tags,
+                            bpm = bpm,
+                            audioFile = path .."/" .. file .. "/" .. AudioFile
+                        }
+                        songList[title..Creator].type = "Rit"
                     elseif song:sub(-3) == ".mc" then
                         local fileData = json.decode(lf.read(path .."/" .. file .. "/" .. song))
                         local title = fileData.meta.song.title
@@ -183,31 +159,23 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                                 AudioFile = note.sound
                             end
                         end
-                        local alreadyInList = false
-                        for _, song in ipairs(songList) do
-                            if song.title == title and song.difficultyName == difficultyName then
-                                alreadyInList = true
-                            end
-                        end
-                        if not alreadyInList then
-                            songList[title] = songList[title] or {}
-                            songList[title][difficultyName] = {
-                                filename = file,
-                                title = title,
-                                difficultyName = difficultyName,
-                                path = path .."/" .. file .. "/" .. song,
-                                folderPath = path .."/" .. file,
-                                type = "Malody",
-                                rating = "",
-                                ratingColour = {1,1,1},
-                                creator = Creator,
-                                artist = Artist,
-                                tags = Tags,
-                                bpm = 120,
-                                audioFile = path .."/" .. file .. "/" .. AudioFile
-                            }
-                        end
-                        songList[title].type = "Malody"
+                        songList[title..Creator] = songList[title..Creator] or {}
+                        songList[title..Creator][difficultyName] = {
+                            filename = file,
+                            title = title,
+                            difficultyName = difficultyName,
+                            path = path .."/" .. file .. "/" .. song,
+                            folderPath = path .."/" .. file,
+                            type = "Malody",
+                            rating = "",
+                            ratingColour = {1,1,1},
+                            creator = Creator,
+                            artist = Artist,
+                            tags = Tags,
+                            bpm = 120,
+                            audioFile = path .."/" .. file .. "/" .. AudioFile
+                        }
+                        songList[title..Creator].type = "Malody"
                     --[[ elseif song:sub(-6) == ".chart" then
                         -- check for song.ini in same path
                         local songIni = lf.getInfo(path .."/" .. file .. "/song.ini")
@@ -291,38 +259,30 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                     local Tags = fileData:match("Tags:(.-)\r?\n"):strip()
                     local Bpm = fileData:match("Bpm: (%d+)")
                     Tags = Tags:split(" ")
-                    local alreadyInList = false
-                    for _, song in ipairs(songList) do
-                        if song.title == title and song.difficultyName == difficultyName then
-                            alreadyInList = true
-                        end
-                    end
-                    if not alreadyInList then
-                        songList[title] = songList[title] or {}
-                        songList[title][difficultyName] = {
-                            filename = file,
-                            title = title,
-                            difficultyName = difficultyName,
-                            path = "song/" .. song,
-                            folderPath = "song",
-                            type = "Quaver",
-                            rating = "",
-                            ratingColour = {1,1,1},
-                            creator = Creator,
-                            artist = Artist,
-                            mode = mode:match("%d+"),
-                            tags = Tags,
-                            bpm = Bpm,
-                            audioFile = "song/" .. AudioFile
-                       }
-                        songList[title].type = "Quaver"
-                    end
+
+                    songList[title..Creator] = songList[title..Creator] or {}
+                    songList[title..Creator][difficultyName] = {
+                        filename = file,
+                        title = title,
+                        difficultyName = difficultyName,
+                        path = "song/" .. song,
+                        folderPath = "song",
+                        type = "Quaver",
+                        rating = "",
+                        ratingColour = {1,1,1},
+                        creator = Creator,
+                        artist = Artist,
+                        mode = mode:match("%d+"),
+                        tags = Tags,
+                        bpm = Bpm,
+                        audioFile = "song/" .. AudioFile
+                    }
+                    songList[title..Creator].type = "Quaver"
                 elseif song:sub(-4) == ".osu" then
                     local fileData = lf.read("song/" .. song)
                     local title = fileData:match("Title:(.-)\r?\n")
                     local difficultyName = fileData:match("Version:(.-)\r?\n")
                     local AudioFile = fileData:match("AudioFilename:(.-)\r?\n"):trim()
-                    local alreadyInList = false
                     local Mode = fileData:match("Mode:(.-)\r?\n"):trim()
                     local Creator = fileData:match("Creator:(.-)\r?\n")
                     local Artist = fileData:match("Artist:(.-)\r?\n")
@@ -370,30 +330,24 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                     Tags = Tags:split(" ")
                     -- needs to be 3, else FUCK YOU!
                     if Mode ~= "3" then goto continue end
-                    for _, song in ipairs(songList) do
-                        if song.title == title and song.difficultyName == difficultyName then
-                            alreadyInList = true
-                        end
-                    end
-                    if not alreadyInList then
-                        songList[title] = songList[title] or {}
-                        songList[title][difficultyName] = {
-                            filename = file,
-                            title = title,
-                            difficultyName = difficultyName,
-                            path = "song/" .. song,
-                            folderPath = "song",
-                            type = "osu!",
-                            rating = "",
-                            ratingColour = {1,1,1},
-                            creator = Creator,
-                            artist = Artist,
-                            tags = Tags,
-                            bpm = bpm,
-                            audioFile = "song/" .. AudioFile
-                        }
-                        songList[title].type = "osu!"
-                    end
+
+                    songList[title..Creator] = songList[title..Creator] or {}
+                    songList[title..Creator][difficultyName] = {
+                        filename = file,
+                        title = title,
+                        difficultyName = difficultyName,
+                        path = "song/" .. song,
+                        folderPath = "song",
+                        type = "osu!",
+                        rating = "",
+                        ratingColour = {1,1,1},
+                        creator = Creator,
+                        artist = Artist,
+                        tags = Tags,
+                        bpm = bpm,
+                        audioFile = "song/" .. AudioFile
+                    }
+                    songList[title..Creator].type = "osu!"
                     ::continue::
                 end
             end
