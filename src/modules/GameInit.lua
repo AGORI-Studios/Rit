@@ -188,6 +188,7 @@ function GI.LoadClasses()
     skin = require("modules.Game.SkinHandler")
     localize = require("modules.Game.Localize")
     VirtualController = (require("modules.VirtualController"))
+    calculateDifficulty = require("modules.Game.Calculator.CalculateDifficulty")
     menuController = VirtualController({
         {
             text = "",

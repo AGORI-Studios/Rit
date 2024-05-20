@@ -72,7 +72,7 @@ local function tickToMs(tick, bpm)
     return tick * msPerTick
 end
 
-function stepmaniaLoader.load(chart, folderPath, diffName)
+function stepmaniaLoader.load(chart, folderPath, diffName, forDiffCalc)
     local songName = ""
     local audioPath = ""
     print(diffName)
@@ -115,7 +115,9 @@ function stepmaniaLoader.load(chart, folderPath, diffName)
                 songName = line:sub(8):sub(1, #line:sub(8) - 1):trim()
             elseif line:startsWith("#MUSIC:") then
                 audioPath = line:sub(8):sub(1, #line:sub(8) - 1):trim()
-                states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. audioPath, 1, true, "stream")
+                if not forDiffCalc then
+                    states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. audioPath, 1, true, "stream")
+                end
             elseif line:startsWith("#BPMS:") then
                 inBpms = true
             elseif line:startsWith("#STOPS:") then

@@ -1104,21 +1104,12 @@ function Gameplay:draw()
     love.graphics.setFont(lastFont)
 end
 
-function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName)
+function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName, forDiffCalc)
     self.mode = 4 -- Amount of key lanes, reset to 4 until the chart specifies otherwise
-    Parsers[chartType].load(songPath, folderPath, diffName)
+    Parsers[chartType].load(songPath, folderPath, diffName, forDiffCalc)
 
     --self:normalizeSVs()
     --self:SVFactor()
-
-    self.M_folderPath = folderPath -- used for mod scripting
-    Modscript.vars = {sprites={}} -- reset modscript vars
-
-    local modPath = folderPath .. "/mod/main.ritmod"
-    if love.filesystem.getInfo(modPath) then
-        Modscript:load(modPath)
-    end
-
     table.sort(self.unspawnNotes, function(a, b)
         return a.time < b.time
     end)
@@ -1132,30 +1123,39 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName)
 
     self.songName = __title or "N/A"
     self.difficultyName = __diffName or "N/A"
-    self.songDuration = self.soundManager:getDuration("music") * 1000
+    if not forDiffCalc then
+        self.songDuration = self.soundManager:getDuration("music") * 1000
+        self.M_folderPath = folderPath -- used for mod scripting
+        Modscript.vars = {sprites={}} -- reset modscript vars
 
-    if discordRPC then
-        local details = ""
-        if networking.inMultiplayerGame then
-            details = "In a multiplayer game - " .. networking.currentServerData.name .. " (" .. #networking.currentServerData.players .. "/" .. networking.currentServerData.maxPlayers .. ")"
-        else
-            details = "Playing a song"
+        local modPath = folderPath .. "/mod/main.ritmod"
+        if love.filesystem.getInfo(modPath) then
+            Modscript:load(modPath)
         end
-        discordRPC.presence = {
-            details = details,
-            state = self.songName .. " - " .. self.difficultyName,
-            largeImageKey = "totallyreallogo",
-            largeImageText = "Rit" .. (__DEBUG__ and " DEBUG MODE" or "")
-        }
-        GameInit.UpdateDiscord()
+
+        if discordRPC then
+            local details = ""
+            if networking.inMultiplayerGame then
+                details = "In a multiplayer game - " .. networking.currentServerData.name .. " (" .. #networking.currentServerData.players .. "/" .. networking.currentServerData.maxPlayers .. ")"
+            else
+                details = "Playing a song"
+            end
+            discordRPC.presence = {
+                details = details,
+                state = self.songName .. " - " .. self.difficultyName,
+                largeImageKey = "totallyreallogo",
+                largeImageText = "Rit" .. (__DEBUG__ and " DEBUG MODE" or "")
+            }
+            GameInit.UpdateDiscord()
+        end
+
+        -- determine noteScore (1m max score and how many notes)
+        self.noteScore = self.maxScore / #self.unspawnNotes
+
+        self.soundManager:setBeatCallback("music", function(beat)
+            Modscript:call("OnBeat", {beat})
+        end)
     end
-
-    -- determine noteScore (1m max score and how many notes)
-    self.noteScore = self.maxScore / #self.unspawnNotes
-
-    self.soundManager:setBeatCallback("music", function(beat)
-        Modscript:call("OnBeat", {beat})
-    end)
 end
 
 function Gameplay:exit()

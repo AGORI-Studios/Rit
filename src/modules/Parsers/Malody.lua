@@ -23,7 +23,7 @@ local function getMilliSeconds(beat, offset)
     return getTime(bpm, beat, offset)    
 end
 
-function malodyLoader.load(chart_, folderPath, forDiff)
+function malodyLoader.load(chart_, folderPath, diffName, forDiffCalc)
     chart = json.decode(love.filesystem.read(chart_))
 
     local meta = chart.meta
@@ -61,8 +61,10 @@ function malodyLoader.load(chart_, folderPath, forDiff)
 
             local ho = HitObject(startTime, lane, endTime)
         else
-            states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. note.sound, 1, false)
-            states.game.Gameplay.soundManager:setBPM("music", bpm)
+            if not forDiffCalc then
+                states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. note.sound, 1, false)
+                states.game.Gameplay.soundManager:setBPM("music", bpm)
+            end
         end
     end
 

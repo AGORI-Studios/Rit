@@ -1,6 +1,6 @@
 local quaverLoader = {}
 
-function quaverLoader.load(chart, folderPath, forDiff)
+function quaverLoader.load(chart, folderPath, diffName, forDiffCalc)
     curChart = "Quaver"
 
     local chart = tinyyaml.parse(love.filesystem.read(chart):gsub("\r\n", "\n"))
@@ -27,37 +27,43 @@ function quaverLoader.load(chart, folderPath, forDiff)
 
     --audioFile = love.audio.newSource(folderPath .. "/" .. meta.audioPath, "stream")
     --audioFile = love.audio.newSource(folderPath .. "/" .. meta.audioPath, "stream")
-    states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. meta.audioPath, 1, true, "stream")
-
-    for i = 1, #chart.TimingPoints do
-        -- if its the first one, set meta.bpm to the bpm of the first timing point
-        local timingPoint = chart.TimingPoints[i]
-        if i == 1 then
-            meta.bpm = timingPoint.Bpm
-            bpm = meta.bpm
-            crochet = (60/bpm)*1000
-            stepCrochet = crochet/4
-        end
-        table.insert(states.game.Gameplay.timingPoints, timingPoint)
-
-        --[[ if timingPoint.Hidden then goto continue end
-
-        local msPerBeat = 60000 / math.min(math.abs(timingPoint.Bpm), 9999)
-        local signature = timingPoint.Signature or 4
-        local increment = signature * msPerBeat
-
-        if increment <= 0 then goto continue end
-
-        local target = #chart.TimingPoints > i and chart.TimingPoints[i + 1].StartTime - 1 or meta.length
-        for songPos = timingPoint.StartTime, target, increment do
-            local offset = states.game.Gameplay:GetPositionFromTime(songPos)
-            print(offset)
-            states.game.Gameplay.timingLines:add(TimingLine(offset))
-        end
-
-        ::continue:: ]]
+    if not forDiffCalc then
+        states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. meta.audioPath, 1, true, "stream")
     end
-    states.game.Gameplay.soundManager:setBPM("music", bpm)
+
+    if not forDiffCalc then
+        for i = 1, #chart.TimingPoints do
+            -- if its the first one, set meta.bpm to the bpm of the first timing point
+            local timingPoint = chart.TimingPoints[i]
+            if i == 1 then
+                meta.bpm = timingPoint.Bpm
+                bpm = meta.bpm
+                crochet = (60/bpm)*1000
+                stepCrochet = crochet/4
+            end
+            table.insert(states.game.Gameplay.timingPoints, timingPoint)
+
+            --[[ if timingPoint.Hidden then goto continue end
+
+            local msPerBeat = 60000 / math.min(math.abs(timingPoint.Bpm), 9999)
+            local signature = timingPoint.Signature or 4
+            local increment = signature * msPerBeat
+
+            if increment <= 0 then goto continue end
+
+            local target = #chart.TimingPoints > i and chart.TimingPoints[i + 1].StartTime - 1 or meta.length
+            for songPos = timingPoint.StartTime, target, increment do
+                local offset = states.game.Gameplay:GetPositionFromTime(songPos)
+                print(offset)
+                states.game.Gameplay.timingLines:add(TimingLine(offset))
+            end
+
+            ::continue:: ]]
+        end
+    end
+    if not forDiffCalc then
+        states.game.Gameplay.soundManager:setBPM("music", bpm)
+    end
 
     states.game.Gameplay.initialScrollVelocity = chart.InitialScrollVelocity or 1
 

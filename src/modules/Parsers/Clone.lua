@@ -1,13 +1,15 @@
 local cloneLoader = {}
 
-function cloneLoader.load(chart, folderPath, forDiff)
+function cloneLoader.load(chart, folderPath, diffName, forDiffCalc)
     curChart = "CloneHero"
 
     local chart = clone.parse(chart)
 
     states.game.Gameplay.mode = 5 -- always 5 key i think idk i dont play clone hero
     states.game.Gameplay.strumX = states.game.Gameplay.strumX - ((states.game.Gameplay.mode - 4.5) * (100 + Settings.options["General"].columnSpacing))
-    states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. chart.meta.MusicStream, 1, true, "stream")
+    if not forDiffCalc then
+        states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. chart.meta.MusicStream, 1, true, "stream")
+    end
 
     for i = 1, #chart.notes.ExpertSingle do
         local note = chart.notes.ExpertSingle[i]

@@ -1,10 +1,12 @@
 local ritLoader = {}
 local currentBlock = ""
 local folderPath
+local _forDiffCalc
 
 local title, diff
 
-function ritLoader.load(chart, folderPath_, forDiff)
+function ritLoader.load(chart, folderPath_, diffName, forDiffCalc)
+    _forDiffCalc = forDiffCalc or false
     curChart = "Rit"
     folderPath = folderPath_
 
@@ -80,7 +82,9 @@ function ritLoader.processMetadata(line)
         states.game.Gameplay.strumX = states.game.Gameplay.strumX - ((states.game.Gameplay.mode - 4.5) * (100 + Settings.options["General"].columnSpacing))
     elseif key == "AudioFile" then
         local value = value:trim()
-        states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. value, 1, true, "stream")
+        if not _forDiffCalc then
+            states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. value, 1, true, "stream")
+        end
     end
 end
 

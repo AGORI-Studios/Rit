@@ -2,10 +2,12 @@
 local osuLoader = {}
 local currentBlockName = ""
 local folderPath
+local forDiffCalc
 
 local _bpm = nil
 
-function osuLoader.load(chart, folderPath_, forDiff)
+function osuLoader.load(chart, folderPath_, diffName, _forDiffCalc)
+    forDiffCalc = _forDiffCalc or false
     _bpm = nil
     curChart = "osu!"
     folderPath = folderPath_
@@ -65,7 +67,9 @@ function osuLoader.processGeneral(line)
     if key == "AudioFilename" then
         local value = value:trim()
         --audioFile = love.audio.newSource(folderPath .. "/" .. value, "stream")
-        states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. value, 1, true, "stream")
+        if not forDiffCalc then
+            states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. value, 1, true, "stream")
+        end
     end
 end
 function osuLoader.processEvent(line)
