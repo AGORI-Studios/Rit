@@ -567,14 +567,13 @@ function Gameplay:updateNotePosition(offset, curTime)
     local spritePosition = 0
 
     for _, hitObject in ipairs(self.hitObjects.members) do
-        --[[ hitObject.offset.x = math.sin((curTime - hitObject.time) / 1000 * math.pi) * 10
-        hitObject.offset.y = math.sin((curTime - hitObject.time) / 1000 * math.pi) * 10 ]]
-        --hitObject.offset.z = math.sin((curTime - hitObject.time) / 1000 * math.pi) * 10
-        --[[ hitObject.z = math.sin((curTime - hitObject.time) / 1000 * math.pi) * 10
-        hitObject.offset.x = math.sin((curTime - hitObject.time) / 1000 * math.pi) * 10
-        hitObject.rotation.z = math.sin((curTime - hitObject.time) / 1000 * math.pi) * 10
-        hitObject.rotation.y = math.sin((curTime - hitObject.time) / 1000 * math.pi) * 10
-        hitObject.rotation.x = math.sin((curTime - hitObject.time) / 1000 * math.pi) * 10 ]]
+        --[[ hitObject.offset.x = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi) * 25
+        hitObject.offset.y = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi) * 25
+        hitObject.offset.z = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi) * 25
+        hitObject.rotation.x = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi) * 25
+        hitObject.rotation.y = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi) * 25
+        hitObject.rotation.z = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi) * 25 ]]
+
         if hitObject.time - musicTime > 15000 then -- Only update notes that are within 15 seconds of the current time to prevent lag issues from too many notes
             break
         end
@@ -589,7 +588,20 @@ function Gameplay:updateNotePosition(offset, curTime)
             -- Determine the hold notes position and scale
             hitObject.children[1].y = spritePosition + 95
             hitObject.children[2].y = spritePosition + 95
-
+--[[        -- This code doesn't exist. You're just going crazy.
+            hitObject.children[1].offset.x = math.sin((musicTime - hitObject.time) / 1000 * math.pi) * 25
+            hitObject.children[1].offset.y = math.sin((musicTime - hitObject.time) / 1000 * math.pi) * 25
+            hitObject.children[1].offset.z = math.sin((musicTime - hitObject.time) / 1000 * math.pi) * 25
+            hitObject.children[1].rotation.x = math.sin((musicTime - hitObject.time) / 1000 * math.pi) * 25
+            hitObject.children[1].rotation.y = math.sin((musicTime - hitObject.time) / 1000 * math.pi) * 25
+            hitObject.children[1].rotation.z = math.sin((musicTime - hitObject.time) / 1000 * math.pi) * 25
+            hitObject.children[2].offset.x = math.sin((musicTime - hitObject.time) / 1000 * math.pi) * 25
+            hitObject.children[2].offset.y = math.sin((musicTime - hitObject.time) / 1000 * math.pi) * 25
+            hitObject.children[2].offset.z = math.sin((musicTime - hitObject.time) / 1000 * math.pi) * 25
+            hitObject.children[2].rotation.x = math.sin((musicTime - hitObject.time) / 1000 * math.pi) * 25
+            hitObject.children[2].rotation.y = math.sin((musicTime - hitObject.time) / 1000 * math.pi) * 25
+            hitObject.children[2].rotation.z = math.sin((musicTime - hitObject.time) / 1000 * math.pi) * 25
+ ]]
             hitObject.endY = self:getNotePosition(offset, hitObject.endTrackPosition)
             local pixelDistance = hitObject.endY - hitObject.children[1].y + 95-- the distance of start and end we need
             hitObject.children[1].dimensions = {width = 200, height = pixelDistance}
@@ -826,9 +838,14 @@ function Gameplay:update(dt)
 
     Modscript:update(dt, self.soundManager:getBeat("music"))
 
-    for i = 1, self.mode do
-        self.strumLineObjects.members[i].offset = self.noteoffsets[i]
-    end
+    --[[ for i = 1, self.mode do -- erm... what the sigma?
+        self.strumLineObjects.members[i].offset.x = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi) * 25
+        self.strumLineObjects.members[i].offset.y = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi) * 25
+        self.strumLineObjects.members[i].offset.z = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi) * 25
+        self.strumLineObjects.members[i].rotation.x = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi) * 25
+        self.strumLineObjects.members[i].rotation.y = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi) * 25
+        self.strumLineObjects.members[i].rotation.z = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi) * 25
+    end ]]
 
     for i, member in ipairs(self.members) do
         if member.update then

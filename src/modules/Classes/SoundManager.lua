@@ -21,6 +21,7 @@ function SoundManager:newSound(name, path, volume, loop, type)
         loop = loop,
         bpm = 120,
         beat = 0,
+        fullBeat = 0, -- not calculated with beat length, but an approximation
         beatLength = 60 / 120,
         time = 0,
         lastFrameTime = 0,
@@ -49,6 +50,7 @@ function SoundManager:update(dt)
             v.lastFrameTime = love.timer.getTime()
         end
         v.time = v.time + (love.timer.getTime() - v.lastFrameTime)
+        v.fullBeat = v.time / v.beatLength
         v.lastFrameTime = love.timer.getTime()
         if v.time >= v.beatLength then
             v.beat = v.beat + 1
@@ -114,6 +116,10 @@ end
 
 function SoundManager:getBeat(name)
     return self.channel[name].beat
+end
+
+function SoundManager:getFullBeat(name)
+    return self.channel[name].fullBeat
 end
 
 function SoundManager:getBeatLength(name)

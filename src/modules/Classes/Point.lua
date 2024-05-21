@@ -5,6 +5,10 @@ function Point:new(x, y, z)
     self.x = x or 0
     self.y = y or 0
     self.z = z or 0
+
+    self.__name = "Point"
+    
+    return self
 end
 
 function Point:get()

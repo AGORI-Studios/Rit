@@ -2,7 +2,7 @@
 local VertSprite = Object:extend()
 VertSprite:implement(Sprite)
 
-local vertexFormat = {
+vertexFormat = {
     {"VertexPosition", "float", 2},
 	{"VertexTexCoord", "float", 3},
 	{"VertexColor",    "byte",  4}
