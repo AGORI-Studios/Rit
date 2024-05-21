@@ -583,7 +583,7 @@ function Gameplay:updateNotePosition(offset, curTime)
             -- go to strumY (it's a hold)
             spritePosition = strumY
         end
-        hitObject.y = spritePosition]
+        hitObject.y = spritePosition
         --[[ hitObject.y = math.sin((curTime - hitObject.time) / 1000 * math.pi) * 10 + spritePosition ]]
         if #hitObject.children > 0 then
             -- Determine the hold notes position and scale
