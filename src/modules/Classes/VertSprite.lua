@@ -51,9 +51,9 @@ function VertSprite:new(x, y, z, graphic)
 
     self.alive, self.exists, self.visible = true, true, true
 
-    self.origin = {x = 0, y = 0, z = 0}
-    self.offset = {x = 0, y = 0, z = 0}
-    self.scale = {x = 1, y = 1, z = 1}
+    self.origin = Point()
+    self.offset = Point()
+    self.scale = Point(1, 1, 1)
     self.shear = {x = 0, y = 0}
 
     self.clipRect = nil
@@ -79,7 +79,7 @@ function VertSprite:new(x, y, z, graphic)
     self.z = z or 0
     self.fov = 60
     self.depth = 0
-    self.rotation = {x = 0, y = 0, z = 0}
+    self.rotation = Point()
     self.init()
     self.graphic = Cache:loadImage(graphic)
 

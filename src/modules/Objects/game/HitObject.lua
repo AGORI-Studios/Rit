@@ -41,12 +41,13 @@ function HitObject:new(time, data, endTime)
     self.x = self.x + (200) * (data-1)
 
     if self.endTime and self.endTime > self.time then
-        local holdObj = Sprite():load(skin:format("notes/" .. tostring(states.game.Gameplay.mode) .. "K/note" .. data .. "-hold.png"))
+        local holdObj = VertSprite():load(skin:format("notes/" .. tostring(states.game.Gameplay.mode) .. "K/note" .. data .. "-hold.png"))
         holdObj.endTime = self.endTime
         holdObj:updateHitbox()
         holdObj.x = self.x + (200) / 2 - (200) / 2
         holdObj.forcedDimensions = true
         holdObj.dimensions = {width = 200, height = 200}
+        --holdObj.rotation = Point(love.math.random(-5, 5), love.math.random(-5, 5), love.math.random(-5, 5))
 
         table.insert(self.children, holdObj)
 
@@ -54,7 +55,7 @@ function HitObject:new(time, data, endTime)
         holdObj.endTime = self.endTime
         endObj:updateHitbox()
         endObj.x = self.x + (200) / 2 - (200) / 2
-        if Settings.options["General"].downscroll then
+        if not Settings.options["General"].downscroll then
             endObj.flipY = true
         end
         endObj.forcedDimensions = true
