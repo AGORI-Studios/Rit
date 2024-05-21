@@ -1,9 +1,9 @@
-local StrumObject = Sprite:extend()
+local StrumObject = VertSprite:extend()
 
 StrumObject.data = 1
 
 function StrumObject:new(x, y, data)
-    self.super.new(self, x, y)
+    self.super.new(self, x, y, 0)
     self.data = data
 
     self.anims = {}
@@ -17,7 +17,6 @@ function StrumObject:new(x, y, data)
     self.graphic = Cache:loadImage(self.anims[1])
 
     self:updateHitbox()
-    self:setGraphicSize(math.floor(self.width * 0.925))
     self:updateHitbox()
 
     self.forcedDimensions = true

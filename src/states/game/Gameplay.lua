@@ -567,6 +567,14 @@ function Gameplay:updateNotePosition(offset, curTime)
     local spritePosition = 0
 
     for _, hitObject in ipairs(self.hitObjects.members) do
+        --[[ hitObject.offset.x = math.sin((curTime - hitObject.time) / 1000 * math.pi) * 10
+        hitObject.offset.y = math.sin((curTime - hitObject.time) / 1000 * math.pi) * 10 ]]
+        --hitObject.offset.z = math.sin((curTime - hitObject.time) / 1000 * math.pi) * 10
+        --[[ hitObject.z = math.sin((curTime - hitObject.time) / 1000 * math.pi) * 10
+        hitObject.offset.x = math.sin((curTime - hitObject.time) / 1000 * math.pi) * 10
+        hitObject.rotation.z = math.sin((curTime - hitObject.time) / 1000 * math.pi) * 10
+        hitObject.rotation.y = math.sin((curTime - hitObject.time) / 1000 * math.pi) * 10
+        hitObject.rotation.x = math.sin((curTime - hitObject.time) / 1000 * math.pi) * 10 ]]
         if hitObject.time - musicTime > 15000 then -- Only update notes that are within 15 seconds of the current time to prevent lag issues from too many notes
             break
         end
@@ -575,7 +583,8 @@ function Gameplay:updateNotePosition(offset, curTime)
             -- go to strumY (it's a hold)
             spritePosition = strumY
         end
-        hitObject.y = spritePosition
+        hitObject.y = spritePosition]
+        --[[ hitObject.y = math.sin((curTime - hitObject.time) / 1000 * math.pi) * 10 + spritePosition ]]
         if #hitObject.children > 0 then
             -- Determine the hold notes position and scale
             hitObject.children[1].y = spritePosition + 95

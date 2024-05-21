@@ -1,3 +1,4 @@
+-- Referenced from https://github.com/Stilic/FNF-LOVE/blob/main/loxel/3d/actorsprite.lua
 local VertSprite = Object:extend()
 VertSprite:implement(Sprite)
 
@@ -9,20 +10,20 @@ local vertexFormat = {
 
 local width, height = Inits.GameWidth, Inits.GameHeight
 
-local function toScreen(x, y, z, fov)
-    local hw, hh, z = width/2, height/2, math.max(((z / 200) * (fov / 180)) + 1, 0.00001)
-    local x = hw + (x - hw) / z
-    local y = hh + (y - hh) / z
-    local z = (1 / z)
-    return x, y, z
+function toScreen(x, y, z, fov)
+	local hw, hh, z = width / 2, height / 2, math.max(((z / 200) * (fov / 180)) + 1, 0.00001)
+	return
+		hw + (x - hw) / z,
+		hh + (y - hh) / z,
+		(1 / z)
 end
 
-local function worldSpin(x, y, z, ax, ay, az, midx, midy, midz)
-    local radx, rady, radz = math.rad(ax), math.rad(ay), math.rad(az)
-    local angx0, angx1, angy0, angy1, angz0, angz1 = math.cos(radx), math.sin(radx), math.cos(rady), math.sin(rady), math.cos(radz), math.sin(radz)
-    local gapx, gapy, gapz = x - midx, y - midy, z - midz
+function worldSpin(x, y, z, ax, ay, az, midx, midy, midz)
+	local radx, rady, radz = math.rad(ax), math.rad(ay), math.rad(az)
+	local angx0, angx1, angy0, angy1, angz0, angz1 = math.cos(radx), math.sin(radx), math.cos(rady), math.sin(rady), math.cos(radz), math.sin(radz)
+	local gapx, gapy, gapz = x - midx, midy - y, midz - z
 
-    local nx = midx  + angy0 * angz0 * gapx + (-angz1 * angx0 + angx1 * angy1 * angz0) * gapy + (angx1 * angz1 + angx0 * angy1 * angz0) * gapz
+	local nx = midx + angy0 * angz0 * gapx + (-angz1 * angx0 + angx1 * angy1 * angz0) * gapy + (angx1 * angz1 + angx0 * angy1 * angz0) * gapz
 	local ny = midy - angy0 * angz1 * gapx - (angx0 * angz0 + angx1 * angy1 * angz1) * gapy - (-angx1 * angz0 + angx0 * angy1 * angz1) * gapz
 	local nz = midz + angy1 * gapx - angx1 * angy0 * gapy - angx0 * angy0 * gapz
 
@@ -50,10 +51,10 @@ function VertSprite:new(x, y, z, graphic)
 
     self.alive, self.exists, self.visible = true, true, true
 
-    self.origin = Point()
-    self.offset = Point()
-    self.scale = Point(1, 1)
-    self.shear = Point(0, 0)
+    self.origin = {x = 0, y = 0, z = 0}
+    self.offset = {x = 0, y = 0, z = 0}
+    self.scale = {x = 1, y = 1, z = 1}
+    self.shear = {x = 0, y = 0}
 
     self.clipRect = nil
     self.flipX, self.flipY = false, false
@@ -75,11 +76,9 @@ function VertSprite:new(x, y, z, graphic)
 
     self.type = "Image"
 
-    self.z = z
-    self.offset.z = 0
-    self.scale.z = 1
-    self.origin.z = 0
+    self.z = z or 0
     self.fov = 60
+    self.depth = 0
     self.rotation = {x = 0, y = 0, z = 0}
     self.init()
     self.graphic = Cache:loadImage(graphic)
@@ -98,6 +97,7 @@ function VertSprite:new(x, y, z, graphic)
 	}
 
     self.mesh = love.graphics.newMesh(vertexFormat, self.vertices, "fan")
+    self.mesh:setTexture(self.graphic)
 
     return self
 end
@@ -108,23 +108,32 @@ function VertSprite:draw()
         local y = self.y
         local z = self.z or 0
 
-        x = x + self.origin.x - self.offset.x
-        y = y + self.origin.y - self.offset.y
-        z = (z or 0) + (self.origin.z or 0) - (self.offset.z or 0)
-        local rx, ry, rz = self.rotation.x, self.rotation.y, (self.rotation.z or 0)
+        x = x - self.offset.x
+        y = y - self.offset.y
+        z = (z or 0) - (self.offset.z or 0)
+        local rx, ry, rz = self.rotation.x, self.rotation.y, ((self.rotation.z or 0) - self.angle)
         local sx, sy, sz = self.scale.x, self.scale.y, (self.scale.z or 0)
         local ox, oy, oz = self.origin.x, self.origin.y, (self.origin.z or 0)
 
-        local gw, gh = self.graphic:getDimensions()
+        if self.forcedDimensions then
+            local w, h = self.width, self.height
+            sx = self.dimensions.width / w
+            sy = self.dimensions.height / h
+        end
+
+        x = x + ox
+        y = y + oy
+
         local lastColor = {love.graphics.getColor()}
         local lastBlend, lastAlphaMode = love.graphics.getBlendMode()
+        local gw, gh = self.graphic:getWidth(), self.graphic:getHeight()
         local fw, fh, uvx, uvy, uvw, uvh = gw, gh, 0, 0, 1, 1
-        -- why is this flipped???
-        -- ig we can just do the opposite of flipY.....
-        if not self.flipY then uvy, uvh = uvy + uvh, -uvh end
 
-        fw, fh = fw * sx, fh * sy
-        ox, oy, oz = ox * sx, oy * sy, oz * sz
+        fw, fh = fw*sx, fh*sy
+        ox, oy, oz = ox*sx, oy*sy, oz*sz
+
+        if self.flipX then uvx, uvw = uvx + uvw, -uvw end
+        if self.flipY then uvy, uvh = uvy + uvh, -uvh end
 
         local mesh, verts, length = self.mesh, self.__vertices, #self.vertices
         local vert, vx, vy, vz
@@ -143,18 +152,33 @@ function VertSprite:draw()
         love.graphics.setColor(self.color[1], self.color[2], self.color[3], self.alpha)
         love.graphics.setShader(defaultShader)
 
-        if self.forcedDimensions then
-            local w, h = self:getFrameDimensions()
-            sx = self.dimensions.width / w
-            sy = self.dimensions.height / h
-        end
-        love.graphics.draw(mesh, 0, self.height, 0 --[[ sx, sy ]])
+        love.graphics.draw(mesh, 0, 0, 0--[[ , sx, sy ]])
         
         love.graphics.setColor(lastColor)
         love.graphics.setBlendMode(lastBlend, lastAlphaMode)
     end
 
     love.graphics.setShader()
+end
+
+function VertSprite:centerOffsets(w, h, d)
+    self.offset = {
+        x = ((w or self.width) - self.width) / 2,
+        y = ((h or self.height) - self.height) / 2,
+        z = ((d or self.depth) - self.depth) / 2
+    }
+
+    return self
+end
+
+function VertSprite:centerOrigin(w, h, d)
+    self.origin = {
+        x = (w or self.width) / 2,
+        y = (h or self.height) / 2,
+        z = (d or self.depth) / 2
+    }
+
+    return self
 end
 
 return VertSprite

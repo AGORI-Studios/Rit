@@ -1,4 +1,4 @@
-local HitObject = Sprite:extend()
+local HitObject = VertSprite:extend()
 
 HitObject.time = 0
 HitObject.data = 1
@@ -16,7 +16,7 @@ HitObject.children = {}
 HitObject.moveWithScroll = true
 
 function HitObject:new(time, data, endTime) 
-    self.super.new(self)
+    self.super.new(self, 0, 0, 0)
 
     self.moves = false
 
@@ -33,7 +33,6 @@ function HitObject:new(time, data, endTime)
 
     self:load(skin:format("notes/" .. tostring(states.game.Gameplay.mode) .. "K/note" .. data .. ".png"))
 
-    self:setGraphicSize(math.floor(self.width * 0.925))
     self.forcedDimensions = true
     self.dimensions = {width = 200, height = 200}
     self:updateHitbox()
@@ -44,7 +43,6 @@ function HitObject:new(time, data, endTime)
     if self.endTime and self.endTime > self.time then
         local holdObj = Sprite():load(skin:format("notes/" .. tostring(states.game.Gameplay.mode) .. "K/note" .. data .. "-hold.png"))
         holdObj.endTime = self.endTime
-        holdObj:setGraphicSize(math.floor(holdObj.width * 0.925))
         holdObj:updateHitbox()
         holdObj.x = self.x + (200) / 2 - (200) / 2
         holdObj.forcedDimensions = true
@@ -52,14 +50,12 @@ function HitObject:new(time, data, endTime)
 
         table.insert(self.children, holdObj)
 
-        local endObj = Sprite():load(skin:format("notes/" .. tostring(states.game.Gameplay.mode) .. "K/note" .. data .. "-end.png"))
+        local endObj = VertSprite():load(skin:format("notes/" .. tostring(states.game.Gameplay.mode) .. "K/note" .. data .. "-end.png"))
         holdObj.endTime = self.endTime
-        endObj:setGraphicSize(math.floor(endObj.width * 0.925))
         endObj:updateHitbox()
         endObj.x = self.x + (200) / 2 - (200) / 2
-        endObj.flipY = skin.flippedEnd
-        if not Settings.options["General"].downscroll then
-            endObj.scale.y = -1
+        if Settings.options["General"].downscroll then
+            endObj.flipY = true
         end
         endObj.forcedDimensions = true
         endObj.dimensions = {width = 200, height = 200}
