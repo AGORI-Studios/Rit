@@ -43,107 +43,76 @@ function HitObject:new(time, data, endTime)
     if self.endTime and self.endTime > self.time then
         local holdObj = VertSprite():load(skin:format("notes/" .. tostring(states.game.Gameplay.mode) .. "K/note" .. data .. "-hold.png"))
         holdObj.endTime = self.endTime
+        holdObj.length = self.endTime - self.time -- hold time
         holdObj:updateHitbox()
         holdObj.x = self.x + (200) / 2 - (200) / 2
         holdObj.forcedDimensions = true
         holdObj.dimensions = {width = 200, height = 200}
         holdObj.parent = self
-        --[[ holdObj.mesh = love.graphics.newMesh(vertexFormat, 16, "strip") ]]
-        holdObj.verts = {
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-        }
-        --holdObj.rotation = Point(love.math.random(-5, 5), love.math.random(-5, 5), love.math.random(-5, 5))
-        --[[ 
-        function holdObj:draw()
-            if self.exists and self.alive and self.visible and self.graphic then
-                local lastColor = {love.graphics.getColor()}
-                local lastBlend, lastAlphaMode = love.graphics.getBlendMode()
-
-                local fov = self.fov
-                local vertLens = 5
-                
-                local gotVerts
-                
-                local eox, eoy, eoz, eos = self.parent.children[2].x, self.endY or 0, self.parent.children[2].z, self.parent.children[2].scale
-                local gw, gh = self.graphic:getWidth(), self.graphic:getHeight()
-                local hfw, fh, uvx, uvy, uvwx, uvh = gw, gh, 0, 0, 1, 1
-                local fhs = uvh
-                hfw, fh, gotVerts = hfw * eos.x, fh * eos.y, vertLens
-
-                if self.mesh:getTexture() ~= self.graphic then
-                    self.mesh:setTexture(self.graphic)
-                end
-                local vx, vy, vz = worldSpin(
-                    eox,
-                    eoy,
-                    eoz,
-                    self.rotation.x,
-                    self.rotation.y,
-                    self.rotation.z,
-                    self.origin.x,
-                    self.origin.y,
-                    self.origin.z
-                )
-                local pvx, pvy = toScreen(vx, vy, vz, fov)
-                local enduv, vert, aa, as, ac
-                for vi = 1, vertLens, 2 do
-                    vx, vy, vz = worldSpin(
-                        eox,
-                        eoy,
-                        eoz,
-                        self.rotation.x,
-                        self.rotation.y,
-                        self.rotation.z,
-                        self.origin.x,
-                        self.origin.y,
-                        self.origin.z
-                    )
-
-                    vert, vx, vy, vz = self.verts[vi], vx + eox, vy + eoy, vz + eoz
-                    aa = -math.atan((pvx - vx) / (pvy - vy))
-                    as, ac, pvx, pvy = math.sin(aa) * vx, math.cos(aa) * vy, vx, vy
-
-                    vi, vert[1], vert[2], vert[3], vert[4], vert[5] = vi + 1, vx - hfw * ac, vy - fh * as, uvx * vz, (uvy+uvh)*vz, vz
-                    vert[6], vert[7], vert[8], vert[9] = 1, 1, 1, self.alpha
-
-                    vert = self.verts[vi]
-                    vi, vert[1], vert[2], vert[3], vert[4], vert[5] = vi + 1, vx + hfw * ac, vy + fh * as, uvx * vz, (uvy+uvh)*vz, vz
-                    vert[6], vert[7], vert[8], vert[9] = 1, 1, 1, self.alpha
-
-                    if vi < vertLens then uvh = uvh - fhs end
-                    if enduv then
-                        gotVerts = vi
-                        break
-                    end
-                end
-
-                self.mesh:setDrawRange(1, gotVerts)
-                self.mesh:setVertices(self.verts)
-                love.graphics.setColor(self.color[1], self.color[2], self.color[3], self.alpha)
-                love.graphics.setShader(self.defaultShader)
-                love.graphics.draw(self.mesh, 0, 0, 0)
-                love.graphics.setColor(lastColor)
-                love.graphics.setBlendMode(lastBlend, lastAlphaMode)
-                
-                love.graphics.setShader()
-            end
+        holdObj.verts = {}
+        holdObj.toX = holdObj.parent.x
+        for i = 1, 96 do
+            table.insert(holdObj.verts, {0, 0, 0, 0})
         end
-        ]]
+        holdObj.mesh = nil --[[ love.graphics.newMesh(vertexFormat, #holdObj.verts, "fan") ]]
+        function holdObj:draw()
+            local lastShader = love.graphics.getShader()
+            local defaultShader = VertSprite.defaultShader
+            local parent = self.parent
+            local endObj = self.endObj
+
+            -- curv the holdObj based off the parents xy and the endObj's xy
+            local startX, startY = parent.x-self.x, parent.y-self.y
+            local endX, endY = endObj.x-self.x, endObj.y-self.y+30
+            local midX, midY = (startX + endX) / 2, (startY + endY) / 2
+            
+
+            local w, h = self.graphic:getWidth(), self.graphic:getHeight()
+
+            -- take self.dimensions into account to make the bezier work properly
+            local bezier = love.math.newBezierCurve(startX, startY, midX, midY, endX, endY)
+            bezier:translate(self.x+w/2, self.y)
+
+            -- as startY and endY get closer, make endObj's x closer to self.toX
+            --[[ local diffX = math.abs(self.toX - endObj.x)
+            endObj.x = endObj.x + (self.toX - endObj.x) * (1 - (diffX / 200)) ]]
+
+
+            local verts = {}
+            local points = bezier:render(5)
+            local v
+            for i=1,#points,2 do
+                local x, y = points[i] + w/2, points[i+1] + h
+                local x2, y2 = points[i] - w/2, points[i+1] - h/2
+
+                v = {x, y, 0, 0}
+                table.insert(verts, v)
+                v = {x2, y2, 1, 1}
+                table.insert(verts, v)
+            end
+
+            for i = 1, #verts, 2 do
+                verts[i][2] = verts[i+1][2]
+                verts[i][2], verts[i+1][2] = verts[i][2] + h, verts[i+1][2] + h
+            end
+
+            table.remove(verts, 1)
+            table.remove(verts, 1)
+
+            if not self.mesh then
+                self.mesh = love.graphics.newMesh(verts, "strip")
+            else
+                self.mesh:setVertices(verts)
+            end
+            if self.mesh:getTexture() ~= self.graphic then self.mesh:setTexture(self.graphic) end
+
+            love.graphics.draw(self.mesh, 0, 0, 0)
+            --[[ love.graphics.line(bezier:render(5))
+            love.graphics.setPointSize(3)
+            love.graphics.points(points) ]]
+        end
+        --holdObj.rotation = Point(love.math.random(-5, 5), love.math.random(-5, 5), love.math.random(-5, 5))
+
         table.insert(self.children, holdObj)
 
         local endObj = VertSprite():load(skin:format("notes/" .. tostring(states.game.Gameplay.mode) .. "K/note" .. data .. "-end.png"))
@@ -156,6 +125,11 @@ function HitObject:new(time, data, endTime)
         endObj.forcedDimensions = true
         endObj.dimensions = {width = 200, height = 200}
         endObj.parent = self
+
+        endObj.hold = holdObj
+        holdObj.endObj = endObj
+
+        self.endObj = endObj
 
         table.insert(self.children, endObj)
     end
