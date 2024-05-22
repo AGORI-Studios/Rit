@@ -71,7 +71,7 @@ function HitObject:new(time, data, endTime)
             -- curv the holdObj based off the parents xy and the endObj's xy
             local startX, startY = parent.x-self.x, parent.y-self.y
             local endX, endY = endObj.x-self.x, endObj.y-self.y+95/2
-            local midX, midY = (startX + endX) / 2 + self.midOffset*percent, (startY + endY) / 2
+            local midX, midY = (startX + endX) / 2 + self.midOffset*(percent or 0), (startY + endY) / 2
             
             local w, h = self.graphic:getWidth(), self.graphic:getHeight()
 
