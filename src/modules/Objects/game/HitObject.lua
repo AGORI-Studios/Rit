@@ -51,6 +51,7 @@ function HitObject:new(time, data, endTime)
         holdObj.parent = self
         holdObj.verts = {}
         holdObj.toX = holdObj.parent.x
+        holdObj.midOffset = 0--love.math.random(-200, 200)
         for i = 1, 96 do
             table.insert(holdObj.verts, {0, 0, 0, 0})
         end
@@ -61,22 +62,22 @@ function HitObject:new(time, data, endTime)
             local parent = self.parent
             local endObj = self.endObj
 
+            -- make endObj's x closer to self.toX as self.y gets closer to self.parent.y
+            -- percent (going from 1-0)
+            -- 1 is not near, 0 is near
+           --[[  local percent = (self.y - self.parent.y) / (self.parent.y - self.y)
+            endObj.x = endObj.x + (self.toX - endObj.x) * (self.y - self.parent.y) / (self.parent.y - self.y) ]]
+
             -- curv the holdObj based off the parents xy and the endObj's xy
             local startX, startY = parent.x-self.x, parent.y-self.y
-            local endX, endY = endObj.x-self.x, endObj.y-self.y+30
-            local midX, midY = (startX + endX) / 2, (startY + endY) / 2
+            local endX, endY = endObj.x-self.x, endObj.y-self.y+95/2
+            local midX, midY = (startX + endX) / 2 + self.midOffset*percent, (startY + endY) / 2
             
-
             local w, h = self.graphic:getWidth(), self.graphic:getHeight()
 
             -- take self.dimensions into account to make the bezier work properly
             local bezier = love.math.newBezierCurve(startX, startY, midX, midY, endX, endY)
             bezier:translate(self.x+w/2, self.y)
-
-            -- as startY and endY get closer, make endObj's x closer to self.toX
-            --[[ local diffX = math.abs(self.toX - endObj.x)
-            endObj.x = endObj.x + (self.toX - endObj.x) * (1 - (diffX / 200)) ]]
-
 
             local verts = {}
             local points = bezier:render(5)

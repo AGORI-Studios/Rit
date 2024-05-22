@@ -3,17 +3,12 @@ local beat, time = 0, 0
 local time2 = 0
 menuBPM = 120
 
-local timers = {
-    buttons = {}
-}
-
 local balls, bg, logo, twitterLogo, kofiLogo, discordLogo
 
 local curMenu = 1
 local curLogoScale = {1.85}
 local logoScale = {2, 2}
 local logoPos = {0, 0}
-
 local curHover = 0 -- none
 
 local curLocale = localize.getLocaleName()
