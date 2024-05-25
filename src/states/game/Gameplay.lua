@@ -555,7 +555,7 @@ function Gameplay:initPositions()
 end
 
 function Gameplay:getNotePosition(offset, initialPos)
-    if not Settings.options["General"].downscroll then
+    if not Modscript.downscroll then
         return strumY + (((initialPos or 0) - offset) * Settings.options["General"].scrollspeed / self.trackRounding)
     else
         return strumY - (((initialPos or 0) - offset) * Settings.options["General"].scrollspeed / self.trackRounding)
@@ -608,7 +608,7 @@ function Gameplay:updateNotePosition(offset, curTime)
             hitObject.children[1].dimensions = {width = 200, height = pixelDistance}
             hitObject.children[2].dimensions = {width = 200, height = 95 * (Settings.options["General"].skin.flippedEnd and -1 or 1)}
 
-            if Settings.options["General"].downscroll then
+            if Modscript.downscroll then
                 hitObject.children[2].y = hitObject.children[2].y + pixelDistance - 95
             else
                 hitObject.children[2].y = hitObject.children[2].y + pixelDistance + 95
@@ -662,9 +662,7 @@ function Gameplay:clear()
 end
 
 function Gameplay:enter()
-    Modscript.modifiers = {}
-    Modscript:loadModifiers()
-    strumY = not Settings.options["General"].downscroll and 50 or 825
+    strumY = not Modscript.downscroll and 50 or 825
     self:reset()
 
     self.inputsArray = {false, false, false, false}
@@ -673,8 +671,6 @@ function Gameplay:enter()
     self:add(self.hitObjects)
 
     self:generateBeatmap(self.chartVer, self.songPath, self.folderpath, self.difficultyName)
-    self.mode = tonumber(self.mode)
-    self:generateStrums()
 
     musicTime = -1000
 
@@ -690,7 +686,9 @@ function Gameplay:enter()
 
     self:addPlayfield(0, 0) -- Add the main playfield. We need at least one playfield to draw the notes
 
-    Modscript:call("Start")
+    if self.ableToModscript then
+        Modscript:call("Start")
+    end
 
     if self.watchingReplay then
         -- load most recent replay that has songName and songDifficulty with the highest time in it
@@ -834,10 +832,14 @@ function Gameplay:update(dt)
             self.hasSkipPeriod = false
         end
         self:updateCurrentTrackPosition()
-        self:updateNotePosition(self.currentTrackPosition, musicTime)
+        if not self.ableToModscript then -- Use default note positioning
+            self:updateNotePosition(self.currentTrackPosition, musicTime)
+        end
     end
 
-    Modscript:update(dt, self.soundManager:getBeat("music"))
+    if self.ableToModscript then
+        Modscript:update(dt, self.soundManager:getBeat("music"))
+    end
 
     --[[ for i = 1, self.mode do -- erm... what the sigma?
         -- use i for modifying offserts
@@ -1156,9 +1158,11 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName, for
         self.M_folderPath = folderPath -- used for mod scripting
         Modscript.vars = {sprites={}} -- reset modscript vars
 
-        local modPath = folderPath .. "/mod/main.ritmod"
+        self.mode = tonumber(self.mode)
+        self:generateStrums()
+        local modPath = folderPath .. "/mod/mod.lua"
         if love.filesystem.getInfo(modPath) then
-            Modscript:load(modPath)
+            self.ableToModscript = Modscript:load(modPath)
         end
 
         if discordRPC then
@@ -1180,9 +1184,11 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName, for
         -- determine noteScore (1m max score and how many notes)
         self.noteScore = self.maxScore / #self.unspawnNotes
 
-        self.soundManager:setBeatCallback("music", function(beat)
-            Modscript:call("OnBeat", {beat})
-        end)
+        if self.ableToModscript then
+            self.soundManager:setBeatCallback("music", function(beat)
+                Modscript:call("OnBeat", {beat})
+            end)
+        end
     end
 end
 

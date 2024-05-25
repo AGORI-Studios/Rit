@@ -59,7 +59,7 @@ function NoteHelper:updateNotePosition(offset, hitObjects, scrollSpeed, downscro
             hitObject.children[1].dimensions = {width = 200, height = pixelDistance}
             hitObject.children[2].dimensions = {width = 200, height = 95 * (Settings.options["General"].skin.flippedEnd and -1 or 1)}
 
-            if Settings.options["General"].downscroll then
+            if Modscript.downscroll then
                 hitObject.children[2].y = hitObject.children[2].y + pixelDistance - 95
             else
                 hitObject.children[2].y = hitObject.children[2].y + pixelDistance + 95

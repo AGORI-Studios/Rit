@@ -20,6 +20,10 @@ function Playfield:update(dt)
 end
 
 function Playfield:draw(notes, timingLines, timingLineWidth, scale, bgLaneX)
+    love.graphics.translate(1920/2, 1080/2)
+    love.graphics.rotate(math.rad(Modscript.cam.angle or 0))
+    love.graphics.translate(Modscript.cam.x or 0, Modscript.cam.y or 0)
+    love.graphics.translate(-1920/2, -1080/2)
     love.graphics.push()
     love.graphics.translate(self.x, self.y)
     love.graphics.scale(1, self.reversed and -1 or 1)
@@ -34,6 +38,8 @@ function Playfield:draw(notes, timingLines, timingLineWidth, scale, bgLaneX)
     for i, timingLine in ipairs(timingLines) do
         timingLine:draw(timingLineWidth)
     end
+    love.graphics.push()
+    love.graphics.translate(self.lanes[1].x, self.lanes[1].y)
     for i, receptor in ipairs(states.game.Gameplay.strumLineObjects.members) do
         if receptor.draw then
             receptor:draw()
@@ -44,6 +50,7 @@ function Playfield:draw(notes, timingLines, timingLineWidth, scale, bgLaneX)
             note:draw(scale * Settings.options["General"].noteSize)
         end
     end
+    love.graphics.pop()
     love.graphics.pop()
 end
 

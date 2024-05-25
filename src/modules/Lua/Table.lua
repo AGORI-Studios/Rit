@@ -91,3 +91,16 @@ function table.protect(table)
         __metatable = false
     })
 end
+
+---@name table.copy
+---@description Copies a table
+---@param table table
+---@return table
+function table.copy(table)
+    local newTable = {}
+    for k, v in pairs(table) do
+        newTable[k] = v
+    end
+
+    return newTable
+end

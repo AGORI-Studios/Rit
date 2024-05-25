@@ -65,7 +65,7 @@ function HitObject:new(time, data, endTime)
             -- make endObj's x closer to self.toX as self.y gets closer to self.parent.y
             -- percent (going from 1-0)
             -- 1 is not near, 0 is near
-           --[[  local percent = (self.y - self.parent.y) / (self.parent.y - self.y)
+            --[[  local percent = (self.y - self.parent.y) / (self.parent.y - self.y)
             endObj.x = endObj.x + (self.toX - endObj.x) * (self.y - self.parent.y) / (self.parent.y - self.y) ]]
 
             -- curv the holdObj based off the parents xy and the endObj's xy
@@ -86,9 +86,9 @@ function HitObject:new(time, data, endTime)
                 local x, y = points[i] + w/2, points[i+1] + h
                 local x2, y2 = points[i] - w/2, points[i+1] - h/2
 
-                v = {x, y, 0, 0}
+                v = {x2, y, 0, 0}
                 table.insert(verts, v)
-                v = {x2, y2, 1, 1}
+                v = {x, y2, 1, 1}
                 table.insert(verts, v)
             end
 
@@ -120,7 +120,7 @@ function HitObject:new(time, data, endTime)
         holdObj.endTime = self.endTime
         endObj:updateHitbox()
         endObj.x = self.x + (200) / 2 - (200) / 2
-        if not Settings.options["General"].downscroll then
+        if not Modscript.downscroll then
             endObj.flipY = true
         end
         endObj.forcedDimensions = true

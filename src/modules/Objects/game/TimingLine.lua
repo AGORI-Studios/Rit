@@ -10,7 +10,7 @@ end
 
 function TimingLine:update()
     self.currentTrackPosition = states.game.Gameplay.currentTrackPosition
-    self.y = self.targetY + (self.currentTrackPosition * (Settings.options["General"].downscroll and -Settings.options["General"].scrollspeed or Settings.options["General"].scrollspeed)) / states.game.Gameplay.trackRounding
+    self.y = self.targetY + (self.currentTrackPosition * (Modscript.downscroll and -Settings.options["General"].scrollspeed or Settings.options["General"].scrollspeed)) / states.game.Gameplay.trackRounding
 end
 
 function TimingLine:draw(width)

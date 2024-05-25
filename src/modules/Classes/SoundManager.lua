@@ -114,6 +114,10 @@ function SoundManager:setBPM(name, bpm)
     self.channel[name].beatLength = 60 / bpm
 end
 
+function SoundManager:getBPM(name)
+    return self.channel[name].bpm
+end
+
 function SoundManager:getBeat(name)
     return self.channel[name].beat
 end
