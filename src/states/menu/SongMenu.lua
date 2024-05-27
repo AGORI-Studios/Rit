@@ -95,7 +95,16 @@ function SongMenu:enter()
     
     -- sort the songButtons by name
     table.sort(songButtons, function(a, b)
-        return a.name < b.name
+        if string.upper(a.name) == string.upper(b.name) then
+            -- sort by difficulty count
+            return (#a.children > #b.children)
+        elseif string.upper(a.name) < string.upper(b.name) then
+            return true
+        elseif string.upper(a.name) > string.upper(b.name) then
+            return false
+        end
+
+        return false
     end)
 
     for i, btn in ipairs(songButtons) do

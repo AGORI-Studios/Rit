@@ -73,7 +73,7 @@ function HitObject:new(time, data, endTime)
             local endX, endY = endObj.x-self.x, endObj.y-self.y+95/2
             local midX, midY = (startX + endX) / 2 + self.midOffset*(percent or 0), (startY + endY) / 2
             
-            local w, h = self.graphic:getWidth(), self.graphic:getHeight()
+            local w, h = __NOTE_OBJECT_WIDTH, __NOTE_OBJECT_WIDTH
 
             -- take self.dimensions into account to make the bezier work properly
             local bezier = love.math.newBezierCurve(startX, startY, midX, midY, endX, endY)
@@ -120,9 +120,9 @@ function HitObject:new(time, data, endTime)
         holdObj.endTime = self.endTime
         endObj:updateHitbox()
         endObj.x = self.x + (200) / 2 - (200) / 2
-        if not Modscript.downscroll then
-            endObj.flipY = true
-        end
+       --[[  if not Modscript.downscroll then
+            endObj.flipY = not (Settings.options["General"].skin.flippedEnd or false)
+        end ]]
         endObj.forcedDimensions = true
         endObj.dimensions = {width = 200, height = 200}
         endObj.parent = self

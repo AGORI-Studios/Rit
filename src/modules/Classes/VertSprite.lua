@@ -133,7 +133,9 @@ function VertSprite:draw()
         ox, oy, oz = ox*sx, oy*sy, oz*sz
 
         if self.flipX then uvx, uvw = uvx + uvw, -uvw end
-        if self.flipY then uvy, uvh = uvy + uvh, -uvh end
+        if self.flipY then 
+            uvy, uvh = uvy + uvh, -uvh 
+        end
 
         local mesh, verts, length = self.mesh, self.__vertices, #self.vertices
         local vert, vx, vy, vz

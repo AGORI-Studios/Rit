@@ -20,10 +20,11 @@ function Playfield:update(dt)
 end
 
 function Playfield:draw(notes, timingLines, timingLineWidth, scale, bgLaneX)
+    love.graphics.push()
     love.graphics.translate(1920/2, 1080/2)
     love.graphics.rotate(math.rad(Modscript.cam.angle or 0))
-    love.graphics.translate(Modscript.cam.x or 0, Modscript.cam.y or 0)
     love.graphics.translate(-1920/2, -1080/2)
+    love.graphics.translate(Modscript.cam.x or 0, Modscript.cam.y or 0)
     love.graphics.push()
     love.graphics.translate(self.x, self.y)
     love.graphics.scale(1, self.reversed and -1 or 1)
@@ -50,6 +51,7 @@ function Playfield:draw(notes, timingLines, timingLineWidth, scale, bgLaneX)
             note:draw(scale * Settings.options["General"].noteSize)
         end
     end
+    love.graphics.pop()
     love.graphics.pop()
     love.graphics.pop()
 end

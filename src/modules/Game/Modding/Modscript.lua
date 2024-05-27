@@ -9,6 +9,8 @@ Modscript.downscroll = Settings.options["General"].downscroll
 
 require("modules.Ease")
 
+-- MODS BASED OFF OF NOTITG'S MIRIN TEMPLATE
+
 local beat = 0
 local beatcutoff = 10
 
@@ -25,7 +27,7 @@ local tweenEx2 = {{}}
 local modnames = {}
 local laneSpeeds = {}
 
-local activeMods = {{}}
+activeMods = {{}}
 
 local function scale(x, l1, h1, l2, h2)
     return (((x) - (l1)) * ((h2) - (l2)) / ((h1) - (l1)) + (l2))
@@ -147,13 +149,13 @@ function hitObjectEffects(yOffset, col)
     end
 
     if m.drunk ~= 0 then
-        xpos = xpos + m.drunk * ( math.cos( musicTime*0.001 + col*(0.2) + 1*(0.2) + yOffset*(10)/(720*1.3)) * 100 )
+        xpos = xpos + m.drunk * ( math.cos( musicTime*0.001 + col*(0.2) + 1*(0.2) + yOffset*(10)/(720*1.5)) * 100 )
     end
     if m.tipsy ~= 0 then
         ypos = ypos + m.tipsy * ( math.cos( musicTime*0.001 *(1.2) + col*(2.0) + 1*(0.2) ) * 200*0.4 )
     end
     if m.adrunk ~= 0 then
-        xpos = xpos + m.adrunk * ( math.cos( musicTime*0.001 + col*(0.2) + 1*(0.2) + yOffset*(10)/(720*1.3)) * 100 )
+        xpos = xpos + m.adrunk * ( math.cos( musicTime*0.001 + col*(0.2) + 1*(0.2) + yOffset*(10)/(720*1.5)) * 100 )
     end
     if m.atipsy ~= 0 then
         ypos = ypos + m.atipsy * ( math.cos( musicTime*0.001 *(1.2) + col*(2.0) + 1*(0.2) ) * 200*0.4 )
@@ -241,6 +243,73 @@ local perframe = {}
 local event,curevent = {},1
 local songStarted = false
 
+function Modscript:reset()
+    self.downscroll = Settings.options["General"].downscroll
+    for i = 1, #states.game.Gameplay.strumLineObjects.members do
+        states.game.Gameplay.strumLineObjects.members[i].y = 50
+    end
+    self.timedFunctions = {}
+    self.shaders = {}
+    self.currentShader = ""
+    modlist = {
+        {
+            beat = 0,
+            flip = 0,
+            invert = 0,
+            drunk = 0,
+            tipsy = 0,
+            adrunk = 0, --non conflict accent mod
+            atipsy = 0, --non conflict accent mod
+            movex = 0,
+            movey = 0,
+            amovex = 0,
+            amovey = 0,
+            reverse = 0,
+            split = 0,
+            cross = 0,
+            dark = 0,
+            stealth = 0,
+            alpha = 1,
+            confusion = 0,
+            dizzy = 0,
+            wave = 0,
+            brake = 0,
+            hidden = 0,
+            hiddenoffset = 0,
+            alternate = 0,
+            camx = 0,
+            camy = 0,
+            rotationz = 0,
+            camwag = 0,
+            xmod = 1, --scrollSpeed
+            drawsize = 10 --beatcutoff
+        }
+    }
+    self.cam = {
+        x = 0,
+        y = 0,
+        angle = 0,
+    }
+    for i = 1, states.game.Gameplay.mode do
+        laneSpeeds[i] = Settings.options["General"].scrollspeed
+    end
+    storedMods = {{}}
+    targetMods = {{}}
+    isTweening = {{}}
+    tweenStart = {{}}
+    tweenLen = {{}}
+    tweenCurve = {{}}
+    tweenEx1 = {{}}
+    tweenEx2 = {{}}
+    modnames = {{}}
+
+    activeMods = {{}}
+
+    storedScrollSpeed = Settings.options["General"].scrollspeed
+
+    states.game.Gameplay.ableToModscript = false
+end
+
 function Modscript:load(script)
     self.downscroll = false
     for i = 1, #states.game.Gameplay.strumLineObjects.members do
@@ -321,7 +390,7 @@ function Modscript:load(script)
         defaultPositions[i] = {x = 0, y = 0}
     end
 
-    function DefineMod(t)
+    function definemod(t)
         local k, v = t[1], t[2]
         if not v then v = 0 end
         storedMods[Modscript.funcs.currentPlayfield][k] = v
@@ -336,7 +405,7 @@ function Modscript:load(script)
     end
 
     for k, v in pairs(modlist[1]) do
-        DefineMod({k, v})
+        definemod({k, v})
     end
 
     Try(
@@ -422,6 +491,10 @@ function Modscript:load(script)
         
     end
 
+    function SetLastNoteAsFinish(bool)
+        states.game.Gameplay.lastNoteIsFinish = bool
+    end
+
     function CreatePlayfield(x, y)
         table.insert(modlist, {}) -- add a new mods table for the new playfield
         table.insert(enabledMods, {})
@@ -466,7 +539,7 @@ function Modscript:load(script)
     end
 
     for k, v in pairs(activeMods[1]) do
-        DefineMod({k, v})
+        definemod({k, v})
     end
 
     if #event > 1 then
@@ -491,6 +564,18 @@ function Modscript:load(script)
     
     function set(t)
         table.insert(mods,{t[1],0,linear,t[2],t[3]})
+    end
+
+    function setdefault(...)
+        -- val, name, val, name, ...
+        local args = {...}
+        for i = 1, #args, 2 do
+            activeMods[1][args[i+1]] = args[i]
+        end
+    end
+
+    function func(beat, funcToCall)
+        table.insert(event, {beat, funcToCall, false})
     end
 
     for i = 1, states.game.Gameplay.mode do
@@ -542,6 +627,7 @@ function Modscript:update(dt, beat)
             local strength = curve(curTime, startStrength, diff, duration, tweenEx1[1][v], tweenEx2[1][v])
             activeMods[1][v] = strength
             if beat > tweenStart[1][v] + duration then
+                print(beat, tweenStart[1][v] + duration, v, activeMods[1][v], targetMods[1][v])
                 isTweening[1][v] = false
             end
         else

@@ -79,6 +79,7 @@ end
 
 function Gameplay:reset()
     -- Reset all variables to their default values
+    self.lastNoteIsFinish = true
     self.strumX = 525
     self.spawnTime = 1000
     self.hitObjects = Group()
@@ -160,6 +161,7 @@ function Gameplay:reset()
     self.timingPoints = {}
 
     currentController = gameController
+    Modscript:reset()
 end
 
 function Gameplay:calculateAccuracy()
@@ -586,8 +588,8 @@ function Gameplay:updateNotePosition(offset, curTime)
         --[[ hitObject.y = math.sin((curTime - hitObject.time) / 1000 * math.pi) * 10 + spritePosition ]]
         if #hitObject.children > 0 then
             -- Determine the hold notes position and scale
-            hitObject.children[1].y = spritePosition + 95
-            hitObject.children[2].y = spritePosition + 95
+            hitObject.children[1].y = spritePosition + 100
+            hitObject.children[2].y = spritePosition + 100
             -- This code doesn't exist. You're just going crazy.
             --[[ 
             hitObject.children[1].offset.x = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi * hitObject.data) * 25
@@ -604,14 +606,14 @@ function Gameplay:updateNotePosition(offset, curTime)
             hitObject.children[2].rotation.z = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi * hitObject.data) * 25
             ]]
             hitObject.endY = self:getNotePosition(offset, hitObject.endTrackPosition)
-            local pixelDistance = hitObject.endY - hitObject.children[1].y + 95-- the distance of start and end we need
+            local pixelDistance = hitObject.endY - hitObject.children[1].y + 100-- the distance of start and end we need
             hitObject.children[1].dimensions = {width = 200, height = pixelDistance}
-            hitObject.children[2].dimensions = {width = 200, height = 95 * (Settings.options["General"].skin.flippedEnd and -1 or 1)}
+            hitObject.children[2].dimensions = {width = 200, height = 200--[[  * (not (Settings.options["General"].skin.flippedEnd or false) and 1 or -1)-} ]]}
 
             if Modscript.downscroll then
-                hitObject.children[2].y = hitObject.children[2].y + pixelDistance - 95
+                hitObject.children[2].y = hitObject.children[2].y + pixelDistance - 100
             else
-                hitObject.children[2].y = hitObject.children[2].y + pixelDistance + 95
+                hitObject.children[2].y = hitObject.children[2].y + pixelDistance + 100
             end
         end
     end
@@ -662,8 +664,8 @@ function Gameplay:clear()
 end
 
 function Gameplay:enter()
-    strumY = not Modscript.downscroll and 50 or 825
     self:reset()
+    strumY = not Modscript.downscroll and 50 or 825
 
     self.inputsArray = {false, false, false, false}
 
@@ -785,7 +787,7 @@ function Gameplay:update(dt)
         if musicTime >= 0 and not self.soundManager:isPlaying("music") and musicTime < 1000 then
             self.soundManager:play("music")
             musicTime = 0
-        elseif (musicTime > self.lastNoteTime+750) then
+        elseif ((self.lastNoteIsFinish and musicTime > self.lastNoteTime+750) or (not self.lastNoteIsFinish and not self.soundManager:isPlaying("music") and musicTime > self.lastNoteTime+750)) then
             --self.songName .. " - " .. self.difficultyName,
             self.replay.meta = {
                 song = self.songName,
