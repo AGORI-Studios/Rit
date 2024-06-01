@@ -29,23 +29,26 @@ end
 function Header:mousepressed(x, y, b)
     if gear:isHovered(x, y) then
         if love.system.getOS() ~= "Android" and love.system.getOS() ~= "iOS" then
-           switchState(states.menu.OptionsMenu, 0.3)
+           --switchState(states.menu.OptionsMenu, 0.3)
+           state.substate(substates.menu.Options)
         else
             shakeObject(gear)
         end
     elseif home:isHovered(x, y) then
         switchState(states.menu.StartMenu, 0.3)
-        if networking.connected then
-            networking.hub:publish({
-                message = {
-                    action = "updateServerInfo_FORCEREMOVEUSER",
-                    id = networking.currentServerID,
-                    user = {
-                        steamID = tostring(SteamID),
-                        name = tostring(SteamUserName)
+        if Steam then
+            if networking.connected then
+                networking.hub:publish({
+                    message = {
+                        action = "updateServerInfo_FORCEREMOVEUSER",
+                        id = networking.currentServerID,
+                        user = {
+                            steamID = tostring(SteamID),
+                            name = tostring(SteamUserName)
+                        }
                     }
-                }
-            })
+                })
+            end
         end
     elseif bars:isHovered(x, y) then
         shakeObject(bars)

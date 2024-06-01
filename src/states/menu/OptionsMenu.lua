@@ -310,4 +310,9 @@ function OptionsMenu:draw()
     love.graphics.setColor(lastColor)
 end
 
+function OptionsMenu:exit()
+    
+end
+
+
 return OptionsMenu
