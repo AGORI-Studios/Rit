@@ -22,10 +22,35 @@ local gameSystems = {
         -- Well,, If I were to use LOVE-WrapLua, I could port it to these, but I'm not going to do that,.,., that's too much work for a joke lol
         "PSP",
         "PS3",
-        "Vita"
+        "Vita",
+        
+        "Switch",
+        "3DS",
+        "Wii U",
+        "Horizon", -- <- This is more for lovepotions 3ds, but it also counts towards the switch through love._os (achieved from the original love.system.getOS())
+        --               Just use love-nx for the switch lol, its better and allows for one codebase for both the switch and the desktop
+        "Cafe"
     },
     Name = "Console"
 }
+
+if love._console then -- This is LovePotion
+    function love.system.getOS()
+        return love._console
+    end
+end
+
+if lv1lua then -- This is LOVE-WrapLua
+    function love.system.getOS()
+        if lv1lua.isPSP then
+            return "PSP"
+        elseif lv1lua.mode == "PS3" then
+            return "PS3" 
+        else
+            return "Vita"
+        end
+    end
+end
 
 function love.system.getProcessorArchitecture()
     if jit then
