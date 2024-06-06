@@ -3,7 +3,7 @@ masterVolume = 50
 isLoading = false
 __DEBUG__ = not love.filesystem.isFused()
 if not __DEBUG__ then 
-    function print() end -- disable print if not in debug mode, allows for better performance
+    function print() end -- disable print if not in debug mode, allows for better performance (because writing to io is very slow)
 end
 
 if love.filesystem.getInfo("__VERSION__.txt") then
@@ -113,7 +113,10 @@ function love.load(args)
     GameInit.LoadDefaultFonts()
     states = GameInit.LoadStates()
     substates = GameInit.LoadSubstates()
-    shaders = GameInit.LoadShaders()
+    
+    if love.system.getOS() ~= "Android" and love.system.getOS() ~= "iOS" then
+        shaders = GameInit.LoadShaders()
+    end
 
     -- Parse the skin's data file
     skinData = ini.parse(love.filesystem.read(skin:format("skin.ini")))
