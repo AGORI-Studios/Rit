@@ -43,7 +43,7 @@ function switchState(newState, t, middleFunc, data)
     end)
 end
 
-DRAW_VIRTUAL_CONTROLLER = love.system.getOS() == "Android" or love.system.getOS() == "iOS"
+DRAW_VIRTUAL_CONTROLLER = love.system.getSystem() == "Mobile"
 
 if love.system.getOS() == "Windows" then
     Try(
@@ -113,8 +113,8 @@ function love.load(args)
     GameInit.LoadDefaultFonts()
     states = GameInit.LoadStates()
     substates = GameInit.LoadSubstates()
-    
-    if love.system.getOS() ~= "Android" and love.system.getOS() ~= "iOS" then
+
+    if love.system.getSystem() == "Desktop" then
         shaders = GameInit.LoadShaders()
     end
 

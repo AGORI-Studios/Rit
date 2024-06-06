@@ -1,9 +1,19 @@
-for i, module in ipairs(love.filesystem.getDirectoryItems("modules/Lua")) do
+-- This is so they're loaded in a-z order, because love2d be wacky and sometimes randomizes the order of the files it finds
+local luaModules = love.filesystem.getDirectoryItems("modules/Lua")
+table.sort(luaModules, function(a, b)
+    return a:sub(-4) == ".lua" and b:sub(-4) == ".lua" and a < b
+end)
+for i, module in ipairs(luaModules) do
     if module:sub(-4) == ".lua" then
         require("modules.Lua." .. module:sub(1, -5))
     end
 end
-for i, module in ipairs(love.filesystem.getDirectoryItems("modules/Love")) do
+
+local loveModules = love.filesystem.getDirectoryItems("modules/Love")
+table.sort(loveModules, function(a, b)
+    return a:sub(-4) == ".lua" and b:sub(-4) == ".lua" and a < b
+end)
+for i, module in ipairs(loveModules) do
     if module:sub(-4) == ".lua" then
         require("modules.Love." .. module:sub(1, -5))
     end
@@ -14,10 +24,10 @@ end
 ---@param f function
 ---@param catch_f function
 ---@return nil
-function Try(f, catch_f)
+function Try(f, catchFunc)
     local returnedValue, error = pcall(f)
     if not returnedValue then
-        catch_f(error)
+        catchFunc(error)
     end
 
     return returnedValue

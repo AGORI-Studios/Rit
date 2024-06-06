@@ -412,8 +412,11 @@ function Sprite:draw() -- Draws the sprite, only if it's visible and exists
         sy = sy * (self.flipY and -1 or 1)
 
         local lastColor = {love.graphics.getColor()}
-        local lastBlend, lastAlphaMode = love.graphics.getBlendMode()
-        love.graphics.setBlendMode(self.blend, self.blendAlphaMode)
+        local lastBlend, lastAlphaMode 
+        if love.graphics.getSupportedBlend() then
+            lastBlend, lastAlphaMode = love.graphics.getBlendMode()
+            love.graphics.setBlendMode(self.blend, self.blendAlphaMode)
+        end
         love.graphics.setColor(self.color[1], self.color[2], self.color[3], self.alpha)
         x, y = x + ox - self.offset.x, y + oy - self.offset.y
 
@@ -445,7 +448,9 @@ function Sprite:draw() -- Draws the sprite, only if it's visible and exists
             love.graphics.setStencilTest()
         end
         love.graphics.setColor(lastColor)
-        love.graphics.setBlendMode(lastBlend, lastAlphaMode)
+        if love.graphics.getSupportedBlend() then
+            love.graphics.setBlendMode(lastBlend, lastAlphaMode)
+        end
     end
 end
 

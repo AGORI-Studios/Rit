@@ -144,3 +144,25 @@ function math.perlinNoise(x, y, z)
                         math.grad(p[BB + 1], x - 1, y - 1, z - 1))))
 end
 
+---@name math.smoothstep
+---@description Returns a smoothstep value
+---@param edge0 number
+---@param edge1 number
+---@param x number
+---@return number
+function math.smoothstep(edge0, edge1, x)
+    x = math.clamp((x - edge0) / (edge1 - edge0), 0, 1)
+    return x * x * (3 - 2 * x)
+end
+
+---@name math.smootherstep
+---@description Returns a smootherstep value
+---@param edge0 number
+---@param edge1 number
+---@param x number
+---@return number
+function math.smootherstep(edge0, edge1, x)
+    x = math.clamp((x - edge0) / (edge1 - edge0), 0, 1)
+    return x * x * x * (x * (x * 6 - 15) + 10)
+end
+

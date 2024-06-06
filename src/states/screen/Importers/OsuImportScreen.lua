@@ -18,7 +18,7 @@ elseif os_ == "OS X" then
 end
 
 -- replace $USER and %username% with the actual username
-if love.system.getOS() ~= "Android" and love.system.getOS() ~= "iOS" then
+if love.system.getSystem() == "Desktop" then
     path = path:gsub("$USER", username):gsub("%%username%%", username)
 end
 

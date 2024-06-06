@@ -6,6 +6,8 @@ local inits = {
     -- Window base resolution
     __WINDOW_WIDTH = 1280,
     __WINDOW_HEIGHT = 720,
+
+    networkingEnabled = false
 }
 
 return inits

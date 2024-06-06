@@ -23,7 +23,7 @@ function GI.LoadLibraries()
     if love.system.getOS() ~= "NX" then
         Video = require("lib.aqua.Video")
 
-        if Steam then
+        if Steam and Inits.networkingEnabled then
             noobhub = require("lib.networking.noobhub")
             networking = {
                 latencies = {},

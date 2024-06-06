@@ -125,7 +125,10 @@ function VertSprite:draw()
         y = y + oy
 
         local lastColor = {love.graphics.getColor()}
-        local lastBlend, lastAlphaMode = love.graphics.getBlendMode()
+        local lastBlend, lastAlphaMode 
+        if love.graphics.getSupportedBlend() then
+            lastBlend, lastAlphaMode = love.graphics.getBlendMode()
+        end
         local gw, gh = self.graphic:getWidth(), self.graphic:getHeight()
         local fw, fh, uvx, uvy, uvw, uvh = gw, gh, 0, 0, 1, 1
 
@@ -157,7 +160,9 @@ function VertSprite:draw()
         love.graphics.draw(mesh, 0, 0, 0--[[ , sx, sy ]])
         
         love.graphics.setColor(lastColor)
-        love.graphics.setBlendMode(lastBlend, lastAlphaMode)
+        if love.graphics.getSupportedBlend() then
+            love.graphics.setBlendMode(lastBlend, lastAlphaMode)
+        end
     end
 
     love.graphics.setShader()
