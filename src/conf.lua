@@ -3,7 +3,11 @@ local major, minor, revision, codename = love.getVersion()
 function love.conf(t)
     t.window.title = "Rit."
     if __DEBUG__ then
-        t.window.title = t.window.title .. " | DEBUG | " .. jit.version .. " | " .. jit.os .. " " .. jit.arch .. " | LOVE " .. (major .. "." .. minor .. "." .. revision .. " - " .. codename)
+        t.window.title = t.window.title .. " | DEBUG | " .. jit.version .. " | " ..
+            jit.os .. " " .. jit.arch .. " | LOVE " ..
+            (
+                major .. "." .. minor .. "." .. revision .. " - " .. codename
+            )
     end
     t.identity = "rit"
 

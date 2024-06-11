@@ -20,6 +20,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         local Artist = fileData:match("Artist:(.-)\r?\n")
                         local Tags = fileData:match("Tags:(.-)\r?\n"):strip()
                         local bpm = fileData:match("Bpm: (%d+)")
+                        local previewTime = fileData:match("SongPreviewTime: (%d+)"):trim()
                         Tags = Tags:split(" ")
 
                         songList[title..Creator] = songList[title..Creator] or {}
@@ -36,6 +37,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             tags = Tags,
                             mode = mode:match("%d+"),
                             bpm = bpm,
+                            previewTime = tonumber(previewTime or 0),
                             audioFile = path .."/" .. file .. "/" .. AudioFile
                         }
                         songList[title..Creator].type = "Quaver"
@@ -47,6 +49,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         local Creator = fileData:match("Creator:(.-)\r?\n")
                         local Artist = fileData:match("Artist:(.-)\r?\n")
                         local Tags = fileData:match("Tags:(.-)\r?\n"):strip()
+                        local previewTime = fileData:match("PreviewTime:(.-)\r?\n"):trim()
                         -- osu's bpm is really stupid so we have to calculate it ourselves
                         -- like... THIS IS THEIR BPM SYSTEM?????
                         --[[
@@ -111,6 +114,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             artist = Artist,
                             tags = Tags,
                             bpm = bpm,
+                            previewTime = tonumber(previewTime or 0),
                             audioFile = path .."/" .. file .. "/" .. AudioFile
                         }
                         songList[title..Creator].type = "osu!"
@@ -125,6 +129,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         local description = fileData:match("Description:(.-)\r?\n")
                         local Tags = fileData:match("Tags:(.-)\r?\n"):strip()
                         local bpm = fileData:match("%[Timings%]\r?\n(.-)\r?\n%[Hits%]")
+                        local previewTime = fileData:match("PreviewTime:(.-)\r?\n"):trim()
                         bpm = bpm:split("\r?\n")
                         bpm = bpm[1]:split(":")[2]
                         Tags = Tags:split(" ")
@@ -143,6 +148,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             description = description,
                             tags = Tags,
                             bpm = bpm,
+                            previewTime = tonumber(previewTime or 0),
                             audioFile = path .."/" .. file .. "/" .. AudioFile
                         }
                         songList[title..Creator].type = "Rit"
@@ -154,6 +160,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         local Creator = "Unknown"
                         local Artist = "Unknown"
                         local Tags = {"malody"}
+                        local previewTime = 0
                         for i, note in ipairs(fileData.note) do
                             if note.type == 1 then
                                 AudioFile = note.sound
@@ -173,6 +180,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             artist = Artist,
                             tags = Tags,
                             bpm = 120,
+                            previewTime = previewTime,
                             audioFile = path .."/" .. file .. "/" .. AudioFile
                         }
                         songList[title..Creator].type = "Malody"
@@ -258,6 +266,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                     local Artist = fileData:match("Artist:(.-)\r?\n")
                     local Tags = fileData:match("Tags:(.-)\r?\n"):strip()
                     local Bpm = fileData:match("Bpm: (%d+)")
+                    local previewTime = fileData:match("SongPreviewTime: (%d+)"):trim()
                     Tags = Tags:split(" ")
 
                     songList[title..Creator] = songList[title..Creator] or {}
@@ -275,6 +284,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         mode = mode:match("%d+"),
                         tags = Tags,
                         bpm = Bpm,
+                        previewTime = tonumber(previewTime or 0),
                         audioFile = "song/" .. AudioFile
                     }
                     songList[title..Creator].type = "Quaver"
@@ -289,6 +299,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                     local Tags = fileData:match("Tags:(.-)\r?\n"):strip()
                     local timingPoints = fileData:match("%[TimingPoints%]\r?\n(.-)\r?\n%[HitObjects%]")
                     local bpm = 120
+                    local previewTime = fileData:match("PreviewTime:(.-)\r?\n"):trim()
                     for line in timingPoints:gmatch("[^\r\n]+") do
                         local split = line:split(",")
                         local tp = {}
@@ -345,6 +356,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         artist = Artist,
                         tags = Tags,
                         bpm = bpm,
+                        previewTime = tonumber(previewTime or 0),
                         audioFile = "song/" .. AudioFile
                     }
                     songList[title..Creator].type = "osu!"
@@ -386,7 +398,7 @@ function playRandomSong()
     MenuSoundManager:stop("music")
     MenuSoundManager:removeAllSounds()
     MenuSoundManager:newSound("music", diff.audioFile, 1, true, "stream")
-    MenuSoundManager:play("music")
+    MenuSoundManager:playFromTime("music", diff.previewTime/1000)
     MenuSoundManager:setLooping("music", true)
 
     menuBPM = diff.bpm
@@ -415,7 +427,7 @@ function playSelectedSong(song)
     threads.assets.newSoundData(baseSoundData, "music", diff.audioFile)
     threads.assets.start(function()
         MenuSoundManager:newSound("music", baseSoundData.music, 1, true, "stream")
-        MenuSoundManager:play("music")
+        MenuSoundManager:playFromTime("music", diff.previewTime / 1000)
         MenuSoundManager:setLooping("music", true)
     end)
 

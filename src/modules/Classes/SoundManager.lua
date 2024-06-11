@@ -44,6 +44,22 @@ function SoundManager:play(name, clone)
     end
 end
 
+function SoundManager:playFromTime(name, time, clone)
+    if not self.channel[name] then return end
+    self.channel[name].paused = false
+    if clone then
+        local clone = self.channel[name].sound:clone()
+        clone:seek(time or 0)
+        clone:play()
+        return clone
+    else
+        if not self.channel[name] then return end
+        self.channel[name].sound:seek(time or 0)
+        self.channel[name].sound:play()
+        return self.channel[name].sound
+    end
+end
+
 function SoundManager:update(dt)
     for k, v in pairs(self.channel) do
         if v.lastFrameTime == 0 then
