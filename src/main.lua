@@ -204,17 +204,24 @@ function love.resize(w,h)
     __WINDOW_WIDTH, __WINDOW_HEIGHT = w, h
     state.resize(w,h)
 end
-
+local os = love.system.getOS()
 function toGameScreen(x, y)
-    -- converts our mouse position to the game screen (canvas) with the correct ratio
-    local ratio = 1
-    ratio = math.min(__WINDOW_WIDTH/Inits.GameWidth, __WINDOW_HEIGHT/Inits.GameHeight)
+    if os ~= "Android" and os ~= "iOS" then
+        -- converts our mouse position to the game screen (canvas) with the correct ratio
+        local ratio = 1
+        ratio = math.min(__WINDOW_WIDTH/Inits.GameWidth, __WINDOW_HEIGHT/Inits.GameHeight)
 
-    local x, y = x - __WINDOW_WIDTH/2, y - __WINDOW_HEIGHT/2
-    x, y = x / ratio, y / ratio
-    x, y = x + Inits.GameWidth/2, y + Inits.GameHeight/2
+        local x, y = x - __WINDOW_WIDTH/2, y - __WINDOW_HEIGHT/2
+        x, y = x / ratio, y / ratio
+        x, y = x + Inits.GameWidth/2, y + Inits.GameHeight/2
 
-    return x, y
+        return x, y
+    else
+        -- same thing, but its a stretched res
+        local ratioX, ratioY = __WINDOW_WIDTH/Inits.GameWidth, __WINDOW_HEIGHT/Inits.GameHeight
+        local x, y = x / ratioX, y / ratioY
+        return x, y
+    end
 end
 
 function love.draw()
@@ -232,11 +239,17 @@ function love.draw()
     love.graphics.setCanvas()
 
     -- ratio
-    local ratio = 1
-    ratio = math.min(love.graphics.getWidth()/Inits.GameWidth, love.graphics.getHeight()/Inits.GameHeight)
-    love.graphics.setColor(1,1,1,1)
-    -- draw game screen with the calculated ratio and center it on the screen
-    love.graphics.draw(gameScreen, love.graphics.getWidth()/2, love.graphics.getHeight()/2, 0, ratio, ratio, Inits.GameWidth/2, Inits.GameHeight/2)
+   if os ~= "Android" and os ~= "iOS" then
+        local ratio = 1
+        ratio = math.min(love.graphics.getWidth()/Inits.GameWidth, love.graphics.getHeight()/Inits.GameHeight)
+        love.graphics.setColor(1,1,1,1)
+        -- draw game screen with the calculated ratio and center it on the screen
+        love.graphics.draw(gameScreen, love.graphics.getWidth()/2, love.graphics.getHeight()/2, 0, ratio, ratio, Inits.GameWidth/2, Inits.GameHeight/2)
+    else
+        local ratioX, ratioY = love.graphics.getWidth()/Inits.GameWidth, love.graphics.getHeight()/Inits.GameHeight
+        love.graphics.setColor(1,1,1,1)
+        love.graphics.draw(gameScreen, 0, 0, 0, ratioX, ratioY)
+    end 
 
     -- draw Popup.popups
     for i, popup in ipairs(Popup.popups) do

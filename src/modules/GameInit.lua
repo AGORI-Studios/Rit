@@ -432,12 +432,14 @@ function love.wheelmoved(x, y)
     Settings.options["General"].globalVolume = masterVolume / 100
 end
 
-function love.mousepressed(x, y, b)
+function love.mousepressed(x, y, b, istouch, presses)
+    if istouch then return end
     state.mousepressed(x, y, b)
     --currentController:touchpressed(0, x, y, 0, 0, 0)
 end
 
-function love.mousereleased(x, y, b)
+function love.mousereleased(x, y, b, istouch, presses)
+    if istouch then return end
     state.mousereleased(x, y, b)
     --currentController:touchreleased(0, x, y, 0, 0, 0)
 end

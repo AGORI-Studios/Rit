@@ -49,6 +49,7 @@ function VirtualController:touchpressed(id, x, y, dx, dy, pressure)
     for i, key in ipairs(self.keys) do
         if x > key.x and x < key.x + key.width and y > key.y and y < key.y + key.height then
             self.keys[i].down = true
+            self.keys[i].id = id
         end
     end
 end
@@ -56,7 +57,7 @@ end
 function VirtualController:touchmoved(id, x, y, dx, dy, pressure)
     local x, y = toGameScreen(x, y)
     for i, key in ipairs(self.keys) do
-        if not (x > key.x and x < key.x + key.width and y > key.y and y < key.y + key.height) then
+        if not (x > key.x and x < key.x + key.width and y > key.y and y < key.y + key.height) and (key.id and key.id == id) then
             self.keys[i].down = false
         end
     end
@@ -65,7 +66,7 @@ end
 function VirtualController:touchreleased(id, x, y, dx, dy, pressure)
     local x, y = toGameScreen(x, y)
     for i, key in ipairs(self.keys) do
-        if x > key.x and x < key.x + key.width and y > key.y and y < key.y + key.height then
+        if x > key.x and x < key.x + key.width and y > key.y and y < key.y + key.height and (key.id and key.id == id) then
             self.keys[i].down = false
         end
     end
