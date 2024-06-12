@@ -265,6 +265,16 @@ function StartMenu:mousereleased(x, y, b)
     end
 end
 
+function StartMenu:touchreleased(id, x, y, dx, dy, pressure)
+    if state.inSubstate then return end
+    local x, y = toGameScreen(x, y)
+    for i = 1, #buttons do
+        if x > buttons[i].x and x < buttons[i].x + buttons[i].img:getWidth() * buttons[i].scale and y > buttons[i].y and y < buttons[i].y + buttons[i].img:getHeight() * buttons[i].scale then
+            buttons[i].action()
+        end
+    end
+end
+
 function StartMenu:draw()
     bg:draw()
     for i = 1, #balls do

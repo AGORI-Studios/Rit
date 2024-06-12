@@ -159,15 +159,15 @@ function osuLoader.addHitObject(line)
     note.x = tonumber(split[1]) or 0
     note.y = tonumber(split[2]) or 0
     note.startTime = tonumber(split[3]) or 0
-    if states.game.Gameplay.gameMode == 1 then
-        note.data = math.max(1, math.min(states.game.Gameplay.mode, math.floor(note.x/512*states.game.Gameplay.mode+1))) or 1
-    elseif states.game.Gameplay.gameMode == 2 then
+    if states.game.Gameplay.gameMode == 2 then
         states.game.Gameplay.mode = 2
         if bit.band(tonumber(split[5]) or 0, 10) ~= 0 then
             note.data = 2
         else
             note.data = 1
         end
+    else
+        note.data = math.max(1, math.min(states.game.Gameplay.mode, math.floor(note.x/512*states.game.Gameplay.mode+1))) or 1
     end
 
     -- https://github.com/semyon422/chartbase/blob/b29e3e2922c2d5df86d8cf9da709de59a5fb30a8/osu/Osu.lua#L154
