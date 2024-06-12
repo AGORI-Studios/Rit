@@ -282,10 +282,10 @@ function GI.ClearOSModule()
 end
 
 function GI.LoadObjects()
-    StrumObject = require("modules.Objects.game.StrumObject")
-    HitObject = require("modules.Objects.game.HitObject")
-    Playfield = require("modules.Objects.game.Playfield")
-    TimingLine = require("modules.Objects.game.TimingLine")
+    StrumObject = require("modules.Objects.game.Mania.StrumObject")
+    HitObject = require("modules.Objects.game.Mania.HitObject")
+    Playfield = require("modules.Objects.game.Mania.Playfield")
+    TimingLine = require("modules.Objects.game.Mania.TimingLine")
 
     SongButton = require("modules.Objects.menu.SongButton")
     ServerButton = require("modules.Objects.menu.ServerButton")
