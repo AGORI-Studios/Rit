@@ -38,7 +38,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             mode = mode:match("%d+"),
                             bpm = bpm,
                             previewTime = tonumber(previewTime or 0),
-                            audioFile = path .."/" .. file .. "/" .. AudioFile
+                            audioFile = path .."/" .. file .. "/" .. AudioFile,
+                            gameMode = 1,
                         }
                         songList[title..Creator].type = "Quaver"
                     elseif song:sub(-4) == ".osu" then
@@ -99,8 +100,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         Tags = Tags:split(" ")
 
                         local Mode = fileData:match("Mode:(.-)\r?\n"):trim()
-                        -- needs to be 3, else FUCK YOU! because 3 equals mania!!!
-                        if Mode ~= "3" then goto continue end
+                        if Mode ~= "3" and Mode ~= "1" then goto continue end
                         songList[title..Creator] = songList[title..Creator] or {}
                         songList[title..Creator][difficultyName] = {
                             filename = file,
@@ -115,7 +115,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             tags = Tags,
                             bpm = bpm,
                             previewTime = tonumber(previewTime or 0),
-                            audioFile = path .."/" .. file .. "/" .. AudioFile
+                            audioFile = path .."/" .. file .. "/" .. AudioFile,
+                            gameMode = Mode == "3" and 1 or Mode == "1" and 2 or 1
                         }
                         songList[title..Creator].type = "osu!"
                         ::continue::
@@ -149,7 +150,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             tags = Tags,
                             bpm = bpm,
                             previewTime = tonumber(previewTime or 0),
-                            audioFile = path .."/" .. file .. "/" .. AudioFile
+                            audioFile = path .."/" .. file .. "/" .. AudioFile,
+                            gameMode = 1
                         }
                         songList[title..Creator].type = "Rit"
                     elseif song:sub(-3) == ".mc" then
@@ -181,7 +183,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             tags = Tags,
                             bpm = 120,
                             previewTime = previewTime,
-                            audioFile = path .."/" .. file .. "/" .. AudioFile
+                            audioFile = path .."/" .. file .. "/" .. AudioFile,
+                            gameMode = 1,
                         }
                         songList[title..Creator].type = "Malody"
                     --[[ elseif song:sub(-6) == ".chart" then
@@ -285,7 +288,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         tags = Tags,
                         bpm = Bpm,
                         previewTime = tonumber(previewTime or 0),
-                        audioFile = "song/" .. AudioFile
+                        audioFile = "song/" .. AudioFile,
+                        gameMode = 1,
                     }
                     songList[title..Creator].type = "Quaver"
                 elseif song:sub(-4) == ".osu" then
@@ -339,8 +343,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         end
                      end
                     Tags = Tags:split(" ")
-                    -- needs to be 3, else FUCK YOU!
-                    if Mode ~= "3" then goto continue end
+                    if Mode ~= "3" and Mode ~= "1" then goto continue end
 
                     songList[title..Creator] = songList[title..Creator] or {}
                     songList[title..Creator][difficultyName] = {
@@ -357,7 +360,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         tags = Tags,
                         bpm = bpm,
                         previewTime = tonumber(previewTime or 0),
-                        audioFile = "song/" .. AudioFile
+                        audioFile = "song/" .. AudioFile,
+                        gameMode = Mode == "3" and 1 or Mode == "1" and 2 or 1
                     }
                     songList[title..Creator].type = "osu!"
                     ::continue::

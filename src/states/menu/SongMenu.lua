@@ -71,6 +71,7 @@ function SongMenu:enter()
         local artist = nil
         local description = nil
         local tags = nil
+        local gamemode = nil
         for j, diff in pairs(song) do
             if type(diff) == "table" then
                 table.insert(diffs, diff)
@@ -80,6 +81,7 @@ function SongMenu:enter()
                 artist = diff.artist
                 description = diff.description
                 tags = diff.tags
+                gamemode = diff.gameMode
             else
                 -- if diff is a key in songButtons, then don't set it
                 if songButtons[diff] then
@@ -88,7 +90,7 @@ function SongMenu:enter()
             end
         end
         local y = #songButtons * songButton.height * 0.75
-        local btn = SongButton(y, diffs, bmType, songName, artist, creator, description or "This map has no description.", tags or {})
+        local btn = SongButton(y, diffs, bmType, songName, artist, creator, description or "This map has no description.", tags or {}, gamemode)
         btn.x = -125
         table.insert(songButtons, btn)
     end
@@ -334,7 +336,8 @@ function SongMenu:mousepressed(x, y, b)
                             local filename = diff.filename
                             local diffName = diff.name
                             local mode = diff.mode
-                            
+                            local gamemode = diff.gameMode
+
                             love.filesystem.mount("songs/" .. filename, "song")
                             
                             if chartver ~= "FNF" then
@@ -342,6 +345,7 @@ function SongMenu:mousepressed(x, y, b)
                                 states.game.Gameplay.songPath = songPath
                                 states.game.Gameplay.folderpath = folderpath
                                 states.game.Gameplay.difficultyName = diffName
+                                states.game.Gameplay.gameMode = gamemode
                                 switchState(states.game.Gameplay, 0.3, nil)
                             end
                             MenuSoundManager:removeAllSounds()

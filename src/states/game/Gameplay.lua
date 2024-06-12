@@ -128,7 +128,6 @@ function Gameplay:reset()
     self.lastNoteTime = 10000 -- safe number
     self.firstNoteTime = 0
     self.hasSkipPeriod = false
-    self.gameMode = 1
 
     self.noteoffsets = {}
 

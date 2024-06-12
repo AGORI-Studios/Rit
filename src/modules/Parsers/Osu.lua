@@ -56,7 +56,7 @@ end
 
 function osuLoader.processDifficulty(line)
     local key, value = line:match("^(%a+):%s?(.*)")
-    if key == "CircleSize" then
+    if key == "CircleSize" and states.game.Gameplay.gameMode == 1 then
         states.game.Gameplay.mode = tonumber(value)
         states.game.Gameplay.strumX = states.game.Gameplay.strumX - ((states.game.Gameplay.mode - 4.5) * (100 + Settings.options["General"].columnSpacing))
     end
@@ -159,7 +159,16 @@ function osuLoader.addHitObject(line)
     note.x = tonumber(split[1]) or 0
     note.y = tonumber(split[2]) or 0
     note.startTime = tonumber(split[3]) or 0
-    note.data = math.max(1, math.min(states.game.Gameplay.mode, math.floor(note.x/512*states.game.Gameplay.mode+1))) or 1
+    if states.game.Gameplay.gameMode == 1 then
+        note.data = math.max(1, math.min(states.game.Gameplay.mode, math.floor(note.x/512*states.game.Gameplay.mode+1))) or 1
+    elseif states.game.Gameplay.gameMode == 2 then
+        states.game.Gameplay.mode = 2
+        if bit.band(tonumber(split[5]) or 0, 10) ~= 0 then
+            note.data = 2
+        else
+            note.data = 1
+        end
+    end
 
     -- https://github.com/semyon422/chartbase/blob/b29e3e2922c2d5df86d8cf9da709de59a5fb30a8/osu/Osu.lua#L154
     note.type = tonumber(split[4]) or 0
