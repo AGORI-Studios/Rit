@@ -154,7 +154,7 @@ function VertSprite:draw()
         if mesh:getTexture() ~= self.graphic then mesh:setTexture(self.graphic) end
         mesh:setDrawRange(1, length)
         mesh:setVertices(verts)
-        love.graphics.setColor(self.color[1], self.color[2], self.color[3], self.alpha)
+        love.graphics.setColor(lastColor[1] * self.color[1], lastColor[2] * self.color[2], lastColor[3] * self.color[3], lastColor[4] * self.alpha)
         love.graphics.setShader(defaultShader)
 
         love.graphics.draw(mesh, 0, 0, 0--[[ , sx, sy ]])

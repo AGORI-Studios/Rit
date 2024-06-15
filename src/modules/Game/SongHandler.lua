@@ -9,8 +9,9 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
             for _, song in ipairs(lf.getDirectoryItems(path .."/" .. file)) do
                 --print("Checking " .. song)
                 if lf.getInfo(path .."/" .. file .. "/" .. song).type == "file" then
+                    local ext = song:gsub(".*%.", "")
                     --print("Found song " .. song)
-                    if song:sub(-4) == ".qua" then
+                    if ext == "qua" then
                         local fileData = lf.read(path .."/" .. file .. "/" .. song)
                         local title = fileData:match("Title:(.-)\r?\n")
                         local difficultyName = fileData:match("DifficultyName:(.-)\r?\n")
@@ -42,7 +43,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             gameMode = 1,
                         }
                         songList[title..Creator].type = "Quaver"
-                    elseif song:sub(-4) == ".osu" then
+                    elseif ext == "osu" then
                         local fileData = lf.read(path .."/" .. file .. "/" .. song)
                         local title = fileData:match("Title:(.-)\r?\n")
                         local difficultyName = fileData:match("Version:(.-)\r?\n")
@@ -120,7 +121,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         }
                         songList[title..Creator].type = "osu!"
                         ::continue::
-                    elseif song:sub(-5) == ".ritc" then
+                    elseif ext == "ritc" then
                         local fileData = lf.read(path .."/" .. file .. "/" .. song)
                         local title = fileData:match("SongTitle:(.-)\r?\n")
                         local difficultyName = fileData:match("SongDiff:(.-)\r?\n")
@@ -154,7 +155,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             gameMode = 1
                         }
                         songList[title..Creator].type = "Rit"
-                    elseif song:sub(-3) == ".mc" then
+                    elseif ext == "mc" then
                         local fileData = json.decode(lf.read(path .."/" .. file .. "/" .. song))
                         local title = fileData.meta.song.title
                         local difficultyName = fileData.meta.version
@@ -187,6 +188,42 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             gameMode = 1,
                         }
                         songList[title..Creator].type = "Malody"
+                    elseif ext == "fsc" then
+                        local filedata = json.decode(lf.read(path .."/" .. file .. "/" .. song))
+                        local title = filedata.Metadata.Title
+                        local difficultyName = filedata.Metadata.Difficulty
+                        local AudioFile = filedata.AudioFile
+                        local Creator = filedata.Metadata.Mapper
+                        local Artist = filedata.Metadata.Artist
+                        local Tags = filedata.Metadata.Tags
+                        local bpm = nil
+                        for i = 1, #filedata.TimingPoints do
+                            if filedata.TimingPoints[i].bpm then
+                                bpm = filedata.TimingPoints[i].bpm
+                                break
+                            end
+                        end
+                        local previewTime = filedata.Metadata.PreviewTime
+                        Tags = Tags:split(" ")
+                        songList[title..Creator] = songList[title..Creator] or {}
+                        songList[title..Creator][difficultyName] = {
+                            filename = file,
+                            title = title,
+                            difficultyName = difficultyName,
+                            path = path .."/" .. file .. "/" .. song,
+                            folderPath = path .."/" .. file,
+                            type = "fluXis",
+                            rating = "",
+                            ratingColour = {1,1,1},
+                            creator = Creator,
+                            artist = Artist,
+                            tags = Tags,
+                            bpm = bpm,
+                            previewTime = previewTime,
+                            audioFile = path .."/" .. file .. "/" .. AudioFile,
+                            gameMode = 1,
+                            eventsFile = song:gsub(".fsc", ".ffx")
+                        }
                     --[[ elseif song:sub(-6) == ".chart" then
                         -- check for song.ini in same path
                         local songIni = lf.getInfo(path .."/" .. file .. "/song.ini")
@@ -259,7 +296,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
             lf.mount(path .."/" .. file, "song")
             -- for all files in song/
             for _, song in ipairs(lf.getDirectoryItems("song")) do
-                if song:sub(-4) == ".qua" then
+                local ext = song:gsub(".*%.", "")
+                if ext == "qua" then
                     local fileData = lf.read("song/" .. song)
                     local title = fileData:match("Title:(.-)\r?\n")
                     local difficultyName = fileData:match("DifficultyName:(.-)\r?\n")
@@ -292,7 +330,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         gameMode = 1,
                     }
                     songList[title..Creator].type = "Quaver"
-                elseif song:sub(-4) == ".osu" then
+                elseif ext == "osu" then
                     local fileData = lf.read("song/" .. song)
                     local title = fileData:match("Title:(.-)\r?\n")
                     local difficultyName = fileData:match("Version:(.-)\r?\n")
@@ -365,6 +403,42 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                     }
                     songList[title..Creator].type = "osu!"
                     ::continue::
+                elseif ext == "fsc" then -- fluXis
+                    local filedata = json.decode(lf.read("song/" .. song))
+                    local title = filedata.Metadata.Title
+                    local difficultyName = filedata.Metadata.Difficulty
+                    local AudioFile = filedata.AudioFile
+                    local Creator = filedata.Metadata.Mapper
+                    local Artist = filedata.Metadata.Artist
+                    local Tags = filedata.Metadata.Tags
+                    local bpm = nil
+                    for i = 1, #filedata.TimingPoints do
+                        if filedata.TimingPoints[i].bpm then
+                            bpm = filedata.TimingPoints[i].bpm
+                            break
+                        end
+                    end
+                    local previewTime = filedata.Metadata.PreviewTime
+                    Tags = Tags:split(" ")
+                    songList[title..Creator] = songList[title..Creator] or {}
+                    songList[title..Creator][difficultyName] = {
+                        filename = file,
+                        title = title,
+                        difficultyName = difficultyName,
+                        path = "song/" .. song,
+                        folderPath = "song",
+                        type = "fluXis",
+                        rating = "",
+                        ratingColour = {1,1,1},
+                        creator = Creator,
+                        artist = Artist,
+                        tags = Tags,
+                        bpm = bpm,
+                        previewTime = previewTime,
+                        audioFile = "song/" .. AudioFile,
+                        gameMode = 1,
+                        eventsFile = song:gsub(".fsc", ".ffx")
+                    }
                 end
             end
             lf.unmount(path .."/" .. file)

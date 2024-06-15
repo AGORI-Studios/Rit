@@ -61,6 +61,8 @@ Gameplay.gameModes = {
     "TBD"
 }
 
+Gameplay.eventTimers = {}
+
 local lerpedScore = 0
 local lerpedAccuracy = 0
 
@@ -164,6 +166,8 @@ function Gameplay:reset()
     self.escapeTimer = 0
 
     self.timingPoints = {}
+
+    self.eventTimers = {}
 
     currentController = gameController
     Modscript:reset()
@@ -613,7 +617,7 @@ function Gameplay:updateNotePosition(offset, curTime)
             hitObject.endY = self:getNotePosition(offset, hitObject.endTrackPosition)
             local pixelDistance = hitObject.endY - hitObject.children[1].y + 100-- the distance of start and end we need
             hitObject.children[1].dimensions = {width = 200, height = pixelDistance}
-            hitObject.children[2].dimensions = {width = 200, height = 200--[[  * (not (Settings.options["General"].skin.flippedEnd or false) and 1 or -1)-} ]]}
+            hitObject.children[2].dimensions = {width = 200, height = 100--[[  * (not (Settings.options["General"].skin.flippedEnd or false) and 1 or -1)-} ]]}
 
             if Modscript.downscroll then
                 hitObject.children[2].y = hitObject.children[2].y + pixelDistance - 100
@@ -770,6 +774,52 @@ function Gameplay:generateStrums()
     self.bgLane.width = self.mode * (200 + Settings.options["General"].columnSpacing + normalPadding)
 end
 
+function Gameplay:updateEvents()
+    if not self.songEvents then return end
+    if self.songEvents.playfieldmove then
+        for i, event in ipairs(self.songEvents.playfieldmove) do
+            if musicTime >= event.time then
+                -- the 0.9 scaling is here due to the difference in size of fluXis' and Rit's playfields
+                local x = (event.x or 0) * 0.9
+                local y = (event.y or 0) * 0.9
+                local duration = event.duration--[[ /1000 or 0 ]] or 0
+                if duration ~= 0 then duration = duration/1000 end
+                local ease = event.ease or 10 -- TODO: Find out the ease equivalency.
+                local playfield = self.playfields[1]
+                
+                self.eventTimers[tostring(event.time) .. "_moveEvent"] = Timer.tween(
+                    duration, playfield.offsets, {x = x, y = y}, "linear"
+                )
+
+                table.remove(self.songEvents.playfieldmove, i)
+                break
+            else
+                break
+            end
+        end
+    end
+    if self.songEvents.playfieldfade then
+        for i, event in ipairs(self.songEvents.playfieldfade) do
+            if musicTime >= event.time then
+                local alpha = event.alpha or 0
+                local duration = event.duration--[[ /1000 or 0 ]] or 0
+                if duration ~= 0 then duration = duration/1000 end
+                local ease = event.ease or 10 -- TODO: Find out the ease equivalency.
+                local playfield = self.playfields[1]
+                
+                self.eventTimers[tostring(event.time) .. "_fadeEvent"] = Timer.tween(
+                    duration, playfield, {alpha=alpha}, "out-quad"
+                )
+
+                table.remove(self.songEvents.playfieldfade, i)
+                break
+            else
+                break
+            end
+        end
+    end
+end
+
 function Gameplay:update(dt)
     networkingUpdateTime = networkingUpdateTime + dt
     if networkingUpdateTime >= 1.25 and Steam and networking.inMultiplayerGame and networking.connected then
@@ -848,6 +898,10 @@ function Gameplay:update(dt)
 
     if self.ableToModscript then
         Modscript:update(dt, self.soundManager:getBeat("music"))
+    end
+
+    if self.updateTime then
+        self:updateEvents()
     end
 
     --[[ for i = 1, self.mode do -- erm... what the sigma?

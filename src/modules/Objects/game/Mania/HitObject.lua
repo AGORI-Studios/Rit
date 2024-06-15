@@ -70,7 +70,7 @@ function HitObject:new(time, data, endTime)
 
             -- curv the holdObj based off the parents xy and the endObj's xy
             local startX, startY = parent.x-self.x, parent.y-self.y
-            local endX, endY = endObj.x-self.x, endObj.y-self.y+95/2
+            local endX, endY = endObj.x-self.x, endObj.y-self.y
             local midX, midY = (startX + endX) / 2 + self.midOffset*(percent or 0), (startY + endY) / 2
             
             local w, h = __NOTE_OBJECT_WIDTH, __NOTE_OBJECT_WIDTH
@@ -124,7 +124,7 @@ function HitObject:new(time, data, endTime)
             endObj.flipY = not (Settings.options["General"].skin.flippedEnd or false)
         end ]]
         endObj.forcedDimensions = true
-        endObj.dimensions = {width = 200, height = 200}
+        endObj.dimensions = {width = 200, height = 100}
         endObj.parent = self
 
         endObj.hold = holdObj

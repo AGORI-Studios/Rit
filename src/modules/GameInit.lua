@@ -303,7 +303,8 @@ function GI.LoadParsers()
         ["Stepmania"] = require("modules.Parsers.Stepmania"),
         ["Malody"] = require("modules.Parsers.Malody"),
         ["Rit"] = require("modules.Parsers.Rit"),
-        ["CloneHero"] = require("modules.Parsers.Clone")
+        ["CloneHero"] = require("modules.Parsers.Clone"),
+        ["fluXis"] = require("modules.Parsers.fluXis")
     }
 end
 

@@ -22,7 +22,9 @@ Settings.options = {
         debugText = false,
 
         noteSize = 1, -- 100%
-        columnSpacing = 0 -- 0px
+        columnSpacing = 0, -- 0px
+
+        scrollUnderlayAlpha = 1,
     },
     ["Video"] = {
         ["VSYNC"] = false,

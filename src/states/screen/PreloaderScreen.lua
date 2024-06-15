@@ -1,6 +1,7 @@
 local PreloaderScreen = state()
 local doneLoading = false
 local fade = {0}
+local lerpedFinshed = 0
 
 local ritLogo = Cache:loadImage("assets/images/ui/menu/logo.png")
 
@@ -43,6 +44,8 @@ function PreloaderScreen:update(dt)
     if doneLoading then 
         -- exponential fade out
         --fade = math.min(fade + dt * 1.82, 1)
+    else
+        lerpedFinshed = math.fpsLerp(lerpedFinshed, threads.assets.loadedCount / threads.assets.resourceCount, 25)
     end
 end
 
@@ -63,8 +66,8 @@ function PreloaderScreen:draw()
         love.graphics.printf(localize.localize("Precaching Resources...")..threads.assets.loadedCount.."/"..threads.assets.resourceCount.."\n"..math.floor(percent * 100).."%", 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
     end
     -- loading bar
-    --love.graphics.rectangle("fill", (Inits.GameWidth*0.05),Inits.GameWidth/2, (Inits.GameWidth*0.9) * percent, 50)
-    love.graphics.setColor(1,1,1, (threads.assets.loadedCount / threads.assets.resourceCount))
+    love.graphics.rectangle("fill", (Inits.GameWidth*0.05),Inits.GameWidth/2, (Inits.GameWidth*0.9) * lerpedFinshed, 50)
+    love.graphics.setColor(1,1,1, lerpedFinshed)
     local ritScale = 0.5
     love.graphics.draw(ritLogo, Inits.GameWidth/2, Inits.GameHeight/2, 0, ritScale, ritScale, ritLogo:getWidth()/2, ritLogo:getHeight()/2)
     love.graphics.setColor(1,1,1,1)
