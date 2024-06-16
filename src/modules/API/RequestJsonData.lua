@@ -2,12 +2,28 @@ local RequestJsonData = {}
 local env = require("lib.env")
 local data = env.parse("assets/data/api/.env")
 
-local API_SERVER_URL = "https://localhost:3000/api/v1/"
+local API_SERVER_URL = "http://localhost:3000/api/v1/" -- development : localhost:3000
+--                                                     -- production  : api.rit.agori.dev
 
 x,d,y,RequestJsonData.setAPIAccessKey=nil,nil,nil,nil
+local connected = false
+
+function RequestJsonData.testConnection()
+    local code, body, headers = https.request(API_SERVER_URL .. "test_connection")
+    if code == 200 then
+        connected = true
+    end
+    print(code)
+end
+
+RequestJsonData.testConnection() -- <- Do we have a connection to the api server?
 
 function RequestJsonData.getUsers()
+    if not connected then
+        return {}
+    end
     local code, body, headers = https.request(API_SERVER_URL .. "users")
+    print(body)
     body = json.decode(body)
     if body.code == 404 then
         return {}
@@ -19,6 +35,9 @@ function RequestJsonData.getUsers()
 end
 
 function RequestJsonData.getUser(id)
+    if not connected then
+        return {}
+    end
     local code, body, headers = https.request(API_SERVER_URL .. "users/" .. id)
     body = json.decode(body)
     if body.code == 404 then
@@ -31,6 +50,9 @@ function RequestJsonData.getUser(id)
 end
 
 function RequestJsonData.createUser(id)
+    if not connected then
+        return {}
+    end
     -- POST request
     local code, body, headers = https.request(API_SERVER_URL .. "users", {
         --[[ data = urlencode({
