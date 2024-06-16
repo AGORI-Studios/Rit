@@ -422,6 +422,7 @@ function GI.CreateFolders()
     if not love.filesystem.getInfo("replays") then
         love.filesystem.createDirectory("replays")
     end
+
     if not love.filesystem.getInfo("cache") then
         love.filesystem.createDirectory("cache")
     end

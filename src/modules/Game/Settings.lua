@@ -51,11 +51,14 @@ Settings.options = {
 }
 
 function Settings.saveOptions()
-    love.filesystem.write("settings", json.encode(Settings.options))
+    if not love.filesystem.getInfo("data") then
+        love.filesystem.createDirectory("data")
+    end
+    love.filesystem.write("data/settings.rsetting", json.encode(Settings.options))
 end
 
 function Settings.loadOptions()
-    if not love.filesystem.getInfo("settings") then
+    if not love.filesystem.getInfo("data/settings.rsetting") then
         Settings.saveOptions()
     end
 
@@ -63,7 +66,7 @@ function Settings.loadOptions()
     local savedOptions --= json.decode(love.filesystem.read("settings"))
     Try(
         function()
-            savedOptions = json.decode(love.filesystem.read("settings"))
+            savedOptions = json.decode(love.filesystem.read("data/settings.rsetting"))
         end,
         function()
             love.window.showMessageBox(
