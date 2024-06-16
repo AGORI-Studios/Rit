@@ -13,6 +13,8 @@ local curHover = 0 -- none
 
 local curLocale = localize.getLocaleName()
 
+local firstOpen = true
+
 local borderImg = love.graphics.newImage("assets/images/ui/menu/buttons/bigBtnBorder.png")
 local buttons = {
     {
@@ -158,7 +160,10 @@ function StartMenu:enter()
         GameInit.UpdateDiscord()
     end
 
-    if not MenuSoundManager:exists("music") then playRandomSong() end
+    if firstOpen then 
+        firstOpen = false
+        playRandomSong() 
+    end
 end
 
 function StartMenu:update(dt)

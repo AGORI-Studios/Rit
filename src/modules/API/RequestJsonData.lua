@@ -9,11 +9,13 @@ x,d,y,RequestJsonData.setAPIAccessKey=nil,nil,nil,nil
 local connected = false
 
 function RequestJsonData.testConnection()
+    if not https then
+        return
+    end
     local code, body, headers = https.request(API_SERVER_URL .. "test_connection")
     if code == 200 then
         connected = true
     end
-    print(code)
 end
 
 RequestJsonData.testConnection() -- <- Do we have a connection to the api server?

@@ -1,3 +1,4 @@
+---@diagnostic disable: param-type-mismatch
 io.stdout:setvbuf("no")
 jit.on()
 local GI = {}
@@ -23,6 +24,7 @@ function GI.LoadLibraries()
     if love.system.getOS() ~= "NX" then
         Video = require("lib.aqua.Video")
 
+        networking = {}
         if Steam and Inits.networkingEnabled then
             noobhub = require("lib.networking.noobhub")
             networking = {
@@ -420,6 +422,12 @@ function GI.CreateFolders()
     if not love.filesystem.getInfo("replays") then
         love.filesystem.createDirectory("replays")
     end
+    if not love.filesystem.getInfo("cache") then
+        love.filesystem.createDirectory("cache")
+    end
+    if not love.filesystem.getInfo("cache/songs") then
+        love.filesystem.createDirectory("cache/songs")
+    end
 end 
 
 -- Love Functions
@@ -701,6 +709,7 @@ Please describe what you were doing when this error occurred.
 				return 1
 			elseif e == "keypressed" and a == "escape" then
 				return 1
+            ---@diagnostic disable-next-line: redundant-parameter
 			elseif e == "keypressed" and a == "c" and love.keyboard.isDown("lctrl", "rctrl") then
 				copyToClipboard()
             elseif e == "mousepressed" then

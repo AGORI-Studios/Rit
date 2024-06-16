@@ -1,3 +1,4 @@
+---@diagnostic disable: duplicate-set-field, need-check-nil
 --[[------------------------------------------------
 	-- Love Frames - A GUI library for LOVE --
 	-- Copyright (c) 2012-2014 Kenny Shields --
@@ -330,6 +331,7 @@ function newobject:mousepressed(x, y, button)
 	
 	local hover = self.hover
 	local internals = self.internals
+---@diagnostic disable-next-line: redundant-parameter
 	local alt = love.keyboard.isDown("lalt", "ralt")
 	local vbar = self.vbar
 	local hbar = self.hbar
@@ -917,6 +919,7 @@ function newobject:UpdateIndicator()
 	if alltextselected then
 		self.showindicator = false
 	else
+---@diagnostic disable-next-line: redundant-parameter
 		if love.keyboard.isDown("up", "down", "left", "right") then
 			self.showindicator = true
 		end

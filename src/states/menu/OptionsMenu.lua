@@ -1,3 +1,4 @@
+---@diagnostic disable: redundant-parameter
 local OptionsMenu = state()
 local bg
 local curTab = "language"

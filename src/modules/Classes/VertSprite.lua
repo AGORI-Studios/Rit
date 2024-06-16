@@ -128,6 +128,8 @@ function VertSprite:draw()
         local lastBlend, lastAlphaMode 
         if love.graphics.getSupportedBlend() then
             lastBlend, lastAlphaMode = love.graphics.getBlendMode()
+
+            love.graphics.setBlendMode(self.blend, self.blendAlphaMode)
         end
         local gw, gh = self.graphic:getWidth(), self.graphic:getHeight()
         local fw, fh, uvx, uvy, uvw, uvh = gw, gh, 0, 0, 1, 1

@@ -727,7 +727,7 @@ function Modscript:update(dt, beat)
 
                     object.children[2].x = defaultX + xa
                     
-                    local endY = getYAdjust(defaultY - (musicTime - object.endTime), col) * scrollSpeed * 0.65
+                    local endY = getYAdjust(defaultY - (musicTime - object.endTime), object.data) * scrollSpeed * 0.65
                     object.children[1].dimensions.height = endY - ypos - 95
                     object.children[1].y = ypos + 95
                     object.children[2].y = ypos + object.children[1].dimensions.height

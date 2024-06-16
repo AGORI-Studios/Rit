@@ -1,3 +1,4 @@
+---@diagnostic disable: inject-field, duplicate-set-field, undefined-global
 local HitObject = VertSprite:extend()
 
 HitObject.time = 0

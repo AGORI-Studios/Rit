@@ -20,7 +20,7 @@ function fluXisLoader.load(chart, folderPath_, diffName, forDiffCalc)
         end
     end
 
-    if not chart.VideoFile and video and Video then
+    if not chart.VideoFile or not video then
         -- just use chart.backgroundFile
         if chart.BackgroundFile and love.filesystem.getInfo(folderPath_ .. "/" .. chart.BackgroundFile) then
             states.game.Gameplay.background = love.graphics.newImage(folderPath_ .. "/" .. chart.BackgroundFile)

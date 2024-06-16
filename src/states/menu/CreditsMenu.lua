@@ -29,6 +29,8 @@ function CreditsMenu:draw()
         -- TODO: Implement links (when i get to making a button class and "person" class)
     end
 
+    love.graphics.print("bro. i gotta finished this menu.", 700, 400, 0, 2, 2)
+
     love.graphics.setFont(lastFont)
 
     Header:draw()

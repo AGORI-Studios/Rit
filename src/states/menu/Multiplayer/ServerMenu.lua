@@ -83,7 +83,7 @@ function ServerMenu:draw()
         end
 
         if not Steam or not networking.connected then
-            love.graphics.print("Not connected to the server. Please try again later.", 10, 190, 0, 1.5, 1.5)
+            love.graphics.print("Not connected to the server.\nIt's possible it is offline currently.", 10, 190, 0, 1.5, 1.5)
         end
     love.graphics.pop()
 end

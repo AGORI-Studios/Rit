@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global
 local Modscript = {}
 
 Modscript.funcs = require "modules.Game.Modding.ModscriptFunctions"

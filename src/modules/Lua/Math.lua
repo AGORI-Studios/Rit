@@ -74,7 +74,7 @@ end
 ---@param a number
 ---@param b number
 ---@param t number
----@param dt number
+---@param dt? number
 ---@return number
 function math.fpsLerp(a, b, t, dt)
     local dt = dt or love.timer.getDelta()

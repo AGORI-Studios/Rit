@@ -22,15 +22,15 @@ end
 ---@name Try
 ---@description Tries to run a function, and if it fails, runs another function
 ---@param f function
----@param catch_f function
----@return nil
+---@param catchFunc function
+---@return nil, any
 function Try(f, catchFunc)
     local returnedValue, error = pcall(f)
     if not returnedValue then
         catchFunc(error)
     end
 
-    return returnedValue
+    return returnedValue, (error or false) --  not actually an error, just the value returned
 end
 
 ---@name switch

@@ -48,8 +48,8 @@ DRAW_VIRTUAL_CONTROLLER = love.system.getSystem() == "Mobile"
 if love.system.getOS() == "Windows" then
     Try(
         function()
-            --Steam = require("lib.sworks.main")
-            error("No Steamworks for Windows for GITHUB builds")
+            Steam = require("lib.sworks.main")
+            --[[ error("No Steamworks for Windows for GITHUB builds") ]]
         end,
         function()
             Steam = nil
@@ -75,11 +75,10 @@ if love.system.getOS() == "Windows" then
             print("Couldn't load https.")
         end
     )
-end
+end 
 
 local winOpacity = {1}
 local volume = {1}
-local curVol = 1
 local isClosing = false
 
 GameInit = require("modules.GameInit")
@@ -308,7 +307,6 @@ function love.quit()
             love.event.quit()
         end)
         Timer.tween(0.5, volume, {0}, "linear")
-        curVol = love.audio.getVolume()
         return true
     end
 end

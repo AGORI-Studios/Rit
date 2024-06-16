@@ -115,18 +115,24 @@ function SongMenu:enter()
 
     SearchAlgorithm:setUpSongButtons(songButtons)
 
-    if songButtons[lastCurSelected] then
-        playSelectedSong(songButtons[lastCurSelected])
-    end
-
     curSelected = lastCurSelected
 
-    if curSelected > #songButtons then
-        curSelected = #songButtons
+    -- get the getCurPlayingSong and set the curSelected to that
+    local curPlayingSong = getCurPlayingSong():strip()
+    if curPlayingSong then
+        for i, btn in ipairs(songButtons) do
+            if btn.name == curPlayingSong then
+                curSelected = i
+                lastCurSelected = curSelected
+                break
+            end
+        end
     end
-    if lastCurSelected > #songButtons then
-        lastCurSelected = #songButtons
+
+    if songButtons[lastCurSelected] then
+        playSelectedSong(songButtons[lastCurSelected], songButtons[lastCurSelected].name)
     end
+
 end
 
 function SongMenu:update(dt)
@@ -190,7 +196,7 @@ function SongMenu:update(dt)
                     curSelected = 1
                     curButton = songButtons[curSelected]
                     if curButton then
-                        playSelectedSong(curButton)
+                        playSelectedSong(curButton, curButton.name)
                     end
                 end
             elseif not typing and curButton then
@@ -263,7 +269,7 @@ function SongMenu:update(dt)
             if songTimer then Timer.cancel(songTimer) end
             songTimer = Timer.after(1, function()
                 if songButtons[lastCurSelected] then
-                    playSelectedSong(songButtons[lastCurSelected])
+                    playSelectedSong(songButtons[lastCurSelected], songButtons[lastCurSelected].name)
                 end
             end)
         elseif curTab == "diffs" then
@@ -285,7 +291,7 @@ function SongMenu:update(dt)
             if songTimer then Timer.cancel(songTimer) end
             songTimer = Timer.after(1, function()
                 if songButtons[lastCurSelected] then
-                    playSelectedSong(songButtons[lastCurSelected])
+                    playSelectedSong(songButtons[lastCurSelected], songButtons[lastCurSelected].name)
                 end
             end)
         elseif curTab == "diffs" then
@@ -307,7 +313,7 @@ function SongMenu:wheelmoved(x, y)
         if songTimer then Timer.cancel(songTimer) end
         songTimer = Timer.after(1, function()
             if songButtons[lastCurSelected] then
-                playSelectedSong(songButtons[lastCurSelected])
+                playSelectedSong(songButtons[lastCurSelected], songButtons[lastCurSelected].name)
             end
         end)
     end
@@ -379,7 +385,7 @@ function SongMenu:mousepressed(x, y, b)
                         if songTimer then Timer.cancel(songTimer) end
                         songTimer = Timer.after(1, function()
                             if songButtons[lastCurSelected] then
-                                playSelectedSong(songButtons[lastCurSelected])
+                                playSelectedSong(songButtons[lastCurSelected], songButtons[lastCurSelected].name)
                             end
                         end)
                     end

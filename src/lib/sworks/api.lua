@@ -42,6 +42,7 @@ local interfaces =
 function api.Init()
   if not api.lib then
     api.lib = require(path.."flat")
+
     
     api.CSteamID_Invalid = 0
     api.UGCHandle_Invalid = 0xffffffffffffffffULL
@@ -56,19 +57,23 @@ function api.Init()
       return raw
     end })
   end
-  local shouldReturn = Try(
+  local ok, shouldReturn = Try(
     function()
       if not api.lib.SteamAPI_Init() then
         api.Fail(3)
-        return false
+        return true
       end
+      return fa
     end,
     function()
       api.Fail(3)
-      return false
+      return true
     end
   )
-  if not shouldReturn then return false end
+  if shouldReturn then 
+    print("Failed to initialize SteamAPI")
+    return false 
+  end
   
   local function ISteam(prefix, inst)
     local q = {}

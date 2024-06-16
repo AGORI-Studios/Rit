@@ -1106,12 +1106,16 @@ end
 
 function Gameplay:draw()
     if self.background and musicTime >= 0 then
-        -- background dim is 0-1, 0 being no dim, 1 being full dim
+        -- background dim is 0-1, 0 being no dim, 1 being full dbackgroundim
         --love.graphics.setColor(1, 1, 1, Settings.options["General"].backgroundDim)
         if shaders and shaders.backgroundEffects then
             love.graphics.setShader(shaders.backgroundEffects)
         end
-        love.graphics.draw(self.background.image or self.background, 0, 0, 0, 1920/self.background:getWidth(), 1080/self.background:getHeight())
+        love.graphics.draw(
+            self.background and self.background.image or self.background, 
+            0, 0, 0, 
+            1920/self.background:getWidth(), 1080/self.background:getHeight()
+        )
         love.graphics.setShader()
     end
     

@@ -1,6 +1,8 @@
 
 local lf = love.filesystem -- i use this a lot so i just made it a variable
 songList = {}
+local curPlayingSong = nil
+
 function loadSongs(path) -- Gross yucky way of loading all of our songs in the given folder path
     for _, file in ipairs(lf.getDirectoryItems(path)) do
         --print("Checking " .. file)
@@ -9,6 +11,45 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
             for _, song in ipairs(lf.getDirectoryItems(path .."/" .. file)) do
                 --print("Checking " .. song)
                 if lf.getInfo(path .."/" .. file .. "/" .. song).type == "file" then
+                    -- is there a song cache? if not, cache it
+                    if love.filesystem.getInfo("cache/songs/" .. file .. song .. ".cache") then
+                        -- create a lua table from the cache (its just a serialized lua table)
+
+                        local data = json.decode(lf.read("cache/songs/" .. file .. song .. ".cache"))
+                        local title = data.title
+                        local difficultyName = data.difficultyName
+                        local mode = data.mode
+                        local Creator = data.creator
+                        local AudioFile = data.audioFile
+                        local Artist = data.artist
+                        local Tags = data.tags
+                        local bpm = data.bpm
+                        local previewTime = data.previewTime
+                        local gamemode = data.gameMode
+                        -- tags is already a table in the cache
+                        
+                        songList[title..Creator] = songList[title..Creator] or {}
+                        songList[title..Creator][difficultyName] = {
+                            filename = file,
+                            title = title,
+                            difficultyName = difficultyName,
+                            path = path .."/" .. file .. "/" .. song,
+                            folderPath = path .."/" .. file,
+                            type = data.type,
+                            rating = data.rating or 0,
+                            creator = Creator,
+                            artist = Artist,
+                            tags = Tags,
+                            mode = mode,
+                            bpm = bpm,
+                            previewTime = previewTime,
+                            audioFile = AudioFile,
+                            gameMode = gamemode,
+                            eventsFile = data.eventsFile -- will just be nil if it doesn't exist
+                        }
+
+                        goto __EndLoop__
+                    end
                     local ext = song:gsub(".*%.", "")
                     --print("Found song " .. song)
                     if ext == "qua" then
@@ -43,6 +84,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             gameMode = 1,
                         }
                         songList[title..Creator].type = "Quaver"
+
+                        createSongCache(songList[title..Creator][difficultyName], "cache/songs/" .. file .. song .. ".cache")
                     elseif ext == "osu" then
                         local fileData = lf.read(path .."/" .. file .. "/" .. song)
                         local title = fileData:match("Title:(.-)\r?\n")
@@ -120,6 +163,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             gameMode = Mode == "3" and 1 or Mode == "1" and 2 or 1
                         }
                         songList[title..Creator].type = "osu!"
+
+                        createSongCache(songList[title..Creator][difficultyName], "cache/songs/" .. file .. song .. ".cache")
                         ::continue::
                     elseif ext == "ritc" then
                         local fileData = lf.read(path .."/" .. file .. "/" .. song)
@@ -155,6 +200,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             gameMode = 1
                         }
                         songList[title..Creator].type = "Rit"
+
+                        createSongCache(songList[title..Creator][difficultyName], "cache/songs/" .. file .. song .. ".cache")
                     elseif ext == "mc" then
                         local fileData = json.decode(lf.read(path .."/" .. file .. "/" .. song))
                         local title = fileData.meta.song.title
@@ -188,6 +235,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             gameMode = 1,
                         }
                         songList[title..Creator].type = "Malody"
+
+                        createSongCache(songList[title..Creator], "songs/" .. file .. song .. ".cache")
                     elseif ext == "fsc" then
                         local filedata = json.decode(lf.read(path .."/" .. file .. "/" .. song))
                         local title = filedata.Metadata.Title
@@ -224,6 +273,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             gameMode = 1,
                             eventsFile = song:gsub(".fsc", ".ffx")
                         }
+
+                        createSongCache(songList[title..Creator][difficultyName], "cache/songs/" .. file .. song .. ".cache")
                     --[[ elseif song:sub(-6) == ".chart" then
                         -- check for song.ini in same path
                         local songIni = lf.getInfo(path .."/" .. file .. "/song.ini")
@@ -289,13 +340,53 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                                 }
                             end
                         end  ]]
+
                     end
                 end
+                
+                ::__EndLoop__::
             end
         elseif lf.getInfo(path .."/" .. file).type == "file" then
             lf.mount(path .."/" .. file, "song")
             -- for all files in song/
             for _, song in ipairs(lf.getDirectoryItems("song")) do
+                if love.filesystem.getInfo("cache/songs/" .. file .. song .. ".cache") then
+                    local data = json.decode(lf.read("cache/songs/" .. file .. song .. ".cache"))
+                    local title = data.title
+                    local difficultyName = data.difficultyName
+                    local mode = data.mode
+                    local Creator = data.creator
+                    local AudioFile = data.audioFile
+                    local Artist = data.artist
+                    local Tags = data.tags
+                    local bpm = data.bpm
+                    local previewTime = data.previewTime
+                    local gamemode = data.gameMode
+                    -- tags is already a table in the cache
+                        
+                    songList[title..Creator] = songList[title..Creator] or {}
+                    songList[title..Creator][difficultyName] = {
+                        filename = file,
+                        title = title,
+                        difficultyName = difficultyName,
+                        path = "song/" .. song,
+                        folderPath = "song",
+                        type = data.type,
+                        rating = data.rating or 0,
+                        creator = Creator,
+                        artist = Artist,
+                        tags = Tags,
+                        mode = mode,
+                        bpm = bpm,
+                        previewTime = previewTime,
+                        audioFile = AudioFile,
+                        gameMode = gamemode,
+                        eventsFile = data.eventsFile -- will just be nil if it doesn't exist
+                    }
+
+                    goto __EndLoop__
+                end
+
                 local ext = song:gsub(".*%.", "")
                 if ext == "qua" then
                     local fileData = lf.read("song/" .. song)
@@ -330,6 +421,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         gameMode = 1,
                     }
                     songList[title..Creator].type = "Quaver"
+
+                    createSongCache(songList[title..Creator][difficultyName], "cache/songs/" .. file .. song .. ".cache")
                 elseif ext == "osu" then
                     local fileData = lf.read("song/" .. song)
                     local title = fileData:match("Title:(.-)\r?\n")
@@ -402,6 +495,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         gameMode = Mode == "3" and 1 or Mode == "1" and 2 or 1
                     }
                     songList[title..Creator].type = "osu!"
+
+                    createSongCache(songList[title..Creator][difficultyName], "cache/songs/" .. file .. song .. ".cache")
                     ::continue::
                 elseif ext == "fsc" then -- fluXis
                     local filedata = json.decode(lf.read("song/" .. song))
@@ -439,9 +534,13 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         gameMode = 1,
                         eventsFile = song:gsub(".fsc", ".ffx")
                     }
+
+                    createSongCache(songList[title..Creator][difficultyName], "cache/songs/" .. file .. song .. ".cache")
                 end
             end
             lf.unmount(path .."/" .. file)
+
+            ::__EndLoop__::
         end
     end
 
@@ -458,6 +557,18 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
             return a.title < b.title
         end)
     end
+end
+
+function createSongCache(data, path)
+    print("Creating cache for " .. data.title .. " At " .. path)
+    local cache = lf.newFile(path)
+    cache:open("w")
+    cache:write(json.encode(data))
+    cache:close()
+end
+
+function getCurPlayingSong()
+    return curPlayingSong
 end
 
 function playRandomSong()    
@@ -479,6 +590,8 @@ function playRandomSong()
     MenuSoundManager:playFromTime("music", diff.previewTime/1000)
     MenuSoundManager:setLooping("music", true)
 
+    curPlayingSong = diff.title:strip()
+
     menuBPM = diff.bpm
 
     if diff.audioFile:startsWith("song/") then
@@ -488,7 +601,9 @@ end
 
 local baseSoundData = {}
 
-function playSelectedSong(song)
+function playSelectedSong(song, songName)
+    if songName == (curPlayingSong or "") then return end
+    curPlayingSong = songName
     if not song or not song.children then return end
     local diff = table.random(song.children)
 
