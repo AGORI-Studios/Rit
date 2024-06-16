@@ -1,12 +1,12 @@
 local ritLoader = {}
 local currentBlock = ""
 local folderPath
-local _forDiffCalc
+local _forNPS
 
 local title, diff
 
-function ritLoader.load(chart, folderPath_, diffName, forDiffCalc)
-    _forDiffCalc = forDiffCalc or false
+function ritLoader.load(chart, folderPath_, diffName, forNPS)
+    _forNPS = forNPS or false
     curChart = "Rit"
     folderPath = folderPath_
 
@@ -22,6 +22,25 @@ function ritLoader.load(chart, folderPath_, diffName, forDiffCalc)
 
     __title = title
     __diffName = diff
+
+    if forNPS then
+        -- find our average notes per second and return the nps
+
+        local noteCount = #states.game.Gameplay.unspawnNotes
+        local songLength = 0
+        local endNote = states.game.Gameplay.unspawnNotes[#states.game.Gameplay.unspawnNotes]
+        if endNote.endTime ~= 0 and endNote.endTime ~= endNote.time then
+            songLength = endNote.endTime
+        else
+            songLength = endNote.time
+        end
+
+        states.game.Gameplay.unspawnNotes = {}
+        states.game.Gameplay.timingPoints = {}
+        states.game.Gameplay.sliderVelocities = {}
+
+        return noteCount / (songLength / 1000)
+    end
 end
 
 function ritLoader.processLine(line)
@@ -82,7 +101,7 @@ function ritLoader.processMetadata(line)
         states.game.Gameplay.strumX = states.game.Gameplay.strumX - ((states.game.Gameplay.mode - 4.5) * (100 + Settings.options["General"].columnSpacing))
     elseif key == "AudioFile" then
         local value = value:trim()
-        if not _forDiffCalc then
+        if not _forNPS then
             states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. value, 1, true, "stream")
         end
     end

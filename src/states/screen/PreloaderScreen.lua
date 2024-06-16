@@ -23,7 +23,6 @@ function PreloaderScreen:enter(last, args)
     threads.assets.newImage(self, "twitterLogo", "assets/images/ui/icons/twitter.png")
     threads.assets.newImage(self, "kofiLogo", "assets/images/ui/icons/ko-fi.png")
     threads.assets.newImage(self, "discordLogo", "assets/images/ui/icons/discord.png")
-    threads.assets.loadSongs(self, "songList")
 
     for i = 1, 5 do
         threads.assets.newImage(self, "BGball" .. i, "assets/images/ui/menu/BGball" .. i .. ".png")
@@ -38,6 +37,8 @@ function PreloaderScreen:enter(last, args)
             Timer.tween(1, fade, {1}, 'in-out-cubic', function() state.switch(states.menu.StartMenu) end)
         end)
     end)
+
+    threads.assets.loadSongs(self, "songList")
 end
 
 function PreloaderScreen:update(dt)
@@ -58,8 +59,8 @@ function PreloaderScreen:draw()
         "\n"..math.floor(percent * 100).."%", 
         0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2
     ) ]]
-    if threads.assets.loadedCount == threads.assets.resourceCount-1 then
-        love.graphics.printf(localize.localize("Loading Songs..."), 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
+    if threads.assets.loadedCount == threads.assets.resourceCount then
+        love.graphics.printf(localize.localize("Parsing Maps..."), 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
     elseif threads.assets.loadedCount == threads.assets.resourceCount then
         love.graphics.printf(localize.localize("Loaded!"), 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
     else

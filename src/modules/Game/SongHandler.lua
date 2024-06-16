@@ -27,6 +27,12 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         local previewTime = data.previewTime
                         local gamemode = data.gameMode
                         -- tags is already a table in the cache
+
+                        if (data.nps or 0) == 0 then
+                            local nps = Parsers[data.type].load(path .."/" .. file .. "/" .. song, path .."/" .. file, difficultyName, true)
+                            data.nps = nps
+                            createSongCache(data, "cache/songs/" .. file .. song .. ".cache") -- re-cache it with the nps
+                        end
                         
                         songList[title..Creator] = songList[title..Creator] or {}
                         songList[title..Creator][difficultyName] = {
@@ -36,7 +42,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             path = path .."/" .. file .. "/" .. song,
                             folderPath = path .."/" .. file,
                             type = data.type,
-                            rating = data.rating or 0,
+                            nps = data.nps or 0,
                             creator = Creator,
                             artist = Artist,
                             tags = Tags,
@@ -63,7 +69,10 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         local Tags = fileData:match("Tags:(.-)\r?\n"):strip()
                         local bpm = fileData:match("Bpm: (%d+)")
                         local previewTime = fileData:match("SongPreviewTime: (%d+)"):trim()
+
                         Tags = Tags:split(" ")
+
+                        local nps = Parsers["Quaver"].load(path .."/" .. file .. "/" .. song, path .."/" .. file, difficultyName, true)
 
                         songList[title..Creator] = songList[title..Creator] or {}
                         songList[title..Creator][difficultyName] = {
@@ -73,7 +82,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             path = path .."/" .. file .. "/" .. song,
                             folderPath = path .."/" .. file,
                             type = "Quaver",
-                            rating = "",
+                            nps = nps or 0,
                             creator = Creator,
                             artist = Artist,
                             tags = Tags,
@@ -145,6 +154,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
 
                         local Mode = fileData:match("Mode:(.-)\r?\n"):trim()
                         if Mode ~= "3" and Mode ~= "1" then goto continue end
+                        local nps = Parsers["osu!"].load(path .."/" .. file .. "/" .. song, path .."/" .. file, difficultyName, true)
                         songList[title..Creator] = songList[title..Creator] or {}
                         songList[title..Creator][difficultyName] = {
                             filename = file,
@@ -153,7 +163,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             path = path .."/" .. file .. "/" .. song,
                             folderPath = path .."/" .. file,
                             type = "osu!",
-                            rating = "",
+                            nps = nps,
                             creator = Creator,
                             artist = Artist,
                             tags = Tags,
@@ -181,6 +191,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         bpm = bpm[1]:split(":")[2]
                         Tags = Tags:split(" ")
 
+                        local nps = Parsers["Rit"].load(path .."/" .. file .. "/" .. song, path .."/" .. file, difficultyName, true)
+
                         songList[title..Creator] = songList[title..Creator] or {}
                         songList[title..Creator][difficultyName] = {
                             filename = file,
@@ -189,7 +201,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             path = path .."/" .. file .. "/" .. song,
                             folderPath = path .."/" .. file,
                             type = "Rit",
-                            rating = "",
+                            nps = nps,
                             creator = Creator,
                             artist = Artist,
                             description = description,
@@ -216,6 +228,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                                 AudioFile = note.sound
                             end
                         end
+                        local nps = Parsers["Malody"].load(path .."/" .. file .. "/" .. song, path .."/" .. file, difficultyName, true)
                         songList[title..Creator] = songList[title..Creator] or {}
                         songList[title..Creator][difficultyName] = {
                             filename = file,
@@ -224,8 +237,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             path = path .."/" .. file .. "/" .. song,
                             folderPath = path .."/" .. file,
                             type = "Malody",
-                            rating = "",
-                            ratingColour = {1,1,1},
+                            nps = nps,
+                            npsColour = {1,1,1},
                             creator = Creator,
                             artist = Artist,
                             tags = Tags,
@@ -253,6 +266,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             end
                         end
                         local previewTime = filedata.Metadata.PreviewTime
+                        local nps = Parsers["fluXis"].load(path .."/" .. file .. "/" .. song, path .."/" .. file, difficultyName, true)
                         Tags = Tags:split(" ")
                         songList[title..Creator] = songList[title..Creator] or {}
                         songList[title..Creator][difficultyName] = {
@@ -262,8 +276,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             path = path .."/" .. file .. "/" .. song,
                             folderPath = path .."/" .. file,
                             type = "fluXis",
-                            rating = "",
-                            ratingColour = {1,1,1},
+                            nps = nps,
+                            npsColour = {1,1,1},
                             creator = Creator,
                             artist = Artist,
                             tags = Tags,
@@ -305,8 +319,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                                 path = path .."/" .. file .. "/" .. song,
                                 folderPath = path .."/" .. file,
                                 type = "CloneHero",
-                                rating = "",
-                                ratingColour = {1,1,1},
+                                nps = "",
+                                npsColour = {1,1,1},
                                 audioFile = path .."/" .. file .. "/" .. AudioFile
                             }
                         end
@@ -334,8 +348,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                                     path = path .."/" .. file .. "/" .. song,
                                     folderPath = path .."/" .. file,
                                     type = "Stepmania",
-                                    rating = "",
-                                    ratingColour = {1,1,1},
+                                    nps = "",
+                                    npsColour = {1,1,1},
                                     audioFile = path .. "/" .. file .. "/" .. diff.audioPath
                                 }
                             end
@@ -363,6 +377,12 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                     local previewTime = data.previewTime
                     local gamemode = data.gameMode
                     -- tags is already a table in the cache
+
+                    if (data.nps or 0) == 0 then
+                        local nps = Parsers[data.type].load("song/" .. song, "song", difficultyName, true)
+                        data.nps = nps
+                        createSongCache(data, "cache/songs/" .. file .. song .. ".cache") -- re-cache it with the nps
+                    end
                         
                     songList[title..Creator] = songList[title..Creator] or {}
                     songList[title..Creator][difficultyName] = {
@@ -372,7 +392,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         path = "song/" .. song,
                         folderPath = "song",
                         type = data.type,
-                        rating = data.rating or 0,
+                        nps = data.nps or 0,
                         creator = Creator,
                         artist = Artist,
                         tags = Tags,
@@ -401,6 +421,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                     local previewTime = fileData:match("SongPreviewTime: (%d+)"):trim()
                     Tags = Tags:split(" ")
 
+                    local nps = Parsers["Quaver"].load("song/" .. song, "song", difficultyName, true)
+
                     songList[title..Creator] = songList[title..Creator] or {}
                     songList[title..Creator][difficultyName] = {
                         filename = file,
@@ -409,8 +431,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         path = "song/" .. song,
                         folderPath = "song",
                         type = "Quaver",
-                        rating = "",
-                        ratingColour = {1,1,1},
+                        nps = nps,
+                        npsColour = {1,1,1},
                         creator = Creator,
                         artist = Artist,
                         mode = mode:match("%d+"),
@@ -476,6 +498,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                     Tags = Tags:split(" ")
                     if Mode ~= "3" and Mode ~= "1" then goto continue end
 
+                    local nps = Parsers["osu!"].load("song/" .. song, "song", difficultyName, true)
+
                     songList[title..Creator] = songList[title..Creator] or {}
                     songList[title..Creator][difficultyName] = {
                         filename = file,
@@ -484,8 +508,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         path = "song/" .. song,
                         folderPath = "song",
                         type = "osu!",
-                        rating = "",
-                        ratingColour = {1,1,1},
+                        nps = nps,
+                        npsColour = {1,1,1},
                         creator = Creator,
                         artist = Artist,
                         tags = Tags,
@@ -515,6 +539,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                     end
                     local previewTime = filedata.Metadata.PreviewTime
                     Tags = Tags:split(" ")
+
+                    local nps = Parsers["fluXis"].load("song/" .. song, "song", difficultyName, true)
                     songList[title..Creator] = songList[title..Creator] or {}
                     songList[title..Creator][difficultyName] = {
                         filename = file,
@@ -523,8 +549,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         path = "song/" .. song,
                         folderPath = "song",
                         type = "fluXis",
-                        rating = "",
-                        ratingColour = {1,1,1},
+                        nps = nps,
+                        npsColour = {1,1,1},
                         creator = Creator,
                         artist = Artist,
                         tags = Tags,
@@ -560,7 +586,6 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
 end
 
 function createSongCache(data, path)
-    print("Creating cache for " .. data.title .. " At " .. path)
     local cache = lf.newFile(path)
     cache:open("w")
     cache:write(json.encode(data))

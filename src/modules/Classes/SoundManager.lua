@@ -194,4 +194,12 @@ function SoundManager:getChannel(name)
     return self.channel[name]
 end
 
+function SoundManager:setEffect(name, effect)
+    self.channel[name].sound:setEffect(effect)
+end
+
+function SoundManager:setFilter(name, settings)
+    self.channel[name].sound:setFilter(settings)
+end
+
 return SoundManager

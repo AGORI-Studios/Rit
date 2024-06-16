@@ -63,7 +63,7 @@ function api.Init()
         api.Fail(3)
         return true
       end
-      return fa
+      return false
     end,
     function()
       api.Fail(3)

@@ -1,6 +1,6 @@
 local quaverLoader = {}
 
-function quaverLoader.load(chart, folderPath, diffName, forDiffCalc)
+function quaverLoader.load(chart, folderPath, diffName, forNPS)
     curChart = "Quaver"
 
     local chart = tinyyaml.parse(love.filesystem.read(chart):gsub("\r\n", "\n"))
@@ -27,11 +27,11 @@ function quaverLoader.load(chart, folderPath, diffName, forDiffCalc)
 
     --audioFile = love.audio.newSource(folderPath .. "/" .. meta.audioPath, "stream")
     --audioFile = love.audio.newSource(folderPath .. "/" .. meta.audioPath, "stream")
-    if not forDiffCalc then
+    if not forNPS then
         states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. meta.audioPath, 1, true, "stream")
     end
 
-    if not forDiffCalc then
+    if not forNPS then
         for i = 1, #chart.TimingPoints do
             -- if its the first one, set meta.bpm to the bpm of the first timing point
             local timingPoint = chart.TimingPoints[i]
@@ -61,7 +61,7 @@ function quaverLoader.load(chart, folderPath, diffName, forDiffCalc)
             ::continue:: ]]
         end
     end
-    if not forDiffCalc then
+    if not forNPS then
         states.game.Gameplay.soundManager:setBPM("music", bpm)
     end
 
@@ -98,6 +98,25 @@ function quaverLoader.load(chart, folderPath, diffName, forDiffCalc)
 
     __title = meta.title
     __diffName = meta.name
+
+    if forNPS then
+        -- find our average notes per second and return the nps
+
+        local noteCount = #states.game.Gameplay.unspawnNotes
+        local songLength = 0
+        local endNote = states.game.Gameplay.unspawnNotes[#states.game.Gameplay.unspawnNotes]
+        if endNote.endTime ~= 0 and endNote.endTime ~= endNote.time then
+            songLength = endNote.endTime
+        else
+            songLength = endNote.time
+        end
+
+        states.game.Gameplay.unspawnNotes = {}
+        states.game.Gameplay.timingPoints = {}
+        states.game.Gameplay.sliderVelocities = {}
+
+        return noteCount / (songLength / 1000)
+    end
 end
 
 return quaverLoader

@@ -14,6 +14,8 @@ end
 
 __InJukebox = false
 
+local __audioEffectIntensity = {0} -- 0-1
+
 require("modules.Utilities")
 ffi = require("ffi")
 
@@ -48,8 +50,8 @@ DRAW_VIRTUAL_CONTROLLER = love.system.getSystem() == "Mobile"
 if love.system.getOS() == "Windows" then
     Try(
         function()
-            Steam = require("lib.sworks.main")
-            --[[ error("No Steamworks for Windows for GITHUB builds") ]]
+           --[[  Steam = require("lib.sworks.main") ]]
+            error("No Steamworks for Windows for GITHUB builds")
         end,
         function()
             Steam = nil
@@ -161,13 +163,20 @@ function love.update(dt)
 
     if isClosing then 
         love.window.setWindowOpacity(winOpacity[1]) 
+        if MenuSoundManager:exists("music") then
+            MenuSoundManager:setFilter("music", {
+                type = "lowpass",
+                volume = 1 - __audioEffectIntensity[1],
+                highgain = __audioEffectIntensity[1]
+            })
+        end
     end
 
     MenuSoundManager:update(dt)
 end
 
 function love.filedropped(file)
-    
+
 end
 
 function love.focus(f)
@@ -306,7 +315,8 @@ function love.quit()
         Timer.tween(0.5, winOpacity, {0}, "linear", function()
             love.event.quit()
         end)
-        Timer.tween(0.5, volume, {0}, "linear")
+        Timer.tween(0.5, __audioEffectIntensity, {1}, "linear")
+        --[[ Timer.tween(0.5, volume, {0}, "linear") ]]
         return true
     end
 end

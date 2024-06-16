@@ -2,7 +2,7 @@
 ---@class SongButton
 local SongButton = Sprite:extend()
 
-function SongButton:new(y, diffs, bmType, name, artist, creator, description, tags, gamemode)
+function SongButton:new(y, diffs, bmType, name, artist, creator, description, tags, gamemode, nps)
     self.super.new(self)
     self.children = {} -- List of dificulties
     self.extendedChildren = {}
@@ -15,6 +15,7 @@ function SongButton:new(y, diffs, bmType, name, artist, creator, description, ta
     self.selected = false
     self.tags = tags
     self.gameMode = gamemode
+    self.nps = nps
 
     self.x = 0
     self.y = y
@@ -37,6 +38,7 @@ function SongButton:new(y, diffs, bmType, name, artist, creator, description, ta
         diffBtn.audioFile = diff.audioFile
         diffBtn.previewTime = diff.previewTime
         diffBtn.gameMode = gamemode
+        diffBtn.nps = nps
     end
 
     self.extendedChildren[1] = Sprite(0, self.y + self.height-63, "assets/images/ui/menu/songTagSelectedBar.png")

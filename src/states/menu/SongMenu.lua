@@ -72,6 +72,7 @@ function SongMenu:enter()
         local description = nil
         local tags = nil
         local gamemode = nil
+        local nps = nil
         for j, diff in pairs(song) do
             if type(diff) == "table" then
                 table.insert(diffs, diff)
@@ -82,6 +83,7 @@ function SongMenu:enter()
                 description = diff.description
                 tags = diff.tags
                 gamemode = diff.gameMode
+                nps = diff.nps
             else
                 -- if diff is a key in songButtons, then don't set it
                 if songButtons[diff] then
@@ -90,7 +92,7 @@ function SongMenu:enter()
             end
         end
         local y = #songButtons * songButton.height * 0.75
-        local btn = SongButton(y, diffs, bmType, songName, artist, creator, description or "This map has no description.", tags or {}, gamemode)
+        local btn = SongButton(y, diffs, bmType, songName, artist, creator, description or "This map has no description.", tags or {}, gamemode, nps)
         btn.x = -125
         table.insert(songButtons, btn)
     end
@@ -430,16 +432,22 @@ function SongMenu:draw()
             end
             --1920/1.7, 85
             love.graphics.setColor(0, 0, 0, 0.25)
+            -- Right side box
             love.graphics.rectangle("fill", 1920/1.15, 310, 1920/9, 425, 25, 25)
+            local nps = string.format("%.2f", curButton.nps or 0)
+            love.graphics.setColor(1, 1, 1)
+            setFont("menuExtraBold")
+            love.graphics.print("NPS: " .. nps, 1920/1.15+5, 315, 0, 1, 1)
 
             love.graphics.setColor(0, 0, 0, 0.6)
+            -- Description box
             love.graphics.rectangle("fill", 1920/1.625, 775, 1920/2.74, 235, 25, 25)
 
             love.graphics.setColor(1, 0.8, 0.8, 0.15)
             love.graphics.rectangle("fill", 1920/1.625, 275, 1920/2.74, 4, 10, 10)
-
+        -- picture shadow
             love.graphics.rectangle("fill", 1920/1.1, 125, 125, 125, 10, 10)
-            
+
             love.graphics.setColor(1, 1, 1)
             setFont("menuExtraBoldX2.5")
 

@@ -1,13 +1,13 @@
 local cloneLoader = {}
 
-function cloneLoader.load(chart, folderPath, diffName, forDiffCalc)
+function cloneLoader.load(chart, folderPath, diffName, forNPS)
     curChart = "CloneHero"
 
     local chart = clone.parse(chart)
 
     states.game.Gameplay.mode = 5 -- always 5 key i think idk i dont play clone hero
     states.game.Gameplay.strumX = states.game.Gameplay.strumX - ((states.game.Gameplay.mode - 4.5) * (100 + Settings.options["General"].columnSpacing))
-    if not forDiffCalc then
+    if not forNPS then
         states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. chart.meta.MusicStream, 1, true, "stream")
     end
 
@@ -27,6 +27,25 @@ function cloneLoader.load(chart, folderPath, diffName, forDiffCalc)
 
     __title = chart.meta.Name
     __diffName = "ExpertSingle"
+
+    if forNPS then
+        -- find our average notes per second and return the nps
+
+        local noteCount = #states.game.Gameplay.unspawnNotes
+        local songLength = 0
+        local endNote = states.game.Gameplay.unspawnNotes[#states.game.Gameplay.unspawnNotes]
+        if endNote.endTime ~= 0 and endNote.endTime ~= endNote.time then
+            songLength = endNote.endTime
+        else
+            songLength = endNote.time
+        end
+
+        states.game.Gameplay.unspawnNotes = {}
+        states.game.Gameplay.timingPoints = {}
+        states.game.Gameplay.sliderVelocities = {}
+
+        return noteCount / (songLength / 1000)
+    end
 end
 
 return cloneLoader

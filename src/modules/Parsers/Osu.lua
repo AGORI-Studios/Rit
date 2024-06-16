@@ -2,12 +2,16 @@
 local osuLoader = {}
 local currentBlockName = ""
 local folderPath
-local forDiffCalc
+local forNPS
 
 local _bpm = nil
 
-function osuLoader.load(chart, folderPath_, diffName, _forDiffCalc)
-    forDiffCalc = _forDiffCalc or false
+function osuLoader.load(chart, folderPath_, diffName, _forNPS)
+    states.game.Gameplay.unspawnNotes = {}
+    states.game.Gameplay.timingPoints = {}
+    states.game.Gameplay.sliderVelocities = {}
+    states.game.Gameplay.mode = 4
+    forNPS = _forNPS or false
     _bpm = nil
     curChart = "osu!"
     folderPath = folderPath_
@@ -25,6 +29,23 @@ function osuLoader.load(chart, folderPath_, diffName, _forDiffCalc)
     end
 
     chart = nil
+
+    if forNPS then
+        local noteCount = #states.game.Gameplay.unspawnNotes
+        local songLength = 0
+        local endNote = states.game.Gameplay.unspawnNotes[#states.game.Gameplay.unspawnNotes]
+        if endNote.endTime ~= nil and endNote.endTime ~= 0 and endNote.endTime ~= endNote.time then
+            songLength = endNote.endTime
+        else
+            songLength = endNote.time
+        end
+
+        states.game.Gameplay.unspawnNotes = {}
+        states.game.Gameplay.timingPoints = {}
+        states.game.Gameplay.sliderVelocities = {}
+
+        return noteCount / (songLength / 1000)
+    end
 end
 
 function osuLoader.processLine(line)
@@ -67,7 +88,7 @@ function osuLoader.processGeneral(line)
     if key == "AudioFilename" then
         local value = value:trim()
         --audioFile = love.audio.newSource(folderPath .. "/" .. value, "stream")
-        if not forDiffCalc then
+        if not forNPS then
             states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. value, 1, true, "stream")
         end
     end

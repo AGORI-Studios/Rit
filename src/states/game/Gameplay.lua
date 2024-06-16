@@ -1203,9 +1203,9 @@ function Gameplay:draw()
     love.graphics.setFont(lastFont)
 end
 
-function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName, forDiffCalc)
+function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName, forNPS)
     self.mode = 4 -- Amount of key lanes, reset to 4 until the chart specifies otherwise
-    Parsers[chartType].load(songPath, folderPath, diffName, forDiffCalc)
+    Parsers[chartType].load(songPath, folderPath, diffName, forNPS)
 
     --self:normalizeSVs()
     --self:SVFactor()
@@ -1222,7 +1222,7 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName, for
 
     self.songName = __title or "N/A"
     self.difficultyName = __diffName or "N/A"
-    if not forDiffCalc then
+    if not forNPS then
         self.songDuration = self.soundManager:getDuration("music") * 1000
         self.M_folderPath = folderPath -- used for mod scripting
         Modscript.vars = {sprites={}} -- reset modscript vars

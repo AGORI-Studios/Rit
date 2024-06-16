@@ -72,7 +72,7 @@ local function tickToMs(tick, bpm)
     return tick * msPerTick
 end
 
-function stepmaniaLoader.load(chart, folderPath, diffName, forDiffCalc)
+function stepmaniaLoader.load(chart, folderPath, diffName, forNPS)
     local songName = ""
     local audioPath = ""
     print(diffName)
@@ -115,7 +115,7 @@ function stepmaniaLoader.load(chart, folderPath, diffName, forDiffCalc)
                 songName = line:sub(8):sub(1, #line:sub(8) - 1):trim()
             elseif line:startsWith("#MUSIC:") then
                 audioPath = line:sub(8):sub(1, #line:sub(8) - 1):trim()
-                if not forDiffCalc then
+                if not forNPS then
                     states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. audioPath, 1, true, "stream")
                 end
             elseif line:startsWith("#BPMS:") then
@@ -274,6 +274,25 @@ function stepmaniaLoader.load(chart, folderPath, diffName, forDiffCalc)
 
     __title = songName
     __diffName = diffName
+
+    if forNPS then
+        -- find our average notes per second and return the nps
+
+        local noteCount = #states.game.Gameplay.unspawnNotes
+        local songLength = 0
+        local endNote = states.game.Gameplay.unspawnNotes[#states.game.Gameplay.unspawnNotes]
+        if endNote.endTime ~= 0 and endNote.endTime ~= endNote.time then
+            songLength = endNote.endTime
+        else
+            songLength = endNote.time
+        end
+
+        states.game.Gameplay.unspawnNotes = {}
+        states.game.Gameplay.timingPoints = {}
+        states.game.Gameplay.sliderVelocities = {}
+
+        return noteCount / (songLength / 1000)
+    end
 end
 
 

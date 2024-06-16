@@ -23,7 +23,7 @@ local function getMilliSeconds(beat, offset)
     return getTime(bpm, beat, offset)    
 end
 
-function malodyLoader.load(chart_, folderPath, diffName, forDiffCalc)
+function malodyLoader.load(chart_, folderPath, diffName, forNPS)
     chart = json.decode(love.filesystem.read(chart_))
 
     local meta = chart.meta
@@ -61,7 +61,7 @@ function malodyLoader.load(chart_, folderPath, diffName, forDiffCalc)
 
             local ho = HitObject(startTime, lane, endTime)
         else
-            if not forDiffCalc then
+            if not forNPS then
                 states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. note.sound, 1, false)
                 states.game.Gameplay.soundManager:setBPM("music", bpm)
             end
@@ -70,6 +70,25 @@ function malodyLoader.load(chart_, folderPath, diffName, forDiffCalc)
 
     __title = chart.meta.song.title
     __diffName = chart.meta.version
+
+    if forNPS then
+        -- find our average notes per second and return the nps
+
+        local noteCount = #states.game.Gameplay.unspawnNotes
+        local songLength = 0
+        local endNote = states.game.Gameplay.unspawnNotes[#states.game.Gameplay.unspawnNotes]
+        if endNote.endTime ~= 0 and endNote.endTime ~= endNote.time then
+            songLength = endNote.endTime
+        else
+            songLength = endNote.time
+        end
+
+        states.game.Gameplay.unspawnNotes = {}
+        states.game.Gameplay.timingPoints = {}
+        states.game.Gameplay.sliderVelocities = {}
+
+        return noteCount / (songLength / 1000)
+    end
 end
 
 return malodyLoader
