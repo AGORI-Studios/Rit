@@ -65,6 +65,7 @@ Gameplay.eventTimers = {}
 
 local lerpedScore = 0
 local lerpedAccuracy = 0
+local lerpedRating = 0
 
 local comboTimer = {}
 local judgeTimer = {}
@@ -85,6 +86,7 @@ function Gameplay:preloadAssets()
 end
 
 function Gameplay:reset()
+    lerpedScore, lerpedAccuracy, lerpedRating = 0, 0, 0
     -- Reset all variables to their default values
     self.lastNoteIsFinish = true
     self.strumX = 525
@@ -120,7 +122,6 @@ function Gameplay:reset()
     self.mode = 4 -- amount of keys
     self.maxScore = 1000000 -- 1 million max score
     self.score = 0
-    self.rating = 0
     self.accuracy = 0
     self.noteScore = 0
     self.soundManager = SoundManager()
@@ -130,6 +131,9 @@ function Gameplay:reset()
     self.lastNoteTime = 10000 -- safe number
     self.firstNoteTime = 0
     self.hasSkipPeriod = false
+
+    self.songRating = self.rating
+    self.rating = 0
 
     self.noteoffsets = {}
 
@@ -188,6 +192,12 @@ function Gameplay:calculateAccuracy()
     return (CUR / MAX) * 100
 end
 
+function Gameplay:calculateRating()
+    print(self.songRating, self.rating, self.accuracy)
+    local rating = self.songRating * math.pow(self.accuracy / 80, 4.5)
+    return rating
+end
+
 function Gameplay:addPlayfield(x, y)
     -- Adds a playfield to the game screen
     local x = x or 0
@@ -213,6 +223,8 @@ function Gameplay:doJudgement(time)
 
     self.accuracy = self:calculateAccuracy() 
     if tostring(self.accuracy) == "nan" then self.accuracy = 0 end
+    self.rating = self:calculateRating()
+    if tostring(self.rating) == "nan" then self.rating = 0 end
 
     self.allJudgements[judgement.name] = self.allJudgements[judgement.name] + 1
 
@@ -1149,6 +1161,7 @@ function Gameplay:draw()
             love.graphics.print(text, 10, 400 + (i * 100))
             love.graphics.print("Score: " .. (math.floor(player.score) or 0), 10, 420 + (i * 100)) 
             love.graphics.print("Accuracy: " .. (string.format("%.2f", player.accuracy or 0) .. "%"), 10, 440 + (i * 100))
+            love.graphics.print("Rating: " .. (player.rating or 0), 10, 460 + (i * 100))
         end
     end
     love.graphics.setFont(lastFont)
@@ -1188,11 +1201,13 @@ function Gameplay:draw()
 
     lerpedScore = math.lerp(lerpedScore, self.score, 0.05)
     lerpedAccuracy = math.lerp(lerpedAccuracy, self.accuracy, 0.05)
+    lerpedRating = math.lerp(lerpedRating, self.rating, 0.05)
 
     local lastFont = love.graphics.getFont()
     love.graphics.setFont(Cache.members.font["menuBold"])
     love.graphics.printf(localize.localize("Score: ") .. math.round(lerpedScore), 0, 0, 960, "right", 0, 2, 2)
     love.graphics.printf(localize.localize("Accuracy: ") .. string.format("%.2f", lerpedAccuracy) .. "%", 0, 50, 960, "right", 0, 2, 2)
+    love.graphics.printf(localize.localize("Rating: ") .. string.format("%.2f", lerpedRating), 0, 100, 960, "right", 0, 2, 2)
 
     if musicTime <= self.firstNoteTime and self.hasSkipPeriod and input:pressed("Skip_Key") then
         -- right align

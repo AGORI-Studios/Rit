@@ -235,6 +235,7 @@ function SongMenu:update(dt)
                 states.game.Gameplay.songPath = songPath
                 states.game.Gameplay.folderpath = folderpath
                 states.game.Gameplay.difficultyName = diffName
+                states.game.Gameplay.rating = diff.nps
                 switchState(states.game.Gameplay, 0.3, nil)
             end
             MenuSoundManager:removeAllSounds()
