@@ -295,6 +295,11 @@ function GI.LoadObjects()
     HeaderButton = require("modules.Objects.menu.HeaderButton")
     Header = require("modules.Objects.menu.Header")
     Switch = require("modules.Objects.menu.options.Switch")
+
+    FPSOverlay = require("modules.Objects.overlay.FPSOverlay") {
+        x = Inits.GameWidth - 85,
+        y = Inits.GameHeight - 35
+    }
 end
 
 function GI.LoadParsers()
@@ -753,107 +758,92 @@ Please describe what you were doing when this error occurred.
 
 end 
 
---[[ local ChannelEvent = love.thread.getChannel("EventThread")
-local ChannelActive = love.thread.getChannel("EventThreadActive")
-local EventThread
-
-local dt, fps = 0, 0
+love._fps_cap = 500
 
 function love.run()
-    EventThread = love.thread.newThread("modules/EventThread.lua")
-	if love.load then love.load(love.arg.parseGameArguments(arg), arg) end
+    if love.load then love.load(love.arg.parseGameArguments(arg), arg) end
 
 	-- We don't want the first frame's dt to include time taken by love.load.
 	if love.timer then love.timer.step() end
-    collectgarbage()
 
-	local focused, clock, nextDraw, cap = true, 0, 0, 0 
-    local prevFpsUpdate, sinceLastFps, frames = 0, 0, 0
-    local t = {}
-    local a = true
-
-    local function doEvent(name, a, ...)
-        if name == "quit" and not love.quit() then
-            ChannelEvent:clear()
-            ChannelActive:clear()
-            ChannelActive:push(0)
-            return a or 0, ...
-        end
-
-        if type(a) == "string" then
-            return love.handlers[name](...)
-        else
-            return love.handlers[name](a, ...)
-        end
-    end
+	local dt = 0
 
 	-- Main loop time.
-	return function()
-        if EventThread:isRunning() then
-            ChannelActive:clear()
-            ChannelActive:push(1)
-            out = ChannelEvent:pop()
-            while out do
-                clock, v = ChannelEvent:demand(), ChannelEvent:demand()
-                for i = 1, v do
-                    t[i] = ChannelEvent:demand()
+	--[[ return function()
+		-- Process events.
+		if love.event then
+			love.event.pump()
+			for name, a,b,c,d,e,f in love.event.poll() do
+				if name == "quit" then
+					if not love.quit or not love.quit() then
+						return a or 0
+					end
+				end
+				love.handlers[name](a,b,c,d,e,f)
+			end
+		end
+
+		-- Update dt, as we'll be passing it to update
+		if love.timer then dt = love.timer.step() end
+
+		-- Call update and draw
+		if love.update then love.update(dt) end -- will pass 0 if love.timer is disabled
+
+		if love.graphics and love.graphics.isActive() then
+			love.graphics.origin()
+			love.graphics.clear(love.graphics.getBackgroundColor())
+
+			if love.draw then love.draw() end
+
+			love.graphics.present()
+		end
+
+		if love.timer then love.timer.sleep(0.001) end
+	end ]]
+    -- The above code, but with a cap on the FPS
+
+    local next_time = love.timer.getTime()
+    return function()
+        -- Process events.
+        if love.event then
+            love.event.pump()
+            for name, a,b,c,d,e,f in love.event.poll() do
+                if name == "quit" then
+                    if not love.quit or not love.quit() then
+                        return a or 0
+                    end
                 end
-                n, out, v = v, doEvent(out, unpack(t, 1, v))
-                if out then
-                    love.event.pump()
-                    return out, v
-                end
+                love.handlers[name](a,b,c,d,e,f)
             end
-        elseif a then
-            EventThread:start()
-            ChannelEvent:clear()
-            ChannelActive:clear()
         end
 
-        love.event.pump()
-        for name, a, b, c, d, e, f in love.event.poll() do
-            a, b = doEvent(name, a, b, c, d, e, f)
-            if a then return a, b end
-        end
+        -- Update dt, as we'll be passing it to update
+        if love.timer then dt = love.timer.step() end
 
-        cap, b = 1 / (love._fps_cap or 60), false
-        dt, clock = love.timer.step(), love.timer.getTime()
+        -- Call update and draw
+        if love.update then love.update(dt) end -- will pass 0 if love.timer is disabled
 
-		if love.update then 
-            love.update(dt)
-        end
-        if love.graphics.isActive() and (b or clock > nextDraw - dt) then
+        if love.graphics and love.graphics.isActive() then
             love.graphics.origin()
-            love.graphics.clear(0, 0, 0)
+            love.graphics.clear(love.graphics.getBackgroundColor())
+
             if love.draw then love.draw() end
+
             love.graphics.present()
-            nextDraw, sinceLastFps, frames = clock + cap, clock - prevFpsUpdate, frames + 1
-            if sinceLastFps > .5 then
-                fps, prevFpsUpdate, frames = math.round(frames / sinceLastFps), clock, 0
-            end
         end
 
-        if love.window.hasFocus() then
-            if b then
-                love.timer.sleep(cap - dt)
-            else
-                love.timer.sleep(dt < 0.001 and 0.001 or 0)
-            end
-            focused = true
-        else
-            if focused then
-                collectgarbage()
-                collectgarbage()
-            else
-                collectgarbage("step")
-            end
-            focused = love.timer.sleep(cap)
+        next_time = next_time + 1/love._fps_cap
+        local cur_time = love.timer.getTime()
+        if next_time <= cur_time then
+            next_time = cur_time
+            return
         end
-	end
-end ]]
+        love.timer.sleep(next_time - cur_time)
+    end
+end
 
 function love.setFpsCap(fps)
-    love._fps_cap = fps or 60
+    love._fps_cap = fps or 500
 end
 
 -- End of Love Functions

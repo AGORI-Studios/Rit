@@ -1,3 +1,4 @@
+---@diagnostic disable: duplicate-set-field, inject-field
 -- Sound manager for more time-based functions, such as BPM and beat callbacks
 local SoundManager = Object:extend()
 

@@ -1,3 +1,4 @@
+---@diagnostic disable: duplicate-set-field, inject-field
 --- Virtual Controller module
 -- For creating a virtual controllers for mobile devices.
 

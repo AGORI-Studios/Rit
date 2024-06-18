@@ -173,6 +173,7 @@ function love.update(dt)
     end
 
     MenuSoundManager:update(dt)
+    FPSOverlay:update(dt)
 end
 
 function love.filedropped(file)
@@ -244,6 +245,8 @@ function love.draw()
         if DRAW_VIRTUAL_CONTROLLER then
             currentController:draw()
         end
+
+        FPSOverlay:draw()
     love.graphics.setCanvas()
 
     -- ratio

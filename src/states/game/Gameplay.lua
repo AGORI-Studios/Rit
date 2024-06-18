@@ -193,7 +193,6 @@ function Gameplay:calculateAccuracy()
 end
 
 function Gameplay:calculateRating()
-    print(self.songRating, self.rating, self.accuracy)
     local rating = self.songRating * math.pow(self.accuracy / 80, 4.5)
     return rating
 end
