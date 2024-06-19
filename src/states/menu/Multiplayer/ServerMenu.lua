@@ -61,7 +61,8 @@ end
 function ServerMenu:mousepressed(x, y, b)
     if state.inSubstate then return end
     local x, y = toGameScreen(x, y)
-    Header:mousepressed(x, y, b)
+    local canc = Header:mousepressed(x, y, b)
+    if canc then return end
 
     for _, button in ipairs(self.serverButtons) do
         if button:mousepressed(x, y, b) then

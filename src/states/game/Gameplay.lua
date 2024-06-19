@@ -877,6 +877,15 @@ function Gameplay:update(dt)
             else
                 switchState(states.menu.StartMenu, 0.3)
                 MenuSoundManager:removeAllSounds()
+
+                -- Only save stats for singleplayer
+                --[[ _USERDATA.ratingAltogether = _USERDATA.ratingAltogether + self.rating ]] -- actualyl a table
+                _USERDATA.allRatings = _USERDATA.allRatings or {}
+                table.insert(_USERDATA.allRatings, self.rating)
+                _USERDATA.totalScore = (_USERDATA.totalScore or 0) + self.score
+                _USERDATA.averageAccuracy = (_USERDATA.averageAccuracy or 0) + self.accuracy
+                _USERDATA.totalHits = (_USERDATA.totalHits or 0) + self.hits
+                _USERDATA.plays = (_USERDATA.plays or 0) + 1
             end
             return
         elseif self.escapeTimer >= 0.7 then
@@ -1228,6 +1237,13 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName, for
     end)
 
     local lastNoteTime = #self.unspawnNotes > 0 and self.unspawnNotes[#self.unspawnNotes].time or 0
+    if #self.unspawnNotes > 0 then
+        if self.unspawnNotes[#self.unspawnNotes].endTime then
+            if self.unspawnNotes[#self.unspawnNotes].endTime > lastNoteTime then
+                lastNoteTime = self.unspawnNotes[#self.unspawnNotes].endTime
+            end
+        end
+    end
     self.lastNoteTime = lastNoteTime
     local firstNoteTime = #self.unspawnNotes > 0 and self.unspawnNotes[1].time or 0
     self.firstNoteTime = firstNoteTime

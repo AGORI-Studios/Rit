@@ -5,6 +5,24 @@ local lerpedFinshed = 0
 
 local ritLogo = Cache:loadImage("assets/images/ui/menu/logo.png")
 
+local rndTexts = {
+    "So... How's the weather?",
+    "Loading...",
+    "Yes... It's still loading...",
+    "Parsing maps take forever, don't blame me.",
+    "I'm not stuck, I'm just... loading.",
+    "Please wait, I'm still loading.",
+    "While it may seem like I'm stuck, I'm still loading.",
+    "Please be patient",
+    "Are you still there?",
+    "Still waiting it seems...",
+    "Hey, I got to thank you for not closing the game quite yet."
+}
+
+local curRndText = ""
+local rndTime = 0
+local rndTimeMax = 5
+
 function PreloaderScreen:enter(last, args)
     -- Preload all non-skin textures, and load song data (Useful for when difficulty calculation is added)
     threads.assets.newImage(self, "songButton", "assets/images/ui/menu/songBtn.png")
@@ -28,6 +46,8 @@ function PreloaderScreen:enter(last, args)
         threads.assets.newImage(self, "BGball" .. i, "assets/images/ui/menu/BGball" .. i .. ".png")
     end
 
+    threads.assets.loadSongs(self, "songList")
+
     threads.assets.start(function()
         doneLoading = true
         Timer.after(0.25, function()
@@ -37,8 +57,6 @@ function PreloaderScreen:enter(last, args)
             Timer.tween(1, fade, {1}, 'in-out-cubic', function() state.switch(states.menu.StartMenu) end)
         end)
     end)
-
-    threads.assets.loadSongs(self, "songList")
 end
 
 function PreloaderScreen:update(dt)
@@ -46,25 +64,34 @@ function PreloaderScreen:update(dt)
         -- exponential fade out
         --fade = math.min(fade + dt * 1.82, 1)
     else
-        lerpedFinshed = math.fpsLerp(lerpedFinshed, threads.assets.loadedCount / threads.assets.resourceCount, 25)
+        lerpedFinshed = math.fpsLerp(lerpedFinshed, (threads.assets.loadedCount) / threads.assets.resourceCount, 25)
+    end
+
+    rndTime = rndTime + dt
+    if rndTime >= rndTimeMax and threads.assets.resourceCount == 20 then -- We are parsing maps (TAKES A LONG TIME.)
+        curRndText = rndTexts[math.random(1, #rndTexts)]
+        rndTime = 0
     end
 end
 
 function PreloaderScreen:draw()
     local percent = 0
-    if threads.assets.resourceCount ~= 0 then percent = threads.assets.loadedCount / threads.assets.resourceCount end
+    if threads.assets.resourceCount ~= 0 then percent = (threads.assets.loadedCount) / threads.assets.resourceCount end
     --[[ love.graphics.printf(
         (not doneLoading and ("Precaching Resources..." .. threads.assets.loadedCount .. "/" .. threads.assets.resourceCount) 
             or "Loaded!") ..
         "\n"..math.floor(percent * 100).."%", 
         0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2
     ) ]]
-    if threads.assets.loadedCount == threads.assets.resourceCount then
+    if (threads.assets.loadedCount == 20) == threads.assets.resourceCount then
         love.graphics.printf(localize.localize("Parsing Maps..."), 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
-    elseif threads.assets.loadedCount == threads.assets.resourceCount then
+    elseif (threads.assets.loadedCount) == threads.assets.resourceCount then
         love.graphics.printf(localize.localize("Loaded!"), 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
     else
-        love.graphics.printf(localize.localize("Precaching Resources...")..threads.assets.loadedCount.."/"..threads.assets.resourceCount.."\n"..math.floor(percent * 100).."%", 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
+        love.graphics.printf(localize.localize("Precaching Resources...")..(threads.assets.loadedCount).."/"..threads.assets.resourceCount.."\n"..math.floor(percent * 100).."%", 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
+    end
+    if curRndText ~= "" then
+        love.graphics.printf(curRndText, 0, Inits.GameHeight/2+400, Inits.GameWidth/2, "center", 0, 2, 2)
     end
     -- loading bar
     love.graphics.rectangle("fill", (Inits.GameWidth*0.05),Inits.GameWidth/2, (Inits.GameWidth*0.9) * lerpedFinshed, 50)

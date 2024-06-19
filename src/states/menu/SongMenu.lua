@@ -325,7 +325,8 @@ end
 function SongMenu:mousepressed(x, y, b)
     if state.inSubstate then return end
     local x, y = toGameScreen(x-10, y)
-    Header:mousepressed(x, y, b)
+    local canc = Header:mousepressed(x, y, b)
+    if canc then return end
     if b == 1 then
         y = y - lerpedSongPos
 

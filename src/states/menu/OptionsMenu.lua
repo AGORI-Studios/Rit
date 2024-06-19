@@ -257,7 +257,8 @@ end
 function OptionsMenu:mousepressed(x, y, b)
     local mx, my = toGameScreen(x, y)
 
-    Header:mousepressed(mx, my, b)
+    local canc = Header:mousepressed(x, y, b)
+    if canc then return end
 
     for i, v in ipairs(buttons) do
         local width = fontWidth("defaultBoldX1.25", v.text)

@@ -13,7 +13,8 @@ end
 function CreditsMenu:mousepressed(x, y, b)
     local x, y = toGameScreen(x, y)
 
-    Header:mousepressed(x, y, b)
+    local canc = Header:mousepressed(x, y, b)
+    if canc then return end
 end
 
 function CreditsMenu:draw()

@@ -169,6 +169,15 @@ local resourceKinds = {
       return jsondata
     end
   },
+  writeFile = {
+    requestKey  = "writeFile",
+    resourceKey = "writeFile",
+    constructor = function(data) return data end,
+    postProcess = function(data)
+      local path, content = unpack(data)
+      love.filesystem.write(path, content)
+    end
+  },
   updateNotePosition = {
     requestKey = "updateNotePosition",
     resourceKey = "updateNotePosition",
@@ -306,6 +315,10 @@ else
 
   function loader.encodeJSON(holder, key, data)
     newResource('encodeJSON', holder, key, data)
+  end
+
+  function loader.writeFile(holder, key, path, content)
+    newResource('writeFile', holder, key, path, content)
   end
 
   function loader.updateNotePosition(holder, key, offset, hitObjects, scrollSpeed, downscroll)

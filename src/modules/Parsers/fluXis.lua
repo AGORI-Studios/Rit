@@ -6,8 +6,16 @@ function fluXisLoader.load(chart, folderPath_, diffName, forNPS)
 
     states.game.Gameplay.mode = 1
 
-    if chart.EffectFile and love.filesystem.getInfo(folderPath_ .. "/" .. chart.EffectFile) then
-        states.game.Gameplay.songEvents = json.decode(love.filesystem.read(folderPath_ .. "/" .. chart.EffectFile))
+    if chart.EffectFile and love.filesystem.getInfo(folderPath_ .. "/" .. chart.EffectFile) and not forNPS then
+        states.game.Gameplay.songEvents = {}
+        Try(
+            function()
+                states.game.Gameplay.songEvents = json.decode(love.filesystem.read(folderPath_ .. "/" .. chart.EffectFile))
+            end,
+            function(e)
+                print("Error loading effect file: " .. e)
+            end
+        )
         --[[ table.sort(states.game.Gameplay.songEvents, function(a, b) return a.time < b.time end) ]]
         if states.game.Gameplay.songEvents.playfieldmove then
             table.sort(states.game.Gameplay.songEvents.playfieldmove, function(a, b) return a.time < b.time end)
@@ -20,13 +28,12 @@ function fluXisLoader.load(chart, folderPath_, diffName, forNPS)
         end
     end
 
-    if not chart.VideoFile or not video then
+    if not forNPS and not chart.VideoFile or not video or chart.VideoFile == "" then
         -- just use chart.backgroundFile
         if chart.BackgroundFile and love.filesystem.getInfo(folderPath_ .. "/" .. chart.BackgroundFile) then
             states.game.Gameplay.background = love.graphics.newImage(folderPath_ .. "/" .. chart.BackgroundFile)
         end
-    else
-        -- use chart.VideoFile
+    elseif not forNPS then
         if love.filesystem.getInfo(folderPath_ .. "/" .. chart.VideoFile) then
             local video_ = love.filesystem.newFileData(folderPath_ .. "/" .. chart.VideoFile)
             states.game.Gameplay.background = Video(video_)
@@ -38,7 +45,7 @@ function fluXisLoader.load(chart, folderPath_, diffName, forNPS)
     end
 
     for _, hitObject in ipairs(chart.HitObjects) do
-        local startTime = hitObject.time
+        local startTime = hitObject.time or 0
         local endTime = hitObject.holdtime or 0
         endTime = endTime + startTime
         if endTime == startTime then endTime = 0 end -- no.
@@ -81,17 +88,26 @@ function fluXisLoader.load(chart, folderPath_, diffName, forNPS)
         local noteCount = #states.game.Gameplay.unspawnNotes
         local songLength = 0
         local endNote = states.game.Gameplay.unspawnNotes[#states.game.Gameplay.unspawnNotes]
-        if endNote.endTime ~= 0 and endNote.endTime ~= endNote.time then
+        if endNote and endNote.endTime ~= 0 and endNote.endTime ~= endNote.time then
             songLength = endNote.endTime
-        else
+        elseif endNote then
             songLength = endNote.time
+        else
+            songLength = 0
         end
 
         states.game.Gameplay.unspawnNotes = {}
         states.game.Gameplay.timingPoints = {}
         states.game.Gameplay.sliderVelocities = {}
 
-        return noteCount / (songLength / 1000)
+        local nps = noteCount / (songLength / 1000)
+        if tostring(nps) == "nan" then
+            return 0
+        elseif tostring(nps) == "inf" then
+            return 0
+        end
+
+        return nps
     end
 end
 

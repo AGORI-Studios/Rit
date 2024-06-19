@@ -185,6 +185,8 @@ function GI.LoadClasses()
     Settings.loadOptions()
     Modscript = require("modules.Game.Modding.Modscript")
     SearchAlgorithm = require("modules.Game.Helpers.SearchAlgorithm")
+    SaveUserData = require("modules.Game.Helpers.SaveUserData")
+    _USERDATA = SaveUserData.LoadData()
     require("modules.Game.Input")
     Popup = require("modules.Popup")
     skin = require("modules.Game.SkinHandler")
@@ -294,6 +296,7 @@ function GI.LoadObjects()
 
     HeaderButton = require("modules.Objects.menu.HeaderButton")
     Header = require("modules.Objects.menu.Header")
+    Header.userData = _USERDATA
     Switch = require("modules.Objects.menu.options.Switch")
 
     FPSOverlay = require("modules.Objects.overlay.FPSOverlay") {
@@ -372,6 +375,7 @@ function GI.LoadStates()
             Importers = {
                 QuaverImportScreen = require("states.screen.Importers.QuaverImportScreen"),
                 OsuImportScreen = require("states.screen.Importers.OsuImportScreen"),
+                fluXisImportScreen = require("states.screen.Importers.fluXisImportScreen"),
             },
             Jukebox = require("states.screen.JukeboxScreen"),
             Multiplayer = {
@@ -405,6 +409,18 @@ function GI.InitSteam()
             if SteamUserImgSteamData then
                 SteamUserImgSteamData = love.image.newImageData(width, height, "rgba8", SteamUserImgSteamData)
                 SteamUserAvatarSmall = love.graphics.newImage(SteamUserImgSteamData)
+            end
+
+            local SteamUserImgSteamData, width, height = SteamUser:getAvatar("medium")
+            if SteamUserImgSteamData then
+                SteamUserImgSteamData = love.image.newImageData(width, height, "rgba8", SteamUserImgSteamData)
+                SteamUserAvatarMedium = love.graphics.newImage(SteamUserImgSteamData)
+            end
+
+            local SteamUserImgSteamData, width, height = SteamUser:getAvatar("large")
+            if SteamUserImgSteamData then
+                SteamUserImgSteamData = love.image.newImageData(width, height, "rgba8", SteamUserImgSteamData)
+                SteamUserAvatarLarge = love.graphics.newImage(SteamUserImgSteamData)
             end
         end
     end 

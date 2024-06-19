@@ -50,8 +50,8 @@ DRAW_VIRTUAL_CONTROLLER = love.system.getSystem() == "Mobile"
 if love.system.getOS() == "Windows" then
     Try(
         function()
-           --[[  Steam = require("lib.sworks.main") ]]
-            error("No Steamworks for Windows for GITHUB builds")
+           --Steam = require("lib.sworks.main")
+            --[[ error("No Steamworks for Windows for GITHUB builds") ]]
         end,
         function()
             Steam = nil
@@ -299,6 +299,7 @@ function love.quit()
     end
 
     Settings.saveOptions()
+    SaveUserData.SaveData(_USERDATA)
 
     if Steam and networking.connected and networking.currentServerData then
         networking.hub:publish({

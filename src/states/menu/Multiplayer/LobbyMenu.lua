@@ -63,7 +63,8 @@ end
 
 function LobbyMenu:mousepressed(x, y, b)
     local x, y = toGameScreen(x, y)
-    Header:mousepressed(x, y, b)
+    local canc = Header:mousepressed(x, y, b)
+    if canc then return end
     if x > 10 and x < 210 and y > 600 and y < 650 then
         if networking.connected then
             networking.hub:publish({

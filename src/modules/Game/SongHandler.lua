@@ -14,7 +14,6 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                     -- is there a song cache? if not, cache it
                     if love.filesystem.getInfo("cache/songs/" .. file .. song .. ".cache") then
                         -- create a lua table from the cache (its just a serialized lua table)
-
                         local data = json.decode(lf.read("cache/songs/" .. file .. song .. ".cache"))
                         local title = data.title
                         local difficultyName = data.difficultyName
@@ -68,7 +67,10 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         local Artist = fileData:match("Artist:(.-)\r?\n")
                         local Tags = fileData:match("Tags:(.-)\r?\n"):strip()
                         local bpm = fileData:match("Bpm: (%d+)")
-                        local previewTime = fileData:match("SongPreviewTime: (%d+)"):trim()
+                        local previewTime = (fileData:match("SongPreviewTime: (%d+)") or ""):trim()
+                        if previewTime == "" then
+                            previewTime = 0
+                        end
 
                         Tags = Tags:split(" ")
 
@@ -418,7 +420,10 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                     local Artist = fileData:match("Artist:(.-)\r?\n")
                     local Tags = fileData:match("Tags:(.-)\r?\n"):strip()
                     local Bpm = fileData:match("Bpm: (%d+)")
-                    local previewTime = fileData:match("SongPreviewTime: (%d+)"):trim()
+                    local previewTime = (fileData:match("SongPreviewTime: (%d+)") or ""):trim()
+                    if previewTime == "" then
+                        previewTime = 0
+                    end
                     Tags = Tags:split(" ")
 
                     local nps = Parsers["Quaver"].load("song/" .. song, "song", difficultyName, true)
@@ -645,7 +650,7 @@ function playSelectedSong(song, songName)
     threads.assets.newSoundData(baseSoundData, "music", diff.audioFile)
     threads.assets.start(function()
         MenuSoundManager:newSound("music", baseSoundData.music, 1, true, "stream")
-        MenuSoundManager:playFromTime("music", diff.previewTime / 1000)
+        MenuSoundManager:playFromTime("music", (diff.previewTime or 0) / 1000)
         MenuSoundManager:setLooping("music", true)
     end)
 
