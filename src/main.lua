@@ -97,12 +97,8 @@ function love.load(args)
     importer = lovefs()
     
     GameInit.ClearOSModule()
-    start = os.time()
     GameInit.LoadClasses()
-    endTime = os.time()
-    print(endTime - start)
     GameInit.CreateFolders()
-    
 
     -- Skins, create skins directory if it doesn't exist
     skinList = {}

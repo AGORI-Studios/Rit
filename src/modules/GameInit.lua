@@ -173,7 +173,6 @@ function GI.LoadLibraries()
 end
 
 function GI.LoadClasses()
-    local startTime = os.time()
     Group = require("modules.Classes.Group")
     Cache = require("modules.Classes.Cache")
     Point = require("modules.Classes.Point")
@@ -192,6 +191,7 @@ function GI.LoadClasses()
     Popup = require("modules.Popup")
     skin = require("modules.Game.SkinHandler")
     localize = require("modules.Game.Localize")
+    --RitUI = require("modules.UI")
     
     if love.system.getSystem() == "Mobile" then
         VirtualController = (require("modules.VirtualController"))
@@ -268,9 +268,6 @@ function GI.LoadClasses()
     
     -- API Stuff
     --RequestJsonData = require("modules.API.RequestJsonData")
-
-    local endTime = os.time()
-    print("TIME: " .. endTime - startTime)
 end
 
 function GI.LoadShaders()

@@ -147,23 +147,15 @@ local tabs = {
         love.graphics.rectangle("line", 100, 325, 575, 1)
         love.graphics.setColor(1, 1, 1)
 
-        love.graphics.print("Screen Resolution", 105, 345)
+        love.graphics.print("Screen Resolution", 105, 345) -- TODO: Make the dropdown for this option
 
         love.graphics.setColor(0.5, 0.5, 0.5)
         love.graphics.rectangle("line", 105, 395, 575, 1)
         love.graphics.setColor(1, 1, 1)
 
-        VSYNC_switch:draw()
-
-        love.graphics.setColor(0.5, 0.5, 0.5)
-        love.graphics.rectangle("line", 105, 470, 575, 1)
-        love.graphics.setColor(1, 1, 1)
-
-        FPSCAP_switch:draw()
     end,
     ["update_video"] = function(dt)
-        VSYNC_switch:update(dt)
-        FPSCAP_switch:update(dt)
+        
     end,
     ["mousepressed_video"] = function()
         
@@ -242,10 +234,8 @@ local tabs = {
 
 function OptionsMenu:enter(last)
     bg = Sprite(0, 0, "assets/images/ui/menu/playBG.png")
-    VSYNC_switch = Switch("V-Sync", Settings.options["Video"]["VSYNC"], "Video", "VSYNC")
-    VSYNC_switch.x, VSYNC_switch.y = 105, 410
-    FPSCAP_switch = Switch("FPS Cap", Settings.options["Video"]["FPSCAP"], "Video", "FPSCAP")
-    FPSCAP_switch.x, FPSCAP_switch.y = 105, 480
+    DOWNSCROLL_switch = Switch("Downscroll", settings.options["General"])
+    DOWNSCROLL_switch.x, DOWNSCROLL_switch.y = 105, 340
 end
 
 function OptionsMenu:update(dt)
