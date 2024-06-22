@@ -100,7 +100,14 @@ function osuLoader.processEvent(line)
         local videoPath = folderPath .. "/" .. video
         -- get filedata userdata
         local fileData = love.filesystem.newFileData(videoPath)
-        states.game.Gameplay.background = Video(fileData)
+        Try(
+            function()
+                states.game.Gameplay.background = Video(fileData)
+            end,
+            function()
+                states.game.Gameplay.background = nil
+            end
+        )
     end
     if split[1] == "0" and not states.game.Gameplay.background then
         local bg = line:match("^0,.+,\"(.+)\".*$")
