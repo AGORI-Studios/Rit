@@ -170,8 +170,8 @@ function StartMenu:update(dt)
     time = time + 1000 * dt
     time2 = time2 + 1000 * dt
 
-    if time > (60/menuBPM) * 1000 then
-        local curBeat = math.floor((time2/1000) / (60/menuBPM))
+    if time > (60/(menuBPM or 120)) * 1000 then
+        local curBeat = math.floor((time2/1000) / (60/(menuBPM or 120)))
         if curBeat % 2 == 0 then
             logoScale[1], logoScale[2] = curLogoScale[1] + 0.1, curLogoScale[1] + 0.1
             logo:setScale(logoScale[1], logoScale[1])
