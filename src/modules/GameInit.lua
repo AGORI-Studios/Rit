@@ -634,9 +634,9 @@ Please describe what you were doing when this error occurred.
             text = "Go to GitHub",
             func = function()
                 local namer, versionr, vendorr, devicer = love.graphics.getRendererInfo( )
-                local versionStr = "LOVE: " .. love._version .. " (" .. love._version_codename .. ")"
+                local versionStr = love._version .. " (" .. love._version_codename .. ")"
                 versionStr = versionStr .. " | Game Version " .. __VERSION__
-                local issue = string.format(gitIssueFormat, love.system.getOS(), (namer .. ", " .. versionr .. ", " .. vendorr .. ", " .. devicer), versionStr, p)
+                local issue = string.format(gitIssueFormat, love.system.getOS() .. (" (" .. love.system.getSystem() .. ")"), (namer .. ", " .. versionr .. ", " .. vendorr .. ", " .. devicer), versionStr, p)
                 love.system.openURL(gitURL .. "?body=" .. encodeToURL(issue))
             end
         }
@@ -777,6 +777,7 @@ end
 love._fps_cap = 500
 
 function love.run()
+    ---@diagnostic disable-next-line: redundant-parameter
     if love.load then love.load(love.arg.parseGameArguments(arg), arg) end
 
 	-- We don't want the first frame's dt to include time taken by love.load.
@@ -784,43 +785,9 @@ function love.run()
 
 	local dt = 0
 
-	-- Main loop time.
-	--[[ return function()
-		-- Process events.
-		if love.event then
-			love.event.pump()
-			for name, a,b,c,d,e,f in love.event.poll() do
-				if name == "quit" then
-					if not love.quit or not love.quit() then
-						return a or 0
-					end
-				end
-				love.handlers[name](a,b,c,d,e,f)
-			end
-		end
-
-		-- Update dt, as we'll be passing it to update
-		if love.timer then dt = love.timer.step() end
-
-		-- Call update and draw
-		if love.update then love.update(dt) end -- will pass 0 if love.timer is disabled
-
-		if love.graphics and love.graphics.isActive() then
-			love.graphics.origin()
-			love.graphics.clear(love.graphics.getBackgroundColor())
-
-			if love.draw then love.draw() end
-
-			love.graphics.present()
-		end
-
-		if love.timer then love.timer.sleep(0.001) end
-	end ]]
-    -- The above code, but with a cap on the FPS
-
     local next_time = love.timer.getTime()
     return function()
-        -- Process events.
+        -- Process events
         if love.event then
             love.event.pump()
             for name, a,b,c,d,e,f in love.event.poll() do
@@ -861,6 +828,8 @@ end
 function love.setFpsCap(fps)
     love._fps_cap = fps or 500
 end
+
+error("test")
 
 -- End of Love Functions
 

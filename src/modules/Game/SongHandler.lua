@@ -67,8 +67,10 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         local Artist = fileData:match("Artist:(.-)\r?\n")
                         local Tags = fileData:match("Tags:(.-)\r?\n"):strip()
                         local bpm = fileData:match("Bpm: (%d+)")
+                        ---@diagnostic disable-next-line: param-type-mismatch
                         local previewTime = (fileData:match("SongPreviewTime: (%d+)") or ""):trim()
                         if previewTime == "" then
+                            ---@diagnostic disable-next-line: cast-local-type
                             previewTime = 0
                         end
 
@@ -420,8 +422,10 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                     local Artist = fileData:match("Artist:(.-)\r?\n")
                     local Tags = fileData:match("Tags:(.-)\r?\n"):strip()
                     local Bpm = fileData:match("Bpm: (%d+)")
+                    ---@diagnostic disable-next-line: param-type-mismatch
                     local previewTime = (fileData:match("SongPreviewTime: (%d+)") or ""):trim()
                     if previewTime == "" then
+                        ---@diagnostic disable-next-line: cast-local-type
                         previewTime = 0
                     end
                     Tags = Tags:split(" ")
