@@ -177,7 +177,7 @@ function love.update(dt)
 end
 
 function love.filedropped(file)
-
+    state.filedropped(file)
 end
 
 function love.focus(f)
@@ -202,10 +202,8 @@ function love.keypressed(key)
 
     state.keypressed(key)
 
-    if __DEBUG__ then
-        if key == "f7" then
-            state.switch(states.screens.MapEditorScreen)
-        end
+    if key == "f7" then
+        state.switch(states.screens.MapEditorScreen)
     end
 end
 

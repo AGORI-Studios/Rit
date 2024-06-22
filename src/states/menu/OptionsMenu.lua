@@ -234,7 +234,7 @@ local tabs = {
 
 function OptionsMenu:enter(last)
     bg = Sprite(0, 0, "assets/images/ui/menu/playBG.png")
-    DOWNSCROLL_switch = Switch("Downscroll", settings.options["General"])
+    DOWNSCROLL_switch = Switch("Downscroll", Settings.options["General"])
     DOWNSCROLL_switch.x, DOWNSCROLL_switch.y = 105, 340
 end
 

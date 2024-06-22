@@ -321,6 +321,7 @@ end
 
 function GI.LoadDefaultFonts()
     Cache.members.font["default"] = love.graphics.newFont("assets/fonts/Montserrat-Light.ttf", 16)
+    Cache.members.font["defaultX0.75"] = love.graphics.newFont("assets/fonts/Montserrat-Light.ttf", 12)
     Cache.members.font["defaultBold"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 16)
     Cache.members.font["defaultBoldX1.25"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 20)
     Cache.members.font["defaultBoldX1.5"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 24)
