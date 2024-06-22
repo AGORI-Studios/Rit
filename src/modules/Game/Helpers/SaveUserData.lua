@@ -35,9 +35,7 @@ function SaveUserData.LoadData(path)
                 if data[k] == nil then
                     data[k] = v
                 end
-            end
 
-            for k, v in pairs(defaultUserDataModal) do
                 if type(data[k]) ~= type(v) then
                     data[k] = v
                 end
@@ -51,14 +49,14 @@ function SaveUserData.LoadData(path)
             return data
         end,
         function()
-            SaveUserData.SaveData(defaultUserDataModal)
-            --print("No user data found, creating new one")
+            __USERDATA = defaultUserDataModal
+            SaveUserData.SaveData(__USERDATA)
 
-            return SaveUserData.LoadData()
+            return __USERDATA
         end
     )
 
-    return v
+    return __USERDATA -- 1 day's worth of debugging. Only to just find out i was returning "v" instead of "__USERDATA" I am not ok.
 end
 
 return SaveUserData
