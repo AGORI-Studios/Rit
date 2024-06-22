@@ -57,6 +57,8 @@ function PreloaderScreen:enter(last, args)
             Timer.tween(1, fade, {1}, 'in-out-cubic', function() state.switch(states.menu.StartMenu) end)
         end)
     end)
+
+    localize.loadLocale(Settings.options["General"].language)
 end
 
 function PreloaderScreen:update(dt)
@@ -77,12 +79,7 @@ end
 function PreloaderScreen:draw()
     local percent = 0
     if threads.assets.resourceCount ~= 0 then percent = (threads.assets.loadedCount) / threads.assets.resourceCount end
-    --[[ love.graphics.printf(
-        (not doneLoading and ("Precaching Resources..." .. threads.assets.loadedCount .. "/" .. threads.assets.resourceCount) 
-            or "Loaded!") ..
-        "\n"..math.floor(percent * 100).."%", 
-        0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2
-    ) ]]
+
     if (threads.assets.loadedCount == 20) == threads.assets.resourceCount then
         love.graphics.printf(localize.localize("Parsing Maps..."), 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
     elseif (threads.assets.loadedCount) == threads.assets.resourceCount then
@@ -90,6 +87,7 @@ function PreloaderScreen:draw()
     else
         love.graphics.printf(localize.localize("Precaching Resources...")..(threads.assets.loadedCount).."/"..threads.assets.resourceCount.."\n"..math.floor(percent * 100).."%", 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
     end
+    
     if curRndText ~= "" then
         love.graphics.printf(curRndText, 0, Inits.GameHeight/2+400, Inits.GameWidth/2, "center", 0, 2, 2)
     end

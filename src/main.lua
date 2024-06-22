@@ -95,10 +95,14 @@ function love.load(args)
 
     GameInit.LoadLibraries()
     importer = lovefs()
-
+    
     GameInit.ClearOSModule()
+    start = os.time()
     GameInit.LoadClasses()
+    endTime = os.time()
+    print(endTime - start)
     GameInit.CreateFolders()
+    
 
     -- Skins, create skins directory if it doesn't exist
     skinList = {}
@@ -242,7 +246,7 @@ function love.draw()
         love.graphics.rectangle("fill", _TRANSITION.x, _TRANSITION.y, _TRANSITION.width, Inits.GameHeight)
         love.graphics.setStencilTest()
         love.graphics.setColor(1,1,1,1)
-        if DRAW_VIRTUAL_CONTROLLER then
+        if DRAW_VIRTUAL_CONTROLLER and currentController then
             currentController:draw()
         end
 

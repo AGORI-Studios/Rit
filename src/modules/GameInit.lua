@@ -173,6 +173,7 @@ function GI.LoadLibraries()
 end
 
 function GI.LoadClasses()
+    local startTime = os.time()
     Group = require("modules.Classes.Group")
     Cache = require("modules.Classes.Cache")
     Point = require("modules.Classes.Point")
@@ -191,81 +192,85 @@ function GI.LoadClasses()
     Popup = require("modules.Popup")
     skin = require("modules.Game.SkinHandler")
     localize = require("modules.Game.Localize")
-    VirtualController = (require("modules.VirtualController"))
-    menuController = VirtualController({
-        {
-            text = "",
-            key = "return",
-            x = Inits.GameWidth - 325,
-            y = Inits.GameHeight - 325,
-            width = 250,
-            height = 250,
-            color = {0.5, 1, 0.5}
-        },
-        {
-            text = "",
-            key = "down",
-            x = 75,
-            y = Inits.GameHeight - 225,
-            width = 125,
-            height = 125,
-            color = {0.5, 0.5, 1}
-        },
-        {
-            text = "",
-            key = "up",
-            x = 75,
-            y = Inits.GameHeight - 375,
-            width = 125,
-            height = 125,
-            color = {0.5, 0.5, 1}
-        },
-        {
-            text = "",
-            key = "escape",
-            x = 75,
-            y = 75,
-            width = 75,
-            height = 75,
-            color = {1, 0.5, 0.5}
-        }
-    })
-    currentController = menuController
-
-    -- only do 4k and 7k for now,,,
-    local keybinds = Settings.options["Keybinds"]["4kBinds"]:splitAllCharacters()
-
-    -- each key is a width of 1920/4 = 480
-    local keys = {
-        {
-            text = "",
-            key = "escape",
-            x = 75,
-            y = 75,
-            width = 75,
-            height = 75,
-            color = {1, 0.5, 0.5}
-        }
-    }
-    for i = 1, 4 do
-        table.insert(keys, {
-            text = "",
-            key = keybinds[i],
-            x = 480 * (i-1),
-            y = Inits.GameHeight - 250,
-            width = 480,
-            height = 250,
-            color = {0.5, 0.5, 0.5},
-            downAlpha = 0.5,
+    
+    if love.system.getSystem() == "Mobile" then
+        VirtualController = (require("modules.VirtualController"))
+        menuController = VirtualController({
+            {
+                text = "",
+                key = "return",
+                x = Inits.GameWidth - 325,
+                y = Inits.GameHeight - 325,
+                width = 250,
+                height = 250,
+                color = {0.5, 1, 0.5}
+            },
+            {
+                text = "",
+                key = "down",
+                x = 75,
+                y = Inits.GameHeight - 225,
+                width = 125,
+                height = 125,
+                color = {0.5, 0.5, 1}
+            },
+            {
+                text = "",
+                key = "up",
+                x = 75,
+                y = Inits.GameHeight - 375,
+                width = 125,
+                height = 125,
+                color = {0.5, 0.5, 1}
+            },
+            {
+                text = "",
+                key = "escape",
+                x = 75,
+                y = 75,
+                width = 75,
+                height = 75,
+                color = {1, 0.5, 0.5}
+            }
         })
+        currentController = menuController
+
+        -- only do 4k and 7k for now,,,
+        local keybinds = Settings.options["Keybinds"]["4kBinds"]:splitAllCharacters()
+
+        -- each key is a width of 1920/4 = 480
+        local keys = {
+            {
+                text = "",
+                key = "escape",
+                x = 75,
+                y = 75,
+                width = 75,
+                height = 75,
+                color = {1, 0.5, 0.5}
+            }
+        }
+        for i = 1, 4 do
+            table.insert(keys, {
+                text = "",
+                key = keybinds[i],
+                x = 480 * (i-1),
+                y = Inits.GameHeight - 250,
+                width = 480,
+                height = 250,
+                color = {0.5, 0.5, 0.5},
+                downAlpha = 0.5,
+            })
+        end
+        
+        gameController = VirtualController(keys)
     end
     
-    gameController = VirtualController(keys)
-    
     -- API Stuff
-    RequestJsonData = require("modules.API.RequestJsonData")
+    --RequestJsonData = require("modules.API.RequestJsonData")
 
-    localize.loadLocale(Settings.options["General"].language)
+    local endTime = os.time()
+    print("TIME: " .. endTime - startTime)
 end
 
 function GI.LoadShaders()
