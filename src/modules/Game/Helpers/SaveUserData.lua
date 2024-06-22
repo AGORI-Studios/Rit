@@ -46,7 +46,7 @@ function SaveUserData.LoadData(path)
                 data.OverallRating = data.OverallRating + v * math.pow(0.9, i - 1)
             end
 
-            return data
+            _USERDATA = data
         end,
         function()
             _USERDATA = defaultUserDataModal
