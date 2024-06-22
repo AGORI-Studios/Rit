@@ -53,10 +53,10 @@ function HitObject:new(time, data, endTime)
         holdObj.verts = {}
         holdObj.toX = holdObj.parent.x
         holdObj.midOffset = 0--love.math.random(-200, 200)
-        for i = 1, 96 do
+        --[[ for i = 1, 96 do
             table.insert(holdObj.verts, {0, 0, 0, 0})
         end
-        holdObj.mesh = nil --[[ love.graphics.newMesh(vertexFormat, #holdObj.verts, "fan") ]]
+        holdObj.mesh = nil
         function holdObj:draw()
             local lastShader = love.graphics.getShader()
             local defaultShader = VertSprite.defaultShader
@@ -66,8 +66,6 @@ function HitObject:new(time, data, endTime)
             -- make endObj's x closer to self.toX as self.y gets closer to self.parent.y
             -- percent (going from 1-0)
             -- 1 is not near, 0 is near
-            --[[  local percent = (self.y - self.parent.y) / (self.parent.y - self.y)
-            endObj.x = endObj.x + (self.toX - endObj.x) * (self.y - self.parent.y) / (self.parent.y - self.y) ]]
 
             -- curv the holdObj based off the parents xy and the endObj's xy
             local startX, startY = parent.x-self.x, parent.y-self.y
@@ -109,11 +107,8 @@ function HitObject:new(time, data, endTime)
             if self.mesh:getTexture() ~= self.graphic then self.mesh:setTexture(self.graphic) end
 
             love.graphics.draw(self.mesh, 0, 0, 0)
-            --[[ love.graphics.line(bezier:render(5))
-            love.graphics.setPointSize(3)
-            love.graphics.points(points) ]]
         end
-        --holdObj.rotation = Point(love.math.random(-5, 5), love.math.random(-5, 5), love.math.random(-5, 5))
+        --holdObj.rotation = Point(love.math.random(-5, 5), love.math.random(-5, 5), love.math.random(-5, 5)) ]]
 
         table.insert(self.children, holdObj)
 

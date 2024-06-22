@@ -49,14 +49,14 @@ function SaveUserData.LoadData(path)
             return data
         end,
         function()
-            __USERDATA = defaultUserDataModal
-            SaveUserData.SaveData(__USERDATA)
+            _USERDATA = defaultUserDataModal
+            SaveUserData.SaveData(_USERDATA)
 
-            return __USERDATA
+            return _USERDATA
         end
     )
 
-    return __USERDATA -- 1 day's worth of debugging. Only to just find out i was returning "v" instead of "__USERDATA" I am not ok.
+    return _USERDATA -- 1 day's worth of debugging. Only to just find out i was returning "v" instead of "_USERDATA" I am not ok.
 end
 
 return SaveUserData
