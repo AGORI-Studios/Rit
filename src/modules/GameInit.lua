@@ -829,8 +829,6 @@ function love.setFpsCap(fps)
     love._fps_cap = fps or 500
 end
 
-error("test")
-
 -- End of Love Functions
 
 return GI
