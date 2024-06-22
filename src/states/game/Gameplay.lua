@@ -29,7 +29,9 @@ Gameplay.velocityPositionMakers = {}
 
 Gameplay.songDuration = 0
 Gameplay.escapeTimer = 0 -- how long the back button has been held for
-Gameplay.health = 0.5
+Gameplay.health = 50
+Gameplay.healthMax = 100
+Gameplay.healthMin = 0
 
 Gameplay.maxScore = 1000000 -- 1 million max score. Can be modified with mods (TODO)
 Gameplay.score = 0
@@ -66,6 +68,7 @@ Gameplay.eventTimers = {}
 local lerpedScore = 0
 local lerpedAccuracy = 0
 local lerpedRating = 0
+local lerpedHealth = 50
 
 local comboTimer = {}
 local judgeTimer = {}
@@ -118,7 +121,9 @@ function Gameplay:reset()
     self.velocityPositionMakers = {}
     self.currentSvIndex = 1
     self.songDuration = 0
-    self.health = 0.5
+    self.health = 100
+    self.healthMax = 100
+    self.healthMin = 0
     self.mode = 4 -- amount of keys
     self.maxScore = 1000000 -- 1 million max score
     self.score = 0
@@ -205,6 +210,25 @@ function Gameplay:addPlayfield(x, y)
     table.insert(self.playfields, playfield)
 end
 
+function Gameplay:doHealthIncreaseForJudgement(judgementName)
+    local amount = 0
+
+    if judgementName == "marvellous" then
+        amount = 0.3
+    elseif judgementName == "perfect" then
+        amount = 0.2
+    elseif judgementName == "great" then
+        amount = 0.025
+    elseif judgementName == "good" then
+    elseif judgementName == "bad" then
+        amount = -3
+    elseif judgementName == "miss" then
+        amount = -5
+    end
+
+    self.health = math.clamp(self.healthMin, self.health + amount, self.healthMax)
+end
+
 function Gameplay:doJudgement(time)
     local judgement = nil
     local index = 1
@@ -281,6 +305,8 @@ function Gameplay:doJudgement(time)
             self.comboGroup:add(sprite)
         end
     end
+
+    self:doHealthIncreaseForJudgement(judgement.name)
 end
 
 -- // Slider Velocity Functions \\ --
@@ -960,7 +986,6 @@ function Gameplay:update(dt)
                         self.hitObjects:remove(ho)
                         ho:destroy()
                         self:doJudgement(1000) -- miss
-                        self.health = self.health - 0.18
                     end
                 end
             end
@@ -1097,7 +1122,6 @@ end
 function Gameplay:goodNoteHit(note, time)
     if not note.wasGoodHit then
         note.wasGoodHit = true
-        self.health = self.health + 0.035
 
         if not note.isSustainNote then
             self.combo = self.combo + 1
@@ -1210,6 +1234,7 @@ function Gameplay:draw()
     lerpedScore = math.lerp(lerpedScore, self.score, 0.05)
     lerpedAccuracy = math.lerp(lerpedAccuracy, self.accuracy, 0.05)
     lerpedRating = math.lerp(lerpedRating, self.rating, 0.05)
+    lerpedHealth = math.lerp(lerpedHealth, self.health, 0.05)
 
     local lastFont = love.graphics.getFont()
     love.graphics.setFont(Cache.members.font["menuBold"])
@@ -1222,6 +1247,8 @@ function Gameplay:draw()
         love.graphics.setColor(1,1,1,1)
         love.graphics.printf(localize.localize("Press SPACE to skip intro"), 0, Inits.GameWidth-50, 960, "right", 0, 2, 2)
     end
+
+    love.graphics.rectangle("fill", self.bgLane.width*1.6 + 50, Inits.GameHeight - 50, 25, -lerpedHealth * 5)
 
     love.graphics.setFont(lastFont)
 end

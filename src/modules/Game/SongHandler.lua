@@ -617,7 +617,7 @@ function playRandomSong()
     MenuSoundManager:stop("music")
     MenuSoundManager:removeAllSounds()
     MenuSoundManager:newSound("music", diff.audioFile, 1, true, "stream")
-    MenuSoundManager:playFromTime("music", diff.previewTime/1000)
+    MenuSoundManager:playFromTime("music", (diff.previewTime or 0.01)/1000)
     MenuSoundManager:setLooping("music", true)
 
     curPlayingSong = diff.title:strip()
