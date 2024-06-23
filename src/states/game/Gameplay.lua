@@ -979,6 +979,10 @@ function Gameplay:update(dt)
         end
     end
 
+    for i, playfield in ipairs(self.playfields) do
+        playfield:update(dt)
+    end
+
     if self.ableToModscript then
         Modscript:update(dt, self.soundManager:getBeat("music"))
     end

@@ -273,6 +273,7 @@ end
 function GI.LoadShaders()
     return {
         backgroundEffects = love.graphics.newShader("shaders/backgroundEffects.glsl"),
+        playfieldAlpha = love.graphics.newShader("shaders/playfieldAlpha.glsl")
     }
 end
 
