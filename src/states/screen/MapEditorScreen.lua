@@ -31,39 +31,80 @@ local beatDisplaySlider = {
     dragging = false
 }
 
+local utf8 = require("utf8")
+
 local musicTime = 0
 
 local hitsound = love.audio.newSource("defaultSkins/skinThrowbacks/hitsound.wav", "stream")
 
-function MapEditorScreen:enter()
-    self.map = {
-        meta = {
-            AudioFile = "None",
-            SongTitle = "New Song",
-            SongDiff = "Difficulty",
-            Background = "None",
-            Banner = "None",
-            Icon = "None",
-            KeyAmount = 4, -- TODO: Key amounts other than 4.
-            Creator = "Creator",
-            CreatorID = Steam and SteamUser:getName() or "Unknown",
-            Artist = "Artist",
-            Tags = "",
-            Description = "",
-            PreviewTime = 0
-        },
+local exporting = false
+local exporting_CURTAG = "SongTitle"
+local exporting_LOG = ""
 
-        curBPM = 120,
+local full_AudioPath = ""
+local full_BackgroundPath = ""
 
-        -- ms_starttime:bpm
-        timings = {},
+function MapEditorScreen:enter(songPath)
+    if not songPath then
+        self.map = {
+            meta = {
+                AudioFile = "None",
+                SongTitle = "New Song",
+                SongDiff = "New Difficulty",
+                Background = "None",
+                Banner = "None",
+                Icon = "None",
+                KeyAmount = 4, -- TODO: Key amounts other than 4.
+                Creator = "Creator",
+                CreatorID = Steam and SteamUser:getName() or "Unknown",
+                Artist = "Artist",
+                Tags = "",
+                Description = "",
+                PreviewTime = 0
+            },
 
-        -- ms_starttime:ms_endtime:lane
-        hits = {},
+            curBPM = 120,
 
-        -- ms_starttime:multiplier
-        velocities = {}
-    }
+            -- ms_starttime:bpm
+            timings = {},
+
+            -- ms_starttime:ms_endtime:lane
+            hits = {},
+
+            -- ms_starttime:multiplier
+            velocities = {}
+        }
+    else
+        self.map = {
+            meta = {
+                AudioFile = "None",
+                SongTitle = "New Song",
+                SongDiff = "New Difficulty",
+                Background = "None",
+                Banner = "None",
+                Icon = "None",
+                KeyAmount = 4, -- TODO: Key amounts other than 4.
+                Creator = "Creator",
+                CreatorID = Steam and SteamUser:getName() or "Unknown",
+                Artist = "Artist",
+                Tags = "",
+                Description = "",
+                PreviewTime = 0
+            },
+
+            curBPM = 120,
+
+            -- ms_starttime:bpm
+            timings = {},
+
+            -- ms_starttime:ms_endtime:lane
+            hits = {},
+
+            -- ms_starttime:multiplier
+            velocities = {}
+        }
+        -- You will ONLY be able to open (and export) .ritc files with this... grrrr....
+    end
     
     noteWidth = 100
     self.snapping = snapSlider.value  -- Default snapping value for 4/4 beat
@@ -74,9 +115,12 @@ function MapEditorScreen:enter()
     self.audioSource = nil
     self.backgroundData = nil
     self.waveformPoints = {}
+
+    love.audio.stop()
 end
 
 function MapEditorScreen:update(dt)
+    if exporting then goto exportingupdate end
     if playing then
         -- Calculate pixels per millisecond based on beat display settings
         local msPerScreen = beatDisplaySlider.value * (60000 / self.map.curBPM)
@@ -109,9 +153,15 @@ function MapEditorScreen:update(dt)
             end
         end
     end
+
+    goto endfunction
+    ::exportingupdate::
+
+    ::endfunction::
 end
 
 function MapEditorScreen:keypressed(key)
+    if exporting then goto exportingkeypressed end
     if key == "space" then
         playing = not playing
         if playing and self.audioSource then
@@ -139,10 +189,85 @@ function MapEditorScreen:keypressed(key)
 
         table.sort(self.map.hits, function(a, b) return a.starttime < b.starttime end)
     end
+
+    goto endfunction
+    ::exportingkeypressed::
+    if key == "escape" then
+        exporting = false
+    elseif key == "backspace" then
+        local byteoffset = utf8.offset(self.map.meta[exporting_CURTAG], -1)
+
+        if byteoffset then
+            self.map.meta[exporting_CURTAG] = string.sub(self.map.meta[exporting_CURTAG], 1, byteoffset - 1)
+        end
+    end
+    ::endfunction::
 end
 
 function MapEditorScreen:onMapSave()
+    love.filesystem.createDirectory("songs/" .. self.map.meta.SongTitle .. "/")
+    local exportString = ""
 
+    -- [Meta] section
+    exportString = exportString .. "[Meta]\n"
+    exportString = exportString .. "AudioFile:" .. self.map.meta.AudioFile .. "\n"
+    exportString = exportString .. "SongTitle:" .. self.map.meta.SongTitle .. "\n"
+    exportString = exportString .. "SongDiff:" .. self.map.meta.SongDiff .. "\n"
+    exportString = exportString .. "Background:" .. self.map.meta.Background .. "\n"
+    exportString = exportString .. "Banner:" .. self.map.meta.Banner .. "\n"
+    exportString = exportString .. "KeyAmount:" .. self.map.meta.KeyAmount .. "\n"
+    exportString = exportString .. "Creator:" .. self.map.meta.Creator .. "\n"
+    exportString = exportString .. "CreatorID:" .. self.map.meta.CreatorID .. "\n"
+    exportString = exportString .. "Artist:" .. self.map.meta.Artist .. "\n"
+    exportString = exportString .. "Tags:" .. self.map.meta.Tags .. "\n"
+    exportString = exportString .. "Description:" .. self.map.meta.Description .. "\n"
+    exportString = exportString .. "PreviewTime:" .. self.map.meta.PreviewTime .. "\n\n"
+
+    -- [Timings] section
+    exportString = exportString .. "[Timings]\n"
+    exportString = exportString .. "0:" .. self.map.curBPM .. "\n"
+    for _, timing in ipairs(self.map.timings) do -- TODO: Add a timings thingy a bobber
+        exportString = exportString .. timing.ms_starttime .. ":" .. timing.bpm .. "\n"
+    end
+    exportString = exportString .. "\n"
+
+    -- [Hits] section
+    exportString = exportString .. "[Hits]\n"
+    for _, note in ipairs(self.map.hits) do
+        exportString = exportString .. note.starttime .. ":" .. note.endtime .. ":" .. note.lane .. "\n"
+    end
+    if #self.map.hits == 0 then
+        exportString = exportString .. "0:0:1"
+    end
+
+    love.filesystem.write("songs/" .. self.map.meta.SongTitle .. "/" .. self.map.meta.SongDiff .. ".ritc", exportString)
+
+    -- now we do some wackies !!!
+    exporting_LOG = ""
+    if not importer then
+        exporting_LOG = exporting_LOG .. "importer was not loaded. Lovefs wasn't fully initialized. Can not copy audio file and background\n"
+    else
+        Try(
+            function()
+                importer:copy(full_AudioPath)
+            end,
+            function()
+                exporting_LOG = exporting_LOG .. "Could not copy audio file. You will have to do this manually.\n"
+            end
+        )
+        Try(
+            function()
+                importer:copy(full_BackgroundPath)
+            end,
+            function()
+                exporting_LOG = exporting_LOG .. "Could not copy background file. You will have to do this manually.\n"
+            end
+        )
+    end
+
+    print("file://" .. love.filesystem.getSaveDirectory() .. "/songs/" .. self.map.meta.SongTitle)
+
+    love.system.openURL("file://" .. love.filesystem.getSaveDirectory() .. "/songs/" .. self.map.meta.SongTitle)
 end
 
 function MapEditorScreen:onMapLoad()
@@ -152,83 +277,136 @@ end
 function MapEditorScreen:mousepressed(x, y, button)
     local x, y = toGameScreen(x, y)
 
-    -- Check if the mouse is pressed on the snapping slider
-    if x >= snapSlider.x and x <= snapSlider.x + snapSlider.width and y >= snapSlider.y and y <= snapSlider.y + snapSlider.height then
-        snapSlider.dragging = true
-        return
-    end
-
-    -- Check if the mouse is pressed on the beat display slider
-    if x >= beatDisplaySlider.x and x <= beatDisplaySlider.x + beatDisplaySlider.width and y >= beatDisplaySlider.y and y <= beatDisplaySlider.y + beatDisplaySlider.height then
-        beatDisplaySlider.dragging = true
-        return
-    end
-
-    -- Adjust y-coordinate for noteOffsetY and pixelsPerMs
-    local msPerScreen = beatDisplaySlider.value * (60000 / self.map.curBPM)
-    local pixelsPerMs = 1080 / msPerScreen
-    local adjustedY = (y - noteOffsetY) / pixelsPerMs
-
-    -- Calculate the beat interval based on the current BPM and snapping value
-    local beatInterval = (60000 / self.map.curBPM) / self.snapping
-    local snappedPosition = math.floor(adjustedY / beatInterval + 0.5) * beatInterval
-
-    -- Determine which lane was clicked
-    local lane = math.floor((x - 725 - 50) / noteWidth) - 1
-
-    if lane >= 0 and lane < self.map.meta.KeyAmount then
-        -- Check if the mouse click is within the bounds of an existing note
-        local noteClicked = nil
-        local noteIndexToDelete = nil
-        for i, note in ipairs(self.map.hits) do
-            local noteEnd = (note.endtime == 0 or note.endtime == note.starttime) and note.starttime + (25 / pixelsPerMs) or note.endtime
-            if note.lane == lane + 1 and adjustedY >= note.starttime and adjustedY <= noteEnd then
-                if button == 2 then
-                    noteIndexToDelete = i
-                else
-                    noteClicked = note
-                end
-                break
-            end
-        end
-
-        if noteIndexToDelete then
-            table.remove(self.map.hits, noteIndexToDelete)
+    if not exporting then
+        -- Check if the mouse is pressed on the snapping slider
+        if x >= snapSlider.x and x <= snapSlider.x + snapSlider.width and y >= snapSlider.y and y <= snapSlider.y + snapSlider.height then
+            snapSlider.dragging = true
             return
         end
 
-        if button == 1 and noteClicked then
-            -- If a note was clicked with left button, allow modifying its endTime
-            noteClicked.dragging = true
-            wasPressed = true
-        elseif button == 1 and not noteClicked and snappedPosition >= 0 and snappedPosition <= songEnd then
-            -- If no note was clicked and left button was pressed, create a new note
-            table.insert(self.map.hits, {
-                lane = lane + 1,
-                starttime = snappedPosition,
-                endtime = snappedPosition,  -- Initialize endtime to starttime
-                hit = false
-            })
-            wasPressed = true
+        -- Check if the mouse is pressed on the beat display slider
+        if x >= beatDisplaySlider.x and x <= beatDisplaySlider.x + beatDisplaySlider.width and y >= beatDisplaySlider.y and y <= beatDisplaySlider.y + beatDisplaySlider.height then
+            beatDisplaySlider.dragging = true
+            return
+        end
+
+        -- Adjust y-coordinate for noteOffsetY and pixelsPerMs
+        local msPerScreen = beatDisplaySlider.value * (60000 / self.map.curBPM)
+        local pixelsPerMs = 1080 / msPerScreen
+        local adjustedY = (y - noteOffsetY) / pixelsPerMs
+
+        -- Calculate the beat interval based on the current BPM and snapping value
+        local beatInterval = (60000 / self.map.curBPM) / self.snapping
+        local snappedPosition = math.floor(adjustedY / beatInterval + 0.5) * beatInterval
+
+        -- Determine which lane was clicked
+        local lane = math.floor((x - 725 - 50) / noteWidth) - 1
+
+        if lane >= 0 and lane < self.map.meta.KeyAmount then
+            -- Check if the mouse click is within the bounds of an existing note
+            local noteClicked = nil
+            local noteIndexToDelete = nil
+            for i, note in ipairs(self.map.hits) do
+                local noteEnd = (note.endtime == 0 or note.endtime == note.starttime) and note.starttime + (25 / pixelsPerMs) or note.endtime
+                if note.lane == lane + 1 and adjustedY >= note.starttime and adjustedY <= noteEnd then
+                    if button == 2 then
+                        noteIndexToDelete = i
+                    else
+                        noteClicked = note
+                    end
+                    break
+                end
+            end
+
+            if noteIndexToDelete then
+                table.remove(self.map.hits, noteIndexToDelete)
+                return
+            end
+
+            if button == 1 and noteClicked then
+                -- If a note was clicked with left button, allow modifying its endTime
+                noteClicked.dragging = true
+                wasPressed = true
+            elseif button == 1 and not noteClicked and snappedPosition >= 0 and snappedPosition <= songEnd then
+                -- If no note was clicked and left button was pressed, create a new note
+                table.insert(self.map.hits, {
+                    lane = lane + 1,
+                    starttime = snappedPosition,
+                    endtime = snappedPosition,  -- Initialize endtime to starttime
+                    hit = false
+                })
+                wasPressed = true
+            end
+        end
+
+        -- Check if the mouse is pressed on the AudioFile button
+        if x >= 10 and x <= 310 and y >= 250 and y <= 300 then
+            droppingAudio = true
+            droppingBackground = false  -- Ensure only one file dropping mode is active
+            return
+        end
+
+        -- Check if the mouse is pressed on the Background button
+        if x >= 10 and x <= 310 and y >= 320 and y <= 370 then
+            droppingBackground = true
+            droppingAudio = false  -- Ensure only one file dropping mode is active
+            return
+        end
+
+        if x >= 10 and x <= 160 and y >= 400 and y <= 450 then
+            exporting = true
+        end
+    else
+    
+        local metaItems = {
+            "SongTitle", "SongDiff", "Creator",
+            "Artist", "Tags", "Description", "PreviewTime"
+        }
+        local yOffset = 100  -- Initial y offset for the first meta element
+        local boxWidth = 1700
+        local boxHeight = 50
+
+        for index, meta in ipairs(metaItems) do
+            -- Calculate the boundaries of the current meta box
+            local boxX = 100
+            local boxY = yOffset
+            local boxRight = boxX + boxWidth
+            local boxBottom = boxY + boxHeight
+
+            -- Check if the mouse click was inside this meta box
+            if x >= boxX and x <= boxRight and y >= boxY and y <= boxBottom then
+                exporting_CURTAG = metaItems[index]
+                break
+            end
+
+            yOffset = yOffset + boxHeight + 10  -- Increase yOffset for the next box
+        end
+
+        local buttonWidth = 200
+        local buttonHeight = 50
+        local buttonX = 100
+        local buttonY = 950
+
+        if x >= buttonX and x <= buttonX + buttonWidth and y >= buttonY and y <= buttonY + buttonHeight then
+            self:onMapSave()
         end
     end
+end
 
-    -- Check if the mouse is pressed on the AudioFile button
-    if x >= 10 and x <= 310 and y >= 250 and y <= 300 then
-        droppingAudio = true
-        droppingBackground = false  -- Ensure only one file dropping mode is active
-        return
-    end
-
-    -- Check if the mouse is pressed on the Background button
-    if x >= 10 and x <= 310 and y >= 320 and y <= 370 then
-        droppingBackground = true
-        droppingAudio = false  -- Ensure only one file dropping mode is active
-        return
+function MapEditorScreen:textinput(text)
+    if exporting then
+        if exporting_CURTAG == "KeyAmount" then
+            text = tonumber(text) or ""
+            self.map.meta[exporting_CURTAG] = tonumber(self.map.meta[exporting_CURTAG] .. text)
+            self.map.meta["KeyAmount"] = math.clamp(1, self.map.meta["KeyAmount"], 10)
+        else
+            self.map.meta[exporting_CURTAG] = self.map.meta[exporting_CURTAG] .. text
+        end
     end
 end
 
 function MapEditorScreen:mousemoved(x, y, dx, dy, istouch)
+    if exporting then goto exportingmousemoved end
     local x, y = toGameScreen(x, y)
 
     if snapSlider.dragging then
@@ -267,6 +445,11 @@ function MapEditorScreen:mousemoved(x, y, dx, dy, istouch)
     if wasPressed then
         self.map.hits[#self.map.hits].endtime = math.max(snappedPosition, self.map.hits[#self.map.hits].starttime)
     end
+
+    goto endfunction
+    ::exportingmousemoved::
+
+    ::endfunction::
 end
 
 function MapEditorScreen:filedropped(file)
@@ -275,6 +458,7 @@ function MapEditorScreen:filedropped(file)
 
     if ext then
         if droppingAudio and (ext == "mp3" or ext == "ogg" or ext == "wav") then
+            full_AudioPath = file:getFilename()
             file:open("r")
             local fileData = file:read("data")
             self.audioData = love.sound.newSoundData(fileData)
@@ -284,6 +468,7 @@ function MapEditorScreen:filedropped(file)
             songEnd = self.audioSource:getDuration() * 1000
 
         elseif droppingBackground and (ext == "png" or ext == "jpg" or ext == "jpeg" or ext == "bmp") then
+            full_BackgroundPath = file:getFilename()
             file:open("r")
             local fileData = file:read("data")
             self.backgroundData = love.graphics.newImage(love.image.newImageData(fileData))
@@ -298,6 +483,7 @@ function MapEditorScreen:filedropped(file)
 end
 
 function MapEditorScreen:mousereleased(x, y, button)
+    if exporting then goto exportingmousereleased end
     wasPressed = false
     snapSlider.dragging = false
     beatDisplaySlider.dragging = false
@@ -305,9 +491,14 @@ function MapEditorScreen:mousereleased(x, y, button)
     for _, note in ipairs(self.map.hits) do
         note.dragging = false
     end
+
+    goto endfunction
+    ::exportingmousereleased::
+    ::endfunction::
 end
 
 function MapEditorScreen:wheelmoved(x, y)
+    if exporting then goto exportingwheelmoved end
     local msPerScreen = beatDisplaySlider.value * (60000 / self.map.curBPM)
     local pixelsPerMs = 1080 / msPerScreen
     local scrollSpeed = love.keyboard.isDown("lctrl") and 100 or 10
@@ -319,6 +510,11 @@ function MapEditorScreen:wheelmoved(x, y)
     
     -- Update noteOffsetY based on musicTime
     noteOffsetY = -musicTime * pixelsPerMs
+
+    goto endfunction
+    ::exportingwheelmoved::
+
+    ::endfunction:: 
 end
 
 function MapEditorScreen:draw()
@@ -423,6 +619,57 @@ function MapEditorScreen:draw()
     love.graphics.rectangle("fill", 10, 320, 300, 50)
     love.graphics.setColor(1, 1, 1)
     love.graphics.printf("Background: " .. self.map.meta.Background, 10, 320, 300, "left", 0, 1.5, 1.5)
+
+    love.graphics.setColor(0.5, 0.5, 0.5)
+    love.graphics.rectangle("fill", 10, 400, 150, 50)
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.printf("Export Map", -30, 410, 150, "center", 0, 1.5, 1.5)
+
+    if exporting then
+        love.graphics.setColor(0.5, 0.5, 0.5)
+        love.graphics.rectangle("fill", 50, 50, 1820, 980, 15, 15) -- tab background
+        love.graphics.setColor(1, 1, 1)
+    
+        local yOffset = 100  -- Initial y offset for the first meta element
+        local boxWidth = 1700
+        local boxHeight = 50
+    
+        -- Draw each meta element with a surrounding box
+        for _, meta in ipairs({ -- i should probably define this somewhere else, but ah well
+            {label = "Song Title:", value = self.map.meta.SongTitle},
+            {label = "Song Diff:", value = self.map.meta.SongDiff},
+            {label = "Creator:", value = self.map.meta.Creator},
+            {label = "Artist:", value = self.map.meta.Artist},
+            {label = "Tags:", value = self.map.meta.Tags},
+            {label = "Description:", value = self.map.meta.Description},
+            {label = "Preview Time:", value = self.map.meta.PreviewTime},
+        }) do
+            -- Draw background box
+            love.graphics.setColor(0.8, 0.8, 0.8)
+            love.graphics.rectangle("fill", 100, yOffset, boxWidth, boxHeight)
+    
+            -- Draw text within the box
+            love.graphics.setColor(0, 0, 0)
+            love.graphics.printf(meta.label .. " " .. meta.value, 100, yOffset, boxWidth, "left", 0, 2, 2)
+    
+            -- Increase yOffset for the next line
+            yOffset = yOffset + boxHeight + 10  -- Add extra space between boxes
+        end
+
+        -- Draw export file button
+        local buttonWidth = 200
+        local buttonHeight = 50
+        local buttonX = 100
+        local buttonY = 950
+
+        love.graphics.setColor(0.3, 0.8, 0.3)  -- Button color
+        love.graphics.rectangle("fill", buttonX, buttonY, buttonWidth, buttonHeight, 10, 10)
+
+        love.graphics.setColor(1, 1, 1)  -- Text color
+        love.graphics.printf("Export File", buttonX-buttonWidth/2, buttonY + 10, buttonWidth, "center", 0, 2, 2)
+
+        love.graphics.print("LOG:\n" .. exporting_LOG, 100, 550, 0, 2, 2)
+    end
 
     if droppingAudio or droppingBackground then
         love.graphics.setColor(0.3, 0.3, 0.3, 0.6)

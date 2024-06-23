@@ -14,40 +14,6 @@ local songIndex = 1
 
 local rpcTimer = 0
 
-local function getNewSong()
-    local lastSong = curSong
-
-    while curSong == lastSong do
-        curSong = table.random(orderedSongs)
-        curDiff = table.random(curSong)
-        while (type(curDiff) == "string") do
-            curDiff = table.random(curSong)
-        end
-    end
-
-
-    if curDiff.audioFile:startsWith("song/") then
-        love.filesystem.mount("songs/" .. curDiff.filename, "song")
-    end
-
-    MenuSoundManager:stop("music")
-    --[[ MenuSoundManager:removeAllSounds() ]]
-    MenuSoundManager:newSound("music", curDiff.audioFile, 1, false, "stream")
-    MenuSoundManager:play("music")
-    MenuSoundManager:setLooping("music", false)
-
-    if curDiff.audioFile:startsWith("song/") then
-        love.filesystem.unmount(curDiff.path)
-    end
-
-    --[[ if MenuSoundManager:exists("music") then
-        soundData = MenuSoundManager:getSoundData("music")
-
-        -- equalizer that draws on top of the screen
-        equalizer = Spectrum(soundData)
-    end ]]
-end
-
 local function playSong()
     curSong = orderedSongs[songIndex]
     curDiff = table.random(curSong)
@@ -60,7 +26,6 @@ local function playSong()
     end
 
     MenuSoundManager:stop("music")
-    --[[ MenuSoundManager:removeAllSounds() ]]
     MenuSoundManager:newSound("music", curDiff.audioFile, 1, false, "stream")
     MenuSoundManager:play("music")
     MenuSoundManager:setLooping("music", false)
@@ -71,13 +36,6 @@ local function playSong()
     if curDiff.audioFile:startsWith("song/") then
         love.filesystem.unmount(curDiff.path)
     end
-
-    --[[ if MenuSoundManager:exists("music") then
-        soundData = MenuSoundManager:getSoundData("music")
-
-        -- equalizer that draws on top of the screen
-        equalizer = Spectrum(soundData)
-    end ]]
 end
 
 local buttons = {
@@ -205,7 +163,6 @@ function Jukebox:enter()
     closeBtn = Sprite(Inits.GameWidth - 75, 25, "assets/images/ui/menu/cross.png")
     closeBtn.color = {1, 0, 0}
 
-    --getNewSong()
     playSong()
 
     __InJukebox = true
