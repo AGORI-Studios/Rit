@@ -29,6 +29,8 @@ function HitObject:new(time, data, endTime)
     self.endTime = endTime
     self.data = data
 
+    self.visible = true
+
     self.children = {}
     self.moveWithScroll = true
 
@@ -150,6 +152,7 @@ function HitObject:update(dt)
 end
 
 function HitObject:draw(scale)
+    if not self.visible then return end
     -- Draws our note if it's within the screen's bounds
     if self.y < 1080/scale and self.y > -400 / scale then
         for i, child in ipairs(self.children) do

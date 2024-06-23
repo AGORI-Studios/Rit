@@ -157,12 +157,36 @@ function Gameplay:reset()
     self:preloadAssets()
 
     self.judgements = {
-        { name = "marvellous",  img = skin:format("judgements/MARVELLOUS.png"),  time = 23,   scoreMultiplier = 1,     weight = 125.000 },
-        { name = "perfect",     img = skin:format("judgements/PERFECT.png"),     time = 40,   scoreMultiplier = 0.93,  weight = 122.950 },
-        { name = "great",       img = skin:format("judgements/GREAT.png"),       time = 74,   scoreMultiplier = 0.7,   weight =  81.963 },
-        { name = "good",        img = skin:format("judgements/GOOD.png"),        time = 103,  scoreMultiplier = 0.55,  weight =  40.975 },
-        { name = "bad",         img = skin:format("judgements/BAD.png"),         time = 127,  scoreMultiplier = 0.3,   weight =  20.488 },
-        { name = "miss",        img = skin:format("judgements/MISS.png"),        time = 160,  scoreMultiplier = 0,     weight =   0.000 }
+        {
+            name = "marvellous", img = skin:format("judgements/MARVELLOUS.png"),
+            time = 23, scoreMultiplier = 1, weight = 125.000,
+            forLN = true
+        },
+        {
+            name = "perfect", img = skin:format("judgements/PERFECT.png"),
+            time = 40, scoreMultiplier = 0.93, weight = 122.950,
+            forLN = true
+        },
+        {
+            name = "great", img = skin:format("judgements/GREAT.png"),
+            time = 74, scoreMultiplier = 0.7, weight = 81.963,
+            forLN = true
+        },
+        {
+            name = "good", img = skin:format("judgements/GOOD.png"),
+            time = 103, scoreMultiplier = 0.55, weight = 40.975,
+            forLN = false
+        },
+        {
+            name = "bad", img = skin:format("judgements/BAD.png"),
+            time = 127, scoreMultiplier = 0.3, weight = 20.488,
+            forLN = false
+        },
+        {
+            name = "miss", img = skin:format("judgements/MISS.png"),
+            time = 160, scoreMultiplier = 0, weight = 0.000,
+            forLN = false
+        }
     }
 
     self.allJudgements = {}
@@ -229,16 +253,29 @@ function Gameplay:doHealthIncreaseForJudgement(judgementName)
     self.health = math.clamp(self.healthMin, self.health + amount, self.healthMax)
 end
 
-function Gameplay:doJudgement(time)
+function Gameplay:doJudgement(time, wasLN)
+    local wasLN = wasLN or false
     local judgement = nil
     local index = 1
-    for i, judge in ipairs(self.judgements) do
-        if time <= judge.time then
-            judgement = judge
-            break
+    if not wasLN then
+        for i, judge in ipairs(self.judgements) do
+            if time <= judge.time then
+                judgement = judge
+                break
+            end
+        end
+    else
+        print(time)
+        for i, judge in ipairs(self.judgements) do
+            if time <= judge.time and judge.forLN then
+                judgement = judge
+                break
+            end
         end
     end
-    if not judgement then judgement = self.judgements[#self.judgements] end -- default to miss
+    if not judgement then 
+        judgement = self.judgements[not wasLN and #self.judgements or 3] 
+    end -- default to miss
 
     local score = self.noteScore * judgement.scoreMultiplier
 
@@ -1095,6 +1132,8 @@ function Gameplay:keyReleased(key)
         if ho.data == key and not ho.moveWithScroll then
             ho:kill()
             ho:destroy()
+            self.combo = self.combo + 1
+            self:doJudgement(math.abs(ho.endTime - musicTime), true)
             self.hitObjects:remove(ho)
             break
         end
@@ -1108,9 +1147,7 @@ function Gameplay:keyDown(key)
         if ho.data == key and not ho.moveWithScroll then -- HOLD NOTE
             -- if in a distance of 15ms, then remove note
             if ho.endTime - musicTime <= -15 then
-                ho:kill()
-                ho:destroy()
-                self.hitObjects:remove(ho)
+                ho.visible = false
                 break
             end
         end
