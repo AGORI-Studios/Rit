@@ -78,14 +78,14 @@ local networkingUpdateTime = 0 -- every 5 seconds, refresh players info
 function Gameplay:preloadAssets()
     -- Preload our judgement assets
     for i = 0, 9 do
-        Cache:loadImage("defaultSkins/skinThrowbacks/combo/COMBO" .. i .. ".png")
+        Cache:loadImage(skin:format("combo/COMBO" .. i .. ".png"))
     end
-    Cache:loadImage("defaultSkins/skinThrowbacks/judgements/MISS.png")
-    Cache:loadImage("defaultSkins/skinThrowbacks/judgements/BAD.png")
-    Cache:loadImage("defaultSkins/skinThrowbacks/judgements/GOOD.png")
-    Cache:loadImage("defaultSkins/skinThrowbacks/judgements/GREAT.png")
-    Cache:loadImage("defaultSkins/skinThrowbacks/judgements/PERFECT.png")
-    Cache:loadImage("defaultSkins/skinThrowbacks/judgements/MARVELLOUS.png")
+    Cache:loadImage(skin:format("judgements/MISS.png"))
+    Cache:loadImage(skin:format("judgements/BAD.png"))
+    Cache:loadImage(skin:format("judgements/GOOD.png"))
+    Cache:loadImage(skin:format("judgements/GREAT.png"))
+    Cache:loadImage(skin:format("judgements/PERFECT.png"))
+    Cache:loadImage(skin:format("judgements/MARVELLOUS.png"))
 end
 
 function Gameplay:reset()
@@ -157,12 +157,12 @@ function Gameplay:reset()
     self:preloadAssets()
 
     self.judgements = {
-        { name = "marvellous",  img = "defaultSkins/skinThrowbacks/judgements/MARVELLOUS.png",  time = 23,   scoreMultiplier = 1,     weight = 125.000 },
-        { name = "perfect",     img = "defaultSkins/skinThrowbacks/judgements/PERFECT.png",     time = 40,   scoreMultiplier = 0.93,  weight = 122.950 },
-        { name = "great",       img = "defaultSkins/skinThrowbacks/judgements/GREAT.png",       time = 74,   scoreMultiplier = 0.7,   weight =  81.963 },
-        { name = "good",        img = "defaultSkins/skinThrowbacks/judgements/GOOD.png",        time = 103,  scoreMultiplier = 0.55,  weight =  40.975 },
-        { name = "bad",         img = "defaultSkins/skinThrowbacks/judgements/BAD.png",         time = 127,  scoreMultiplier = 0.3,   weight =  20.488 },
-        { name = "miss",        img = "defaultSkins/skinThrowbacks/judgements/MISS.png",        time = 160,  scoreMultiplier = 0,     weight =   0.000 }
+        { name = "marvellous",  img = skin:format("judgements/MARVELLOUS.png"),  time = 23,   scoreMultiplier = 1,     weight = 125.000 },
+        { name = "perfect",     img = skin:format("judgements/PERFECT.png"),     time = 40,   scoreMultiplier = 0.93,  weight = 122.950 },
+        { name = "great",       img = skin:format("judgements/GREAT.png"),       time = 74,   scoreMultiplier = 0.7,   weight =  81.963 },
+        { name = "good",        img = skin:format("judgements/GOOD.png"),        time = 103,  scoreMultiplier = 0.55,  weight =  40.975 },
+        { name = "bad",         img = skin:format("judgements/BAD.png"),         time = 127,  scoreMultiplier = 0.3,   weight =  20.488 },
+        { name = "miss",        img = skin:format("judgements/MISS.png"),        time = 160,  scoreMultiplier = 0,     weight =   0.000 }
     }
 
     self.allJudgements = {}
@@ -270,7 +270,7 @@ function Gameplay:doJudgement(time)
     if self.combo > 0 then -- The normal combo
         for i = 1, #tostring(self.combo) do
             local comboDigit = tostring(self.combo):sub(i, i)
-            local sprite = Sprite(0, 0, "defaultSkins/skinThrowbacks/combo/COMBO" .. comboDigit .. ".png")
+            local sprite = Sprite(0, 0, skin:format("combo/COMBO") .. comboDigit .. ".png")
             local sprWidth = sprite.width * 1.25
             --sprite.x = 180 - (#tostring(self.combo) * sprWidth/2) + (i * sprWidth) -- center to middle of screen lfmna 
             sprite.x = 180 - (#tostring(self.combo) * sprWidth/2) + (i * sprWidth)
@@ -289,7 +289,7 @@ function Gameplay:doJudgement(time)
     if self.missCombo > 0 then -- The miss combo (I find it a nice QoL feature)
         for i = 1, #tostring(self.missCombo) do
             local comboDigit = tostring(self.missCombo):sub(i, i)
-            local sprite = Sprite(0, 0, "defaultSkins/skinThrowbacks/combo/COMBO" .. comboDigit .. ".png")
+            local sprite = Sprite(0, 0, skin:format("combo/COMBO") .. comboDigit .. ".png")
             local sprWidth = sprite.width * 1.25
             sprite.x = 180 - (#tostring(self.combo) * sprWidth/2) + (i * sprWidth)
             sprite.x = sprite.x + (Inits.GameWidth/2.55)

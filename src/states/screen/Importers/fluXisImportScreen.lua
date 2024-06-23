@@ -42,7 +42,6 @@ function FluxisInportScreen:update(dt)
                 love.filesystem.createDirectory("songs/" .. song)
                 local dir, _, lFiles = importer:ls()
                 for _, file in ipairs(lFiles) do
-                    print(dir .. sep .. file, songsFolder .. sep .. song .. sep .. file)
                     importer:copy(dir .. sep .. file, songsFolder .. sep .. song .. sep .. file)
                 end
 
