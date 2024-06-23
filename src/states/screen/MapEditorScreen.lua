@@ -4,12 +4,6 @@ local noteOffsetY = 0
 local wasPressed = false
 local noteWidth
 local songEnd = 60000 
-local cols = {
-    {1, 1, 1},
-    {1, 1, 1},
-    {1, 1, 1},
-    {1, 1, 1},
-}
 local snapSlider = {
     x = 10,
     y = 50,
@@ -27,6 +21,16 @@ local beatDisplaySlider = {
     height = 20,
     min = 1,
     max = 16,
+    value = 4,
+    dragging = false
+}
+local keyAmountSlider = {
+    x = 10,
+    y = 230,
+    width = 200,
+    height = 20,
+    min = 1,
+    max = 10,
     value = 4,
     dragging = false
 }
@@ -54,7 +58,7 @@ function MapEditorScreen:enter(songPath)
                 Background = "None",
                 Banner = "None",
                 Icon = "None",
-                KeyAmount = 4, -- TODO: Key amounts other than 4.
+                KeyAmount = 4,
                 Creator = "Creator",
                 CreatorID = Steam and SteamUser:getName() or "Unknown",
                 Artist = "Artist",
@@ -83,7 +87,7 @@ function MapEditorScreen:enter(songPath)
                 Background = "None",
                 Banner = "None",
                 Icon = "None",
-                KeyAmount = 4, -- TODO: Key amounts other than 4.
+                KeyAmount = 4,
                 Creator = "Creator",
                 CreatorID = Steam and SteamUser:getName() or "Unknown",
                 Artist = "Artist",
@@ -158,6 +162,8 @@ function MapEditorScreen:update(dt)
     ::exportingupdate::
 
     ::endfunction::
+
+    self.map.meta.KeyAmount = keyAmountSlider.value
 end
 
 function MapEditorScreen:keypressed(key)
@@ -265,7 +271,7 @@ function MapEditorScreen:onMapSave()
         )
     end
 
-    print("file://" .. love.filesystem.getSaveDirectory() .. "/songs/" .. self.map.meta.SongTitle)
+    --print("file://" .. love.filesystem.getSaveDirectory() .. "/songs/" .. self.map.meta.SongTitle)
 
     love.system.openURL("file://" .. love.filesystem.getSaveDirectory() .. "/songs/" .. self.map.meta.SongTitle)
 end
@@ -287,6 +293,11 @@ function MapEditorScreen:mousepressed(x, y, button)
         -- Check if the mouse is pressed on the beat display slider
         if x >= beatDisplaySlider.x and x <= beatDisplaySlider.x + beatDisplaySlider.width and y >= beatDisplaySlider.y and y <= beatDisplaySlider.y + beatDisplaySlider.height then
             beatDisplaySlider.dragging = true
+            return
+        end
+
+        if x >= keyAmountSlider.x and x <= keyAmountSlider.x + keyAmountSlider.width and y >= keyAmountSlider.y and y <= keyAmountSlider.y + keyAmountSlider.height then
+            keyAmountSlider.dragging = true
             return
         end
 
@@ -340,20 +351,20 @@ function MapEditorScreen:mousepressed(x, y, button)
         end
 
         -- Check if the mouse is pressed on the AudioFile button
-        if x >= 10 and x <= 310 and y >= 250 and y <= 300 then
+        if x >= 10 and x <= 310 and y >= 310 and y <= 360 then
             droppingAudio = true
             droppingBackground = false  -- Ensure only one file dropping mode is active
             return
         end
 
         -- Check if the mouse is pressed on the Background button
-        if x >= 10 and x <= 310 and y >= 320 and y <= 370 then
+        if x >= 10 and x <= 310 and y >= 380 and y <= 460 then
             droppingBackground = true
             droppingAudio = false  -- Ensure only one file dropping mode is active
             return
         end
 
-        if x >= 10 and x <= 160 and y >= 400 and y <= 450 then
+        if x >= 10 and x <= 160 and y >= 4 and y <= 510 then
             exporting = true
         end
     else
@@ -424,6 +435,13 @@ function MapEditorScreen:mousemoved(x, y, dx, dy, istouch)
         return
     end
 
+    if keyAmountSlider.dragging then
+        -- Update the beat display slider value based on the mouse position
+        local newValue = math.clamp((x - keyAmountSlider.x) / keyAmountSlider.width, 0, 1) * (keyAmountSlider.max - keyAmountSlider.min) + keyAmountSlider.min
+        keyAmountSlider.value = math.floor(newValue + 0.5)
+        return
+    end
+
     -- Adjust y-coordinate for noteOffsetY and pixelsPerMs
     local msPerScreen = beatDisplaySlider.value * (60000 / self.map.curBPM)
     local pixelsPerMs = 1080 / msPerScreen
@@ -487,6 +505,7 @@ function MapEditorScreen:mousereleased(x, y, button)
     wasPressed = false
     snapSlider.dragging = false
     beatDisplaySlider.dragging = false
+    keyAmountSlider.dragging = false
 
     for _, note in ipairs(self.map.hits) do
         note.dragging = false
@@ -530,12 +549,14 @@ function MapEditorScreen:draw()
     local font = Cache.members.font["defaultX0.75"]
     love.graphics.setFont(font)
     love.graphics.push()
+        width = noteWidth * self.map.meta.KeyAmount
+        --[[ width = colWidth * self.map.meta.KeyAmount ]]
         love.graphics.setColor(0, 0, 0, 0.8)
-        love.graphics.rectangle("fill", 875, 0, 400, 1080)
+        love.graphics.rectangle("fill", 875, 0, width, 1080)
         love.graphics.setColor(1, 1, 1)
         love.graphics.setLineWidth(2.5)
         love.graphics.line(875, 0, 875, 1080)
-        love.graphics.line(1275, 0, 1275, 1080)
+        love.graphics.line(875+width, 0, 875+width, 1080)
         love.graphics.setLineWidth(1)
 
         love.graphics.push()
@@ -554,18 +575,18 @@ function MapEditorScreen:draw()
             for i = 0, songEnd * scale, beatInterval do
                 local y = i * pixelsPerMs
                 love.graphics.setColor(1, 1, 1)  -- White for full beat lines
-                love.graphics.line(875, y, 1275, y)
+                love.graphics.line(875, y, 875+width, y)
             end
 
             -- Draw half-beat lines
             for i = halfBeatInterval, songEnd * scale, beatInterval do
                 local y = i * pixelsPerMs
                 love.graphics.setColor(1, 0, 0)  -- Red for half beat lines
-                love.graphics.line(875, y, 1275, y)
+                love.graphics.line(875, y, 875+width, y)
             end
 
             for i, note in ipairs(self.map.hits) do
-                love.graphics.setColor(cols[note.lane])
+                love.graphics.setColor(1, 1, 1)
                 local y = note.starttime * pixelsPerMs
                 local height = ((note.endtime == 0 or note.endtime == note.starttime or note.endtime <= note.starttime) and 25 or note.endtime - note.starttime) * pixelsPerMs
                 love.graphics.rectangle("fill", (note.lane+1) * noteWidth + 725-50, y, noteWidth, height)
@@ -606,24 +627,38 @@ function MapEditorScreen:draw()
     love.graphics.setColor(1, 1, 1)
     love.graphics.print("Beats on Screen: " .. beatDisplaySlider.value, 10, 110, 0, 2, 2)
 
-    love.graphics.print("Song Position: " .. musicTime .. "ms / " .. songEnd .. "ms", 10, 190, 0, 2, 2)
+    -- Draw the snapping slider value text
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.print("Key Amount: " .. keyAmountSlider.value, 10, 195, 0, 2, 2)
+
+    -- Draw the key amount slider background tab
+    love.graphics.setColor(0.8, 0.8, 0.8)  -- Light gray color
+    love.graphics.rectangle("fill", keyAmountSlider.x, keyAmountSlider.y, keyAmountSlider.width, keyAmountSlider.height, 10, 10)
+
+    -- Draw the key amount slider
+    local keyAmountSliderPos = ((keyAmountSlider.value - keyAmountSlider.min) / (keyAmountSlider.max - keyAmountSlider.min)) * keyAmountSlider.width
+    love.graphics.setColor(0.3, 0.3, 0.3)  -- Darker gray color
+    love.graphics.rectangle("fill", keyAmountSlider.x + keyAmountSliderPos - 10, keyAmountSlider.y - 5, 20, keyAmountSlider.height + 10, 10, 10)
+
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.print("Song Position: " .. musicTime .. "ms / " .. songEnd .. "ms", 10, 260, 0, 2, 2)
 
     -- Draw AudioFile button
     love.graphics.setColor(0.5, 0.5, 0.5)
-    love.graphics.rectangle("fill", 10, 250, 300, 50)
+    love.graphics.rectangle("fill", 10, 310, 300, 50)
     love.graphics.setColor(1, 1, 1)
-    love.graphics.printf("Audio File: " .. self.map.meta.AudioFile, 10, 250, 300, "left", 0, 1.5, 1.5)
+    love.graphics.printf("Audio File: " .. self.map.meta.AudioFile, 10, 310, 300, "left", 0, 1.5, 1.5)
 
     -- Draw Background button
     love.graphics.setColor(0.5, 0.5, 0.5)
-    love.graphics.rectangle("fill", 10, 320, 300, 50)
+    love.graphics.rectangle("fill", 10, 380, 300, 50)
     love.graphics.setColor(1, 1, 1)
-    love.graphics.printf("Background: " .. self.map.meta.Background, 10, 320, 300, "left", 0, 1.5, 1.5)
+    love.graphics.printf("Background: " .. self.map.meta.Background, 10, 380, 300, "left", 0, 1.5, 1.5)
 
     love.graphics.setColor(0.5, 0.5, 0.5)
-    love.graphics.rectangle("fill", 10, 400, 150, 50)
+    love.graphics.rectangle("fill", 10, 460, 150, 50)
     love.graphics.setColor(1, 1, 1)
-    love.graphics.printf("Export Map", -30, 410, 150, "center", 0, 1.5, 1.5)
+    love.graphics.printf("Export Map", -30, 470, 150, "center", 0, 1.5, 1.5)
 
     if exporting then
         love.graphics.setColor(0.5, 0.5, 0.5)
