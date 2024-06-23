@@ -557,8 +557,6 @@ function SongMenu:draw()
         love.graphics.setLineWidth(1)
     end ]]
     love.graphics.push()
-    --[[ diffButton:draw()
-    songButton:draw() ]]
     setFont("menuBold")
     love.graphics.translate(0, lerpedSongPos)
     for i, btn in ipairs(songButtons) do

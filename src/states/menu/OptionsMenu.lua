@@ -23,6 +23,10 @@ local buttons = {
         tabName = "language"
     },
     {
+        text = "Gameplay",
+        tabName = "gameplay"
+    },
+    {
         text = "Controls",
         tabName = "controls"
     },
@@ -107,6 +111,16 @@ local tabs = {
 
     end,
     ["mousepressed_language"] = function()
+
+    end,
+
+    ["draw_gameplay"] = function()
+        
+    end,
+    ["update_gameplay"] = function(dt)
+
+    end,
+    ["mousepressed_gameplay"] = function()
 
     end,
 
