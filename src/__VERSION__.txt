@@ -1,2 +1,2 @@
-v0.1.0 (Beta Testing Build)
+v0.5.0 (Beta Testing Build)
 Commit d3b9651 - 21/06/2024
