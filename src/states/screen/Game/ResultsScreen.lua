@@ -25,7 +25,7 @@ function ResultsScreen:enter(_, ...)
     songname = __title
     diffname = __diffName
 
-    score, acc, misses, rating = args.score, args.accuracy, arg.misses, args.rating
+    score, acc, misses, rating = math.round(args.score), args.accuracy, arg.misses, args.rating
     combo = args.maxCombo
     judgeCounters = args.judgements
 
@@ -85,6 +85,19 @@ function ResultsScreen:draw()
     love.graphics.printf(string.format("%.2f", acc) .. "%", 650, 465, 250, "center")
     love.graphics.printf(string.format("%.2f", rating), 1050, 465, 250, "center")
     love.graphics.printf(score, 1450, 465, 250, "center")
+
+    love.graphics.setColor(0.3, 0.3, 0.3, 1)
+    love.graphics.rectangle("fill", 125, 600, 830, 450, 15, 15)
+    love.graphics.rectangle("fill", 965, 600, 830, 450, 15, 15)
+
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.printf("Your judgements will draw here when i actually add that lol", 130, 605, 820, "left")
+    love.graphics.printf("Your timings will display on a graphy-like thing here", 970, 605, 820, "left")
+
+    love.graphics.printf("Results for " .. (songname or "UnknownSong") .. " on " .. (diffname or "UnknownDiff"), 15, 200, 1920, "left")
+    -- ^ Idk where else to put this rn
+
+    love.graphics.setColor(1, 1, 1)
 end
 
 return ResultsScreen

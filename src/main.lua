@@ -204,7 +204,7 @@ function love.keypressed(key)
 
     if key == "f7" then
         state.switch(states.screens.MapEditorScreen)
-    elseif __DEBUG__ and key == "f6" then
+    --[[ elseif __DEBUG__ and key == "f6" then
         state.switch(states.screens.game.ResultsScreen, {score = 1000000, accuracy = 100, misses = 0, maxCombo = 423, rating = 19.23,
                                                     judgements = {
                                                         marvellous = 423,
@@ -214,7 +214,7 @@ function love.keypressed(key)
                                                         bad = 0,
                                                         miss = 0
                                                     }
-    })
+    }) ]]
     end
 end
 

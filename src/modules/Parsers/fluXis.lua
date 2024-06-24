@@ -72,7 +72,7 @@ function fluXisLoader.load(chart, folderPath_, diffName, forNPS)
     end
 
     
-    __title = chart.Meta
+    __title = chart.Metadata.Title
     __diffName = diffName
 
     if forNPS then

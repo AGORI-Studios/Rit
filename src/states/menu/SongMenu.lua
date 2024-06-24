@@ -446,7 +446,7 @@ function SongMenu:draw()
 
             love.graphics.setColor(1, 0.8, 0.8, 0.15)
             love.graphics.rectangle("fill", 1920/1.625, 275, 1920/2.74, 4, 10, 10)
-        -- picture shadow
+            -- picture shadow
             love.graphics.rectangle("fill", 1920/1.1, 125, 125, 125, 10, 10)
 
             love.graphics.setColor(1, 1, 1)

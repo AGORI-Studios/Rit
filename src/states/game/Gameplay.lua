@@ -1044,7 +1044,8 @@ function Gameplay:update(dt)
 end
 
 function Gameplay:keyPressed(key)
-    local cloned = self.hitsound:clone():setVolume(Settings.options["General"].hitsoundVolume)
+    local cloned = self.hitsound:clone()
+    cloned:setVolume(Settings.options["General"].hitsoundVolume)
     cloned:play()
     cloned:release()
 

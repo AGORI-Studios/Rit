@@ -490,16 +490,19 @@ function love.mousemoved(x, y, dx, dy, istouch)
 end
 
 function love.touchpressed(id, x, y, dx, dy, pressure)
+    if love.system.getSystem() == "Desktop" then return end -- curse you touch screen laptops
     state.touchpressed(id, x, y, dx, dy, pressure)
     currentController:touchpressed(id, x, y, dx, dy, pressure)
 end
 
 function love.touchreleased(id, x, y, dx, dy, pressure)
+    if love.system.getSystem() == "Desktop" then return end
     state.touchreleased(id, x, y, dx, dy, pressure)
     currentController:touchreleased(id, x, y, dx, dy, pressure)
 end
 
 function love.touchmoved(id, x, y, dx, dy, pressure)
+    if love.system.getSystem() == "Desktop" then return end
     state.touchmoved(id, x, y, dx, dy, pressure)
     currentController:touchmoved(id, x, y, dx, dy, pressure)
 end
