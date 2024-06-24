@@ -23,7 +23,7 @@ function SongButton:new(y, diffs, bmType, name, artist, creator, description, ta
 
     self:load("assets/images/ui/menu/songTag.png")
 
-    for i, diff in ipairs(diffs) do
+    for _, diff in ipairs(diffs) do
         local diffBtn = Sprite(0, self.height-55, "assets/images/ui/menu/diffBtn.png")
         diffBtn.text = diff.difficultyName
         table.insert(self.children, diffBtn)

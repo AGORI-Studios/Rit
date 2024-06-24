@@ -29,14 +29,14 @@ end
 
 function VirtualController:new(config)
     self.keys = {}
-    for i, keyConfig in ipairs(config) do
+    for _, keyConfig in ipairs(config) do
         table.insert(self.keys, key(keyConfig))
     end
 end
 
 function VirtualController:redraw(config)
     self.keys = {}
-    for i, keyConfig in ipairs(config) do
+    for _, keyConfig in ipairs(config) do
         table.insert(self.keys, key(keyConfig))
     end
 end
@@ -74,7 +74,7 @@ function VirtualController:touchreleased(id, x, y, dx, dy, pressure)
 end
 
 function VirtualController:draw()
-    for i, key in ipairs(self.keys) do
+    for _, key in ipairs(self.keys) do
         key:draw()
         love.graphics.setColor(0, 0, 0)
         local lastFont = love.graphics.getFont()
@@ -90,7 +90,7 @@ end
 local og_lkp = love.keyboard.isDown
 function love.keyboard.isDown(key)
     local isDown = false
-    for i, v in ipairs(currentController.keys) do
+    for _, v in ipairs(currentController.keys) do
         if v.key == key then
             isDown = v.down
         end
@@ -102,7 +102,7 @@ end
 local og_isdown = love.keyboard.isScancodeDown
 function love.keyboard.isScancodeDown(scancode)
     local isDown = false
-    for i, v in ipairs(currentController.keys) do
+    for _, v in ipairs(currentController.keys) do
         if v.scanCode == scancode then
             isDown = v.down
         end

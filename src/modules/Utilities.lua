@@ -3,7 +3,7 @@ local luaModules = love.filesystem.getDirectoryItems("modules/Lua")
 table.sort(luaModules, function(a, b)
     return a:sub(-4) == ".lua" and b:sub(-4) == ".lua" and a < b
 end)
-for i, module in ipairs(luaModules) do
+for _, module in ipairs(luaModules) do
     if module:sub(-4) == ".lua" then
         require("modules.Lua." .. module:sub(1, -5))
     end
@@ -13,7 +13,7 @@ local loveModules = love.filesystem.getDirectoryItems("modules/Love")
 table.sort(loveModules, function(a, b)
     return a:sub(-4) == ".lua" and b:sub(-4) == ".lua" and a < b
 end)
-for i, module in ipairs(loveModules) do
+for _, module in ipairs(loveModules) do
     if module:sub(-4) == ".lua" then
         require("modules.Love." .. module:sub(1, -5))
     end

@@ -7,7 +7,7 @@ function SearchAlgorithm:setUpSongButtons(songButtons)
 end
 
 function SearchAlgorithm:searchForTags(curButton, split)
-    for i, tag in ipairs(curButton.tags) do
+    for _, tag in ipairs(curButton.tags) do
         local tags = {}
         for _, word in ipairs(tag:split(" ")) do
             table.insert(tags, string.lower(word))
@@ -19,7 +19,7 @@ function SearchAlgorithm:searchForTags(curButton, split)
 end
 
 function SearchAlgorithm:searchForTitle(curButton, split)
-    for i, word in ipairs(split) do
+    for _, word in ipairs(split) do
         if string.find(string.lower(curButton.name), string.lower(word)) then
             return true
         end
@@ -27,7 +27,7 @@ function SearchAlgorithm:searchForTitle(curButton, split)
 end
 
 function SearchAlgorithm:searchForChartType(curButton, split)
-    for i, word in ipairs(split) do
+    for _, word in ipairs(split) do
         if string.find(string.lower(curButton.type), string.lower(word)) then
             return true
         end
@@ -37,7 +37,7 @@ end
 function SearchAlgorithm:doSearch(searchString)
     local searchResults = {}
 
-    for i, button in ipairs(self.allSongButtons) do
+    for _, button in ipairs(self.allSongButtons) do
         local split = searchString:split(" ")
 
         if self:searchForTags(button, split) or self:searchForTitle(button, split) or self:searchForChartType(button, split) then

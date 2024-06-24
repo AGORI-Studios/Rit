@@ -1,4 +1,6 @@
 -- Based off of haxeflixel's FlxPoint class
+---@class Point
+---@diagnostic disable-next-line: assign-type-mismatch
 local Point = Object:extend()
 
 function Point:new(x, y, z)

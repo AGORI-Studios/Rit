@@ -261,7 +261,7 @@ function love.draw()
     end 
 
     -- draw Popup.popups
-    for i, popup in ipairs(Popup.popups) do
+    for _, popup in ipairs(Popup.popups) do
         popup:draw()
     end
 

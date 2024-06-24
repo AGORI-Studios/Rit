@@ -1,3 +1,5 @@
+---@class StrumObject
+---@diagnostic disable-next-line: assign-type-mismatch
 local StrumObject = VertSprite:extend()
 
 StrumObject.data = 1
@@ -32,9 +34,7 @@ end
 
 function StrumObject:postAddToGroup()
     self.graphic = Cache:loadImage(self.anims[1])
-    --[[ self.x = self.x + (200) * (self.data - 1)
-    self.x = self.x + 25 ]]
-    -- same as above, but also use Settings.options["General"].columnSpacing
+
     self.x = states.game.Gameplay.strumX + (200 + Settings.options["General"].columnSpacing) * (self.data - 1)
     self.x = self.x + 25
     self.ID = self.data
@@ -43,7 +43,6 @@ end
 function StrumObject:playAnim(anim)
     -- Update the graphic to the correct animation
     if anim == "pressed" then
-        --self.animTimer = 0.1
         self.graphic = Cache:loadImage(self.anims[2])
     elseif anim == "unpressed" then
         self.graphic = Cache:loadImage(self.anims[1])

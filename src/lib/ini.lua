@@ -45,7 +45,7 @@ function ini.parse(ini)
     local data = {}
     local currentSection = nil
 
-    for i, line in ipairs(lines) do
+    for _, line in ipairs(lines) do
         local comment = string.match(line, "^%s*;(.*)")
         if line ~= "" and not comment then
             local sec = string.match(line, "^%s*%[(.*)%]")
@@ -68,21 +68,21 @@ function ini.save(tab, fileName)
     -- sort 0-Z
     
     local newTab = {}
-    for k, v in pairs(tab) do
+    for k, _ in pairs(tab) do
         table.insert(newTab, k)
     end
     table.sort(newTab, function(a, b) return a < b end)
 
     local str = ""
 
-    for i, section in ipairs(newTab) do
+    for _, section in ipairs(newTab) do
         str = str .. "[" .. section .. "]\n"
         local newTab2 = {}
-        for k, v in pairs(tab[section]) do
+        for k, _ in pairs(tab[section]) do
             table.insert(newTab2, k)
         end
         table.sort(newTab2, function(a, b) return a < b end)
-        for i, name in ipairs(newTab2) do
+        for _, name in ipairs(newTab2) do
             str = str .. name .. " = " .. tostring(tab[section][name]) .. "\n"
         end
         str = str .. "\n"

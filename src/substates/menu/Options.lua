@@ -148,7 +148,7 @@ function Options:enter()
         skin_1:SetSize(100, 25 + (skinListCount * 30))
 
         local skinList_2 = {}
-        for i, v in ipairs(skinList) do
+        for _, v in ipairs(skinList) do
             local skinButton = loveframes.Create("button")
             skinButton:SetText(v.name)
             skinButton.OnClick = function()
@@ -211,7 +211,7 @@ function Options:enter()
 
         local allLocales = love.filesystem.getDirectoryItems("locale/")
         local localeList = {}
-        for i, v in ipairs(allLocales) do
+        for _, v in ipairs(allLocales) do
             if v:sub(-5) == ".locale.json" then
                 table.insert(localeList, v:sub(1, -6))
             end
@@ -232,7 +232,7 @@ function Options:enter()
         locale_1:SetSize(100, 25 + (#localeList * 30))
 
         local localeList_2 = {}
-        for i, v in ipairs(localeList) do
+        for _, v in ipairs(localeList) do
             local localeButton = loveframes.Create("button")
             localeButton:SetText(v)
             localeButton.OnClick = function()

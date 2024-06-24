@@ -2,7 +2,7 @@ local ResultsScreen = state()
 ResultsScreen.isEveryoneFinished = false
 ResultsScreen.results = {}
 
-function ResultsScreen:enter(last, results)
+function ResultsScreen:enter(_, results)
     if Steam and networking.connected and networking.currentServerData then
         networking.hub:publish({
             message = {
@@ -28,9 +28,7 @@ function ResultsScreen:update(dt)
     end
 end
 
-function ResultsScreen:mousepressed(x, y, b)
-
-end
+function ResultsScreen:mousepressed(x, y, b) end
 
 function ResultsScreen:draw()
     love.graphics.push()

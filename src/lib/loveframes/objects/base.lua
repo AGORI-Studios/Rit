@@ -43,14 +43,14 @@ function newobject:update(dt)
 	
 	local children = self.children
 	if children then
-		for k, v in ipairs(children) do
+		for _, v in ipairs(children) do
 			v:update(dt)
 		end
 	end
 	
 	local internals = self.internals
 	if internals then
-		for k, v in ipairs(internals) do
+		for _, v in ipairs(internals) do
 			v:update(dt)
 		end
 	end
@@ -78,14 +78,14 @@ function newobject:draw()
 	
 	local children = self.children
 	if children then
-		for k, v in ipairs(children) do
+		for _, v in ipairs(children) do
 			v:draw()
 		end
 	end
 	
 	local internals = self.internals
 	if internals then
-		for k, v in ipairs(internals) do
+		for _, v in ipairs(internals) do
 			v:draw()
 		end
 	end
@@ -111,14 +111,14 @@ function newobject:mousepressed(x, y, button)
 	
 	local children = self.children
 	if children then
-		for k, v in ipairs(children) do
+		for _, v in ipairs(children) do
 			v:mousepressed(x, y, button)
 		end
 	end
 	
 	local internals = self.internals
 	if internals then
-		for k, v in ipairs(internals) do
+		for _, v in ipairs(internals) do
 			v:mousepressed(x, y, button)
 		end
 	end
@@ -139,14 +139,14 @@ function newobject:mousereleased(x, y, button)
 	
 	local children = self.children
 	if children then
-		for k, v in ipairs(children) do
+		for _, v in ipairs(children) do
 			v:mousereleased(x, y, button)
 		end
 	end
 	
 	local internals = self.internals
 	if internals then
-		for k, v in ipairs(internals) do
+		for _, v in ipairs(internals) do
 			v:mousereleased(x, y, button)
 		end
 	end
@@ -167,14 +167,14 @@ function newobject:wheelmoved(x, y)
 	
 	local children = self.children
 	if children then
-		for k, v in ipairs(children) do
+		for _, v in ipairs(children) do
 			v:wheelmoved(x, y)
 		end
 	end
 	
 	local internals = self.internals
 	if internals then
-		for k, v in ipairs(internals) do
+		for _, v in ipairs(internals) do
 			v:wheelmoved(x, y)
 		end
 	end
@@ -195,14 +195,14 @@ function newobject:keypressed(key, isrepeat)
 	
 	local children = self.children
 	if children then
-		for k, v in ipairs(children) do
+		for _, v in ipairs(children) do
 			v:keypressed(key, isrepeat)
 		end
 	end
 	
 	local internals = self.internals
 	if internals then
-		for k, v in ipairs(internals) do
+		for _, v in ipairs(internals) do
 			v:keypressed(key, isrepeat)
 		end
 	end
@@ -223,14 +223,14 @@ function newobject:keyreleased(key)
 	
 	local children = self.children
 	if children then
-		for k, v in ipairs(children) do
+		for _, v in ipairs(children) do
 			v:keyreleased(key)
 		end
 	end
 	
 	local internals = self.internals
 	if internals then
-		for k, v in ipairs(internals) do
+		for _, v in ipairs(internals) do
 			v:keyreleased(key)
 		end
 	end
@@ -252,14 +252,14 @@ function newobject:textinput(text)
 	
 	local children = self.children
 	if children then
-		for k, v in ipairs(children) do
+		for _, v in ipairs(children) do
 			v:textinput(text)
 		end
 	end
 	
 	local internals = self.internals
 	if internals then
-		for k, v in ipairs(internals) do
+		for _, v in ipairs(internals) do
 			v:textinput(text)
 		end
 	end
@@ -583,13 +583,13 @@ function newobject:SetVisible(bool)
 	self.visible = bool
 
 	if children then
-		for k, v in ipairs(children) do
+		for _, v in ipairs(children) do
 			v:SetVisible(bool)
 		end
 	end
 	
 	if internals then
-		for k, v in ipairs(internals) do
+		for _, v in ipairs(internals) do
 			v:SetVisible(bool)
 		end
 	end

@@ -159,12 +159,12 @@ function loveframes.GetCollisions(object, t)
 			end
 		end
 		if children then
-			for k, v in ipairs(children) do
+			for _, v in ipairs(children) do
 				loveframes.GetCollisions(v, t)
 			end
 		end
 		if internals then
-			for k, v in ipairs(internals) do
+			for _, v in ipairs(internals) do
 				local type = v.type
 				if type ~= "tooltip" then
 					loveframes.GetCollisions(v, t)
@@ -189,13 +189,13 @@ function loveframes.GetAllObjects(object, t)
 	table.insert(t, object)
 
 	if internals then
-		for k, v in ipairs(internals) do
+		for _, v in ipairs(internals) do
 			loveframes.GetAllObjects(v, t)
 		end
 	end
 
 	if children then
-		for k, v in ipairs(children) do
+		for _, v in ipairs(children) do
 			loveframes.GetAllObjects(v, t)
 		end
 	end
@@ -215,7 +215,7 @@ function loveframes.GetDirectoryContents(dir, t)
 	local dirs = {}
 	local files = love.filesystem.getDirectoryItems(dir)
 
-	for k, v in ipairs(files) do
+	for _, v in ipairs(files) do
 		local isdir = love.filesystem.getInfo(dir.. "/" ..v) ~= nil and love.filesystem.getInfo(dir.. "/" ..v)["type"] == "directory" --love.filesystem.isDirectory(dir.. "/" ..v)
 		if isdir == true then
 			table.insert(dirs, dir.. "/" ..v)
@@ -236,7 +236,7 @@ function loveframes.GetDirectoryContents(dir, t)
 		end
 	end
 
-	for k, v in ipairs(dirs) do
+	for _, v in ipairs(dirs) do
 		t = loveframes.GetDirectoryContents(v, t)
 	end
 
@@ -325,7 +325,7 @@ end
 	- desc: checks to see if a table has a specific value
 --]]---------------------------------------------------------
 function loveframes.TableHasValue(table, value)
-	for k, v in pairs(table) do
+	for _, v in pairs(table) do
 		if v == value then
 			return true
 		end
@@ -452,7 +452,7 @@ function loveframes.DebugDraw()
 
 	-- show frame docking zones
 	if topcol.type == "frame" then
-		for k, v in pairs(topcol.dockzones) do
+		for _, v in pairs(topcol.dockzones) do
 			love.graphics.setLineWidth(1)
 			love.graphics.setColor(255/255, 0, 0, 100/255)
 			love.graphics.rectangle("fill", v.x, v.y, v.width, v.height)

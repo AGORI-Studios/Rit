@@ -38,7 +38,7 @@ end
 local function GetFrames(graphic, xmldata) -- Get's all the frames from an xml adobe sparrow
     local frames = {graphic = graphic, frames = {}}
     local sw, sh = graphic:getDimensions()
-    for i, frame in ipairs(xmldata) do
+    for _, frame in ipairs(xmldata) do
         if frame.tag == "SubTexture" then
             local name = frame.attr.name
             local x, y = frame.attr.x, frame.attr.y

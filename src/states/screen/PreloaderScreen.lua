@@ -62,15 +62,12 @@ function PreloaderScreen:enter(last, args)
 end
 
 function PreloaderScreen:update(dt)
-    if doneLoading then 
-        -- exponential fade out
-        --fade = math.min(fade + dt * 1.82, 1)
-    else
+    if not doneLoading then
         lerpedFinshed = math.fpsLerp(lerpedFinshed, (threads.assets.loadedCount) / threads.assets.resourceCount, 25)
     end
 
     rndTime = rndTime + dt
-    if rndTime >= rndTimeMax and threads.assets.resourceCount == 20 then -- We are parsing maps (TAKES A LONG TIME.)
+    if rndTime >= rndTimeMax and threads.assets.resourceCount == 20 then
         curRndText = rndTexts[math.random(1, #rndTexts)]
         rndTime = 0
     end
@@ -80,9 +77,9 @@ function PreloaderScreen:draw()
     local percent = 0
     if threads.assets.resourceCount ~= 0 then percent = (threads.assets.loadedCount) / threads.assets.resourceCount end
 
-    if (threads.assets.loadedCount == 20) == threads.assets.resourceCount then
+    if threads.assets.loadedCount == 20 then
         love.graphics.printf(localize.localize("Parsing Maps..."), 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
-    elseif (threads.assets.loadedCount) == threads.assets.resourceCount then
+    elseif threads.assets.loadedCount == threads.assets.resourceCount then
         love.graphics.printf(localize.localize("Loaded!"), 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
     else
         love.graphics.printf(localize.localize("Precaching Resources...")..(threads.assets.loadedCount).."/"..threads.assets.resourceCount.."\n"..math.floor(percent * 100).."%", 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
@@ -91,13 +88,14 @@ function PreloaderScreen:draw()
     if curRndText ~= "" then
         love.graphics.printf(curRndText, 0, Inits.GameHeight/2+400, Inits.GameWidth/2, "center", 0, 2, 2)
     end
+
     -- loading bar
     love.graphics.rectangle("fill", (Inits.GameWidth*0.05),Inits.GameWidth/2, (Inits.GameWidth*0.9) * lerpedFinshed, 50)
     love.graphics.setColor(1,1,1, lerpedFinshed)
-    local ritScale = 0.5
-    love.graphics.draw(ritLogo, Inits.GameWidth/2, Inits.GameHeight/2, 0, ritScale, ritScale, ritLogo:getWidth()/2, ritLogo:getHeight()/2)
+
+    love.graphics.draw(ritLogo, Inits.GameWidth/2, Inits.GameHeight/2, 0, 0.5, 0.5, ritLogo:getWidth()/2, ritLogo:getHeight()/2)
     love.graphics.setColor(1,1,1,1)
-    -- flash
+
     love.graphics.setColor(0, 0, 0, fade[1])
     love.graphics.rectangle("fill", 0, 0,Inits.GameWidth,Inits.GameHeight)
     love.graphics.setColor(1, 1, 1, 1)

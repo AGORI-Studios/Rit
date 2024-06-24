@@ -119,7 +119,7 @@ local function init(self, Layout, label)
 
 	self.dialog.drives:onPress(function (event)
 		local menu = {isContextMenu = true}
-		for i, drive in ipairs(self.drives) do
+		for _, drive in ipairs(self.drives) do
 			menu[#menu + 1] = {text = drive}
 		end
 		self.dialog:createWidget({type = 'menu', menu })
@@ -161,7 +161,7 @@ function filesystem:loadDialog(Layout, label, filters)
 	if filters and type(filters) == "table" then
 		self.dialog.filters:onPress(function (event)
 			local menu = {isContextMenu = true}
-			for i, f in ipairs(filters) do
+			for _, f in ipairs(filters) do
 				menu[#menu + 1] = {text = f}
 			end		
 			self.dialog:createWidget({type = 'menu', menu })

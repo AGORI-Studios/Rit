@@ -11,7 +11,7 @@ Modscript.currentShader = ""
 Modscript.modifiers = {}
 function Modscript:loadModifiers()
     local files = love.filesystem.getDirectoryItems("modules/Game/Modding/Modifiers")
-    for i, v in pairs(files) do
+    for _, v in pairs(files) do
         if v ~= "BaseModifier.lua" then
             local modifier = require("modules.Game.Modding.Modifiers." .. v:sub(1, -5))
             self.modifiers[modifier.name] = modifier

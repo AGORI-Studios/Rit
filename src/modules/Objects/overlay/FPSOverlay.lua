@@ -1,3 +1,5 @@
+---@diagnostic disable: assign-type-mismatch
+---@class FPSOverlay
 local FPSOverlay = Object:extend()
 
 function FPSOverlay:new(options)

@@ -19,13 +19,13 @@ function Group:remove(n)
 end
 
 function Group:update(dt)
-    for i, v in ipairs(self.members) do
+    for _, v in ipairs(self.members) do
         v:update(dt)
     end
 end
 
 function Group:draw()
-    for i, v in ipairs(self.members) do
+    for _, v in ipairs(self.members) do
         v:draw()
     end
 end

@@ -41,17 +41,17 @@ function Playfield:draw(notes, timingLines, timingLineWidth, scale, bgLaneX)
         local diff = firstReceptorX - bgLaneX
         love.graphics.translate(-diff*2, 0)
     end
-    for i, timingLine in ipairs(timingLines) do
+    for _, timingLine in ipairs(timingLines) do
         timingLine:draw(timingLineWidth)
     end
     love.graphics.push()
     love.graphics.translate(self.lanes[1].x, self.lanes[1].y)
-    for i, receptor in ipairs(states.game.Gameplay.strumLineObjects.members) do
+    for _, receptor in ipairs(states.game.Gameplay.strumLineObjects.members) do
         if receptor.draw then
             receptor:draw()
         end
     end
-    for i, note in ipairs(notes) do
+    for _, note in ipairs(notes) do
         if note.draw then
             note:draw(scale * Settings.options["General"].noteSize)
         end

@@ -218,11 +218,6 @@ function StartMenu:update(dt)
 
     bg.x, bg.y = px * 0.0125, py * 0.0125
 
-    --[[ for i = 1, #balls do
-        balls[i].x = balls[i].ogX + px * 0.09 + (0.05 * i * 5)
-        balls[i].y = balls[i].ogY + py * 0.09 + (0.05 * i * 5)
-    end ]]
-
     if logoScale[1] > curLogoScale[1] then
         logoScale[1] = math.fpsLerp(logoScale[1], curLogoScale[1], 5, dt)
         logoScale[2] = math.fpsLerp(logoScale[2], curLogoScale[1], 5, dt)

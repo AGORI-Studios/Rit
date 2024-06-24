@@ -68,7 +68,7 @@ function loveframes.Create(data, parent)
 		local function CreateObjects(t, o, c)
 			local child = c or false
 			local validobjects = loveframes.objects
-			for k, v in pairs(t) do
+			for _, v in pairs(t) do
 				-- current default object
 				local object = validobjects[v.type]:new()
 				-- insert the object into the table of objects being created
@@ -138,7 +138,7 @@ end
 function loveframes.LoadObjects(dir)
 	local objectlist = loveframes.GetDirectoryContents(dir)
 	-- loop through a list of all gui objects and require them
-	for k, v in ipairs(objectlist) do
+	for _, v in ipairs(objectlist) do
 		if v.extension == "lua" then
 			loveframes.require(v.requirepath)
 		end

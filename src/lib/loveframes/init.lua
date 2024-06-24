@@ -219,7 +219,7 @@ function loveframes.mousepressed(x, y, button)
 	-- close open menus
 	local bchildren = base.children
 	local hoverobject = loveframes.hoverobject
-	for k, v in ipairs(bchildren) do
+	for _, v in ipairs(bchildren) do
 		local otype = v.type
 		local visible = v.visible
 		if hoverobject then

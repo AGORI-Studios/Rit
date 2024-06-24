@@ -23,7 +23,7 @@ function SaveUserData.SaveData(data, path)
 end
 
 function SaveUserData.LoadData(path)
-    local ok, v = Try(
+    Try(
         function()
             local path = path or "data/userdata.dat"
             local compressedData = love.filesystem.read(path)

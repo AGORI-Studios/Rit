@@ -51,7 +51,7 @@ function malodyLoader.load(chart_, folderPath, diffName, forNPS)
         end
     end
 
-    for i, note in ipairs(chart.note) do
+    for _, note in ipairs(chart.note) do
         if note.type ~= 1 then
             local startTime = getMilliSeconds(getBeat(note.beat), 0)
             local endTime = note.beatEnd and getMilliSeconds(getBeat(note.beatEnd), 0) or 0
@@ -60,6 +60,8 @@ function malodyLoader.load(chart_, folderPath, diffName, forNPS)
             if doAprilFools and Settings.options["Events"].aprilFools then lane = 1; states.game.Gameplay.mode = 1 end
 
             local ho = HitObject(startTime, lane, endTime)
+
+            table.insert(states.game.Gameplay.unspawnNotes, ho)
         else
             if not forNPS then
                 states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. note.sound, 1, false)

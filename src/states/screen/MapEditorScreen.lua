@@ -150,7 +150,7 @@ function MapEditorScreen:update(dt)
         local strumLineY = 50  -- Adjust this value as needed
 
         -- Hit notes that pass the strum line based on time
-        for i, note in ipairs(self.map.hits) do
+        for _, note in ipairs(self.map.hits) do
             if musicTime >= note.starttime and not note.hit then
                 note.hit = true
                 hitsound:clone():play()
@@ -181,13 +181,13 @@ function MapEditorScreen:keypressed(key)
                 self.audioSource:pause()
             end
 
-            for i, note in ipairs(self.map.hits) do
+            for _, note in ipairs(self.map.hits) do
                 note.hit = false
             end
         end
 
         -- Set note.hit to true for notes already passed
-        for i, note in ipairs(self.map.hits) do
+        for _, note in ipairs(self.map.hits) do
             if musicTime >= note.starttime and not note.hit then
                 note.hit = true
             end
@@ -451,7 +451,7 @@ function MapEditorScreen:mousemoved(x, y, dx, dy, istouch)
     local beatInterval = (60000 / self.map.curBPM) / self.snapping
     local snappedPosition = math.floor(adjustedY / beatInterval + 0.5) * beatInterval
     -- Handle dragging of a note's endTime
-    for i, note in ipairs(self.map.hits) do
+    for _, note in ipairs(self.map.hits) do
         if note.dragging then
             -- Update the endTime of the dragged note
             note.endtime = math.max(snappedPosition, note.starttime)
@@ -585,7 +585,7 @@ function MapEditorScreen:draw()
                 love.graphics.line(875, y, 875+width, y)
             end
 
-            for i, note in ipairs(self.map.hits) do
+            for _, note in ipairs(self.map.hits) do
                 love.graphics.setColor(1, 1, 1)
                 local y = note.starttime * pixelsPerMs
                 local height = ((note.endtime == 0 or note.endtime == note.starttime or note.endtime <= note.starttime) and 25 or note.endtime - note.starttime) * pixelsPerMs

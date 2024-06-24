@@ -70,20 +70,6 @@ function RitmodParser.parse(script)
 
     parsed.script = script
 
-    --[[ -- Now to parse the actual code in the functions
-    for name, body in pairs(parsed.functions) do
-        if name ~= "log" then
-            local lines = body:gmatch("(.-);")
-            for line in lines do
-                line = line:strip()
-                if line:find("log") then
-                    local str = line:match("log%((.-)%)")
-                    parsed.functions.log(str)
-                end
-            end
-        end
-    end ]]
-
     return parsed
 end
 

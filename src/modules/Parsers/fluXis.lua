@@ -16,20 +16,13 @@ function fluXisLoader.load(chart, folderPath_, diffName, forNPS)
                 print("Error loading effect file: " .. e)
             end
         )
-        --[[ table.sort(states.game.Gameplay.songEvents, function(a, b) return a.time < b.time end) ]]
-        if states.game.Gameplay.songEvents.playfieldmove then
-            table.sort(states.game.Gameplay.songEvents.playfieldmove, function(a, b) return a.time < b.time end)
-        end
-        if states.game.Gameplay.songEvents.playfieldscale then
-            table.sort(states.game.Gameplay.songEvents.playfieldscale, function(a, b) return a.time < b.time end)
-        end
-        if states.game.Gameplay.songEvents.playfieldfade then
-            table.sort(states.game.Gameplay.songEvents.playfieldfade, function(a, b) return a.time < b.time end)
-        end
+
+        table.sort(states.game.Gameplay.songEvents.playfieldmove, function(a, b) return a.time < b.time end)
+        table.sort(states.game.Gameplay.songEvents.playfieldscale, function(a, b) return a.time < b.time end)
+        table.sort(states.game.Gameplay.songEvents.playfieldfade, function(a, b) return a.time < b.time end)
     end
 
     if not forNPS and not chart.VideoFile or not video or chart.VideoFile == "" then
-        -- just use chart.backgroundFile
         if chart.BackgroundFile and love.filesystem.getInfo(folderPath_ .. "/" .. chart.BackgroundFile) then
             states.game.Gameplay.background = love.graphics.newImage(folderPath_ .. "/" .. chart.BackgroundFile)
         end

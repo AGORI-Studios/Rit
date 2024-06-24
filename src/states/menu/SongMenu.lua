@@ -63,7 +63,7 @@ function SongMenu:enter()
 
     songButtons = {}
 
-    for i, song in pairs(songList) do
+    for _, song in pairs(songList) do
         local diffs = {}
         local bmType = nil
         local songName = nil
@@ -214,7 +214,7 @@ function SongMenu:update(dt)
                 self.songDiff = curButton.children[curSelected].name
                 getSongReplays()
 
-                for i, diff in ipairs(curButton.children) do
+                for _, diff in ipairs(curButton.children) do
                     Timer.tween(0.1, diff, {x = 0}, "out-quad", function()
                         diff.x = 0
                         transitioning = false
@@ -334,9 +334,9 @@ function SongMenu:mousepressed(x, y, b)
             typing = not typing
         end
 
-        for i, btn in ipairs(songButtons) do
+        for _, btn in ipairs(songButtons) do
             if curTab == "diffs" then
-                for i, diffBtn in ipairs(btn.children) do
+                for _, diffBtn in ipairs(btn.children) do
                     if diffBtn:isHovered(x, y) then
                         if curSelected == i then
                             local diff = curButton.children[curSelected]
@@ -345,7 +345,6 @@ function SongMenu:mousepressed(x, y, b)
                             local folderpath = diff.folderPath
                             local filename = diff.filename
                             local diffName = diff.name
-                            local mode = diff.mode
                             local gamemode = diff.gameMode
 
                             love.filesystem.mount("songs/" .. filename, "song")
@@ -377,7 +376,7 @@ function SongMenu:mousepressed(x, y, b)
                         self.songName = curButton.name
                         self.songDiff = curButton.children[curSelected].name
                         getSongReplays()
-                        for i, diff in ipairs(curButton.children) do
+                        for _, diff in ipairs(curButton.children) do
                             Timer.tween(0.1, diff, {x = 0}, "out-quad", function()
                                 diff.x = 0
                                 transitioning = false
@@ -559,7 +558,7 @@ function SongMenu:draw()
     love.graphics.push()
     setFont("menuBold")
     love.graphics.translate(0, lerpedSongPos)
-    for i, btn in ipairs(songButtons) do
+    for _, btn in ipairs(songButtons) do
         -- dont draw if it's out of bounds with lerpedSongPos
         if not btn.open then
             if not (btn.y + lerpedSongPos > 1080 or btn.y + lerpedSongPos < -btn.height) then

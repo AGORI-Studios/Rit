@@ -2,7 +2,6 @@
 ---@diagnostic disable-next-line: assign-type-mismatch
 local ServerButton = Object:extend()
 
-    --[{"name":"Testing Lobby","staysOpen":true,"maxPlayers":4,"players":[],"host":null,"password":null,"hasPassword":false}]
 function ServerButton:new(name, maxPlayers, players, host, hasPassword, hasStarted, serverData)
     self.name = name or "Test Server"
     self.maxPlayers = maxPlayers or 4
@@ -25,9 +24,6 @@ function ServerButton:mousepressed(x, y, b)
 end
 
 function ServerButton:draw()
-    -- draw background
-    -- greenish gray when not started
-    -- redish gray when started
     if self.hasStarted then
         love.graphics.setColor(0.7, 0.5, 0.5)
     else

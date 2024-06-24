@@ -1,3 +1,5 @@
+---@class BindKey
+---@diagnostic disable-next-line: assign-type-mismatch
 local BindKey = Object:extend()
 
 function BindKey:new()

@@ -673,7 +673,7 @@ function Modscript:update(dt, beat)
             setLaneScrollspeed(col, scrollSpeed)
         end
 
-        for i, object in ipairs(states.game.Gameplay.hitObjects.members) do
+        for _, object in ipairs(states.game.Gameplay.hitObjects.members) do
             local strum = states.game.Gameplay.strumLineObjects.members[object.data]
 
             if not object.wasGoodHit then

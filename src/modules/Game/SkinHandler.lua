@@ -29,7 +29,7 @@ end
 function skin:loadSkins(baseDir)
     local skins = love.filesystem.getDirectoryItems(baseDir)
 
-    for i, skinFolder in ipairs(skins) do
+    for _, skinFolder in ipairs(skins) do
         local skinPath = baseDir .. "/" .. skinFolder
         if love.filesystem.getInfo(skinPath .. "/skin.ini") then
             local skinData = ini.parse(skinPath .. "/skin.ini")

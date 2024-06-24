@@ -45,7 +45,7 @@ function env.parse(env)
 
     local data = {}
 
-    for i, line in ipairs(lines) do
+    for _, line in ipairs(lines) do
         local comment = string.match(line, "^%s*;(.*)")
         if line ~= "" and not comment then
             local name, value = string.match(line, "^%s*(.-)%s*=%s*(.-)%s*$")

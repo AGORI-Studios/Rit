@@ -245,7 +245,7 @@ local function write_xml(item)
         end
         if #item > 0 then
             io.write(">")
-            for i, v in ipairs(item) do write_xml(v) end
+            for _, v in ipairs(item) do write_xml(v) end
             io.write("</", item.tag, ">")
         else
             io.write("/>")

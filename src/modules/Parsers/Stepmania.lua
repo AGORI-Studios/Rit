@@ -211,7 +211,7 @@ function stepmaniaLoader.load(chart, folderPath, diffName, forNPS)
                     notesCount = 0
 
                     local index = 0
-                    for i, line in ipairs(allLines) do
+                    for i, _ in ipairs(allLines) do
                         if i == currentLine then
                             index = i
                             break

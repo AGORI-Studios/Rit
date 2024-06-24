@@ -190,7 +190,7 @@ function Gameplay:reset()
     }
 
     self.allJudgements = {}
-    for i, judge in ipairs(self.judgements) do
+    for _, judge in ipairs(self.judgements) do
         self.allJudgements[judge.name] = 0 -- judgement count (Used for accuracy calculation)
     end
 
@@ -256,17 +256,15 @@ end
 function Gameplay:doJudgement(time, wasLN)
     local wasLN = wasLN or false
     local judgement = nil
-    local index = 1
     if not wasLN then
-        for i, judge in ipairs(self.judgements) do
+        for _, judge in ipairs(self.judgements) do
             if time <= judge.time then
                 judgement = judge
                 break
             end
         end
     else
-        print(time)
-        for i, judge in ipairs(self.judgements) do
+        for _, judge in ipairs(self.judgements) do
             if time <= judge.time and judge.forLN then
                 judgement = judge
                 break
@@ -434,10 +432,9 @@ function Gameplay:getCommonBpm()
         return self.timingPoints[1].Bpm
     end
 
-    --var lastObject = HitObjects.OrderByDescending(x => x.IsLongNote ? x.EndTime : x.StartTime).First();
     -- gets the very last note, accounting for the endTime
     local newNoteTable = {}
-    for i, note in ipairs(self.unspawnNotes) do
+    for _, note in ipairs(self.unspawnNotes) do
         table.insert(newNoteTable, note)
     end
 
@@ -654,46 +651,29 @@ function Gameplay:updateNotePosition(offset, curTime)
     local spritePosition = 0
 
     for _, hitObject in ipairs(self.hitObjects.members) do
-        --[[ hitObject.offset.x = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi * hitObject.data) * 25
-        hitObject.offset.y = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi * hitObject.data) * 25
-        hitObject.offset.z = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi * hitObject.data) * 25
-        hitObject.rotation.x = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi * hitObject.data) * 25
-        hitObject.rotation.y = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi * hitObject.data) * 25
-        hitObject.rotation.z = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi * hitObject.data) * 25 ]]
 
         if hitObject.time - musicTime > 15000 then -- Only update notes that are within 15 seconds of the current time to prevent lag issues from too many notes
             break
         end
+
         spritePosition = self:getNotePosition(offset, hitObject.initialTrackPosition)
+
         if not hitObject.moveWithScroll then
             -- go to strumY (it's a hold)
             spritePosition = strumY
         end
+
         hitObject.y = spritePosition
-        --[[ hitObject.y = math.sin((curTime - hitObject.time) / 1000 * math.pi) * 10 + spritePosition ]]
+
         if #hitObject.children > 0 then
             -- Determine the hold notes position and scale
             hitObject.children[1].y = spritePosition + 100
             hitObject.children[2].y = spritePosition + 100
-            -- This code doesn't exist. You're just going crazy.
-            --[[ 
-            hitObject.children[1].offset.x = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi * hitObject.data) * 25
-            hitObject.children[1].offset.y = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi * hitObject.data) * 25
-            hitObject.children[1].offset.z = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi * hitObject.data) * 25
-            hitObject.children[1].rotation.x = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi * hitObject.data) * 25
-            hitObject.children[1].rotation.y = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi * hitObject.data) * 25
-            hitObject.children[1].rotation.z = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi * hitObject.data) * 25
-            hitObject.children[2].offset.x = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi * hitObject.data) * 25
-            hitObject.children[2].offset.y = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi * hitObject.data) * 25
-            hitObject.children[2].offset.z = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi * hitObject.data) * 25
-            hitObject.children[2].rotation.x = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi * hitObject.data) * 25
-            hitObject.children[2].rotation.y = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi * hitObject.data) * 25
-            hitObject.children[2].rotation.z = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi * hitObject.data) * 25
-            ]]
+
             hitObject.endY = self:getNotePosition(offset, hitObject.endTrackPosition)
             local pixelDistance = hitObject.endY - hitObject.children[1].y + 100-- the distance of start and end we need
             hitObject.children[1].dimensions = {width = 200, height = pixelDistance}
-            hitObject.children[2].dimensions = {width = 200, height = 100--[[  * (not (Settings.options["General"].skin.flippedEnd or false) and 1 or -1)-} ]]}
+            hitObject.children[2].dimensions = {width = 200, height = 100}
 
             if Modscript.downscroll then
                 hitObject.children[2].y = hitObject.children[2].y + pixelDistance - 100
@@ -784,7 +764,7 @@ function Gameplay:enter()
         local replayTimeCreated = 0
         local allTimes = {}
         -- formatted like "songname - songdifficulty - timecreated.ritreplay"
-        for i, file in ipairs(files) do
+        for _, file in ipairs(files) do
             local replayData = json.decode(love.filesystem.read("replays/" .. file)).meta
             if replayData.song == self.songName and replayData.difficulty == self.difficultyName then
                 local filenameData = file:split(" - ")
@@ -802,13 +782,11 @@ function Gameplay:enter()
         if replay then
             self.replay = json.decode(love.filesystem.read("replays/" .. replay))
         end
-
     end
 
     if shaders and shaders.backgroundEffects then
         shaders.backgroundEffects:send("dim", Settings.options["General"].backgroundDim)
     end
-    --shaders.backgroundEffects:send("blurIntensity", 0)
 
     Timer.after(1.2, function() -- forced delay to prevent potential desync's
         self.updateTime = true
@@ -818,7 +796,7 @@ function Gameplay:enter()
 end
 
 function Gameplay:addObjectsToGroups()
-    for i, ho in ipairs(self.unspawnNotes) do
+    for _, ho in ipairs(self.unspawnNotes) do
         ho.x = self.strumLineObjects.members[ho.data].x
         if #ho.children > 0 then
             ho.children[1].x = ho.x
@@ -858,7 +836,7 @@ function Gameplay:updateEvents()
                 -- the 0.9 scaling is here due to the difference in size of fluXis' and Rit's playfields
                 local x = (event.x or 0) * 0.9
                 local y = (event.y or 0) * 0.9
-                local duration = event.duration--[[ /1000 or 0 ]] or 0
+                local duration = event.duration or 0
                 if duration ~= 0 then duration = duration/1000 end
                 local ease = event.ease or 10 -- TODO: Find out the ease equivalency.
                 local playfield = self.playfields[1]
@@ -878,7 +856,7 @@ function Gameplay:updateEvents()
         for i, event in ipairs(self.songEvents.playfieldfade) do
             if musicTime >= event.time then
                 local alpha = event.alpha or 0
-                local duration = event.duration--[[ /1000 or 0 ]] or 0
+                local duration = event.duration or 0
                 if duration ~= 0 then duration = duration/1000 end
                 local ease = event.ease or 10 -- TODO: Find out the ease equivalency.
                 local playfield = self.playfields[1]
@@ -981,7 +959,7 @@ function Gameplay:update(dt)
         end
     end
 
-    for i, playfield in ipairs(self.playfields) do
+    for _, playfield in ipairs(self.playfields) do
         playfield:update(dt)
     end
 
@@ -993,17 +971,7 @@ function Gameplay:update(dt)
         self:updateEvents()
     end
 
-    --[[ for i = 1, self.mode do -- erm... what the sigma?
-        -- use i for modifying offserts
-        self.strumLineObjects.members[i].offset.x = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi * i) * 25
-        self.strumLineObjects.members[i].offset.y = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi * i) * 25
-        self.strumLineObjects.members[i].offset.z = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi * i) * 25
-        self.strumLineObjects.members[i].rotation.x = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi * i) * 25
-        self.strumLineObjects.members[i].rotation.y = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi * i) * 25
-        self.strumLineObjects.members[i].rotation.z = math.sin((musicTime - self.firstNoteTime) / 1000 * math.pi * i) * 25
-    end ]]
-
-    for i, member in ipairs(self.members) do
+    for _, member in ipairs(self.members) do
         if member.update then
             member:update(dt)
         end
@@ -1018,9 +986,8 @@ function Gameplay:update(dt)
     if self.updateTime then
         if #self.hitObjects.members > 0 then
             if self.didTimer then
-                for i, ho in ipairs(self.hitObjects.members) do
+                for _, ho in ipairs(self.hitObjects.members) do
                     ho.offset = self.noteoffsets[ho.data]
-                    local strum = self.strumLineObjects.members[ho.data]
 
                     if musicTime - ho.time > self.objectKillOffset and not ho.wasGoodHit then
                         ho.active = false
@@ -1048,7 +1015,7 @@ function Gameplay:update(dt)
             end
         end
     elseif self.watchingReplay and self.didTimer and self.updateTime then
-        for i, hit in ipairs(self.replay.hits) do
+        for _, hit in ipairs(self.replay.hits) do
             if hit.time <= musicTime and hit.releasedTime >= musicTime and not hit.press then
                 hit.press = true
                 self:keyPressed(hit.key)
@@ -1068,7 +1035,6 @@ function Gameplay:update(dt)
 end
 
 function Gameplay:keyPressed(key)
-    --self.hitsound:clone():setVolume(Settings.options["General"].hitsoundVolume):play()
     local cloned = self.hitsound:clone()
     cloned:setVolume(Settings.options["General"].hitsoundVolume)
     cloned:play()
@@ -1086,7 +1052,7 @@ function Gameplay:keyPressed(key)
             local notesStopped = false
             local sortedNotesList = {}
 
-            for i, note in ipairs(self.hitObjects.members) do
+            for _, note in ipairs(self.hitObjects.members) do
                 if note.canBeHit and not note.tooLate and not note.wasGoodHit and not note.isSustainNote then
                     if key == note.data then
                         table.insert(sortedNotesList, note)
@@ -1100,8 +1066,8 @@ function Gameplay:keyPressed(key)
             end)
 
             if #sortedNotesList > 0 then
-                for i, epicNote in ipairs(sortedNotesList) do
-                    for i2, doubleNote in ipairs(pressNotes) do
+                for _, epicNote in ipairs(sortedNotesList) do
+                    for _, doubleNote in ipairs(pressNotes) do
                         if math.abs(doubleNote.time - epicNote.time) < 1 then
                             self.hitObjects:remove(doubleNote)
                         else
@@ -1134,7 +1100,7 @@ function Gameplay:keyReleased(key)
 
     self.strumLineObjects.members[key]:playAnim("unpressed")
 
-    for i, ho in ipairs(self.hitObjects.members) do
+    for _, ho in ipairs(self.hitObjects.members) do
         if ho.data == key and not ho.moveWithScroll then
             ho:kill()
             ho:destroy()
@@ -1149,7 +1115,7 @@ end
 function Gameplay:keyDown(key)
     self.inputsArray[key] = true
 
-    for i, ho in ipairs(self.hitObjects.members) do
+    for _, ho in ipairs(self.hitObjects.members) do
         if ho.data == key and not ho.moveWithScroll then -- HOLD NOTE
             -- if in a distance of 15ms, then remove note
             if ho.endTime - musicTime <= -15 then
@@ -1193,20 +1159,19 @@ end
 
 function Gameplay:draw()
     if self.background and musicTime >= 0 then
-        -- background dim is 0-1, 0 being no dim, 1 being full dbackgroundim
-        --love.graphics.setColor(1, 1, 1, Settings.options["General"].backgroundDim)
+        -- background dim is 0-1, 0 being no dim, 1 being full backgroun dim
         if shaders and shaders.backgroundEffects then
             love.graphics.setShader(shaders.backgroundEffects)
         end
         love.graphics.draw(
             self.background and self.background.image or self.background, 
-            0, 0, 0, 
+            0, 0, 0,
             1920/self.background:getWidth(), 1080/self.background:getHeight()
         )
         love.graphics.setShader()
     end
     
-    for i, spr in pairs(Modscript.funcs.sprites) do
+    for _, spr in pairs(Modscript.funcs.sprites) do
         if not spr.drawWithoutRes and not spr.drawOverNotes then
             spr:draw()
         end
@@ -1251,20 +1216,20 @@ function Gameplay:draw()
             love.graphics.translate(-Inits.GameWidth/2, -Inits.GameHeight/2)
             -- move down the playfield based off scale, 4 = 0
             love.graphics.translate(0, (self.mode - 4) * 25)
-            for i, playfield in ipairs(self.playfields) do
+            for _, playfield in ipairs(self.playfields) do
                 playfield:draw(self.hitObjects.members, self.timingLines.members, self.bgLane.width, scale*Settings.options["General"].noteSize, self.bgLane.x)
             end
         love.graphics.pop()
     love.graphics.pop()
 
     -- draw members2
-    for i, member in ipairs(self.members2) do
+    for _, member in ipairs(self.members2) do
         if member.draw then
             member:draw()
         end
     end
 
-    for i, spr in pairs(Modscript.funcs.sprites) do
+    for _, spr in pairs(Modscript.funcs.sprites) do
         if not spr.drawWithoutRes and spr.drawOverNotes then
             spr:draw()
         end
@@ -1318,7 +1283,6 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName, for
     local firstNoteTime = #self.unspawnNotes > 0 and self.unspawnNotes[1].time or 0
     self.firstNoteTime = firstNoteTime
     self.hasSkipPeriod = firstNoteTime > 2500 -- if first note is after 7.5 seconds, then we have a skip period
-    --print("First note time: " .. firstNoteTime .. "\nLast note time: " .. lastNoteTime .. "\nSkip period: " .. tostring(self.hasSkipPeriod))
 
     self.songName = __title or "N/A"
     self.difficultyName = __diffName or "N/A"

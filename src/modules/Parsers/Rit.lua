@@ -24,8 +24,6 @@ function ritLoader.load(chart, folderPath_, diffName, forNPS)
     __diffName = diff
 
     if forNPS then
-        -- find our average notes per second and return the nps
-
         local noteCount = #states.game.Gameplay.unspawnNotes
         local songLength = 0
         local endNote = states.game.Gameplay.unspawnNotes[#states.game.Gameplay.unspawnNotes]

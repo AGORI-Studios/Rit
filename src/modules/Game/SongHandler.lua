@@ -227,7 +227,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         local Artist = "Unknown"
                         local Tags = {"malody"}
                         local previewTime = 0
-                        for i, note in ipairs(fileData.note) do
+                        for _, note in ipairs(fileData.note) do
                             if note.type == 1 then
                                 AudioFile = note.sound
                             end

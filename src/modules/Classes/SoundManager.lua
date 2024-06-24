@@ -62,7 +62,7 @@ function SoundManager:playFromTime(name, time, clone)
 end
 
 function SoundManager:update(dt)
-    for k, v in pairs(self.channel) do
+    for _, v in pairs(self.channel) do
         if v.lastFrameTime == 0 then
             v.lastFrameTime = love.timer.getTime()
         end

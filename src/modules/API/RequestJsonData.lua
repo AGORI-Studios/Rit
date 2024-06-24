@@ -12,7 +12,7 @@ function RequestJsonData.testConnection()
     if not https then
         return
     end
-    local code, body, headers = https.request(API_SERVER_URL .. "test_connection")
+    local code = https.request(API_SERVER_URL .. "test_connection")
     if code == 200 then
         connected = true
     end
@@ -40,7 +40,7 @@ function RequestJsonData.getUser(id)
     if not connected then
         return {}
     end
-    local code, body, headers = https.request(API_SERVER_URL .. "users/" .. id)
+    local _, body = https.request(API_SERVER_URL .. "users/" .. id)
     body = json.decode(body)
     if body.code == 404 then
         return {}
@@ -56,7 +56,7 @@ function RequestJsonData.createUser(id)
         return {}
     end
     -- POST request
-    local code, body, headers = https.request(API_SERVER_URL .. "users", {
+    local _, body = https.request(API_SERVER_URL .. "users", {
         --[[ data = urlencode({
             id = id,
             API_KEY = API_ACCESS

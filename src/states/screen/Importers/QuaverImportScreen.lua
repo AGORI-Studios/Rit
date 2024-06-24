@@ -4,8 +4,6 @@ local sep = os == "Windows" and "\\" or "/"
 local songsFolder = love.filesystem.getSaveDirectory() .. sep .. "songs"
 local frame = 0 
 
--- TODO: Make the following code work in a thread.
-
 function QuaverImportScreen:enter()
     frame = 0
 end

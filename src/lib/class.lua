@@ -15,8 +15,7 @@ class.__ID = "Class: 0x0000000000000000"
 -- Recreate smth like "Table: 0x0000000000000000"
 local idChars = "0123456789abcdef"
 
---- class:new() gets override, so we need to show it here
----
+
 ---@name class.new
 ---@description Creates a new instance of the class
 ---@param ... any
@@ -27,20 +26,20 @@ function class:new(...) end
 ---@description Creates a new class that extends the current class
 ---@return class --[[In reality, this is a table. But for the sake of the documentation, it's a class.]]
 function class:extend()
-  local cls = {}
-  for k, v in pairs(self) do
-      if k:find("__") == 1 then
-          cls[k] = v
-      end
-  end
-  cls.__index = cls
-  cls.super = self
-  cls.__ID = "Class: 0x"
-  for i = 1, 4 do
-      cls.__ID = cls.__ID .. idChars:sub(math.random(1, #idChars), math.random(1, #idChars))
-  end
-  setmetatable(cls, self)
-  return cls
+    local cls = {}
+    for k, v in pairs(self) do
+        if k:find("__") == 1 then
+            cls[k] = v
+        end
+    end
+    cls.__index = cls
+    cls.super = self
+    cls.__ID = "Class: 0x"
+    for _ = 1, 4 do
+        cls.__ID = cls.__ID .. idChars:sub(math.random(1, #idChars), math.random(1, #idChars))
+    end
+    setmetatable(cls, self)
+    return cls
 end
 
 ---@name class.implement
@@ -75,7 +74,7 @@ end
 ---@description Returns the class ID
 ---@return string
 function class:__tostring()
-  return self.__ID
+    return self.__ID
 end
 
 ---@name class.__call
@@ -83,9 +82,9 @@ end
 ---@param ... any
 ---@return any
 function class:__call(...)
-  local inst = setmetatable({}, self)
-  inst:new(...)
-  return inst
+    local inst = setmetatable({}, self)
+    inst:new(...)
+    return inst
 end
 
 return class

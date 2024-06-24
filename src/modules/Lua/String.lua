@@ -126,6 +126,7 @@ end
 ---@name string.strip
 ---@description Strips all whitespace from a string (left and right)
 ---@return string
+---@diagnostic disable-next-line: duplicate-set-field
 function string.strip(self)
     ---@diagnostic disable-next-line: redundant-return-value
     return self:gsub("^%s*(.-)%s*$", "%1")

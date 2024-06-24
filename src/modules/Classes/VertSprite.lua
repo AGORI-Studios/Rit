@@ -1,3 +1,4 @@
+---@diagnostic disable: inject-field
 -- Referenced from https://github.com/Stilic/FNF-LOVE/blob/main/loxel/3d/actorsprite.lua
 local VertSprite = Object:extend()
 VertSprite:implement(Sprite)

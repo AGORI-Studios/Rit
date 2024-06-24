@@ -60,7 +60,7 @@ function GI.LoadLibraries()
                         --print("Pong id " .. message.id .. " took " .. love.timer.getTime() - message.original_timestamp .. " seconds")
                         table.insert(networking.latencies, love.timer.getTime() - message.original_timestamp)
                         local sum, count = 0, 0
-                        for i, latency in ipairs(networking.latencies) do
+                        for _, latency in ipairs(networking.latencies) do
                             sum = sum + latency
                             count = count + 1
                         end
@@ -141,7 +141,7 @@ function GI.LoadLibraries()
                             networking.currentServerData = message.server
                             -- states.screens.Multiplayer.ResultsScreen.isEveryoneFinished
                             states.screens.Multiplayer.ResultsScreen.isEveryoneFinished = true
-                            for i, player in ipairs(networking.currentServerData.players) do
+                            for _, player in ipairs(networking.currentServerData.players) do
                                 if not player.completed then
                                     states.screens.Multiplayer.ResultsScreen.isEveryoneFinished = false
                                     return
@@ -278,7 +278,7 @@ function GI.LoadShaders()
 end
 
 function GI.ClearOSModule()
-    for k, v in pairs(os) do
+    for k, _ in pairs(os) do
         if k ~= "clock" and k ~= "date" and k ~= "difftime" and 
             k ~= "time" and k ~= "tmpname" and k ~= "getenv" and
             k ~= "setlocale" then

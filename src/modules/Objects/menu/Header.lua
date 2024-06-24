@@ -37,7 +37,7 @@ function Header:new()
     }
 
     return self
-end 
+end
 
 function Header:mousepressed(x, y, b)
     if gear:isHovered(x, y) then

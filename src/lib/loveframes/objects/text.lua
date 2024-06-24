@@ -259,7 +259,7 @@ function newobject:SetText(t)
 			v = loveframes.utf8.gsub(v, string.char(9), "    ")
 			v = loveframes.utf8.gsub(v, "\n", " \n ")
 			local parts = loveframes.SplitString(v, " ")
-			for i, j in ipairs(parts) do
+			for _, j in ipairs(parts) do
 				table.insert(self.formattedtext, {
 					font = prevfont, 
 					color = prevcolor, 

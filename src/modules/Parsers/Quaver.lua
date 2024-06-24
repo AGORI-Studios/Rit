@@ -25,8 +25,6 @@ function quaverLoader.load(chart, folderPath, diffName, forNPS)
     states.game.Gameplay.strumX = states.game.Gameplay.strumX - ((states.game.Gameplay.mode - 4.5) * (100 + Settings.options["General"].columnSpacing))
     states.game.Gameplay.bpmAffectsScrollVelocity = not chart.BPMDoesNotAffectScrollVelocity
 
-    --audioFile = love.audio.newSource(folderPath .. "/" .. meta.audioPath, "stream")
-    --audioFile = love.audio.newSource(folderPath .. "/" .. meta.audioPath, "stream")
     if not forNPS then
         states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. meta.audioPath, 1, true, "stream")
     end
@@ -42,23 +40,6 @@ function quaverLoader.load(chart, folderPath, diffName, forNPS)
                 stepCrochet = crochet/4
             end
             table.insert(states.game.Gameplay.timingPoints, timingPoint)
-
-            --[[ if timingPoint.Hidden then goto continue end
-
-            local msPerBeat = 60000 / math.min(math.abs(timingPoint.Bpm), 9999)
-            local signature = timingPoint.Signature or 4
-            local increment = signature * msPerBeat
-
-            if increment <= 0 then goto continue end
-
-            local target = #chart.TimingPoints > i and chart.TimingPoints[i + 1].StartTime - 1 or meta.length
-            for songPos = timingPoint.StartTime, target, increment do
-                local offset = states.game.Gameplay:GetPositionFromTime(songPos)
-                print(offset)
-                states.game.Gameplay.timingLines:add(TimingLine(offset))
-            end
-
-            ::continue:: ]]
         end
     end
     if not forNPS then
@@ -100,8 +81,6 @@ function quaverLoader.load(chart, folderPath, diffName, forNPS)
     __diffName = meta.name
 
     if forNPS then
-        -- find our average notes per second and return the nps
-
         local noteCount = #states.game.Gameplay.unspawnNotes
         local songLength = 0
         local endNote = states.game.Gameplay.unspawnNotes[#states.game.Gameplay.unspawnNotes]

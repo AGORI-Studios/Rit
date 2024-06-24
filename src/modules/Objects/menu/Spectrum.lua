@@ -1,7 +1,7 @@
 local Spectrum = Object:extend()
 
 local function devide(list, factor)
-    for i, v in ipairs(list) do
+    for i, _ in ipairs(list) do
         list[i] = list[i] * factor
     end
 end

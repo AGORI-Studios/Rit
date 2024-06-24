@@ -24,7 +24,6 @@ end
 
 function Popup:update(dt)
     self.timer = self.timer + dt
-    
 end
 
 function Popup:destroy()

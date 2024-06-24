@@ -132,7 +132,7 @@ local closeBtn
 
 function Jukebox:enter()
     orderedSongs = {}
-    for i, song in pairs(songList) do
+    for _, song in pairs(songList) do
         local rndDiff = table.random(song)
         while (type(rndDiff) == "string") do
             rndDiff = table.random(song)
@@ -141,7 +141,6 @@ function Jukebox:enter()
         table.insert(orderedSongs, song)
         table.sort(orderedSongs, function(a, b) return a.title < b.title end)
     end
-    --print(#orderedSongs .. " songs loaded")
 
     balls = {}
     bg = Sprite(0, 0, "assets/images/ui/menu/playBG.png")
@@ -153,7 +152,7 @@ function Jukebox:enter()
     table.randomize(balls)
 
     -- media controls (load images)
-    for i, button in ipairs(buttons) do
+    for _, button in ipairs(buttons) do
         if button.image and not button.img and love.filesystem.getInfo(button.image) then
             button.img = Sprite(button.x, button.y, button.image)
         end
@@ -227,7 +226,7 @@ end
 function Jukebox:mousepressed(x, y, button)
     local x, y = toGameScreen(x, y)
     if button == 1 then
-        for i, button in ipairs(buttons) do
+        for _, button in ipairs(buttons) do
             if x > button.x and x < button.x + button.width and y > button.y and y < button.y + button.height then
                 button.onClick()
             end
@@ -241,7 +240,7 @@ end
 
 function Jukebox:draw()
     bg:draw()
-    for i, bubble in ipairs(balls) do
+    for _, bubble in ipairs(balls) do
         bubble:draw()
     end
 
@@ -250,7 +249,7 @@ function Jukebox:draw()
     end ]]
 
     -- media controls
-    for i, button in ipairs(buttons) do
+    for _, button in ipairs(buttons) do
         if button.img then
             if button.type == "toggle" then
                 love.graphics.setColor(button.colour[1], button.colour[2], button.colour[3])

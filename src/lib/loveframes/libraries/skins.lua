@@ -86,7 +86,7 @@ function loveframes.RegisterSkin(skin)
 	if indeximages then
 		local imagelist = loveframes.GetDirectoryContents(imagedir)
 		local filename, extension, image
-		for k, v in ipairs(imagelist) do
+		for _, v in ipairs(imagelist) do
 			extension = v.extension
 			filename = v.name .. "." .. extension
 			if extension == "png" then
@@ -104,7 +104,7 @@ function loveframes.LoadSkins(dir)
 	local skinlist = loveframes.GetDirectoryContents(dir)
 	-- loop through a list of all gui skins and require them
 	local skin
-	for k, v in ipairs(skinlist) do
+	for _, v in ipairs(skinlist) do
 		if v.extension == "lua" then
 			skin = loveframes.require(v.requirepath)
 			--loveframes.RegisterSkin(skin)

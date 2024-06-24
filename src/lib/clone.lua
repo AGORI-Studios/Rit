@@ -37,7 +37,7 @@ function clone.parse(clonestr)
     local currentSection = nil
 
     -- no comments lol
-    for i, line in ipairs(lines) do
+    for _, line in ipairs(lines) do
         --formatted like this:
         --[[
             [Song]

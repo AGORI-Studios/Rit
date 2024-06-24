@@ -78,7 +78,7 @@ function Settings.loadOptions()
         end
     )
     for i, type in pairs(savedOptions) do
-        for j, setting in pairs(type) do
+        for j, _ in pairs(type) do
             Settings.options[i][j] = savedOptions[i][j]
         end
     end

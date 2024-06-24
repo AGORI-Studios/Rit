@@ -9,22 +9,23 @@ Cache.members = {
 }
 
 function Cache:clear()
-    for k, v in pairs(self.members) do
+    for k, _ in pairs(self.members) do
         self.members[k] = {}
     end
 end
 
 function Cache:loadImage(...) -- so we can load multiple images at once
     --                           also makes it so we don't re-load the same image
-    for i, v in ipairs({...}) do
+    local tbl = {...}
+    for i, v in ipairs(tbl) do
         if not self.members.image[v] then
             self.members.image[v] = love.graphics.newImage(v)
         end
 
-        if #{...} == 1 then
+        if #tbl == 1 then
             return self.members.image[v]
         else
-            if i == #{...} then
+            if i == #tbl then
                 return self.members.image[v]
             end
         end

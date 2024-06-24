@@ -111,7 +111,6 @@ function osuLoader.processEvent(line)
     end
     if split[1] == "0" and not states.game.Gameplay.background then
         local bg = line:match("^0,.+,\"(.+)\".*$")
-        --states.game.Gameplay.background = love.graphics.newImage(folderPath .. "/" .. bg)
         if love.filesystem.getInfo(folderPath .. "/" .. bg) then
             if bg:find(".jpg") or bg:find(".png") then
                 states.game.Gameplay.background = love.graphics.newImage(folderPath .. "/" .. bg)
@@ -219,9 +218,6 @@ function osuLoader.addHitObject(line)
     if doAprilFools and Settings.options["Events"].aprilFools then note.data = 1; states.game.Gameplay.mode = 1 end
 
     local ho = HitObject(note.startTime, note.data, note.endTime)
-
-    -- TODO: Add key sounds.
-    ho.keySounds = {}
 
     table.insert(states.game.Gameplay.unspawnNotes, ho)
 end

@@ -40,7 +40,7 @@ end
 ---@return table
 function table.randomize(table)
     local newTable = {}
-    for k, v in pairs(table) do
+    for _, v in pairs(table) do
         newTable[love.math.random(1, #newTable+1)] = v
     end
 
@@ -53,7 +53,7 @@ end
 ---@param value any
 ---@return any
 function table.find(table, value)
-    for k, v in pairs(table) do
+    for _, v in pairs(table) do
         if v == value then
             return v
         end
@@ -71,7 +71,7 @@ table.contains = table.find
 ---@return string
 function table.concate(table, separator)
     local str = ""
-    for k, v in pairs(table) do
+    for _, v in pairs(table) do
         str = str .. v .. separator
     end
 
@@ -103,4 +103,19 @@ function table.copy(table)
     end
 
     return newTable
+end
+
+local o_tblSort = table.sort
+
+---@name table.sort
+---@description Sorts a table if it exists
+---@param table table
+---@return table
+---@diagnostic disable-next-line: duplicate-set-field
+function table.sort(table, method)
+    if table then 
+        o_tblSort(table, method)
+    end
+
+    return {}
 end

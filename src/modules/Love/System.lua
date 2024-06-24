@@ -62,6 +62,7 @@ function love.system.getProcessorArchitecture()
         end
     else
         return "64" -- Hoping and praying that the user has a 64-bit processor (cuz why would they not? and also cuz Rit would probably die at 32-bit)
+                    -- Also due to the fact rit only has officially compiled x64 builds available
     end
 end
 
