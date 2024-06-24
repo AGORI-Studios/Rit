@@ -30,6 +30,9 @@ _TRANSITION = {
     ovalHeight = 0
 }
 
+--- grrr those people are not allowed
+-- also this game is not renamed to xit.
+
 function switchState(newState, t, middleFunc, data)
     local t = t or 0.3
     isLoading = true
