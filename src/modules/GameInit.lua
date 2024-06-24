@@ -273,7 +273,8 @@ end
 function GI.LoadShaders()
     return {
         backgroundEffects = love.graphics.newShader("shaders/backgroundEffects.glsl"),
-        playfieldAlpha = love.graphics.newShader("shaders/playfieldAlpha.glsl")
+        playfieldAlpha = love.graphics.newShader("shaders/playfieldAlpha.glsl"),
+        blurShader_Results = love.graphics.newShader("shaders/blurShader_Results.glsl")
     }
 end
 
@@ -326,6 +327,8 @@ function GI.LoadDefaultFonts()
     Cache.members.font["defaultBold"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 16)
     Cache.members.font["defaultBoldX1.25"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 20)
     Cache.members.font["defaultBoldX1.5"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 24)
+    Cache.members.font["defaultBoldX2"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 32)
+    Cache.members.font["defaultBoldX2.5"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 48)
     Cache.members.font["menu"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 32)
     Cache.members.font["menuBold"] = love.graphics.newFont("assets/fonts/Montserrat-Bold.ttf", 22)
     Cache.members.font["menuExtraBold"] = love.graphics.newFont("assets/fonts/Montserrat-ExtraBold.ttf", 22)
@@ -384,6 +387,9 @@ function GI.LoadStates()
             Jukebox = require("states.screen.JukeboxScreen"),
             Multiplayer = {
                 ResultsScreen = require("states.screen.Multiplayer.ResultsScreen"),
+            },
+            game = {
+                ResultsScreen = require("states.screen.Game.ResultsScreen")
             }
         }
     }

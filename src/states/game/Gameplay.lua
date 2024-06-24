@@ -918,7 +918,16 @@ function Gameplay:update(dt)
                 MenuSoundManager:removeAllSounds()
                 self.soundManager:removeAllSounds()
             else
-                switchState(states.menu.StartMenu, 0.3)
+                switchState(states.screens.game.ResultsScreen, 0.3, nil, {score = self.score, accuracy = self.accuracy, misses = 0, maxCombo = 423, rating = 19.23,
+                    judgements = {
+                        marvellous = self.allJudgements["marvellous"],
+                        perfect = self.allJudgements["perfect"],
+                        great = self.allJudgements["great"],
+                        good = self.allJudgements["good"],
+                        bad = self.allJudgements["bad"],
+                        miss = self.misses
+                    }}
+                )
                 MenuSoundManager:removeAllSounds()
 
                 -- Only save stats for singleplayer
@@ -1035,8 +1044,7 @@ function Gameplay:update(dt)
 end
 
 function Gameplay:keyPressed(key)
-    local cloned = self.hitsound:clone()
-    cloned:setVolume(Settings.options["General"].hitsoundVolume)
+    local cloned = self.hitsound:clone():setVolume(Settings.options["General"].hitsoundVolume)
     cloned:play()
     cloned:release()
 
