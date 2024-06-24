@@ -1,30 +1,38 @@
 # v0.1.0 - Public Steam Build
-- Entire game rewrite from ground up
+### Additions:
 - New UI
 - New Skin system
 - New Modding system
-- Removed "FNF" support
 - Added "fluXis" support
+- MalodyV support
 - Steamworks integration
 - Multiplayer Servers (Comes online every once in a while for testing)
 - Pre-included official songs
-- Removed old default songs (Was only pre-included for testing)
-- MalodyV support
-- New settings system
 - Video background support
 - 1k-10k mania support
 - (Some) osu!Taiko support
-- Rewrite input system
 - osu!Mania SV support
-- (Partial) Clone Hero support
+- New settings system
 - Touch Screen support
 - Replay system
+- (Partial) Clone Hero support
 - (Local only currently) Leaderboards
 - Multiple Language support (en-US, en-UK, es-LATAM, fr-FR, pt-BR)
-- Game no longer crashes if a song is not found
 - Search feature for song selection menu
-- Modscripting rewrite (Works similar to NotITG Mirin (not really))
+- Hold release timings
 
+### Reworks:
+- Entire game rewrite from ground up
+- Rewrite input system
+- Modscripting rewrite (Works similar to NotITG Mirin (not really))
+- Reworked the health system
+
+### Removals:
+- Removed "FNF" support (No need to support it, if you want to play an fnf chart, just convert it lol)
+- Removed old default songs (Was only pre-included for testing)
+
+### Fixes:
+- Game no longer crashes if a song is not found
 
 # v0.0.5-SV Improvement
 Changes:
