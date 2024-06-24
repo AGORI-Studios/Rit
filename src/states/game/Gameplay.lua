@@ -277,14 +277,16 @@ function Gameplay:doJudgement(time, wasLN)
         judgement = self.judgements[not wasLN and #self.judgements or 3] 
     end -- default to miss
 
-    local score = self.noteScore * judgement.scoreMultiplier
+    if not wasLN then
+        local score = self.noteScore * judgement.scoreMultiplier
 
-    self.score = self.score + score
+        self.score = self.score + score
 
-    self.accuracy = self:calculateAccuracy() 
-    if tostring(self.accuracy) == "nan" then self.accuracy = 0 end
-    self.rating = self:calculateRating()
-    if tostring(self.rating) == "nan" then self.rating = 0 end
+        self.accuracy = self:calculateAccuracy() 
+        if tostring(self.accuracy) == "nan" then self.accuracy = 0 end
+        self.rating = self:calculateRating()
+        if tostring(self.rating) == "nan" then self.rating = 0 end
+    end
 
     self.allJudgements[judgement.name] = self.allJudgements[judgement.name] + 1
 
