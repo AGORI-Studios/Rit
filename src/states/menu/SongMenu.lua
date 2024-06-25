@@ -334,9 +334,9 @@ function SongMenu:mousepressed(x, y, b)
             typing = not typing
         end
 
-        for _, btn in ipairs(songButtons) do
+        for i, btn in ipairs(songButtons) do
             if curTab == "diffs" then
-                for _, diffBtn in ipairs(btn.children) do
+                for i, diffBtn in ipairs(btn.children) do
                     if diffBtn:isHovered(x, y) then
                         if curSelected == i then
                             local diff = curButton.children[curSelected]
@@ -558,7 +558,7 @@ function SongMenu:draw()
     love.graphics.push()
     setFont("menuBold")
     love.graphics.translate(0, lerpedSongPos)
-    for _, btn in ipairs(songButtons) do
+    for i, btn in ipairs(songButtons) do
         -- dont draw if it's out of bounds with lerpedSongPos
         if not btn.open then
             if not (btn.y + lerpedSongPos > 1080 or btn.y + lerpedSongPos < -btn.height) then
