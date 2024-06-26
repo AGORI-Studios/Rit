@@ -19,6 +19,7 @@ function Playfield:new(x, y, reversed)
 end
 
 function Playfield:update(dt)
+
 end
 
 function Playfield:draw(notes, timingLines, timingLineWidth, scale, bgLaneX)
@@ -42,6 +43,7 @@ function Playfield:draw(notes, timingLines, timingLineWidth, scale, bgLaneX)
         love.graphics.translate(-diff*2, 0)
     end
     for _, timingLine in ipairs(timingLines) do
+        timingLine:update(states.game.Gameplay.currentTrackPosition)
         timingLine:draw(timingLineWidth)
     end
     love.graphics.push()

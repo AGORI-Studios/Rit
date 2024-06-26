@@ -172,7 +172,7 @@ function SoundManager:clone(name)
 end
 
 function SoundManager:getDuration(name)
-    return self.channel[name].sound:getDuration()
+    return self.channel[name].sound:getDuration("seconds")
 end
 
 function SoundManager:setBeatCallback(name, callback)

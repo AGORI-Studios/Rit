@@ -646,6 +646,40 @@ function Gameplay:getNotePosition(offset, initialPos)
     end
 end
 
+function Gameplay:setupTimingLines()
+    for i = 1, #self.timingPoints do
+        if self.timingPoints[i].Hidden then
+            goto continue
+        end
+    
+        -- Get target position and increment
+        -- Target position has tolerance of 1ms so timing points dont overlap by chance
+        local target = (i + 1 <= #self.timingPoints) and (self.timingPoints[i + 1].StartTime - 1) or self.soundManager:getDuration("music")
+    
+        local signature = math.floor(self.timingPoints[i].Signature or 4)
+    
+        -- Max possible sane value for timing lines
+        local maxBpm = 9999
+    
+        local msPerBeat = 60000 / math.min(math.abs(self.timingPoints[i].Bpm), maxBpm)
+        local increment = signature * msPerBeat
+    
+        if increment <= 0 then
+            goto continue
+        end
+    
+        -- Initialize timing lines between current timing point and target position
+        for songPos = self.timingPoints[i].StartTime, target, increment do
+            local offset = self:getPositionFromTime(songPos)
+            table.insert(self.timingLines.members, TimingLine(offset, {
+                songPos = songPos,
+                offset = offset
+            }))
+        end
+    
+        ::continue::
+    end
+end
 
 function Gameplay:updateNotePosition(offset, curTime)
     local spritePosition = 0
@@ -744,6 +778,10 @@ function Gameplay:enter()
     self:initializePositionMarkers()
     self:updateCurrentTrackPosition()
     self:initPositions()
+    --self:setupTimingLines()
+    --table.sort(self.timingPoints.members, function(a, b)
+    --    return a.targetY < b.targetY
+    --end)
     self:updateNotePosition(self.currentTrackPosition, musicTime)
     self:addObjectsToGroups()
 
@@ -978,6 +1016,15 @@ function Gameplay:update(dt)
 
     if self.updateTime then
         self:updateEvents()
+
+        if #self.timingPoints > 0 then
+            local tp = self.timingPoints[1]
+
+            if tp.StartTime <= musicTime then
+                self.soundManager:setBPM("music", tp.Bpm)
+                table.remove(self.timingPoints, 1)
+            end
+        end
     end
 
     for _, member in ipairs(self.members) do
@@ -1273,6 +1320,7 @@ end
 function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName, forNPS)
     self.mode = 4 -- Amount of key lanes, reset to 4 until the chart specifies otherwise
     Parsers[chartType].load(songPath, folderPath, diffName, forNPS)
+    
 
     --self:normalizeSVs()
     --self:SVFactor()
