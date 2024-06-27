@@ -1255,7 +1255,7 @@ function Gameplay:draw()
                 text = text .. " (Supporter)"
             end
             love.graphics.print(text, 10, 400 + (i * 100))
-            love.graphics.print("Score: " .. (math.floor(player.score) or 0), 10, 420 + (i * 100)) 
+            love.graphics.print("Score: " .. string.format("%07d", math.floor(player.score) or 0), 10, 420 + (i * 100)) 
             love.graphics.print("Accuracy: " .. (string.format("%.2f", player.accuracy or 0) .. "%"), 10, 440 + (i * 100))
             love.graphics.print("Rating: " .. (player.rating or 0), 10, 460 + (i * 100))
         end
@@ -1302,7 +1302,7 @@ function Gameplay:draw()
 
     local lastFont = love.graphics.getFont()
     love.graphics.setFont(Cache.members.font["menuBold"])
-    love.graphics.printf(localize.localize("Score: ") .. math.round(lerpedScore), 0, 0, 960, "right", 0, 2, 2)
+    love.graphics.printf(localize.localize("Score: ") .. string.format("%07d", math.round(math.floor(lerpedScore))), 0, 0, 960, "right", 0, 2, 2)
     love.graphics.printf(localize.localize("Accuracy: ") .. string.format("%.2f", lerpedAccuracy) .. "%", 0, 50, 960, "right", 0, 2, 2)
     love.graphics.printf(localize.localize("Rating: ") .. string.format("%.2f", lerpedRating), 0, 100, 960, "right", 0, 2, 2)
 
