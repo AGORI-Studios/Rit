@@ -48,7 +48,7 @@ function OsuImportScreen:update(dt)
 end
 
 function OsuImportScreen:draw()
-    love.graphics.printf(localize.localize("Importing osu! songs..."), 0, Inits.GameHeight/2-100, Inits.GameWidth/2, "center", 0, 2, 2)
+    love.graphics.printf(localize("Importing osu! songs..."), 0, Inits.GameHeight/2-100, Inits.GameWidth/2, "center", 0, 2, 2)
 end
 
 return OsuImportScreen

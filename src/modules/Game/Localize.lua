@@ -20,7 +20,8 @@ local function loadLocale(locale)
     }
 end
 
-local function localize(text)
+local function localizeString(text)
+    local text = text or ""
     return currentLocaleData[text] or text
 end
 
@@ -28,8 +29,21 @@ local function getLocaleName()
     return currentLocale
 end
 
-return {
+local returnTbl = {
     loadLocale = loadLocale,
-    localize = localize,
-    getLocaleName = getLocaleName
+    getLocaleName = getLocaleName,
+    localize = localizeString
 }
+
+local met = {}
+
+function met.__call(...)
+    local args = {...}
+    
+    return localizeString(args[2])
+end
+
+
+setmetatable(returnTbl, met)
+
+return returnTbl

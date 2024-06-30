@@ -97,7 +97,7 @@ end
 function Pause:draw() 
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.setFont(Cache.members.font["menuBig"])
-    love.graphics.printf(localize.localize("Paused"), 0, 100, Inits.GameWidth, "center")
+    love.graphics.printf(localize("Paused"), 0, 100, Inits.GameWidth, "center")
 
     love.graphics.setFont(Cache.members.font["menuMedium"])
     for i, v in ipairs(options) do

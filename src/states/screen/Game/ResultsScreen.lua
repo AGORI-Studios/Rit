@@ -75,10 +75,10 @@ function ResultsScreen:draw()
     local lastFont = love.graphics.getFont()
 
     love.graphics.setFont(Cache.members.font["defaultBoldX1.5"])
-    love.graphics.printf(localize.localize("Max Combo"), 300, 525, 150, "center")
-    love.graphics.printf(localize.localize("Accuracy"), 700, 525, 150, "center")
-    love.graphics.printf(localize.localize("Rating"), 1100, 525, 150, "center")
-    love.graphics.printf(localize.localize("Score"), 1500, 525, 150, "center")
+    love.graphics.printf(localize("Max Combo"), 300, 525, 150, "center")
+    love.graphics.printf(localize("Accuracy"), 700, 525, 150, "center")
+    love.graphics.printf(localize("Rating"), 1100, 525, 150, "center")
+    love.graphics.printf(localize("Score"), 1500, 525, 150, "center")
     
     love.graphics.setFont(Cache.members.font["defaultBoldX2.5"])
     love.graphics.printf(combo, 300, 465, 150, "center")
@@ -91,10 +91,10 @@ function ResultsScreen:draw()
     love.graphics.rectangle("fill", 965, 600, 830, 450, 15, 15)
 
     love.graphics.setColor(1, 1, 1)
-    love.graphics.printf(localize.localize("Your judgements will draw here when i actually add that lol"), 130, 605, 820, "left")
-    love.graphics.printf(localize.localize("Your timings will display on a graphy-like thing here"), 970, 605, 820, "left")
+    love.graphics.printf(localize("Your judgements will draw here when i actually add that lol"), 130, 605, 820, "left")
+    love.graphics.printf(localize("Your timings will display on a graphy-like thing here"), 970, 605, 820, "left")
 
-    love.graphics.printf(localize.localize("Results for ") .. (songname or "UnknownSong") .. " on " .. (diffname or "UnknownDiff"), 15, 200, 1920, "left")
+    love.graphics.printf(localize("Results for ") .. (songname or "UnknownSong") .. " on " .. (diffname or "UnknownDiff"), 15, 200, 1920, "left")
     -- ^ Idk where else to put this rn
 
     love.graphics.setColor(1, 1, 1)

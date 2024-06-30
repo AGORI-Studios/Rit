@@ -53,8 +53,8 @@ function SongMenu:enter()
 
     if discordRPC then
         discordRPC.presence = {
-            details = localize.localize("In the menu"),
-            state = localize.localize("Selecting a song"),
+            details = localize("In the menu"),
+            state = localize("Selecting a song"),
             largeImageKey = "totallyreallogo",
             largeImageText = "Rit" .. (__DEBUG__ and " DEBUG MODE" or "")
         }

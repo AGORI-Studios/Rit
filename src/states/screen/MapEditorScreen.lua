@@ -612,7 +612,7 @@ function MapEditorScreen:draw()
 
     -- Draw the snapping slider value text
     love.graphics.setColor(1, 1, 1)
-    love.graphics.print(localize.localize("Snapping: ") .. snapSlider.value, 10, 20, 0, 2, 2)
+    love.graphics.print(localize("Snapping: ") .. snapSlider.value, 10, 20, 0, 2, 2)
 
     -- Draw the beat display slider background tab
     love.graphics.setColor(0.8, 0.8, 0.8)  -- Light gray color
@@ -625,11 +625,11 @@ function MapEditorScreen:draw()
 
     -- Draw the beat display slider value text
     love.graphics.setColor(1, 1, 1)
-    love.graphics.print(localize.localize("Beats on Screen: ") .. beatDisplaySlider.value, 10, 110, 0, 2, 2)
+    love.graphics.print(localize("Beats on Screen: ") .. beatDisplaySlider.value, 10, 110, 0, 2, 2)
 
     -- Draw the snapping slider value text
     love.graphics.setColor(1, 1, 1)
-    love.graphics.print(localize.localize("Key Amount: ") .. keyAmountSlider.value, 10, 195, 0, 2, 2)
+    love.graphics.print(localize("Key Amount: ") .. keyAmountSlider.value, 10, 195, 0, 2, 2)
 
     -- Draw the key amount slider background tab
     love.graphics.setColor(0.8, 0.8, 0.8)  -- Light gray color
@@ -641,24 +641,24 @@ function MapEditorScreen:draw()
     love.graphics.rectangle("fill", keyAmountSlider.x + keyAmountSliderPos - 10, keyAmountSlider.y - 5, 20, keyAmountSlider.height + 10, 10, 10)
 
     love.graphics.setColor(1, 1, 1)
-    love.graphics.print(localize.localize("Song Position: ") .. musicTime .. "ms / " .. songEnd .. "ms", 10, 260, 0, 2, 2)
+    love.graphics.print(localize("Song Position: ") .. musicTime .. "ms / " .. songEnd .. "ms", 10, 260, 0, 2, 2)
 
     -- Draw AudioFile button
     love.graphics.setColor(0.5, 0.5, 0.5)
     love.graphics.rectangle("fill", 10, 310, 300, 50)
     love.graphics.setColor(1, 1, 1)
-    love.graphics.printf(localize.localize("Audio File: ") .. self.map.meta.AudioFile, 10, 310, 300, "left", 0, 1.5, 1.5)
+    love.graphics.printf(localize("Audio File: ") .. self.map.meta.AudioFile, 10, 310, 300, "left", 0, 1.5, 1.5)
 
     -- Draw Background button
     love.graphics.setColor(0.5, 0.5, 0.5)
     love.graphics.rectangle("fill", 10, 380, 300, 50)
     love.graphics.setColor(1, 1, 1)
-    love.graphics.printf(localize.localize("Background: ") .. self.map.meta.Background, 10, 380, 300, "left", 0, 1.5, 1.5)
+    love.graphics.printf(localize("Background: ") .. self.map.meta.Background, 10, 380, 300, "left", 0, 1.5, 1.5)
 
     love.graphics.setColor(0.5, 0.5, 0.5)
     love.graphics.rectangle("fill", 10, 460, 150, 50)
     love.graphics.setColor(1, 1, 1)
-    love.graphics.printf(localize.localize("Export Map"), -30, 470, 150, "center", 0, 1.5, 1.5)
+    love.graphics.printf(localize("Export Map"), -30, 470, 150, "center", 0, 1.5, 1.5)
 
     if exporting then
         love.graphics.setColor(0.5, 0.5, 0.5)
@@ -701,7 +701,7 @@ function MapEditorScreen:draw()
         love.graphics.rectangle("fill", buttonX, buttonY, buttonWidth, buttonHeight, 10, 10)
 
         love.graphics.setColor(1, 1, 1)  -- Text color
-        love.graphics.printf(localize.localize("Export File"), buttonX-buttonWidth/2, buttonY + 10, buttonWidth, "center", 0, 2, 2)
+        love.graphics.printf(localize("Export File"), buttonX-buttonWidth/2, buttonY + 10, buttonWidth, "center", 0, 2, 2)
 
         love.graphics.print("LOG:\n" .. exporting_LOG, 100, 550, 0, 2, 2)
     end
@@ -717,7 +717,7 @@ function MapEditorScreen:draw()
     
         -- Draw the centered message
         love.graphics.setColor(1, 1, 1)
-        love.graphics.printf(localize.localize(message), 0, love.graphics.getHeight() / 2 + 150, love.graphics.getWidth() - 225, "center", 0, scale, scale)
+        love.graphics.printf(localize(message), 0, love.graphics.getHeight() / 2 + 150, love.graphics.getWidth() - 225, "center", 0, scale, scale)
     end
 
     love.graphics.setFont(lastFont)

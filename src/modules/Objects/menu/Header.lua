@@ -121,7 +121,7 @@ function Header:draw()
 
     setFont("menuExtraBoldX2")
     love.graphics.setColor(203/255, 36/255, 145/255)
-    love.graphics.printf(SteamUserName or localize.localize("Not Logged In"), 260, 12, 1080/2, "left", 0, 1, 1) -- Steam name
+    love.graphics.printf(SteamUserName or localize("Not Logged In"), 260, 12, 1080/2, "left", 0, 1, 1) -- Steam name
     love.graphics.setColor(1, 1, 1)
     -- draw SteamUserAvatarSmall to the right of the name
     if SteamUserAvatarMedium then

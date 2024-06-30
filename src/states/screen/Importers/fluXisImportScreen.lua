@@ -52,7 +52,7 @@ function FluxisInportScreen:update(dt)
 end
 
 function FluxisInportScreen:draw()
-    love.graphics.printf(localize.localize("Importing fluXis songs..."), 0, Inits.GameHeight/2-100, Inits.GameWidth/2, "center", 0, 2, 2)
+    love.graphics.printf(localize("Importing fluXis songs..."), 0, Inits.GameHeight/2-100, Inits.GameWidth/2, "center", 0, 2, 2)
 end
 
 return FluxisInportScreen

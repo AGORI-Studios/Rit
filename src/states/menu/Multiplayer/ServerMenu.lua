@@ -43,8 +43,8 @@ function ServerMenu:enter()
     if discordRPC then
         local details = ""
         discordRPC.presence = {
-            details = localize.localize("Browsing multiplayer lobbies"),
-            state = localize.localize("In the lobby list"),
+            details = localize("Browsing multiplayer lobbies"),
+            state = localize("In the lobby list"),
             largeImageKey = "totallyreallogo",
             largeImageText = "Rit" .. (__DEBUG__ and " DEBUG MODE" or "")
         }
@@ -76,7 +76,7 @@ function ServerMenu:draw()
     love.graphics.push()
         love.graphics.setColor(1, 1, 1)
         setFont("menuExtraBold")
-        love.graphics.print(localize.localize("Server List"), 10, 100, 0, 2, 2)
+        love.graphics.print(localize("Server List"), 10, 100, 0, 2, 2)
         
         setFont("menuExtraBold")
         for _, button in ipairs(self.serverButtons) do
@@ -84,7 +84,7 @@ function ServerMenu:draw()
         end
 
         if not Steam or not networking.connected then
-            love.graphics.print(localize.localize("Not connected to the server.\nIt's possible it is offline currently."), 10, 190, 0, 1.5, 1.5)
+            love.graphics.print(localize("Not connected to the server.\nIt's possible it is offline currently."), 10, 190, 0, 1.5, 1.5)
         end
     love.graphics.pop()
 end

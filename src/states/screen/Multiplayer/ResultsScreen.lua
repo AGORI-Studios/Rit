@@ -34,16 +34,16 @@ function ResultsScreen:draw()
     love.graphics.push()
         love.graphics.setColor(1, 1, 1)
         setFont("menuExtraBold")
-        love.graphics.print(localize.localize("Results"), 10, 10, 0, 2, 2)
+        love.graphics.print(localize("Results"), 10, 10, 0, 2, 2)
 
         setFont("menuExtraBold")
-        love.graphics.print(localize.localize("Score: ") .. self.results.score, 10, 70)
-        love.graphics.print(localize.localize("Accuracy: ") .. self.results.accuracy, 10, 90)
+        love.graphics.print(localize("Score: ") .. self.results.score, 10, 70)
+        love.graphics.print(localize("Accuracy: ") .. self.results.accuracy, 10, 90)
 
         if self.isEveryoneFinished then
-            love.graphics.print(localize.localize("Everyone has finished!"), 10, 110)
+            love.graphics.print(localize("Everyone has finished!"), 10, 110)
         else
-            love.graphics.print(localize.localize("Waiting for everyone to finish..."), 10, 110)
+            love.graphics.print(localize("Waiting for everyone to finish..."), 10, 110)
         end
 
         -- for everyone in networking.currentServerData.players
@@ -51,12 +51,12 @@ function ResultsScreen:draw()
             for i, player in ipairs(networking.currentServerData.players) do
                 -- Name -\nScore: score\nAccuracy: accuracy\nfinished/not finished
                 love.graphics.print(player.name .. " -", 10, 130 + i * 100)
-                love.graphics.print(localize.localize("Score: ") .. math.floor(player.score), 10, 150 + i * 100)
-                love.graphics.print(localize.localize("Accuracy: ") .. string.format("%.2f", player.accuracy) .. "%", 10, 170 + i * 100)
+                love.graphics.print(localize("Score: ") .. math.floor(player.score), 10, 150 + i * 100)
+                love.graphics.print(localize("Accuracy: ") .. string.format("%.2f", player.accuracy) .. "%", 10, 170 + i * 100)
                 if player.completed then
-                    love.graphics.print(localize.localize("Finished"), 10, 190 + i * 100)
+                    love.graphics.print(localize("Finished"), 10, 190 + i * 100)
                 else
-                    love.graphics.print(localize.localize("Not Finished"), 10, 190 + i * 100)
+                    love.graphics.print(localize("Not Finished"), 10, 190 + i * 100)
                 end
             end
         end

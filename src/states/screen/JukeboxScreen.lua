@@ -46,7 +46,7 @@ local buttons = {
         width = 100,
         height = 100,
         image = "assets/images/ui/menu/media/previous.png",
-        placeholderText = localize.localize("Prev"),
+        placeholderText = localize("Prev"),
         onClick = function()
             songIndex = songIndex - 1
             if songIndex < 1 then
@@ -62,7 +62,7 @@ local buttons = {
         width = 100,
         height = 100,
         image = "assets/images/ui/menu/media/forward.png",
-        placeholderText = localize.localize("Play/Pause"),
+        placeholderText = localize("Play/Pause"),
         onClick = function()
             MenuSoundManager:play("music")
         end,
@@ -75,7 +75,7 @@ local buttons = {
         width = 100,
         height = 100,
         image = "assets/images/ui/menu/media/next.png",
-        placeholderText = localize.localize("Next"),
+        placeholderText = localize("Next"),
         onClick = function()
             songIndex = songIndex + 1
             if songIndex > #orderedSongs then
@@ -91,7 +91,7 @@ local buttons = {
         width = 100,
         height = 100,
         image = "assets/images/ui/menu/media/stop.png",
-        placeholderText = localize.localize("Stop"),
+        placeholderText = localize("Stop"),
         onClick = function()
             MenuSoundManager:pause("music")
         end,
@@ -103,7 +103,7 @@ local buttons = {
         width = 100,
         height = 100,
         image = "assets/images/ui/menu/media/rewind.png",
-        placeholderText = localize.localize("Restart"),
+        placeholderText = localize("Restart"),
         onClick = function()
             MenuSoundManager:stop("music")
             --[[ MenuSoundManager:removeAllSounds() ]]
@@ -119,7 +119,7 @@ local buttons = {
         width = 100,
         height = 100,
         image = "assets/images/ui/menu/media/return.png",
-        placeholderText = localize.localize("Loop"),
+        placeholderText = localize("Loop"),
         onClick = function()
             MenuSoundManager:setLooping("music", not MenuSoundManager:getLooping("music"))
         end,
@@ -184,9 +184,9 @@ function Jukebox:update(dt)
         rpcTimer = 0
         local formattedTime = string.format("%02d:%02d", math.floor(songTime / 60), math.floor(songTime % 60))
         discordRPC.presence = {
-            details = localize.localize("In the Jukebox"),
+            details = localize("In the Jukebox"),
             -- time and what song
-            state = localize.localize("Listening to ") .. curSong.title,
+            state = localize("Listening to ") .. curSong.title,
             largeImageKey = "totallyreallogo",
             largeImageText = "Rit" .. (__DEBUG__ and " DEBUG MODE" or ""),
         }
@@ -280,7 +280,7 @@ function Jukebox:draw()
     local lastFont = love.graphics.getFont()
     love.graphics.setFont(Cache.members.font["defaultBold"])
     love.graphics.printf(
-        (curSong.title or localize.localize("Unknown")),
+        (curSong.title or localize("Unknown")),
         Inits.GameWidth/2-265, 990, Inits.GameWidth, "left",
         0, 2.25, 2.25
     )

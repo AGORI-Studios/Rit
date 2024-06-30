@@ -1302,14 +1302,14 @@ function Gameplay:draw()
 
     local lastFont = love.graphics.getFont()
     love.graphics.setFont(Cache.members.font["menuBold"])
-    love.graphics.printf(localize.localize("Score: ") .. string.format("%07d", math.round(math.floor(lerpedScore))), 0, 0, 960, "right", 0, 2, 2)
-    love.graphics.printf(localize.localize("Accuracy: ") .. string.format("%.2f", lerpedAccuracy) .. "%", 0, 50, 960, "right", 0, 2, 2)
-    love.graphics.printf(localize.localize("Rating: ") .. string.format("%.2f", lerpedRating), 0, 100, 960, "right", 0, 2, 2)
+    love.graphics.printf(localize("Score: ") .. string.format("%07d", math.round(math.floor(lerpedScore))), 0, 0, 960, "right", 0, 2, 2)
+    love.graphics.printf(localize("Accuracy: ") .. string.format("%.2f", lerpedAccuracy) .. "%", 0, 50, 960, "right", 0, 2, 2)
+    love.graphics.printf(localize("Rating: ") .. string.format("%.2f", lerpedRating), 0, 100, 960, "right", 0, 2, 2)
 
     if musicTime <= self.firstNoteTime and self.hasSkipPeriod and input:pressed("Skip_Key") then
         -- right align
         love.graphics.setColor(1,1,1,1)
-        love.graphics.printf(localize.localize("Press SPACE to skip intro"), 0, Inits.GameWidth-50, 960, "right", 0, 2, 2)
+        love.graphics.printf(localize("Press SPACE to skip intro"), 0, Inits.GameWidth-50, 960, "right", 0, 2, 2)
     end
 
     love.graphics.rectangle("fill", self.bgLane.width*1.6 + 50, Inits.GameHeight - 50, 25, -lerpedHealth * 5)
@@ -1358,7 +1358,7 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName, for
         if discordRPC then
             local details = ""
             if networking and networking.inMultiplayerGame then
-                details = localize.localize("In a multiplayer game - ") .. networking.currentServerData.name .. " (" .. #networking.currentServerData.players .. "/" .. networking.currentServerData.maxPlayers .. ")"
+                details = localize("In a multiplayer game - ") .. networking.currentServerData.name .. " (" .. #networking.currentServerData.players .. "/" .. networking.currentServerData.maxPlayers .. ")"
             else
                 details = "Playing a song"
             end
