@@ -1358,7 +1358,7 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName, for
         if discordRPC then
             local details = ""
             if networking and networking.inMultiplayerGame then
-                details = "In a multiplayer game - " .. networking.currentServerData.name .. " (" .. #networking.currentServerData.players .. "/" .. networking.currentServerData.maxPlayers .. ")"
+                details = localize.localize("In a multiplayer game - ") .. networking.currentServerData.name .. " (" .. #networking.currentServerData.players .. "/" .. networking.currentServerData.maxPlayers .. ")"
             else
                 details = "Playing a song"
             end

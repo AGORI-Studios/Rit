@@ -184,9 +184,9 @@ function Jukebox:update(dt)
         rpcTimer = 0
         local formattedTime = string.format("%02d:%02d", math.floor(songTime / 60), math.floor(songTime % 60))
         discordRPC.presence = {
-            details = "In the Jukebox",
+            details = localize.localize("In the Jukebox"),
             -- time and what song
-            state = "Listening to " .. curSong.title,
+            state = localize.localize("Listening to ") .. curSong.title,
             largeImageKey = "totallyreallogo",
             largeImageText = "Rit" .. (__DEBUG__ and " DEBUG MODE" or ""),
         }

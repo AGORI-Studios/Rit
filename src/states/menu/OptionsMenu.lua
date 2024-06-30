@@ -155,13 +155,13 @@ local tabs = {
 
     ["draw_video"] = function()
         setFont("menuExtraBoldX1.5")
-        love.graphics.print("Video", 100, 275)
+        love.graphics.print(localize.localize("Video"), 100, 275)
         setFont("defaultBoldX1.5")
         love.graphics.setColor(0.5, 0.5, 0.5)
         love.graphics.rectangle("line", 100, 325, 575, 1)
         love.graphics.setColor(1, 1, 1)
 
-        love.graphics.print("Screen Resolution", 105, 345) -- TODO: Make the dropdown for this option
+        love.graphics.print(localize.localize("Screen Resolution"), 105, 345) -- TODO: Make the dropdown for this option
 
         love.graphics.setColor(0.5, 0.5, 0.5)
         love.graphics.rectangle("line", 105, 395, 575, 1)

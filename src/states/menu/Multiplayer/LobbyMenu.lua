@@ -81,14 +81,14 @@ function LobbyMenu:draw()
     love.graphics.push()
         love.graphics.setColor(1, 1, 1)
         setFont("menuExtraBold")
-        love.graphics.print("Lobby", 10, 100, 0, 2, 2)
+        love.graphics.print(localize.localize("Lobby"), 10, 100, 0, 2, 2)
 
         setFont("menuExtraBold")
         if not networking.currentServerData then love.graphics.pop(); return end
-        love.graphics.print("Lobby Name: " .. networking.currentServerData.name, 10, 150)
+        love.graphics.print(localize.localize("Lobby Name: ") .. networking.currentServerData.name, 10, 150)
         
-        love.graphics.print("Host: " .. (networking.currentServerData.host or "Unknown"), 10, 170)
-        love.graphics.print("Players: " .. #networking.currentServerData.players .. "/" .. networking.currentServerData.maxPlayers, 10, 190)
+        love.graphics.print(localize.localize("Host: ") .. (networking.currentServerData.host or "Unknown"), 10, 170)
+        love.graphics.print(localize.localize("Players: ") .. #networking.currentServerData.players .. "/" .. networking.currentServerData.maxPlayers, 10, 190)
         local x, y = 0, 210
         for i, player in ipairs(networking.currentServerData.players) do
             -- player.tags (table)
@@ -118,18 +118,18 @@ function LobbyMenu:draw()
 
         -- Current song.songNamed and songDiff text
         if networking.currentServerData.currentSong then
-            love.graphics.print("Current Song: " .. networking.currentServerData.currentSong.songName, 10, 400)
-            love.graphics.print("Difficulty: " .. networking.currentServerData.currentSong.songDiff, 10, 420)
+            love.graphics.print(localize.localize("Current Song: ") .. networking.currentServerData.currentSong.songName, 10, 400)
+            love.graphics.print(localize.localize("Difficulty: ") .. networking.currentServerData.currentSong.songDiff, 10, 420)
         else
-            love.graphics.print("Current Song: None", 10, 400)
-            love.graphics.print("Difficulty: None", 10, 420)
+            love.graphics.print(localize.localize("Current Song: None"), 10, 400)
+            love.graphics.print(localize.localize("Difficulty: None"), 10, 420)
         end
 
         -- start button
         love.graphics.setColor(0.5, 0.5, 0.5)
         love.graphics.rectangle("fill", 10, 600, 200, 50)
         love.graphics.setColor(1, 1, 1)
-        love.graphics.printf("Start Game", 10, 600, 200, "center")
+        love.graphics.printf(localize.localize("Start Game"), 10, 600, 200, "center")
 
         Header:draw()
 

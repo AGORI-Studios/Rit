@@ -152,7 +152,7 @@ function StartMenu:enter()
     
     if discordRPC then
         discordRPC.presence = {
-            details = "In the menu",
+            details = localize.localize("In the menu"),
             state = "",
             largeImageKey = "totallyreallogo",
             largeImageText = "Rit" .. (__DEBUG__ and " DEBUG MODE" or "")
