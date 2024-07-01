@@ -1,23 +1,74 @@
 {
     "Score: ": "Puntaje: ",
     "Accuracy: ": "Precisión: ",
+    "Rating: ": "Calificación: ",
     "Press SPACE to skip intro": "Presiona ESPACIO para omitir intro",
     "Now Playing: ": "Estás escuchando: ",
 
     "Prev": "Anterior",
     "Play/Pause": "Reproducir/Pausar",
     "Next": "Siguiente",
-    "Stop": "Parar",
+    "Stop": "Detener",
     "Restart": "Reiniciar",
-    "Loop": "En búcle",
+    "Loop": "En Búcle",
     "Unknown": "Desconocido",
     "Not Logged In": "Desconectado",
-    "Song Position: ": "Posición de la canción: ",
+    "Song Position: ": "Posición de la Canción: ",
+
     "Loading Songs..." : "Cargando Canciones...",
     "Loaded!": "Listo!",
     "Precaching Resources..." : "Precargando Recursos...",
     "Imported Songs": "Canciones Importadas",
+
     "Importing osu! songs...": "Importando canciones de osu!...",
     "Importing Quaver songs..." : "Importando canciones de Quaver...",
-    "Paused": "Pausado"
+    "Paused": "Pausado",
+
+
+    "In a multiplayer game - ": "En una partida multijugador - ",
+    "Playing a song": "Jugando una canción",
+    "In the menu": "En el menú",
+    "Selecting a song": "Seleccionando una canción",
+    "Browsing multiplayer lobbies": "Navegando el lobby multijugador",
+    "In the lobby list": "En la lista de lobbies",
+    "In the Jukebox": "En el Jukebox",
+    "Listening to ": "Escuchando ",
+
+    "Results for ": "Resultados de ",
+    "Max Combo": "Combo Max.",
+    "Accuracy": "Precisión",
+    "Rating": "Calificación",
+    "Score": "Puntaje",
+
+    "Snapping: ": "Snapping: ",
+    "Beats on Screen: ": "Beats en Pantalla: ",
+    "Key Amount: ": "Cantidad de teclas: ",
+    "Audio File: ": "Archivo de Audio: ",
+    "Background: ": "Fondo: ",
+    "Export Map": "Exportar Mapa",
+    "Drop audio file...": "Suelta un archivo de audio...",
+    "Drop background file...": "Suelta un archivo de fondo...",
+    "Export File": "Exportar Archivo",
+
+    "Results": "Resultados",
+    "Everyone has finished!": "Todos finalizaron!",
+    "Waiting for everyone to finish...": "Esperando a que todos finalicen...",
+    "Finished": "Completado",
+    "Not Finished": "Sin Completar",
+    "Keybinds": "Teclas",
+
+    "Screen Resolution": "Resolución de Pantalla",
+    "Video": "Video",
+
+    "Lobby": "Lobby",
+    "Lobby Name: ": "Nombre del Lobby: ",
+    "Host: ": "Anfitrión: ",
+    "Players: ": "Jugadores: ",
+    "Current Song: ": "Canción Actual: ",
+    "Difficulty: ": "Dificultad: ",
+    "Current Song: None": "Canción Actual: Ninguna",
+    "Difficulty: None": "Dificultad: Ninguna",
+    "Start Game": "Iniciar Partida",
+    "Server List": "Lista de Servidores",
+    "Not connected to the server.\nIt's possible it is offline currently.": "No conectado al servidor.\nEs posible que te encuentres sin conexión."
 }
