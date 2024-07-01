@@ -1020,8 +1020,8 @@ function Gameplay:update(dt)
         if #self.timingPoints > 0 then
             local tp = self.timingPoints[1]
 
-            if tp.StartTime <= musicTime then
-                self.soundManager:setBPM("music", tp.Bpm)
+            if (tp.StartTime or 0) <= musicTime then
+                self.soundManager:setBPM("music", (tp.Bpm or 120))
                 table.remove(self.timingPoints, 1)
             end
         end

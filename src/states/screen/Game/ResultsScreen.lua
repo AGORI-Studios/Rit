@@ -17,7 +17,7 @@ function ResultsScreen:enter(_, ...)
 
     args = {...}
     args = args[1]
-    states.game.Gameplay.background = love.graphics.newImage("defaultSongs/FreedomDive/background desuuu.jpg")
+    states.game.Gameplay.background = states.game.Gameplay.background or love.graphics.newImage("defaultSongs/FreedomDive/background desuuu.jpg")
     bg = states.game.Gameplay.background and
             states.game.Gameplay.background.image or
             states.game.Gameplay.background
