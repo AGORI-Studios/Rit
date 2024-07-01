@@ -9,33 +9,39 @@
 - Run the game by dragging the folder into the love executable, or by running `love <path to folder>` in the command line
 
 # How to run (Compiled)
+### Method 1
 - Download the latest release from the [releases](https://github.com/AGORI-Studios/rit/releases/latest) page
-- Or, download from the Steam page (Coming soon)
 - Run the executable
+### Method 2
+- Download from the Steam page (Coming soon)
+- Open the game
 
 # How to build
 
 ## Windows
 - Head to the [requirements](/requirements/) folder, open the win32/win64 folder, and open requirements.txt
-- Download msys2, and install "zip"
-- Run make (os) in the command line. (os) is either win32, win64, macos, linux, or lovefile (Leave blank for all with distribution zips)
+- Download [MSYS2](https://www.msys2.org/)
+- Run `pacman -S zip`
+- Run `make <os>` in the command line.
+`<os>` can be replaced with either 'win32', 'win64', 'macos', 'linux', or 'lovefile'. Alternatively, Leave it blank for a zip bundle.
 
 ## Linux
 - Download "zip" and "love" from your package manager
-- Run make (os) in the command line. (os) is either win32, win64, macos, linux, or lovefile (Leave blank for all with distribution zips)
+- Run `make <os>` in the command line.
+`<os>` can be replaced with either 'win32', 'win64', 'macos', 'linux', or 'lovefile'. Alternatively, Leave it blank for a zip bundle.
 
 # How to contribute
 - Fork the repository
 - Make your changes
 - Make a pull request
 
-# Libraries (By me) - Free for use
+# GuglioIsStupid's Libraries - Free for use
 - [class.lua](/src/lib/class.lua)
 - [env.lua](/src/lib/env.lua)
 - [ini.lua](/src/lib/ini.lua)
 - [state.lua](/src/lib/state.lua)
 
-# Libraries Used (Not by me) 
+# External Libraries
 - [baton.lua](/src/lib/baton.lua)
 - [discordRPC.lua](/src/lib/discordRPC.lua)
 - [json.lua](/src/lib/json.lua)
@@ -50,7 +56,7 @@
 - [cimgui](/src/lib/cimgui)
 
 # Credits
-- [Getsaa](https://twitter.com/GetsaaNG) - Menu design, UI design, and art, Spanish and Portuguese translation
+- [Getsaa](https://twitter.com/GetsaaNG) - UI/UX Design, Rit's Branding, and a few translations (Spanish & Portuguese)
 - [Lumaah](https://github.com/Lumaah) - French translation
 - [LÖVE](https://love2d.org/) - Game Framework
 - [Quaver](https://store.steampowered.com/app/980610/Quaver/) - Inspiration
