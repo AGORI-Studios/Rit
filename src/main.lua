@@ -2,8 +2,15 @@ fade = 1
 masterVolume = 50
 isLoading = false
 __DEBUG__ = not love.filesystem.isFused()
-if not __DEBUG__ then 
+--[[ if not __DEBUG__ then 
     function print() end -- disable print if not in debug mode, allows for better performance (because writing to io is very slow)
+end ]]
+
+local o_Print = print
+
+local printChannelThreadOutput = love.thread.getChannel("ThreadChannels.Print.Output")
+function print(...)
+    printChannelThreadOutput:push({...})
 end
 
 if love.filesystem.getInfo("__VERSION__.txt") then
@@ -114,6 +121,7 @@ function love.load(args)
     GameInit.LoadDefaultFonts()
     states = GameInit.LoadStates()
     substates = GameInit.LoadSubstates()
+    ThreadModules = GameInit.LoadThreads()
 
     if love.system.getSystem() == "Desktop" then
         shaders = GameInit.LoadShaders()
@@ -152,10 +160,11 @@ function love.update(dt)
             networking.frameCount = 0
         end
     end
-    threads.assets.update() -- update the threads for asset loading
     Timer.update(dt)
     input:update()
     if not isLoading then state.update(dt) end
+
+    updateAudioThread()
 
     if not __InJukebox then
         love.audio.setVolume(volume[1] * (masterVolume/100))

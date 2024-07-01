@@ -6,7 +6,7 @@ function cloneLoader.load(chart, folderPath, diffName, forNPS)
     local chart = clone.parse(chart)
 
     states.game.Gameplay.mode = 5 -- always 5 key i think idk i dont play clone hero
-    states.game.Gameplay.strumX = states.game.Gameplay.strumX - ((states.game.Gameplay.mode - 4.5) * (100 + Settings.options["General"].columnSpacing))
+    states.game.Gameplay.strumX = states.game.Gameplay.strumX - ((states.game.Gameplay.mode - 4.5) * (100 + (not forNPS and Settings.options["General"].columnSpacing or 0)))
     if not forNPS then
         states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. chart.meta.MusicStream, 1, true, "stream")
     end

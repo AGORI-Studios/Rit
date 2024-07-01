@@ -108,7 +108,7 @@ function Sprite:new(x, y, graphic)
 end
 
 function Sprite:load(graphic, animated, frameWidth, frameHeight)
-    local graphic = graphic or nil
+    local graphic = graphic
     local animated = animated or false
     local frameWidth = frameWidth or 0
     local frameHeight = frameHeight or 0

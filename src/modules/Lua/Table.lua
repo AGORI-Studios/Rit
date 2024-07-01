@@ -119,3 +119,15 @@ function table.sort(table, method)
 
     return {}
 end
+
+---@name table.merge
+---@description Merges two tables together
+---@param t1 table
+---@param t2 table
+---@return table
+function table.merge(t1, t2)
+    for k, v in pairs(t2) do
+        t1[k] = v
+    end
+    return t1
+end

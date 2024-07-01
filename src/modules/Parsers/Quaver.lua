@@ -22,7 +22,7 @@ function quaverLoader.load(chart, folderPath, diffName, forNPS)
         inputMode = chart.Mode:gsub("Keys", ""),
     }
     states.game.Gameplay.mode = meta.inputMode
-    states.game.Gameplay.strumX = states.game.Gameplay.strumX - ((states.game.Gameplay.mode - 4.5) * (100 + Settings.options["General"].columnSpacing))
+    states.game.Gameplay.strumX = states.game.Gameplay.strumX - ((states.game.Gameplay.mode - 4.5) * (100 + (not forNPS and Settings.options["General"].columnSpacing or 0)))
     states.game.Gameplay.bpmAffectsScrollVelocity = not chart.BPMDoesNotAffectScrollVelocity
 
     if not forNPS then
@@ -48,7 +48,7 @@ function quaverLoader.load(chart, folderPath, diffName, forNPS)
 
     states.game.Gameplay.initialScrollVelocity = chart.InitialScrollVelocity or 1
 
-    if love.filesystem.getInfo(folderPath .. "/" .. meta.backgroundFile) then
+    if love.filesystem.getInfo(folderPath .. "/" .. meta.backgroundFile) and not forNPS then
         states.game.Gameplay.background = love.graphics.newImage(folderPath .. "/" .. meta.backgroundFile)
     end
 

@@ -321,6 +321,21 @@ function GI.LoadParsers()
     }
 end
 
+function GI.LoadThreads()
+    local threads = {
+        print = love.thread.newThread("modules/Threads/Print.lua"),
+        writeFile = love.thread.newThread("modules/Threads/WriteFile.lua"),
+        LoadSongs = love.thread.newThread("modules/Threads/LoadSongs.lua"),
+        LoadGraphic = love.thread.newThread("modules/Threads/LoadGraphic.lua"),
+        LoadAudio = love.thread.newThread("modules/Threads/LoadAudio.lua"),
+        LoadSoundData = love.thread.newThread("modules/Threads/LoadSoundData.lua")
+    }
+
+    threads.print:start()
+
+    return threads
+end
+
 function GI.LoadDefaultFonts()
     Cache.members.font["default"] = love.graphics.newFont("assets/fonts/Montserrat-Light.ttf", 16)
     Cache.members.font["defaultX0.75"] = love.graphics.newFont("assets/fonts/Montserrat-Light.ttf", 12)

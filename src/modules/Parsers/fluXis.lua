@@ -22,7 +22,7 @@ function fluXisLoader.load(chart, folderPath_, diffName, forNPS)
         table.sort(states.game.Gameplay.songEvents.playfieldfade, function(a, b) return a.time < b.time end)
     end
 
-    if not forNPS and not chart.VideoFile or not video or chart.VideoFile == "" then
+    if not forNPS and (not chart.VideoFile or not video or chart.VideoFile == "") then
         if chart.BackgroundFile and love.filesystem.getInfo(folderPath_ .. "/" .. chart.BackgroundFile) then
             states.game.Gameplay.background = love.graphics.newImage(folderPath_ .. "/" .. chart.BackgroundFile)
         end

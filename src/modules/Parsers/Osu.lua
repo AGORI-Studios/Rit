@@ -95,7 +95,7 @@ function osuLoader.processGeneral(line)
 end
 function osuLoader.processEvent(line)
     local split = line:split(",")
-    if split[1] == "Video" and video and Video then -- Video,-64,"video.mp4"
+    if split[1] == "Video" and video and Video and not forNPS then -- Video,-64,"video.mp4"
         local video = line:match("^Video,.+\"(.+)\".*$")
         local videoPath = folderPath .. "/" .. video
         -- get filedata userdata
@@ -109,7 +109,7 @@ function osuLoader.processEvent(line)
             end
         )
     end
-    if split[1] == "0" and not states.game.Gameplay.background then
+    if split[1] == "0" and not states.game.Gameplay.background and not forNPS then
         local bg = line:match("^0,.+,\"(.+)\".*$")
         if love.filesystem.getInfo(folderPath .. "/" .. bg) then
             if bg:find(".jpg") or bg:find(".png") then

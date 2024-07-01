@@ -635,6 +635,22 @@ end
 
 local baseSoundData = {}
 
+local sendTo = {
+    tbl = {},
+    index = "Audio"
+}
+
+local curDiff = {}
+local channel = love.thread.getChannel("ThreadChannels.LoadSoundData.Output")
+function updateAudioThread()
+    if channel:peek() then
+        local soundData = channel:pop()
+        MenuSoundManager:newSound("music", soundData, 1, true, "stream")
+        MenuSoundManager:playFromTime("music", (curDiff.previewTime or 0) / 1000)
+        MenuSoundManager:setLooping("music", true)
+    end
+end
+
 function playSelectedSong(song, songName)
     if songName == (curPlayingSong or "") then return end
     curPlayingSong = songName
@@ -650,13 +666,8 @@ function playSelectedSong(song, songName)
 
     MenuSoundManager:stop("music")
     MenuSoundManager:removeAllSounds()
-    --MenuSoundManager:newSound("music", diff.audioFile, 1, true, "stream")
-    threads.assets.newSoundData(baseSoundData, "music", diff.audioFile)
-    threads.assets.start(function()
-        MenuSoundManager:newSound("music", baseSoundData.music, 1, true, "stream")
-        MenuSoundManager:playFromTime("music", (diff.previewTime or 0) / 1000)
-        MenuSoundManager:setLooping("music", true)
-    end)
+    curDiff = diff
+    ThreadModules.LoadSoundData:start(diff.audioFile)
 
     if diff.audioFile:startsWith("song/") then
         lf.unmount(diff.path)
@@ -707,9 +718,9 @@ function loadReplays()
     return returnReplays
 end
 
-function getSongReplays()
+--[[ function getSongReplays()
     threads.assets.loadReplays(_G, "___REPLAYS")
     threads.assets.start(function()
         states.menu.SongMenu.replays = _G.___REPLAYS
     end)
-end
+end ]]

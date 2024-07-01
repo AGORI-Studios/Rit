@@ -66,6 +66,7 @@ end
 
 function ritLoader.processVelocities(line)
     local info = line:split(":")
+    if _forNPS then return end
     table.insert(states.game.Gameplay.sliderVelocities, {
         startTime = tonumber(info[1]),
         multiplier = tonumber(info[2])
@@ -96,7 +97,7 @@ function ritLoader.processMetadata(line)
         diff = value
     elseif key == "KeyAmount" then
         states.game.Gameplay.mode = tonumber(value)
-        states.game.Gameplay.strumX = states.game.Gameplay.strumX - ((states.game.Gameplay.mode - 4.5) * (100 + Settings.options["General"].columnSpacing))
+        states.game.Gameplay.strumX = states.game.Gameplay.strumX - ((states.game.Gameplay.mode - 4.5) * (100 + (not _forNPS and Settings.options["General"].columnSpacing or 0)))
     elseif key == "AudioFile" then
         local value = value:trim()
         if not _forNPS then

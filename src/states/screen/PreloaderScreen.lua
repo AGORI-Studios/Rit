@@ -22,76 +22,115 @@ local rndTexts = {
 local curRndText = ""
 local rndTime = 0
 local rndTimeMax = 5
+local finishedSongs = false
+local finishedDefault, finishedUser = false, false
+
+local threadChannel = love.thread.getChannel("ThreadChannels.LoadSongs.Output")
+local graphicThreadChannel = love.thread.getChannel("ThreadChannels.LoadGraphic.Output")
+
+local _songList = {}
+
+local total = 0
+local loaded = 0
 
 function PreloaderScreen:enter(last, args)
     -- Preload all non-skin textures, and load song data (Useful for when difficulty calculation is added)
-    threads.assets.newImage(self, "songButton", "assets/images/ui/menu/songBtn.png")
-    threads.assets.newImage(self, "statsBox", "assets/images/ui/menu/statsBox.png")
-    threads.assets.newImage(self, "diffButton", "assets/images/ui/menu/diffBtn.png")
-    threads.assets.newImage(self, "playBG", "assets/images/ui/menu/playBG.png")
-    threads.assets.newImage(self, "barsHorizontal", "assets/images/ui/buttons/barsHorizontal.png")
-    threads.assets.newImage(self, "download", "assets/images/ui/buttons/download.png")
-    threads.assets.newImage(self, "import", "assets/images/ui/buttons/import.png")
-    threads.assets.newImage(self, "gear", "assets/images/ui/buttons/gear.png")
-    threads.assets.newImage(self, "home", "assets/images/ui/buttons/home.png")
-    threads.assets.newImage(self, "searchCatTab", "assets/images/ui/menu/searchCatTab.png")
-    threads.assets.newImage(self, "menuBar", "assets/images/ui/menu/menuBar.png")
-    threads.assets.newImage(self, "playTab", "assets/images/ui/menu/playTab.png")
 
-    threads.assets.newImage(self, "twitterLogo", "assets/images/ui/icons/twitter.png")
-    threads.assets.newImage(self, "kofiLogo", "assets/images/ui/icons/ko-fi.png")
-    threads.assets.newImage(self, "discordLogo", "assets/images/ui/icons/discord.png")
-
+    local assets = {
+        "assets/images/ui/menu/statsBox.png",
+        "assets/images/ui/menu/diffBtn.png",
+        "assets/images/ui/menu/playBG.png",
+        "assets/images/ui/buttons/barsHorizontal.png",
+        "assets/images/ui/buttons/download.png",
+        "assets/images/ui/buttons/import.png",
+        "assets/images/ui/buttons/gear.png",
+        "assets/images/ui/buttons/home.png",
+        "assets/images/ui/menu/searchCatTab.png",
+        "assets/images/ui/menu/menuBar.png",
+        "assets/images/ui/menu/playTab.png",
+        "assets/images/ui/icons/twitter.png",
+        "assets/images/ui/icons/ko-fi.png",
+        "assets/images/ui/icons/discord.png"
+    }
+    
     for i = 1, 5 do
-        threads.assets.newImage(self, "BGball" .. i, "assets/images/ui/menu/BGball" .. i .. ".png")
+        table.insert(assets, "assets/images/ui/menu/BGball" .. i .. ".png")
     end
 
-    threads.assets.loadSongs(self, "songList")
+    total = 1
 
-    threads.assets.start(function()
-        doneLoading = true
-        Timer.after(0.25, function()
-            fade[1] = 0
-            doneLoading = false
-            
-            Timer.tween(1, fade, {1}, 'in-out-cubic', function() state.switch(states.menu.StartMenu) end)
-        end)
-    end)
+    ThreadModules.LoadGraphic:start(unpack(assets))
+
+    ThreadModules.LoadSongs:start("defaultSongs")
 
     localize.loadLocale(Settings.options["General"].language)
 end
 
 function PreloaderScreen:update(dt)
-    if not doneLoading then
-        lerpedFinshed = math.fpsLerp(lerpedFinshed, (threads.assets.loadedCount) / threads.assets.resourceCount, 25)
-    end
-
     rndTime = rndTime + dt
-    if rndTime >= rndTimeMax and threads.assets.resourceCount == 20 then
+    if rndTime >= rndTimeMax and loaded == total and not finishedSongs then
         curRndText = rndTexts[math.random(1, #rndTexts)]
         rndTime = 0
+    end
+
+    if threadChannel:peek() then
+        local msg = threadChannel:pop()
+        local nSongList = threadChannel:pop()
+        if msg and not finishedDefault then
+            finishedDefault = true
+            ThreadModules.LoadSongs:start("songs")
+
+            _songList = table.merge(_songList, nSongList or {})
+        elseif msg and finishedDefault and not finishedUser then
+            finishedUser = true
+            finishedSongs = true
+
+            _songList = table.merge(_songList, nSongList or {})
+        end
+    end
+
+    if graphicThreadChannel:peek() then
+        local allGraphics = graphicThreadChannel:pop()
+        for _, graphic in ipairs(allGraphics) do
+            Cache.members.image[graphic[1]] = love.graphics.newImage(graphic[2])
+        end
+        
+        loaded = loaded + 1
+    end
+
+    print() -- this literally has to be here else it doesn't ever finish???? idfk dude
+
+    if finishedSongs and loaded == total and not doneLoading then
+        doneLoading = true
+        songList = _songList
+
+        Timer.after(0.25, function()
+            fade[1] = 0
+            
+            Timer.tween(1, fade, {1}, 'in-out-cubic', function() state.switch(states.menu.StartMenu) end)
+        end)
     end
 end
 
 function PreloaderScreen:draw()
     local percent = 0
-    if threads.assets.resourceCount ~= 0 then percent = (threads.assets.loadedCount) / threads.assets.resourceCount end
+    if total ~= 0 then percent = loaded / total end
 
-    if threads.assets.loadedCount == 20 then
+    if loaded == 1 and not finishedSongs then
         love.graphics.printf(localize("Parsing Maps..."), 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
-    elseif threads.assets.loadedCount == threads.assets.resourceCount then
+    elseif loaded == total and finishedSongs then
         love.graphics.printf(localize("Loaded!"), 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
     else
-        love.graphics.printf(localize("Precaching Resources...")..(threads.assets.loadedCount).."/"..threads.assets.resourceCount.."\n"..math.floor(percent * 100).."%", 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
+        love.graphics.printf(localize("Precaching Images...")..loaded.."/"..total.."\n"..math.floor(percent * 100).."%", 0,Inits.GameHeight/2+300,Inits.GameWidth/2, "center", 0, 2, 2)
     end
     
     if curRndText ~= "" then
-        love.graphics.printf(curRndText, 0, Inits.GameHeight/2+400, Inits.GameWidth/2, "center", 0, 2, 2)
+        love.graphics.printf(curRndText, 0, Inits.GameHeight/2+350, Inits.GameWidth/2, "center", 0, 2, 2)
     end
 
     -- loading bar
-    love.graphics.rectangle("fill", (Inits.GameWidth*0.05),Inits.GameWidth/2, (Inits.GameWidth*0.9) * lerpedFinshed, 50)
-    love.graphics.setColor(1,1,1, lerpedFinshed)
+    love.graphics.rectangle("fill", (Inits.GameWidth*0.05),Inits.GameWidth/2, (Inits.GameWidth*0.9) * percent, 50)
+    love.graphics.setColor(1,1,1, percent)
 
     love.graphics.draw(ritLogo, Inits.GameWidth/2, Inits.GameHeight/2, 0, 0.5, 0.5, ritLogo:getWidth()/2, ritLogo:getHeight()/2)
     love.graphics.setColor(1,1,1,1)

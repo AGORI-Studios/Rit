@@ -6,6 +6,7 @@ Cache.members = {
     sound = {},
     music = {},
     sprite = {},
+    imageData = {},
 }
 
 function Cache:clear()
@@ -14,11 +15,33 @@ function Cache:clear()
     end
 end
 
+function Cache:loadImageData(...) -- so we can load multiple images at once
+    --                           also makes it so we don't re-load the same image
+    local tbl = {...}
+    for i, v in ipairs(tbl) do
+        if not self.members.imageData[v] then
+            if type(v) == "table" then return end
+            self.members.imageData[v] = love.image.newImageData(v)
+        else
+            return nil
+        end
+
+        if #tbl == 1 then
+            return self.members.imageData[v]
+        else
+            if i == #tbl then
+                return self.members.imageData[v]
+            end
+        end
+    end
+end
+
 function Cache:loadImage(...) -- so we can load multiple images at once
     --                           also makes it so we don't re-load the same image
     local tbl = {...}
     for i, v in ipairs(tbl) do
         if not self.members.image[v] then
+            if type(v) == "table" then return end
             self.members.image[v] = love.graphics.newImage(v)
         end
 

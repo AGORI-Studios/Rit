@@ -212,7 +212,6 @@ function SongMenu:update(dt)
                 -- songName and songDiff
                 self.songName = curButton.name
                 self.songDiff = curButton.children[curSelected].name
-                getSongReplays()
 
                 for _, diff in ipairs(curButton.children) do
                     Timer.tween(0.1, diff, {x = 0}, "out-quad", function()
@@ -283,7 +282,6 @@ function SongMenu:update(dt)
             else
                 curSelected = 1
             end
-            getSongReplays()
         end
     end
     if input:pressed("up") then 
@@ -303,7 +301,6 @@ function SongMenu:update(dt)
                 self.songName = curButton.name
                 self.songDiff = curButton.children[curSelected].name
             end
-            getSongReplays()
         end
     end
 end
@@ -375,7 +372,6 @@ function SongMenu:mousepressed(x, y, b)
                         curButton.open = true
                         self.songName = curButton.name
                         self.songDiff = curButton.children[curSelected].name
-                        getSongReplays()
                         for _, diff in ipairs(curButton.children) do
                             Timer.tween(0.1, diff, {x = 0}, "out-quad", function()
                                 diff.x = 0
