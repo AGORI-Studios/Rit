@@ -84,7 +84,7 @@ function ResultsScreen:draw()
     love.graphics.printf(combo, 300, 465, 150, "center")
     love.graphics.printf(string.format("%.2f", acc) .. "%", 650, 465, 250, "center")
     love.graphics.printf(string.format("%.2f", rating), 1050, 465, 250, "center")
-    love.graphics.printf(score, 1450, 465, 250, "center")
+    love.graphics.printf(love.format.commaSeperateNumbers(score), 1450, 465, 250, "center")
 
     love.graphics.setColor(0.3, 0.3, 0.3, 1)
     love.graphics.rectangle("fill", 125, 600, 830, 450, 15, 15)
