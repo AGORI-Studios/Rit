@@ -41,5 +41,6 @@ states = {
 local path = ...
 
 loadSongs(path)
+
 channel:push(true)
 channel:push(songList)

@@ -123,11 +123,15 @@ end
 ---@name table.merge
 ---@description Merges two tables together
 ---@param t1 table
----@param t2 table
+---@param t2 table?
 ---@return table
 function table.merge(t1, t2)
-    for k, v in pairs(t2) do
-        t1[k] = v
+    for k, v in pairs(t2 or {}) do
+        if type(v) == "table" and type(t1[k] or false) == "table" then
+            table.merge(t1[k], v)
+        else
+            t1[k] = v
+        end
     end
     return t1
 end

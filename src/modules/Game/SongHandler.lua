@@ -4,10 +4,9 @@ songList = {}
 local curPlayingSong = nil
 
 function loadSongs(path) -- Gross yucky way of loading all of our songs in the given folder path
+    print("Checking path: " .. path)
     for _, file in ipairs(lf.getDirectoryItems(path)) do
-        --print("Checking " .. file)
         if lf.getInfo(path .."/" .. file).type == "directory" then
-            --print("Found folder " .. file)
             for _, song in ipairs(lf.getDirectoryItems(path .."/" .. file)) do
                 --print("Checking " .. song)
                 if lf.getInfo(path .."/" .. file .. "/" .. song).type == "file" then
@@ -27,7 +26,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         local gamemode = data.gameMode
                         -- tags is already a table in the cache
 
-                        if (data.nps or 0) == 0 then
+                        if data.nps == nil then
                             local nps = Parsers[data.type].load(path .."/" .. file .. "/" .. song, path .."/" .. file, difficultyName, true)
                             data.nps = nps
                             createSongCache(data, "cache/songs/" .. file .. song .. ".cache") -- re-cache it with the nps
@@ -293,72 +292,6 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         }
 
                         createSongCache(songList[title..Creator][difficultyName], "cache/songs/" .. file .. song .. ".cache")
-                    --[[ elseif song:sub(-6) == ".chart" then
-                        -- check for song.ini in same path
-                        local songIni = lf.getInfo(path .."/" .. file .. "/song.ini")
-                        local songMeta
-                        local chart = clone.parse(path .."/" .. file .. "/" .. song)
-                        if songIni then
-                            -- parse with ini.parse
-                            songMeta = ini.parse(path .."/" .. file .. "/song.ini")
-                        else
-                            -- ignore
-                            goto continue
-                        end
-                        local title = songMeta.Song.name
-                        local diffName = "ExpertSingle"
-                        local AudioFile = chart.meta.MusicStream:trim()
-                        local alreadyInList = false
-                        for _, song in ipairs(songList) do
-                            if song.title == title and song.difficultyName == diffName then
-                                alreadyInList = true
-                            end
-                        end
-                        if not alreadyInList then
-                            songList[title] = songList[title] or {}
-                            songList[title][diffName] = {
-                                filename = file,
-                                title = title,
-                                difficultyName = diffName,
-                                path = path .."/" .. file .. "/" .. song,
-                                folderPath = path .."/" .. file,
-                                type = "CloneHero",
-                                nps = "",
-                                npsColour = {1,1,1},
-                                audioFile = path .."/" .. file .. "/" .. AudioFile
-                            }
-                        end
-                        songList[title].type = "CloneHero"
-                        ::continue:: ]]
-                        -- With how stupid I am, stepmania is probably going to be the last thing I add (I say as clone hero is literally in the works too)
-                    --[[ elseif song:sub(-3) == ".sm" then -- for stepmania, we have to call "smLoader.getDifficulties(chart)"
-                        diffs = Parsers["Stepmania"].getDifficulties(path .."/" .. file .. "/" .. song)
-                        -- has a table in a table (holds name and songName)
-                        for _, diff in pairs(diffs) do
-                            local alreadyInList = false
-                            for _, song in ipairs(songList) do
-                                print(song.title, diff.songName, song.difficultyName, diff.name)
-                                if song.title == diff.songName and song.difficultyName == diff.name then
-                                    alreadyInList = true
-                                end
-                            end
-
-                            if not alreadyInList then
-                                songList[diff.songName] = songList[diff.songName] or {}
-                                songList[diff.songName][diff.name] = {
-                                    filename = file,
-                                    title = diff.songName,
-                                    difficultyName = diff.name,
-                                    path = path .."/" .. file .. "/" .. song,
-                                    folderPath = path .."/" .. file,
-                                    type = "Stepmania",
-                                    nps = "",
-                                    npsColour = {1,1,1},
-                                    audioFile = path .. "/" .. file .. "/" .. diff.audioPath
-                                }
-                            end
-                        end  ]]
-
                     end
                 end
                 
@@ -407,6 +340,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         gameMode = gamemode,
                         eventsFile = data.eventsFile -- will just be nil if it doesn't exist
                     }
+
+                    print(title..Creator..difficultyName)
 
                     goto __EndLoop__
                 end
@@ -572,10 +507,10 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
 
                     createSongCache(songList[title..Creator][difficultyName], "cache/songs/" .. file .. song .. ".cache")
                 end
+
+                ::__EndLoop__::
             end
             lf.unmount(path .."/" .. file)
-
-            ::__EndLoop__::
         end
     end
 

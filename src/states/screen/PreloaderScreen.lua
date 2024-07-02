@@ -29,6 +29,7 @@ local threadChannel = love.thread.getChannel("ThreadChannels.LoadSongs.Output")
 local graphicThreadChannel = love.thread.getChannel("ThreadChannels.LoadGraphic.Output")
 
 local _songList = {}
+local nSongList = {}
 
 local total = 0
 local loaded = 0
@@ -78,14 +79,15 @@ function PreloaderScreen:update(dt)
         local nSongList = threadChannel:pop()
         if msg and not finishedDefault then
             finishedDefault = true
+        
+            _songList = table.merge(_songList, nSongList)
+        
             ThreadModules.LoadSongs:start("songs")
-
-            _songList = table.merge(_songList, nSongList or {})
         elseif msg and finishedDefault and not finishedUser then
             finishedUser = true
             finishedSongs = true
-
-            _songList = table.merge(_songList, nSongList or {})
+        
+            _songList = table.merge(_songList, nSongList)
         end
     end
 
@@ -98,7 +100,7 @@ function PreloaderScreen:update(dt)
         loaded = loaded + 1
     end
 
-    print() -- this literally has to be here else it doesn't ever finish???? idfk dude
+    --print() -- this literally has to be here else it doesn't ever finish???? idfk dude
 
     if finishedSongs and loaded == total and not doneLoading then
         doneLoading = true
