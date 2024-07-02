@@ -22,6 +22,17 @@ function string.splitAllCharacters(self)
     return fields
 end
 
+---@name string.splitByLine
+---@description Splits a string by newlines into a table
+---@return table
+function string.splitByLine(self)
+    local lines = {}
+    for line in self:gmatch("([^\n]*)\n?") do
+        table.insert(lines, line)
+    end
+    return lines
+end
+
 ---@name string.trim
 ---@description Trims whitespace from the beginning and end of a string
 ---@return string

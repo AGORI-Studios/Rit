@@ -1,5 +1,5 @@
 local PreloaderScreen = state()
-local doneLoading = false
+doneLoading = false
 local fade = {0}
 local lerpedFinshed = 0
 

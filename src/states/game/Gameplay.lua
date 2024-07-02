@@ -189,6 +189,33 @@ function Gameplay:reset()
         }
     }
 
+    self.timingColours = {
+        {
+            time = 23,
+            colour = {}
+        },
+        {
+            time = 40,
+            colour = {}
+        },
+        {
+            time = 74,
+            colour = {}
+        },
+        {
+            time = 103,
+            colour = {}
+        },
+        {
+            time = 127,
+            colour = {},
+        },
+        {
+            time = 160,
+            colour = {1, 0, 0}
+        }
+    }
+
     self.allJudgements = {}
     for _, judge in ipairs(self.judgements) do
         self.allJudgements[judge.name] = 0 -- judgement count (Used for accuracy calculation)

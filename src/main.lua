@@ -191,12 +191,14 @@ end
 
 function love.focus(f)
     state.focus(f)
-    if not f and volume then
-        love.setFpsCap(30)
-        Timer.tween(0.5, volume, {0.25}, "linear")
-    elseif f and volume then
-        love.setFpsCap(500)
-        Timer.tween(0.5, volume, {1}, "linear")
+    if doneLoading then
+        if not f and volume then
+            love.setFpsCap(30)
+            Timer.tween(0.5, volume, {0.25}, "linear")
+        elseif f and volume then
+            love.setFpsCap(2000)
+            Timer.tween(0.5, volume, {1}, "linear")
+        end
     end
 end
 
