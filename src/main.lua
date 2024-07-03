@@ -196,7 +196,7 @@ function love.focus(f)
             love.setFpsCap(30)
             Timer.tween(0.5, volume, {0.25}, "linear")
         elseif f and volume then
-            love.setFpsCap(2000)
+            love.setFpsCap(500)
             Timer.tween(0.5, volume, {1}, "linear")
         end
     end
