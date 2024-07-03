@@ -38,9 +38,8 @@ states = {
     }
 }
 
-local path = ...
-
-loadSongs(path)
+loadSongs("defaultSongs")
+loadSongs("songs")
 
 channel:push(true)
 channel:push(songList)

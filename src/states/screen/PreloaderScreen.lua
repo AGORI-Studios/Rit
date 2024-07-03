@@ -62,7 +62,7 @@ function PreloaderScreen:enter(last, args)
 
     ThreadModules.LoadGraphic:start(unpack(assets))
 
-    ThreadModules.LoadSongs:start("defaultSongs")
+    ThreadModules.LoadSongs:start()
 
     localize.loadLocale(Settings.options["General"].language)
 end
@@ -75,20 +75,8 @@ function PreloaderScreen:update(dt)
     end
 
     if threadChannel:peek() then
-        local msg = threadChannel:pop()
-        local nSongList = threadChannel:pop()
-        if msg and not finishedDefault then
-            finishedDefault = true
-        
-            _songList = table.merge(_songList, nSongList)
-        
-            ThreadModules.LoadSongs:start("songs")
-        elseif msg and finishedDefault and not finishedUser then
-            finishedUser = true
-            finishedSongs = true
-        
-            _songList = table.merge(_songList, nSongList)
-        end
+        songList = threadChannel:pop()
+        finishedSongs = true
     end
 
     if graphicThreadChannel:peek() then
@@ -104,7 +92,6 @@ function PreloaderScreen:update(dt)
 
     if finishedSongs and loaded == total and not doneLoading then
         doneLoading = true
-        songList = _songList
 
         Timer.after(0.25, function()
             fade[1] = 0
