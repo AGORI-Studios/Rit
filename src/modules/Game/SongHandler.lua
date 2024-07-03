@@ -363,7 +363,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         gamemode = gamemode,
                         mapID = mapID,
                         nps = nps,
-                        maptype = maptype
+                        type = maptype
                     }
                     -- tags is already a table in the cache
 
