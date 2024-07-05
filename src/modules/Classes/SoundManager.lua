@@ -46,6 +46,7 @@ function SoundManager:play(name, clone)
 end
 
 function SoundManager:playFromTime(name, time, clone)
+    local time = math.abs(time or 0)
     if not self.channel[name] then return end
     self.channel[name].paused = false
     if clone then

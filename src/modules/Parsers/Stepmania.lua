@@ -13,6 +13,7 @@ local measures = {}
 local timings = {}
 
 function stepmaniaLoader.getDifficulties(path)
+    
     local file = io.open(path, "r")
     local contents = file:read("*a")
     file:close()
@@ -31,29 +32,41 @@ function stepmaniaLoader.getDifficulties(path)
                 audioPath = line:sub(8):sub(1, #line:sub(8) - 1):trim()
             end
         end
-        if notesTag then
-            if line:find(":") then
-                metaIndex = metaIndex + 1
-                if metaIndex == 1 then
-                    local line = line:gsub("\t", ""):gsub(":", ""):trim()
-                    if line:find("dance%-single") then
-                        isDanceSingle = true
-                    else
-                        isDanceSingle = false
-                    end
-                end
-                
 
-                if metaIndex == 2 and isDanceSingle then
+        if not string.endsWith(path, ".ssc") then
+            if notesTag then
+                if line:find(":") then
+                    metaIndex = metaIndex + 1
+                    if metaIndex == 1 then
+                        local line = line:gsub("\t", ""):gsub(":", ""):trim()
+                        if line:find("dance%-single") then
+                            isDanceSingle = true
+                        else
+                            isDanceSingle = false
+                        end
+                    end
                     
-                    line = line:gsub("\t", ""):gsub(":", ""):trim()
-                    print(line)
-                    table.insert(notes, {
-                        songName = songName,
-                        name = line,
-                        audioPath = audioPath
-                    })
+
+                    if metaIndex == 2 then
+                        line = line:gsub("\t", ""):gsub(":", ""):trim()
+                        table.insert(notes, {
+                            songName = songName,
+                            name = line,
+                            audioPath = audioPath
+                        })
+                    end
+                else
+                    notesTag = false
                 end
+            end
+        else
+            if line:find("#DIFFICULTY:") then
+                line = line:gsub("\t", ""):gsub("#DIFFICULTY:", ""):trim()
+                table.insert(notes, {
+                    songName = songName,
+                    name = line,
+                    audioPath = audioPath
+                })
             else
                 notesTag = false
             end
@@ -92,6 +105,8 @@ function stepmaniaLoader.load(chart, folderPath, diffName, forNPS)
     timings = {}
     local songName = ""
     local audioPath = ""
+
+    local path = chart
 
     local chart = love.filesystem.read(chart)
 
@@ -196,20 +211,22 @@ function stepmaniaLoader.load(chart, folderPath, diffName, forNPS)
         end
 
         if notesTag then
-            if line:find(":") then
-                -- check if its the correct difficulty
-                local diff = line:sub(1, #line - 1):trim()
-                if diff == "dance-double" then
-                    inCorrectDiff = false
-                end
-                if inCorrectDiff then
-                    goto continue1
-                end
-                if diff == diffName then
-                    inCorrectDiff = true
-                    goto continue1
-                else
-                    inCorrectDiff = false
+            if not string.endsWith(path, ".ssc") then
+                if line:find(":") then
+                    -- check if its the correct difficulty
+                    local diff = line:sub(1, #line - 1):trim()
+                    if diff == "dance-double" then
+                        inCorrectDiff = false
+                    end
+                    if inCorrectDiff then
+                        goto continue1
+                    end
+                    if diff == diffName then
+                        inCorrectDiff = true
+                        goto continue1
+                    else
+                        inCorrectDiff = false
+                    end
                 end
             end
 
@@ -224,6 +241,15 @@ function stepmaniaLoader.load(chart, folderPath, diffName, forNPS)
                 table.insert(measures[#measures], line)
 
                 ::continue::
+            end
+        else
+            if line:find("#DIFFICULTY:") then
+                local diff = line:gsub("\t", ""):gsub("#DIFFICULTY:", ""):trim()
+                if diff == diffName then 
+                    inCorrectDiff = true
+                else
+                    inCorrectDiff = false
+                end
             end
         end
     end

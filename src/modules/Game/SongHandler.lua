@@ -326,7 +326,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         songList[title..mapID].type = "fluXis"
 
                         createSongCache(songList[title..mapID][difficultyName], ".cache/.songs/" .. file .. song .. ".cache")
-                    elseif ext == "sm" then -- for stepmania, we have to call "smLoader.getDifficulties(chart)"
+                    elseif ext == "sm" or ext == "ssc" then -- for stepmania, we have to call "smLoader.getDifficulties(chart)"
+                        print(path .."/" .. file .. "/" .. song)
                         diffs = Parsers["Stepmania"].getDifficulties(path .."/" .. file .. "/" .. song)
                         -- has a table in a table (holds name and songName)
                         for _, diff in pairs(diffs) do
