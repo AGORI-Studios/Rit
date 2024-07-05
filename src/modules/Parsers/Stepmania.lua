@@ -9,6 +9,9 @@ local title, subtitle, artist, titleTransLit, subtitleTransLit, artistTransLit,
 
 local folderPath
 
+local measures = {}
+local timings = {}
+
 function stepmaniaLoader.getDifficulties(path)
     local file = io.open(path, "r")
     local contents = file:read("*a")
@@ -39,9 +42,12 @@ function stepmaniaLoader.getDifficulties(path)
                         isDanceSingle = false
                     end
                 end
+                
 
-                if metaIndex == 3 and isDanceSingle then
-                    line = line:sub(1, #line - 1):trim()
+                if metaIndex == 2 and isDanceSingle then
+                    
+                    line = line:gsub("\t", ""):gsub(":", ""):trim()
+                    print(line)
                     table.insert(notes, {
                         songName = songName,
                         name = line,
@@ -63,19 +69,29 @@ function stepmaniaLoader.getDifficulties(path)
     return notes
 end
 
--- 1 tick = 1/48 of a beat
--- 1 beat = 48 ticks
--- 1 measure = 192 ticks
-local function tickToMs(tick, bpm)
-    local msPerBeat = 60000 / bpm
-    local msPerTick = msPerBeat / 4
-    return tick * msPerTick
+---@param number time
+--- Gets the current bpm from the notes ms time
+local function getCurBPM(time)
+    local cur = nil
+
+    for i = 1, #timings do
+        if timings[i].time <= time then 
+            cur = timings[i]
+        end
+    end
+
+    if cur ~= nil then 
+        return cur.bpm
+    else 
+        return timings[1].bpm or 100
+    end
 end
 
 function stepmaniaLoader.load(chart, folderPath, diffName, forNPS)
+    measures = {{}}
+    timings = {}
     local songName = ""
     local audioPath = ""
-    print(diffName)
 
     local chart = love.filesystem.read(chart)
 
@@ -106,9 +122,8 @@ function stepmaniaLoader.load(chart, folderPath, diffName, forNPS)
     local notesCount
     -- bpms and stops can be multiline. so when we are in one, keep going until we find a ;
 
-    local allLines = chart:split("\n")
-
     for line in chart:gmatch("[^\r\n]+") do
+        local line = line:strip()
         currentLine = currentLine + 1
         if line:startsWith("#") then
             if line:startsWith("#TITLE:") then
@@ -126,20 +141,26 @@ function stepmaniaLoader.load(chart, folderPath, diffName, forNPS)
                 inBpms = false
                 inStops = false
             elseif line:startsWith("#OFFSET:") then
-                --offset = tonumber(line:sub(9):sub(1, #line:sub(9) - 1):trim())
+                local str = line:sub(9):trim():gsub(";", "")
+                ---@diagnostic disable-next-line: cast-local-type
+                offset = tonumber(str)
             end
         end
 
         if inBpms then
-            line = line:sub(7):sub(1, #line:sub(7) - 1):trim()
+            line = string.gsub(line, "#BPMS:", ""):trim()
 
-            local split = line:split("=")
+            ---@diagnostic disable-next-line: param-type-mismatch
+            local split = string.gsub(string.gsub(line, ";", ""), ",", ""):split("=")
             local beat = tonumber(split[1])
             local bpm_ = tonumber(split[2])
-            table.insert(bpms, {
-                beat = beat,
-                bpm = bpm_
-            })
+            if beat and bpm_ then
+                table.insert(bpms, {
+                    beat = beat,
+                    bpm = bpm_
+                })
+            end
+            --print("[BPM] ", beat,bpm)
 
             if line:find(";") then
                 inBpms = false
@@ -151,15 +172,18 @@ function stepmaniaLoader.load(chart, folderPath, diffName, forNPS)
         end
 
         if inStops then
-            line = line:sub(8):sub(1, #line:sub(8) - 1):trim()
+            line = string.gsub(line, "#STOPS:", ""):trim()
 
-            local split = line:split("=")
+            ---@diagnostic disable-next-line: param-type-mismatch
+            local split = string.gsub(string.gsub(line, ";", ""), ",", ""):split("=")
             local beat = tonumber(split[1])
             local length = tonumber(split[2])
-            table.insert(stops, {
-                beat = beat,
-                length = length
-            })
+            if beat and length then
+                table.insert(stops, {
+                    beat = beat,
+                    length = length
+                })
+            end
 
             if line:find(";") then
                 inStops = false
@@ -175,6 +199,9 @@ function stepmaniaLoader.load(chart, folderPath, diffName, forNPS)
             if line:find(":") then
                 -- check if its the correct difficulty
                 local diff = line:sub(1, #line - 1):trim()
+                if diff == "dance-double" then
+                    inCorrectDiff = false
+                end
                 if inCorrectDiff then
                     goto continue1
                 end
@@ -188,86 +215,67 @@ function stepmaniaLoader.load(chart, folderPath, diffName, forNPS)
 
             ::continue1::
 
-            if inCorrectDiff and not line:find(":") then
-                local lanes = line:splitAllCharacters()
-                --[[
-                    All available note types:
-                        - 1 = Tap
-                        - 2 = Hold Head
-                        - 3 Tail
-                    Non available note types (for now):
-                        - 4 = Roll Head
-                        - 5 = Roll Tail
-                        - A = Attack
-                        - F = Fake
-                ]]
-
-                if line:find(",") then
-                    currentMeasure = currentMeasure + 1
-                    -- how many lines until the next measure (ticksInRow)
-                    ticksInRow = 0
-
-                    -- count all the ones and twos in the current measure
-                    notesCount = 0
-
-                    local index = 0
-                    for i, _ in ipairs(allLines) do
-                        if i == currentLine then
-                            index = i
-                            break
-                        end
-                    end
-
-                    for i = index, #allLines do
-                        -- count all the notes in the current measure
-                        if allLines[i]:find("1") or allLines[i]:find("2") then
-                            notesCount = notesCount + 1
-                        end
-
-                        if allLines[i]:find(";") then
-                            break
-                        end
-                    end
-
-                    goto continue2
+            if inCorrectDiff and not line:find(":") then                
+                if string.startsWith(line, ",") then
+                    table.insert(measures, {})
+                    goto continue
                 end
 
-                if line:find(";") then
-                    inCorrectDiff = false
-                    notesTag = false
-                    break
-                end
+                table.insert(measures[#measures], line)
 
-                for i, lane in ipairs(lanes) do
-                    if lane == "0" then
-                        goto continue3
-                    end
+                ::continue::
+            end
+        end
+    end
 
-                    local noteType = tonumber(lane)
-                    local lane = i
+    local currentTime = -offset * 1000
+    local totalBeats = 0
 
-                    if noteType == 1 then
-                        -- use currentTick and currentMeasure to find the start time
-                        local ms = tickToMs(currentTick, bpm)
-                        local ho = HitObject(ms, lane, 0)
-                        table.insert(states.game.Gameplay.unspawnNotes, ho)
-                    elseif noteType == 2 then
-                        holdsInfo[lane].startTick = currentTick
-                    elseif noteType == 3 then
-                        -- the end time for the hold
-                        holdsInfo[lane].endTick = currentTick
-                        local ms = tickToMs(holdsInfo[lane].startTick, bpm)
-                        local endTime = tickToMs(holdsInfo[lane].endTick, bpm)
-                        local ho = HitObject(ms, lane, endTime)
+    for _, measure in ipairs(measures) do
+        local beatTimePerRow = 4 / #measure
+
+        if #bpms ~= 0 and totalBeats >= bpms[1].beat then
+            table.insert(timings, {
+                time = currentTime,
+                sig = 4,
+                bpm = bpms[1].bpm
+            })
+
+            table.remove(bpms, 1)
+        end
+
+        for _, row in ipairs(measure) do
+            local row = row:splitAllCharacters()
+
+            for i = 1, 4 do -- only play left side of "dance-double" if its selected
+                local noteType = tonumber(row[i])
+                local lane = i
+
+                if noteType == 1 then
+                    local ho = HitObject(currentTime, lane, 0)
+                    table.insert(states.game.Gameplay.unspawnNotes, ho)
+                elseif noteType == 2 then
+                    holdsInfo[lane].startTime = currentTime
+                elseif noteType == 3 then
+                    if holdsInfo[lane] then
+                        local ho = HitObject(holdsInfo[lane].startTime, lane, currentTime)
                         table.insert(states.game.Gameplay.unspawnNotes, ho)
                     end
-
-                    currentTick = currentTick + 1
-
-                    ::continue3::
                 end
+            end
 
-                ::continue2::
+            currentTime = currentTime + (60000 / getCurBPM(currentTime)) * 4 / #measure
+            totalBeats = totalBeats + beatTimePerRow
+
+            if #stops ~= 0 and totalBeats >= stops[1].beat then
+                currentTime = currentTime + (stops[1].length * 1000)
+
+                table.insert(states.game.Gameplay.sliderVelocities, {
+                    startTime = currentTime - (stops[1].length * 1000),
+                    multiplier = 1
+                })
+
+                table.remove(stops, 1)
             end
         end
     end

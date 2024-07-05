@@ -326,6 +326,42 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         songList[title..mapID].type = "fluXis"
 
                         createSongCache(songList[title..mapID][difficultyName], ".cache/.songs/" .. file .. song .. ".cache")
+                    elseif ext == "sm" then -- for stepmania, we have to call "smLoader.getDifficulties(chart)"
+                        diffs = Parsers["Stepmania"].getDifficulties(path .."/" .. file .. "/" .. song)
+                        -- has a table in a table (holds name and songName)
+                        for _, diff in pairs(diffs) do
+                            local alreadyInList = false
+                            for _, song in ipairs(songList) do
+                                print(song.title, diff.songName, song.difficultyName, diff.name)
+                                if song.title == diff.songName and song.difficultyName == diff.name then
+                                    alreadyInList = true
+                                end
+                            end
+                            if not alreadyInList then
+                                songList[diff.songName..0] = songList[diff.songName] or {}
+                                songList[diff.songName..0][diff.name] = {
+                                    filename = file,
+                                    title = diff.songName,
+                                    difficultyName = diff.name,
+                                    path = path .."/" .. file .. "/" .. song,
+                                    folderPath = path .."/" .. file,
+                                    type = "Stepmania",
+                                    nps = 0,
+                                    npsColour = {1, 1, 1},
+                                    creator = "Unknown",
+                                    artist = "Artist",
+                                    tags = {"stepmania"},
+                                    bpm = 120,
+                                    previewTime = 0,
+                                    audioFile = path .. "/" .. file .. "/" .. diff.audioPath,
+                                    gameMode = 1,
+                                    mapID = 0,
+                                    mode = 4,
+                                }
+
+                                songList[diff.songName..0][diff.name].type = "Stepmania"
+                            end
+                        end
                     end
                 end
                 
