@@ -4,9 +4,70 @@ local currentBlockName = ""
 local folderPath
 local forNPS
 
+local eases = {
+    "linear",               -- 0  Linear: no easing
+    "out-quad",             -- 1  Easing Out: the changes happen fast at first, but then slow down toward the end
+    "in-quad",              -- 2  Easing In: the changes happen slowly at first, but then speed up toward the end
+    "in-quad",              -- 3  Quad In
+    "out-quad",             -- 4  Quad Out
+    "in-out-quad",          -- 5  Quad In/Out
+    "in-cubic",             -- 6  Cubic In
+    "out-cubic",            -- 7  Cubic Out
+    "in-out-cubic",         -- 8  Cubic In/Out
+    "in-quart",             -- 9  Quart In
+    "out-quart",            -- 10 Quart Out
+    "in-out-quart",         -- 11 Quart In/Out
+    "in-quint",             -- 12 Quint In
+    "out-quint",            -- 13 Quint Out
+    "in-out-quint",         -- 14 Quint In/Out
+    "in-sine",              -- 15 Sine In
+    "out-sine",             -- 16 Sine Out
+    "in-out-sine",          -- 17 Sine In/Out
+    "in-expo",              -- 18 Expo In
+    "out-expo",             -- 19 Expo Out
+    "in-out-expo",          -- 20 Expo In/Out
+    "in-circ",              -- 21 Circ In
+    "out-circ",             -- 22 Circ Out
+    "in-out-circ",          -- 23 Circ In/Out
+    "in-elastic",           -- 24 Elastic In
+    "out-elastic",          -- 25 Elastic Out
+    "out-elastic",          -- 26 ElasticHalf Out
+    "out-elastic",          -- 27 ElasticQuarter Out
+    "in-out-elastic",       -- 28 Elastic In/Out
+    "in-back",              -- 29 Back In
+    "out-back",             -- 30 Back Out
+    "in-out-back",          -- 31 Back In/Out
+    "in-bounce",            -- 32 Bounce In
+    "out-bounce",           -- 33 Bounce Out
+    "in-out-bounce"         -- 34 Bounce In/Out
+}
+
+local function convertToEaseString(easeType)
+    return eases[(easeType or 0) + 1]
+end
+
 local _bpm = nil
 
+local currentBoardObject = nil
+
+local function splitAndReplaceWithNull(line, delimiter)
+    local result = {}
+    local pattern = string.format("([^%s]*)(%s?)", delimiter, delimiter)
+    
+    for part, sep in line:gmatch(pattern) do
+        if part == "" then
+            table.insert(result, "NULL")
+        else
+            table.insert(result, part)
+        end
+        if sep == "" then break end
+    end
+    
+    return result
+end
+
 function osuLoader.load(chart, folderPath_, diffName, _forNPS)
+    currentBoardObject = nil
     states.game.Gameplay.unspawnNotes = {}
     states.game.Gameplay.timingPoints = {}
     states.game.Gameplay.sliderVelocities = {}
@@ -17,6 +78,15 @@ function osuLoader.load(chart, folderPath_, diffName, _forNPS)
     folderPath = folderPath_
     currentBlockName = ""
 
+    local storyboard = nil
+
+    for i, item in ipairs(love.filesystem.getDirectoryItems(folderPath)) do
+        if item:endsWith(".osb") then
+            storyboard = love.filesystem.read(folderPath .. "/" .. item)
+            break
+        end
+    end
+    
     local chart = love.filesystem.read(chart)
     bpm = 120
     crochet = (60/bpm)*1000
@@ -28,7 +98,7 @@ function osuLoader.load(chart, folderPath_, diffName, _forNPS)
         osuLoader.processLine(line)
     end
 
-    chart = nil
+    chart = nil 
 
     if forNPS then
         local noteCount = #states.game.Gameplay.unspawnNotes
@@ -46,6 +116,12 @@ function osuLoader.load(chart, folderPath_, diffName, _forNPS)
 
         return noteCount / (songLength / 1000)
     end
+
+    --[[ if storyboard then
+        for _, line2 in ipairs(storyboard:split("\n")) do
+            osuLoader.processLine(line2)
+        end
+    end ]]
 end
 
 function osuLoader.processLine(line)
@@ -94,27 +170,197 @@ function osuLoader.processGeneral(line)
     end
 end
 function osuLoader.processEvent(line)
-    local split = line:split(",")
-    if split[1] == "Video" and video and Video and not forNPS then -- Video,-64,"video.mp4"
-        local video = line:match("^Video,.+\"(.+)\".*$")
-        local videoPath = folderPath .. "/" .. video
-        -- get filedata userdata
-        local fileData = love.filesystem.newFileData(videoPath)
-        Try(
-            function()
-                states.game.Gameplay.background = Video(fileData)
-            end,
-            function()
-                states.game.Gameplay.background = nil
+    if not forNPS then
+        local split = splitAndReplaceWithNull(line, ",")
+        
+        if split[1] == "Video" and video and Video then -- Video,-64,"video.mp4"
+            local video = line:match("^Video,.+\"(.+)\".*$")
+            local videoPath = folderPath .. "/" .. video
+            -- get filedata userdata
+            local fileData = love.filesystem.newFileData(videoPath)
+            Try(
+                function()
+                    states.game.Gameplay.background = Video(fileData)
+                end,
+                function()
+                    states.game.Gameplay.background = nil
+                end
+            )
+        end
+        if split[1] == "0" and not states.game.Gameplay.background then
+            local bg = line:match("^0,.+,\"(.+)\".*$")
+            if love.filesystem.getInfo(folderPath .. "/" .. bg) then
+                if bg:find(".jpg") or bg:find(".png") then
+                    states.game.Gameplay.background = love.graphics.newImage(folderPath .. "/" .. bg)
+                end
             end
-        )
-    end
-    if split[1] == "0" and not states.game.Gameplay.background and not forNPS then
-        local bg = line:match("^0,.+,\"(.+)\".*$")
-        if love.filesystem.getInfo(folderPath .. "/" .. bg) then
-            if bg:find(".jpg") or bg:find(".png") then
-                states.game.Gameplay.background = love.graphics.newImage(folderPath .. "/" .. bg)
+        end
+
+        if split[1] == "Sprite" then
+            if currentBoardObject then
+                table.insert(currentBoardObject.events, {
+                    type = "Hide",
+                    ease = "linear",
+                    startTime = currentBoardObject.events[#currentBoardObject.events].endTime,
+                    endTime = currentBoardObject.events[#currentBoardObject.events].endTime,
+                })
             end
+            if split[2] == "Overlay" then split[2] = "Foreground" end
+
+            if split[2] ~= "Background" then
+                table.insert(states.game.Gameplay.storyBoardSprites[split[2]].members, StoryboardSprite(
+                    split[3], 
+                    folderPath .. "/" .. split[4]:gsub("\"", ""):gsub("\\", "/"), 
+                    tonumber(split[5]), tonumber(split[6]), split[2]
+                ))
+            else
+                table.addToFirstIndex(states.game.Gameplay.storyBoardSprites[split[2]].members, StoryboardSprite(
+                    split[3], 
+                    folderPath .. "/" .. split[4]:gsub("\"", ""):gsub("\\", "/"), 
+                    tonumber(split[5]), tonumber(split[6]), split[2]
+                ))
+            end
+
+            currentBoardObject = states.game.Gameplay.storyBoardSprites[split[2]].members[#states.game.Gameplay.storyBoardSprites[split[2]].members]
+
+            --print("[osu!parser] SPRITE CREATED " .. tostring(currentBoardObject) .. " AT " .. "x" .. currentBoardObject.x, " y" .. currentBoardObject.y)
+        elseif split[1] == "Animation" then
+            if currentBoardObject then
+                table.insert(currentBoardObject.events, {
+                    type = "Hide",
+                    ease = "linear",
+                    startTime = currentBoardObject.events[#currentBoardObject.events].endTime,
+                    endTime = currentBoardObject.events[#currentBoardObject.events].endTime,
+                })
+            end
+            currentBoardObject = nil
+        end
+
+        if currentBoardObject then
+            if string.sub(split[1], 1, 1) == " " then
+                split[1] = "_" .. split[1]:sub(2)
+            end
+            if split[1] == "_F" then
+                local ease = convertToEaseString(split[2])
+                local startTime, endTime = tonumber(split[3]) or 0, tonumber(split[4]) or tonumber(split[3]) or 0
+                local duration = (endTime - startTime) / 1000
+                local startOpacity = tonumber(split[5]) or 0
+                local endOpacity = tonumber(split[6]) or tonumber(split[5]) or 0
+
+                --[[ print("END" .. endOpacity, "START" .. startOpacity) ]]
+
+                table.insert(currentBoardObject.events, {
+                    type = "Fade",
+                    startTime = startTime,
+                    endTime = endTime,
+                    duration = duration,
+                    startVal = 1 - endOpacity,
+                    endVal = 1 - startOpacity,
+                    ease = ease
+                })
+            elseif split[1] == "_M" then
+                local ease = convertToEaseString(split[2])
+                local startTime, endTime = tonumber(split[3]) or 0, tonumber(split[4]) or tonumber(split[3]) or 0
+                local duration = (endTime - startTime) / 1000
+                local startPosX = tonumber(split[5]) or 0
+                local startPosY = tonumber(split[6]) or tonumber(split[5]) or 0
+                local endPosX = tonumber(split[7]) or tonumber(split[5]) or 0
+                local endPosY = tonumber(split[8]) or tonumber(split[7]) or tonumber(split[6]) or tonumber(split[5]) or 0
+
+                startPosX, startPosY = Parsers["osu!"].convertPlayfieldToGame(startPosX, startPosY)
+                endPosX, endPosY = Parsers["osu!"].convertPlayfieldToGame(endPosX, endPosY)
+
+                table.insert(currentBoardObject.events, {
+                    type = "MoveXY",
+                    startTime = startTime,
+                    endTime = endTime,
+                    duration = duration,
+                    startValX = startPosX,
+                    endValX = endPosX,
+                    startValY = startPosY,
+                    endValY = endPosY,
+                    ease = ease
+                })
+            elseif split[1] == "_R" then
+                local ease = convertToEaseString(split[2])
+                local startTime, endTime = tonumber(split[3]) or 0, tonumber(split[4]) or tonumber(split[3]) or 0
+                local duration = (endTime - startTime) / 1000
+
+                local startRot = tonumber(split[5]) or 0
+                local endRot = tonumber(split[6]) or tonumber(split[5]) or 0
+
+                table.insert(currentBoardObject.events, {
+                    type = "Rotate",
+                    startTime = startTime,
+                    endTime = endTime,
+                    duration = duration,
+                    startVal = math.deg(startRot),
+                    endVal = math.deg(endRot),
+                    ease = ease
+                })
+            elseif split[1] == "_S" then
+                print("[osu!parser] SCALE EVENT FOR StoryboardSprite")
+                local ease = convertToEaseString(split[2])
+                local startTime, endTime = tonumber(split[3]) or 0, tonumber(split[4]) or tonumber(split[3]) or 0
+                local duration = (endTime - startTime) / 1000
+
+                local startScale = tonumber(split[5]) or 0
+                local endScale = tonumber(split[6]) or tonumber(split[5]) or 0
+
+                table.insert(currentBoardObject.events, {
+                    type = "Scale",
+                    startTime = startTime,
+                    endTime = endTime,
+                    duration = duration,
+                    startVal = startScale,
+                    endVal = endScale,
+                    ease = ease
+                })
+            elseif split[1] == "_C" then
+                local ease = convertToEaseString(split[2])
+                local startTime, endTime = tonumber(split[3]) or 0, tonumber(split[4]) or tonumber(split[3]) or 0
+                local duration = (endTime - startTime) / 1000
+                local startRGB = {}
+                local endRGB = {}
+
+                if split[4] == "NULL" then
+                    startRGB = {
+                        tonumber(split[5]) / 255,
+                        tonumber(split[6]) / 255,
+                        tonumber(split[7]) / 255,
+                    }
+                    endRGB = {
+                        tonumber(split[5]) / 255,
+                        tonumber(split[6]) / 255,
+                        tonumber(split[7]) / 255,
+                    }
+                else
+                    startRGB = {
+                        tonumber(split[4]) / 255,
+                        tonumber(split[5]) / 255,
+                        tonumber(split[6]) / 255,
+                    }
+                    endRGB = {
+                        tonumber(split[7]) / 255,
+                        tonumber(split[8]) / 255,
+                        tonumber(split[9]) / 255,
+                    }
+                end
+
+                table.insert(currentBoardObject.events, {
+                    type = "Colour",
+                    startTime = startTime,
+                    endTime = endTime,
+                    duration = duration,
+                    startRGB = startRGB,
+                    endRGB = endRGB,
+                    ease = ease
+                })
+            end
+
+            table.sort(currentBoardObject.events, function(a, b)
+                return a.startTime < b.startTime
+            end)
         end
     end
 end
@@ -155,7 +401,7 @@ function osuLoader.addTimingPoint(line)
     if isSV then
         local velocity = {
             startTime = tp.offset,
-            multiplier = tp.velocity
+            multiplier = tp.velocity or 0
         }
         table.insert(states.game.Gameplay.sliderVelocities, velocity)
     else
@@ -220,6 +466,31 @@ function osuLoader.addHitObject(line)
     local ho = HitObject(note.startTime, note.data, note.endTime)
 
     table.insert(states.game.Gameplay.unspawnNotes, ho)
+end
+
+function osuLoader.convertToPlayfield(x, y)
+    local originalWidth, originalHeight = 1920, 1080
+    local targetWidth, targetHeight = 640, 480
+
+    local scaleFactor = targetHeight / originalHeight
+    local offsetX = (originalWidth - (originalWidth * scaleFactor)) / 2
+    local offsetY = (originalHeight - (originalHeight * scaleFactor)) / 2
+
+    local newX = (x * scaleFactor) + (offsetX * scaleFactor)
+    local newY = (y * scaleFactor) + (offsetY * scaleFactor)
+
+    return newX, newY
+end
+
+function osuLoader.convertPlayfieldToGame(x, y)
+    local scale = 1080 / 480  -- Scale based on the height
+    local scaledWidth = 640 * scale
+    local offsetX = (1920 - scaledWidth) / 2  -- Calculate horizontal offset
+    
+    local x1920 = math.floor(x * scale + offsetX)
+    local y1080 = math.floor(y * scale)
+    
+    return x1920, y1080
 end
 
 return osuLoader

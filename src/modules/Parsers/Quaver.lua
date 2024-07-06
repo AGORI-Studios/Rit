@@ -57,7 +57,10 @@ function quaverLoader.load(chart, folderPath, diffName, forNPS)
         local startTime = sliderVelocity.StartTime
         local multiplier = sliderVelocity.Multiplier
         if not startTime then goto continue end
-        table.insert(states.game.Gameplay.sliderVelocities, {startTime = startTime, multiplier = multiplier or 0})
+        table.insert(states.game.Gameplay.sliderVelocities, {
+            startTime = startTime, 
+            multiplier = multiplier or 0
+        })
         ::continue::
     end
 

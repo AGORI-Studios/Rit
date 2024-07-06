@@ -101,6 +101,7 @@ function Sprite:new(x, y, graphic)
     self.blendAlphaMode = "alphamultiply"
 
     self.type = "Image"
+    self.addOrigin = true
 
     if graphic then self:load(graphic) end
 
@@ -418,7 +419,11 @@ function Sprite:draw() -- Draws the sprite, only if it's visible and exists
             love.graphics.setBlendMode(self.blend, self.blendAlphaMode)
         end
         love.graphics.setColor(self.color[1], self.color[2], self.color[3], self.alpha)
-        x, y = x + ox - self.offset.x, y + oy - self.offset.y
+        if self.addOrigin then
+            x, y = x + ox - self.offset.x, y + oy - self.offset.y
+        else
+            x, y = x - self.offset.x, y - self.offset.y
+        end
 
         love.graphics.push()
             if self.clipRect then

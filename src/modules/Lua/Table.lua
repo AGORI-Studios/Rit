@@ -135,3 +135,20 @@ function table.merge(t1, t2)
     end
     return t1
 end
+
+---@name table.addToFirstIndex
+---@description Adds a value to the first index
+---@param tbl table
+---@param value any
+---@return table
+function table.addToFirstIndex(tbl, value)
+    -- Shift elements to the right
+    for i = #tbl, 1, -1 do
+        tbl[i + 1] = tbl[i]
+    end
+    
+    -- Add the value at the first index
+    tbl[1] = value
+
+    return tbl
+end

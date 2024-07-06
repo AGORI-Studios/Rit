@@ -36,7 +36,7 @@ function class:extend()
     cls.super = self
     cls.__ID = "Class: 0x"
     for _ = 1, 4 do
-        cls.__ID = cls.__ID .. idChars:sub(math.random(1, #idChars), math.random(1, #idChars))
+        cls.__ID = cls.__ID .. idChars:sub(love.math.random(1, #idChars), love.math.random(1, #idChars))
     end
     setmetatable(cls, self)
     return cls
@@ -84,6 +84,10 @@ end
 function class:__call(...)
     local inst = setmetatable({}, self)
     inst:new(...)
+    inst.__ID = "Class: 0x"
+    for _ = 1, 4 do
+        inst.__ID = inst.__ID .. idChars:sub(love.math.random(1, #idChars), love.math.random(1, #idChars))
+    end
     return inst
 end
 

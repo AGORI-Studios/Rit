@@ -137,6 +137,13 @@ function Gameplay:reset()
     self.firstNoteTime = 0
     self.hasSkipPeriod = false
 
+    self.storyBoardSprites = {
+        Background = Group(),
+        Fail = Group(),
+        Pass = Group(),
+        Foreground = Group()
+    }
+
     self.songRating = self.rating
     self.rating = 0
 
@@ -375,23 +382,23 @@ end
 
 -- // Slider Velocity Functions \\ --
 function Gameplay:initializePositionMarkers()
-    if #self.sliderVelocities == 0 then return end
+    if #self.sliderVelocities == 0 then
+        return
+    end
 
-    local position = self.sliderVelocities[1].startTime 
-                    * self.initialScrollVelocity 
-                    * self.trackRounding
-    
+    -- Compute for Change Points
+    local position = math.floor(self.sliderVelocities[1].startTime * self.initialScrollVelocity * self.trackRounding)
     table.insert(self.velocityPositionMakers, position)
+
     for i = 2, #self.sliderVelocities do
-        local velocity = self.sliderVelocities[i]
-        position = position + (velocity.startTime - (self.sliderVelocities[i - 1] and self.sliderVelocities[i - 1].startTime or 0)) 
-            * (self.sliderVelocities[i - 1] and self.sliderVelocities[i - 1].multiplier or 0) * self.trackRounding
+        position = position + math.floor((self.sliderVelocities[i].startTime - self.sliderVelocities[i - 1].startTime)
+                                         * self.sliderVelocities[i - 1].multiplier * self.trackRounding)
         table.insert(self.velocityPositionMakers, position)
     end
 end
 
 function Gameplay:updateCurrentTrackPosition()
-    while self.currentSvIndex < #self.sliderVelocities and musicTime >= self.sliderVelocities[self.currentSvIndex].startTime do
+    while self.currentSvIndex <= #self.sliderVelocities and musicTime >= self.sliderVelocities[self.currentSvIndex].startTime do
         self.currentSvIndex = self.currentSvIndex + 1
     end
 
@@ -412,15 +419,15 @@ function Gameplay:GetPositionFromTime(time, index)
 end
 
 function Gameplay:getPositionFromTime(time)
-    local _i = 1
-    for i = 1, #self.sliderVelocities do
-        if time <= self.sliderVelocities[i].startTime then
-            _i = i
+    local i = 1
+    while i <= #self.sliderVelocities do
+        if time < self.sliderVelocities[i].startTime then
             break
         end
+        i = i + 1
     end
 
-    return self:GetPositionFromTime(time, _i)
+    return self:GetPositionFromTime(time, i)
 end
 
 function Gameplay:isSVNegative(time)
@@ -1041,6 +1048,8 @@ function Gameplay:update(dt)
         Modscript:update(dt, self.soundManager:getBeat("music"))
     end
 
+    self.storyBoardSprites.Foreground:update(dt)
+
     if self.updateTime then
         self:updateEvents()
 
@@ -1289,6 +1298,8 @@ function Gameplay:draw()
     end
     love.graphics.setFont(lastFont)
 
+    self.storyBoardSprites.Background:draw()
+
     love.graphics.push()
         local scale = 1 - ((self.mode - 4) * 0.05)
         love.graphics.push()
@@ -1317,6 +1328,10 @@ function Gameplay:draw()
             spr:draw()
         end
     end
+
+    love.graphics.setScissor(640/2,0,640*2,480*3)
+    self.storyBoardSprites.Foreground:draw()
+    love.graphics.setScissor(0,0,1920,1080)
 
     love.graphics.setColor(0,0,0, self.escapeTimer)
     love.graphics.rectangle("fill", 0, 0, 1920, 1080)

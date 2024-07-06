@@ -57,4 +57,11 @@ function Point:__concat(other)
     return tostring(self) .. tostring(other)
 end
 
+function Point:set(x, y)
+    local x = x or 0
+    local y = y or x
+
+    self.x, self.y = x, y
+end
+
 return Point

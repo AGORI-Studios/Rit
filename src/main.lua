@@ -37,6 +37,18 @@ _TRANSITION = {
     ovalHeight = 0
 }
 
+function convertScissorCoordinates(x, y, width, height)
+    local scaleX = __WINDOW_WIDTH / Inits.GameWidth
+    local scaleY = __WINDOW_HEIGHT / Inits.GameHeight
+    
+    local convertedX = x * scaleX
+    local convertedY = y * scaleY
+    local convertedWidth = width * scaleX
+    local convertedHeight = height * scaleY
+    
+    return convertedX, convertedY, convertedWidth, convertedHeight
+end
+
 function switchState(newState, t, middleFunc, data)
     local t = t or 0.3
     isLoading = true
