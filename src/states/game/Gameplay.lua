@@ -116,7 +116,6 @@ function Gameplay:reset()
     self.judgement = nil
     self.comboGroup = Group()
     self.combo = 0
-    self.missCombo = 0
     self.initialScrollVelocity = 1
     self.velocityPositionMakers = {}
     self.currentSvIndex = 1
@@ -324,10 +323,10 @@ function Gameplay:doJudgement(time, wasLN)
 
     self:remove2(self.judgement)
     self.judgement = Sprite(Inits.GameWidth/2, 390, judgement.img)
+    self.judgement:centerOrigin()
+    self.judgement.addOrigin = false
     if judgeTimer.y then Timer.cancel(judgeTimer.y) end
     judgeTimer.y = Timer.tween(0.1, self.judgement, {y = 400}, "in-out-expo")
-    self.judgement.origin.x = self.judgement.width / 2 -- Always center x origin
-    self.judgement.x = self.judgement.x - self.judgement.origin.x
     self:add2(self.judgement)
 
     -- combo shits
@@ -336,36 +335,15 @@ function Gameplay:doJudgement(time, wasLN)
     if judgement.name == "miss" then
         self.combo = 0
         self.misses = self.misses + 1
-        self.missCombo = self.missCombo + 1
     end
     if self.combo > 0 then -- The normal combo
         for i = 1, #tostring(self.combo) do
             local comboDigit = tostring(self.combo):sub(i, i)
             local sprite = Sprite(0, 0, skin:format("combo/COMBO") .. comboDigit .. ".png")
             local sprWidth = sprite.width * 1.25
-            --sprite.x = 180 - (#tostring(self.combo) * sprWidth/2) + (i * sprWidth) -- center to middle of screen lfmna 
             sprite.x = 180 - (#tostring(self.combo) * sprWidth/2) + (i * sprWidth)
             sprite.x = sprite.x + (Inits.GameWidth/2.55)
             sprite.y = 460
-            sprite:setGraphicSize(math.floor(sprWidth))
-            sprite.scale.y = sprite.scale.y + 0.2
-            if not comboTimer[i] then comboTimer[i] = {} end
-            if comboTimer[i].scaleY then Timer.cancel(comboTimer[i].scaleY) end
-            comboTimer[i].scaleY = Timer.tween(0.1, sprite.scale, {y = sprite.scale.y - 0.2}, "in-out-expo")
-            sprite.origin.x = sprWidth / 2
-            sprite.origin.y = sprWidth / 2
-            self.comboGroup:add(sprite)
-        end
-    end
-    if self.missCombo > 0 then -- The miss combo (I find it a nice QoL feature)
-        for i = 1, #tostring(self.missCombo) do
-            local comboDigit = tostring(self.missCombo):sub(i, i)
-            local sprite = Sprite(0, 0, skin:format("combo/COMBO") .. comboDigit .. ".png")
-            local sprWidth = sprite.width * 1.25
-            sprite.x = 180 - (#tostring(self.combo) * sprWidth/2) + (i * sprWidth)
-            sprite.x = sprite.x + (Inits.GameWidth/2.55)
-            sprite.y = 460
-            sprite.color = {1, 0.2, 0.2}
             sprite:setGraphicSize(math.floor(sprWidth))
             sprite.scale.y = sprite.scale.y + 0.2
             if not comboTimer[i] then comboTimer[i] = {} end
@@ -1226,7 +1204,6 @@ function Gameplay:goodNoteHit(note, time)
 
         if not note.isSustainNote then
             self.combo = self.combo + 1
-            self.missCombo = 0
             self.hits = self.hits + 1
             self:doJudgement(time)
             if #note.children > 0 then
@@ -1364,8 +1341,8 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName, for
     Parsers[chartType].load(songPath, folderPath, diffName, forNPS)
     
 
-    --self:normalizeSVs()
-    --self:SVFactor()
+    --[[ self:normalizeSVs() ]]
+    self:SVFactor()
     table.sort(self.unspawnNotes, function(a, b)
         return a.time < b.time
     end)
