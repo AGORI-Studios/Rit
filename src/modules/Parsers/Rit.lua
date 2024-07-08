@@ -5,23 +5,23 @@ local _forNPS
 
 local title, diff
 
-local smLoader = {}
-local currentBlock = ""
-local folderPath
-local title, artist, diff
-local bpms = {}
-local notes = {}
-local _forNPS
-
-function smLoader.load(chart, folderPath_, diffName, forNPS)
+function ritLoader.load(chart, folderPath_, diffName, forNPS)
     _forNPS = forNPS or false
+    curChart = "Rit"
     folderPath = folderPath_
+
+    ---@diagnostic disable-next-line: redefined-local
     local chart = love.filesystem.read(chart)
-    states.game.Gameplay.unspawnNotes = {}
+    bpm = 0
+    crochet = 0
+    stepCrochet = 0
 
     for _, line in ipairs(chart:split("\n")) do
-        smLoader.processLine(line)
+        ritLoader.processLine(line)
     end
+
+    __title = title
+    __diffName = diff
 
     if forNPS then
         local noteCount = #states.game.Gameplay.unspawnNotes
@@ -39,14 +39,6 @@ function smLoader.load(chart, folderPath_, diffName, forNPS)
 
         return noteCount / (songLength / 1000)
     end
-
-    return {
-        title = title,
-        artist = artist,
-        difficulty = diff,
-        bpms = bpms,
-        notes = notes
-    }
 end
 
 function ritLoader.processLine(line)
