@@ -55,7 +55,7 @@ end
 
 function SongButton:draw(transX, transY, current, total)
     -- return if not on screen
-    if self.y + (transX or 0) < -self.height or self.y + (transY or 0) > Inits.GameHeight+self.height then return end
+    if self.y + (transX or 0) < -self.height-600 or self.y + (transY or 0) > Inits.GameHeight+self.height+600 then return end
 
     if curTab == "songs" then
         if self.selected then

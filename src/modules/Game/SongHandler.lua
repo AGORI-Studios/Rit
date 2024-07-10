@@ -644,9 +644,9 @@ function createSongCache(data, path)
 %d
 %d
 %d
-%s]], data.title, data.difficultyName, data.mode, data.creator, 
-    data.audioFile, data.artist, table.concate(data.tags, " "),
-    data.bpm, data.previewTime, data.gameMode, data.mapID, data.nps, data.type
+%s]], data.title or "UNKNOWN", data.difficultyName or "UNKNOWN", data.mode or 4, data.creator or "UNKNOWN", 
+    data.audioFile, data.artist or "UNKNOWN", table.concate(data.tags or {}, " "),
+    data.bpm or 120, data.previewTime or 0, data.gameMode or 1, data.mapID or 1, data.nps or 0, data.type or "Quaver"
 ))
 
     return success
