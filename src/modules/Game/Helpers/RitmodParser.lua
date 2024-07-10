@@ -1,6 +1,8 @@
 local RitmodParser = {}
 
+---@diagnostic disable-next-line: duplicate-set-field
 function string:strip()
+    ---@diagnostic disable-next-line: param-type-mismatch
     return self:gsub("^%s*(.-)%s*$", "%1")
 end
 

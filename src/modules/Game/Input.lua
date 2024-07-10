@@ -1,3 +1,4 @@
+---@diagnostic disable: param-type-mismatch
 -- Painful way of adding all required inputs for the game
 __k1Binds = Settings.options["Keybinds"]["1kBinds"]:splitAllCharacters()
 __k2Binds = Settings.options["Keybinds"]["2kBinds"]:splitAllCharacters()

@@ -50,7 +50,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             createSongCache(data, ".cache/.songs/" .. file .. song .. ".cache") -- re-cache it with the nps
                         end
 
-                        print("Parsing default song cache file") -- THIS HAS TO BE HERE BECAUSE IT LOADS THEM TOO QUICKLY GRAHHHHH
+                        print("Parsing non-packaged song cache") -- THIS HAS TO BE HERE BECAUSE IT LOADS THEM TOO QUICKLY GRAHHHHH
                         
                         songList[title..mapID] = songList[title..mapID] or {}
                         songList[title..mapID][difficultyName] = {
@@ -404,7 +404,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                     }
                     -- tags is already a table in the cache
 
-                    print("Parsing non-default song cache files")
+                    print("Parsing packaged song cache files")
 
                     if (data.nps or 0) == 0 then
                         local nps = Parsers[data.type].load("song/" .. song, "song", difficultyName, true)
@@ -697,7 +697,7 @@ function updateAudioThread()
     if channel:peek() then
         local soundData = channel:pop()
         MenuSoundManager:newSound("music", soundData, 1, true, "stream")
-        MenuSoundManager:playFromTime("music", (curDiff.previewTime or 0) / 1000)
+        MenuSoundManager:playFromTime("music", (math.abs(curDiff.previewTime) or 0) / 1000)
         MenuSoundManager:setLooping("music", true)
     end
 end
@@ -770,8 +770,8 @@ function loadReplays()
 end
 
 --[[ function getSongReplays()
-    threads.assets.loadReplays(_G, "___REPLAYS")
-    threads.assets.start(function()
+    threadLoader.loadReplays(_G, "___REPLAYS")
+    threadLoader.start(function()
         states.menu.SongMenu.replays = _G.___REPLAYS
     end)
 end ]]

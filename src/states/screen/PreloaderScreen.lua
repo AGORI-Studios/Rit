@@ -121,6 +121,7 @@ function PreloaderScreen:draw()
     love.graphics.rectangle("fill", (Inits.GameWidth*0.05),Inits.GameWidth/2, (Inits.GameWidth*0.9) * percent, 50)
     love.graphics.setColor(1,1,1, percent)
 
+    ---@diagnostic disable-next-line: need-check-nil
     love.graphics.draw(ritLogo, Inits.GameWidth/2, Inits.GameHeight/2, 0, 0.5, 0.5, ritLogo:getWidth()/2, ritLogo:getHeight()/2)
     love.graphics.setColor(1,1,1,1)
 

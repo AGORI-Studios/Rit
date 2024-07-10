@@ -11,9 +11,7 @@ function GI.LoadLibraries()
     tinyyaml = require("lib.tinyyaml")
     ini = require("lib.ini")
     clone = require("lib.clone")
-    threads = {
-        assets = require("lib.loveloader")
-    }
+    threadLoader = require("lib.loveloader")
     xml = require("lib.xml")
     require("lib.lovefs.lovefs")
     require("lib.luafft")
@@ -338,28 +336,11 @@ function GI.LoadThreads()
 end
 
 function GI.LoadDefaultFonts()
-    Cache.members.font["default"] = love.graphics.newFont("assets/fonts/Montserrat-Light.ttf", 16)
-    Cache.members.font["defaultX0.75"] = love.graphics.newFont("assets/fonts/Montserrat-Light.ttf", 12)
-    Cache.members.font["defaultBold"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 16)
-    Cache.members.font["defaultBoldX1.25"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 20)
-    Cache.members.font["defaultBoldX1.5"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 24)
-    Cache.members.font["defaultBoldX2"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 32)
-    Cache.members.font["defaultBoldX2.5"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 48)
-    Cache.members.font["menu"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 32)
-    Cache.members.font["menuBold"] = love.graphics.newFont("assets/fonts/Montserrat-Bold.ttf", 22)
-    Cache.members.font["menuExtraBold"] = love.graphics.newFont("assets/fonts/Montserrat-ExtraBold.ttf", 22)
-    Cache.members.font["menuExtraBoldX1.5"] = love.graphics.newFont("assets/fonts/Montserrat-ExtraBold.ttf", 33)
-    Cache.members.font["menuExtraBoldX2"] = love.graphics.newFont("assets/fonts/Montserrat-ExtraBold.ttf", 44)
-    Cache.members.font["menuExtraBoldX2.5"] = love.graphics.newFont("assets/fonts/Montserrat-ExtraBold.ttf", 55)
-    Cache.members.font["menuExtraBoldX3"] = love.graphics.newFont("assets/fonts/Montserrat-ExtraBold.ttf", 66)
-    Cache.members.font["menuX1.5"] = love.graphics.newFont("assets/fonts/Montserrat-Light.ttf", 33)
-    Cache.members.font["menuBoldX1.5"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 33)
-    Cache.members.font["menuBig"] = love.graphics.newFont("assets/fonts/Montserrat-Light.ttf", 64)
-    Cache.members.font["menuBigBold"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 64)
-    Cache.members.font["menuMedium"] = love.graphics.newFont("assets/fonts/Montserrat-Light.ttf", 48)
-    Cache.members.font["menuMediumBold"] = love.graphics.newFont("assets/fonts/Montserrat-Medium.ttf", 48)
-    Cache.members.font["NatsRegular26"] = love.graphics.newFont("assets/fonts/NATS-Regular.otf", 26)
-    Cache.members.font["NatsRegular16"] = love.graphics.newFont("assets/fonts/NATS-Regular.otf", 16)
+    local fontsData = love.filesystem.load("modules/Data/Fonts.lua")()
+
+    for _, fontInfo in ipairs(fontsData) do
+        Cache.members.font[fontInfo.name] = love.graphics.newFont("assets/fonts/" .. fontInfo.path, fontInfo.size or 12)
+    end
 
     -- some font functions
     function setFont(font)
@@ -449,7 +430,7 @@ function GI.InitSteam()
                 SteamUserAvatarLarge = love.graphics.newImage(SteamUserImgSteamData)
             end
         end
-    end 
+    end
 end
 
 function GI.UpdateDiscord()
