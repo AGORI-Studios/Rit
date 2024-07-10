@@ -1,6 +1,5 @@
 ---@diagnostic disable: param-type-mismatch
----@name string.split
----@description Splits a string into a table
+---Splits a string into a table
 ---@param sep string
 ---@return table
 function string.split(self, sep)
@@ -11,8 +10,7 @@ function string.split(self, sep)
     return fields
 end
 
----@name string.splitAllCharacters
----@description Splits a string into a table of all characters
+---Splits a string into a table of all characters
 ---@return table
 function string.splitAllCharacters(self)
     local fields = {}
@@ -22,8 +20,7 @@ function string.splitAllCharacters(self)
     return fields
 end
 
----@name string.splitByLine
----@description Splits a string by newlines into a table
+---Splits a string by newlines into a table
 ---@return table
 function string.splitByLine(self)
     local lines = {}
@@ -33,40 +30,35 @@ function string.splitByLine(self)
     return lines
 end
 
----@name string.trim
----@description Trims whitespace from the beginning and end of a string
+---Trims whitespace from the beginning and end of a string
 ---@return string
 function string.trim(self)
     ---@diagnostic disable-next-line: redundant-return-value
     return self:gsub("^%s*(.-)%s*$", "%1")
 end
 
----@name string.startsWith
----@description Checks if a string starts with another string
+---Checks if a string starts with another string
 ---@param start string
 ---@return boolean
 function string.startsWith(self, start)
     return self:sub(1, #start) == start
 end
 
----@name string.endsWith
----@description Checks if a string ends with another string
+---Checks if a string ends with another string
 ---@param ending string
 ---@return boolean
 function string.endsWith(self, ending)
     return ending == "" or self:sub(-#ending) == ending
 end
 
----@name string.contains
----@description Checks if a string contains another string
+---Checks if a string contains another string
 ---@param str string
 ---@return boolean
 function string.contains(self, str)
     return self:find(str) ~= nil
 end
 
----@name string.count
----@description Counts the number of times a string appears in another string
+---Counts the number of times a string appears in another string
 ---@param str string
 ---@return number
 function string.count(self, str)
@@ -77,8 +69,7 @@ function string.count(self, str)
     return count
 end
 
----@name string.replace
----@description Replaces all instances of a string with another string
+---Replaces all instances of a string with another string
 ---@param search string
 ---@param replace string
 ---@return string
@@ -87,23 +78,20 @@ function string.replace(self, search, replace)
     return self:gsub(search, replace)
 end
 
----@name string.reverse
----@description Reverses a string
+---Reverses a string
 ---@return string
 ---@diagnostic disable-next-line: duplicate-set-field
 function string.reverse(self)
     return self:splitAllCharacters():reverse():concat()
 end
 
----@name string.capitalize
----@description Capitalizes the first letter of a string
+---Capitalizes the first letter of a string
 ---@return string
 function string.capitalize(self)
     return self:sub(1, 1):upper() .. self:sub(2)
 end
 
----@name string.toTable
----@description Converts a string to a table of all characters
+---Converts a string to a table of all characters
 ---@return table
 function string.toTable(self)
     local t = {}
@@ -113,16 +101,14 @@ function string.toTable(self)
     return t
 end
 
----@name string.fromTable
----@description Converts a table of all characters to a string
+---Converts a table of all characters to a string
 ---@param t table
 ---@return string
 function string.fromTable(self, t)
     return table.concat(t)
 end
 
----@name string.random
----@description Generates a random string
+---Generates a random string
 ---@param length number
 ---@return string
 function string.random(length)
@@ -134,8 +120,7 @@ function string.random(length)
     return str
 end
 
----@name string.strip
----@description Strips all whitespace from a string (left and right)
+---Strips all whitespace from a string (left and right)
 ---@return string
 ---@diagnostic disable-next-line: duplicate-set-field
 function string.strip(self)

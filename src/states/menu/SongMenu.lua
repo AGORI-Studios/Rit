@@ -148,7 +148,7 @@ function SongMenu:update(dt)
         if curButton then
             curButton.selected = false
         end
-        ---@class curButton : SongButton
+        ---@class curButton<SongButton>
         curButton = songButtons[curSelected]
         if curButton then
             curButton.selected = true

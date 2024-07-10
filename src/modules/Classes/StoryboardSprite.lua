@@ -20,26 +20,26 @@ function StoryboardSprite:new(origin, filepath, x, y, layer)
     self.didFirstEvent = false
 
     if origin == "Centre" then
-        self.origin.x = self:getFrameWidth()/2
-        self.origin.y = self:getFrameHeight()/2
+        self.origin.x = self:getWidth()/2
+        self.origin.y = self:getHeight()/2
     elseif origin == "CentreLeft" then
-        self.origin.y = self:getFrameHeight()/2
+        self.origin.y = self:getHeight()/2
     elseif origin == "TopRight" then
-        self.origin.x = self:getFrameWidth()
+        self.origin.x = self:getWidth()
     elseif origin == "BottomCentre" then
-        self.origin.y = self:getFrameHeight()
-        self.origin.x = self:getFrameWidth()/2
+        self.origin.y = self:getHeight()
+        self.origin.x = self:getWidth()/2
     elseif origin == "TopCentre" then
-        self.origin.x = self:getFrameWidth()/2
+        self.origin.x = self:getWidth()/2
     -- 6 is same as top left, and should not be used
     elseif origin == "CentreRight" then
-        self.origin.x = self:getFrameWidth()
-        self.origin.y = self:getFrameHeight()/2
+        self.origin.x = self:getWidth()
+        self.origin.y = self:getHeight()/2
     elseif origin == "BottomLeft" then
-        self.origin.y = self:getFrameHeight()
+        self.origin.y = self:getHeight()
     elseif origin == "BottomRight" then
-        self.origin.x = self:getFrameWidth()
-        self.origin.y = self:getFrameHeight()
+        self.origin.x = self:getWidth()
+        self.origin.y = self:getHeight()
     else
     end
 

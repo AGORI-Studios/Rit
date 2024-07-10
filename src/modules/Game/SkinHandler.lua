@@ -1,4 +1,3 @@
-
 local skin = {}
 
 skin.name = Settings.options["General"].skin.name or "Circle Default"

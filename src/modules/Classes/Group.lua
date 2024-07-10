@@ -1,4 +1,5 @@
 -- Based off of haxeflixel's FlxGroup class
+---@class Group
 local Group = Object:extend()
 
 function Group:new()

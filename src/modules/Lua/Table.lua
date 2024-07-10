@@ -1,5 +1,4 @@
----@name table.random
----@description Returns a random value from a table
+---Returns a random value from a table
 ---@param table table
 ---@return any
 function table.random(table)
@@ -11,8 +10,7 @@ function table.random(table)
     return table[keys[love.math.random(#keys)]]
 end
 
----@name table.clone
----@description Returns a clone of a table
+---Returns a clone of a table
 ---@param table table
 ---@return table
 function table.clone(table)
@@ -24,8 +22,7 @@ function table.clone(table)
     return newTable
 end
 
----@name table.print
----@description Prints a table
+---Prints a table
 ---@param table table
 ---@return nil
 function table.print(table)
@@ -34,8 +31,7 @@ function table.print(table)
     end
 end
 
----@name table.randomize
----@description Randomizes the order of a table
+---Randomizes the order of a table
 ---@param table table
 ---@return table
 function table.randomize(table)
@@ -47,8 +43,7 @@ function table.randomize(table)
     return newTable
 end
 
----@name table.find
----@description Finds a value in a table
+---Finds a value in a table
 ---@param table table
 ---@param value any
 ---@return any
@@ -64,8 +59,7 @@ end
 
 table.contains = table.find
 
----@name table.concate
----@description Concatenates a table to a string
+---Concatenates a table to a string
 ---@param table table
 ---@param separator string
 ---@return string
@@ -78,8 +72,7 @@ function table.concate(table, separator)
     return str:sub(1, #str - #separator)
 end
 
----@name table.protect
----@description Protects a table from being modified. Similar to lua 5.4's constants
+---Protects a table from being modified. Similar to lua 5.4's constants
 ---@param table table
 ---@return table
 function table.protect(table)
@@ -92,8 +85,7 @@ function table.protect(table)
     })
 end
 
----@name table.copy
----@description Copies a table
+---Copies a table
 ---@param table table
 ---@return table
 function table.copy(table)
@@ -107,8 +99,7 @@ end
 
 local o_tblSort = table.sort
 
----@name table.sort
----@description Sorts a table if it exists
+---Sorts a table if it exists
 ---@param table table
 ---@return table
 ---@diagnostic disable-next-line: duplicate-set-field
@@ -120,8 +111,7 @@ function table.sort(table, method)
     return {}
 end
 
----@name table.merge
----@description Merges two tables together
+---Merges two tables together
 ---@param t1 table
 ---@param t2 table?
 ---@return table
@@ -136,8 +126,7 @@ function table.merge(t1, t2)
     return t1
 end
 
----@name table.addToFirstIndex
----@description Adds a value to the first index
+---Adds a value to the first index
 ---@param tbl table
 ---@param value any
 ---@return table

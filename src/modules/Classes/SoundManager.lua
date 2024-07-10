@@ -22,7 +22,7 @@ function SoundManager:newSound(name, path, volume, loop, type)
         loop = loop,
         bpm = 120,
         beat = 0,
-        fullBeat = 0, -- not calculated with beat length, but an approximation
+        fullBeat = 0, 
         beatLength = 60 / 120,
         time = 0,
         lastFrameTime = 0,

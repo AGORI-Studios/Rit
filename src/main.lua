@@ -352,7 +352,6 @@ function love.quit()
             love.event.quit()
         end)
         Timer.tween(0.5, __audioEffectIntensity, {1}, "linear")
-        --[[ Timer.tween(0.5, volume, {0}, "linear") ]]
         return true
     end
 end

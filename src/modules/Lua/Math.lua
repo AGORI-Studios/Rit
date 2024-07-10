@@ -1,5 +1,4 @@
----@name math.round
----@description Rounds a number to the nearest integer
+---Rounds a number to the nearest integer
 ---@param num number
 ---@param numDecimalPlaces? number (optional)
 ---@return number
@@ -8,8 +7,7 @@ function math.round(num, numDecimalPlaces)
     return math.floor(num * mult + 0.5) / mult
 end
 
----@name math.clamp
----@description Clamps a number between a minimum and a maximum value
+---Clamps a number between a minimum and a maximum value
 ---@param low number
 ---@param n number
 ---@param high number
@@ -18,16 +16,14 @@ function math.clamp(low, n, high)
     return math.min(math.max(low, n), high)
 end
 
----@name math.sign
----@description Returns the sign of a number
+---Returns the sign of a number
 ---@param n number
 ---@return number
 function math.sign(n)
     return n > 0 and 1 or n < 0 and -1 or 0
 end
 
----@name math.distance
----@description Returns the distance between two points
+---Returns the distance between two points
 ---@param x1 number
 ---@param y1 number
 ---@param x2 number
@@ -37,8 +33,7 @@ function math.distance(x1, y1, x2, y2)
     return math.sqrt((x2-x1) ^ 2 + (y2-y1) ^ 2)
 end
 
----@name math.angle
----@description Returns the angle between two points
+---Returns the angle between two points
 ---@param x1 number
 ---@param y1 number
 ---@param x2 number
@@ -48,8 +43,7 @@ function math.angle(x1, y1, x2, y2)
     return math.atan2(y2 - y1, x2 - x1)
 end
 
----@name math.remapToRange
----@description Remaps a number from one range to another
+---Remaps a number from one range to another
 ---@param value number
 ---@param from1 number
 ---@param to1 number
@@ -60,7 +54,7 @@ function math.remapToRange(value, from1, to1, from2, to2)
     return (value - from1) / (to1 - from1) * (to2 - from2) + from2
 end
 
----@comment Linearly interpolates between two numbers
+---Linearly interpolates between two numbers
 ---@param a number
 ---@param b number
 ---@param t number
@@ -69,8 +63,7 @@ function math.lerp(a, b, t)
     return a + (b - a) * t
 end
 
----@name math.fpsLerp
----@description Linearly interpolates between two numbers, taking into account the time between frames
+---Linearly interpolates between two numbers, taking into account the time between frames
 ---@param a number
 ---@param b number
 ---@param t number
@@ -81,8 +74,7 @@ function math.fpsLerp(a, b, t, dt)
     return math.lerp(a, b, 1 - math.exp(-t * dt))
 end
 
----@name math.grad
----@description Returns a pseudo-random gradient vector
+---Returns a pseudo-random gradient vector
 ---@param hash number
 ---@param x number
 ---@param y number
@@ -95,16 +87,14 @@ function math.grad(hash, x, y, z)
     return ((h % 2) == 0 and u or -u) + ((h % 3) == 0 and v or -v)
 end
 
----@name math.fade
----@description Returns a fade value
+---Returns a fade value
 ---@param t number
 ---@return number
 function math.fade(t)
     return t * t * t * (t * (t * 6 - 15) + 10)
 end
 
----@name math.perlinNoise
----@description Returns a perlin noise value
+---Returns a perlin noise value
 ---@param x number
 ---@param y number
 ---@param z number
@@ -144,8 +134,7 @@ function math.perlinNoise(x, y, z)
                         math.grad(p[BB + 1], x - 1, y - 1, z - 1))))
 end
 
----@name math.smoothstep
----@description Returns a smoothstep value
+---Returns a smoothstep value
 ---@param edge0 number
 ---@param edge1 number
 ---@param x number
@@ -155,8 +144,7 @@ function math.smoothstep(edge0, edge1, x)
     return x * x * (3 - 2 * x)
 end
 
----@name math.smootherstep
----@description Returns a smootherstep value
+---Returns a smootherstep value
 ---@param edge0 number
 ---@param edge1 number
 ---@param x number
