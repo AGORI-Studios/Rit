@@ -66,7 +66,6 @@ function SongButton:draw(transX, transY, current, total)
             self.x = math.fpsLerp(self.x, -125, 25)
         end
 
-
         -- I am so sorry for this code
         if self.selected then
             if current == 1 and current == total then

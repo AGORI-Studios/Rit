@@ -194,7 +194,8 @@ function love.update(dt)
     end
 
     MenuSoundManager:update(dt)
-    FPSOverlay:update(dt)
+    FPSOverlay:update(dt, love.timer.getFPS)
+    dtOverlay:update(dt, love.timer.getAverageMSDelta)
 end
 
 function love.filedropped(file)
@@ -208,7 +209,7 @@ function love.focus(f)
             love.setFpsCap(30)
             Timer.tween(0.5, volume, {0.25}, "linear")
         elseif f and volume then
-            love.setFpsCap(500)
+            love.setFpsCap(2000)
             Timer.tween(0.5, volume, {1}, "linear")
         end
     end
@@ -279,6 +280,7 @@ function love.draw()
         end
 
         FPSOverlay:draw()
+        dtOverlay:draw()
     love.graphics.setCanvas()
 
     -- ratio

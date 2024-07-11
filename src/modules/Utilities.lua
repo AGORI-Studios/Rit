@@ -19,8 +19,7 @@ for _, module in ipairs(loveModules) do
     end
 end
 
----@name Try
----@description Tries to run a function, and if it fails, runs another function
+---Tries to run a function, and if it fails, runs another function
 ---@param f function
 ---@param catchFunc function
 ---@return nil, any
@@ -33,8 +32,7 @@ function Try(f, catchFunc)
     return returnedValue, (error or false) --  not actually an error, just the value returned
 end
 
----@name switch
----@description calls a function based on a value
+---calls a function based on a value
 ---@param value any
 ---@param cases table
 ---@return any

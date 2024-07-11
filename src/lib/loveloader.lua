@@ -12,7 +12,6 @@ require("modules.Game.SongHandler")
 require("modules.Utilities")
 
 if not json then json = require("lib.jsonhybrid") end
-if not NoteHelper then NoteHelper = require("modules.Game.NoteHelper") end
 
 local loader = {
   _VERSION     = 'love-loader v2.0.3',
@@ -176,17 +175,6 @@ local resourceKinds = {
     postProcess = function(data)
       local path, content = unpack(data)
       love.filesystem.write(path, content)
-    end
-  },
-  updateNotePosition = {
-    requestKey = "updateNotePosition",
-    resourceKey = "updateNotePosition",
-    constructor = function(offset, hitObjects, scrollSpeed, downscroll)
-      return {offset, hitObjects, scrollSpeed, downscroll}
-    end,
-    postProcess = function(data)
-      local offset, hitObjects, scrollSpeed, downscroll = unpack(data)
-      return NoteHelper:updateNotePosition(offset, hitObjects, scrollSpeed, downscroll)
     end
   }
 }

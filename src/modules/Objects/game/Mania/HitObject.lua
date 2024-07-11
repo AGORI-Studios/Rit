@@ -62,6 +62,7 @@ function HitObject:new(time, data, endTime)
 
         endObj.forcedDimensions = true
         endObj.dimensions = {width = 200, height = 100}
+        endObj.flipY = Modscript.downscroll == false
         endObj.parent = self
 
         endObj.hold = holdObj

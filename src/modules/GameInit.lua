@@ -179,7 +179,6 @@ function GI.LoadClasses()
     VertSprite = require("modules.Classes.VertSprite")
     SoundManager = require("modules.Classes.SoundManager")
     require("modules.Game.SongHandler")
-    NoteHelper = require("modules.Game.NoteHelper")
     Settings = require("modules.Game.Settings")
     Settings.loadOptions()
     Modscript = require("modules.Game.Modding.Modscript")
@@ -302,10 +301,17 @@ function GI.LoadObjects()
     Header.userData = _USERDATA
     Switch = require("modules.Objects.menu.options.Switch")
 
-    FPSOverlay = require("modules.Objects.overlay.FPSOverlay") {
+    OverlayObject = require("modules.Objects.overlay.OverlayObject")
+    FPSOverlay = OverlayObject({
         x = Inits.GameWidth - 85,
-        y = Inits.GameHeight - 35
-    }
+        y = Inits.GameHeight - 65,
+        formatReplacement = 0
+    }, "FPS: %d")
+    dtOverlay = OverlayObject({
+        x = Inits.GameWidth - 85,
+        y = Inits.GameHeight - 35,
+        formatReplacement = 0
+    }, "%.1fms")
 end
 
 function GI.LoadParsers()
@@ -456,7 +462,10 @@ function GI.CreateFolders()
     if not love.filesystem.getInfo(".cache/.songs") then
         love.filesystem.createDirectory(".cache/.songs")
     end
-end 
+    if not love.filesystem.getInfo(".cache/.web") then
+        love.filesystem.createDirectory(".cache/.web")
+    end
+end
 
 -- Love Functions
 function love.wheelmoved(x, y)

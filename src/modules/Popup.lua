@@ -18,7 +18,7 @@ function Popup:new(dir, title, text, fadeTime, delay)
             self:destroy()
         end)
     end)
-    
+
     table.insert(Popup.popups, self)
 end
 

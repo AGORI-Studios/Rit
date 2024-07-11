@@ -725,7 +725,7 @@ function Gameplay:updateNotePosition(offset, curTime)
             if Modscript.downscroll then
                 hitObject.children[2].y = hitObject.children[2].y + pixelDistance - 100
             else
-                hitObject.children[2].y = hitObject.children[2].y + pixelDistance + 100
+                hitObject.children[2].y = hitObject.children[2].y + pixelDistance
             end
         end
     end
