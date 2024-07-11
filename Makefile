@@ -1,6 +1,7 @@
 all: clean desktop dist
 
 desktop: lovefile win64 dist
+gitbuilds: clean lovefile win64 appimage gitdist
 console: lovefile switch
 
 # define GameName = "GameName"
@@ -98,3 +99,10 @@ dist:
 	mkdir build/dist
 	cd build/$(GameName)-win64 && zip -9 -r ../../build/dist/$(GameName)-win64.zip *
 	cp build/$(GameName)-lovefile/$(GameName).love build/dist/$(GameName).love
+
+gitdist:
+	rm -rf build/dist
+	mkdir build/dist
+	cd build/$(GameName)-win64 && zip -9 -r ../../build/dist/$(GameName)-win64.zip *
+	cp build/$(GameName)-lovefile/$(GameName).love build/dist/$(GameName).love
+	cp build/$(GameName)-appimage/$(GameName).AppImage build/dist/$(GameName).AppImage
