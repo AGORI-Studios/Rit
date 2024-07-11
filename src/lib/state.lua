@@ -52,7 +52,7 @@ end
 ---@description Switches to a new state, returns the new state
 ---@param newstate table
 ---@param ... any
----@return class
+---@return table
 function state.switch(newstate, ...)
     assert(newstate, "Called state.switch with no state")
     assert(type(newstate) == "table", "Called state.switch with invalid state")

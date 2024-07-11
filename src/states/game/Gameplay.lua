@@ -463,17 +463,18 @@ function Gameplay:getCommonBpm()
         end
     end)
     local lastObject = newNoteTable[1]
-    local lastTime = lastObject.endTime or lastObject.time
+    local lastTime = lastObject.endTime or lastObject.time or self.lastNoteTime
 
     local durations = {}
     for i = 1, #self.timingPoints do
         local point = self.timingPoints[i]
 
-        if point.StartTime > lastTime then
+        if not point or not lastTime then break end
+        if (point.StartTime or lastTime) > lastTime then
             break
         end
-        local duration = (lastTime - (i == 1 and 0 or point.StartTime))
-        lastTime = point.StartTime
+        local duration = (lastTime - (i == 1 and 0 or point.StartTime or lastTime))
+        lastTime = point.StartTime or lastTime
 
         if table.find(durations, point.Bpm) then
             durations[point.Bpm] = durations[point.Bpm] + duration
