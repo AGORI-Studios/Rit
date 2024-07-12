@@ -116,6 +116,7 @@ function Gameplay:reset()
     self.judgement = nil
     self.comboGroup = Group()
     self.combo = 0
+    self.maxCombo = 0
     self.initialScrollVelocity = 1
     self.velocityPositionMakers = {}
     self.currentSvIndex = 1
@@ -965,11 +966,11 @@ function Gameplay:update(dt)
                 love.filesystem.write("replays/" .. self.songName .. " - " .. self.difficultyName .. " - " .. os.time() .. ".ritreplay", json.encode(self.replay))
             end
             if Steam and networking.connected and networking.currentServerData and networking.inMultiplayerGame then
-                switchState(states.menu.StartMenu, 0.3, nil, {score = self.score, accuracy = self.accuracy, misses = self.misses, maxCombo = self.combo})
+                switchState(states.menu.StartMenu, 0.3, nil, {score = self.score, accuracy = self.accuracy, misses = self.misses, maxCombo = self.maxCombo})
                 MenuSoundManager:removeAllSounds()
                 self.soundManager:removeAllSounds()
             else
-                switchState(states.screens.game.ResultsScreen, 0.3, nil, {score = self.score, accuracy = self.accuracy, misses = 0, maxCombo = 423, rating = 19.23,
+                switchState(states.screens.game.ResultsScreen, 0.3, nil, {score = self.score, accuracy = self.accuracy, misses = self.misses, maxCombo = self.maxCombo, rating = self.rating,
                     judgements = {
                         marvellous = self.allJudgements["marvellous"],
                         perfect = self.allJudgements["perfect"],
@@ -982,7 +983,6 @@ function Gameplay:update(dt)
                 MenuSoundManager:removeAllSounds()
 
                 -- Only save stats for singleplayer
-                --[[ _USERDATA.ratingAltogether = _USERDATA.ratingAltogether + self.rating ]] -- actualyl a table
                 _USERDATA.allRatings = _USERDATA.allRatings or {}
                 table.insert(_USERDATA.allRatings, self.rating)
                 _USERDATA.totalScore = (_USERDATA.totalScore or 0) + self.score
@@ -998,7 +998,7 @@ function Gameplay:update(dt)
             self.updateTime = false
             return
         else
-            if (self.background and self.background.play) and (musicTime >= 0 and musicTime < self.lastNoteTime-1000) and self.soundManager:isPlaying("music") then
+            if (self.background and self.background.play) and (musicTime >= 0 and musicTime < self.lastNoteTime) and self.soundManager:isPlaying("music") then
                 self.background:play(musicTime/1000)
             end
             musicTime = musicTime + (love.timer.getTime() * 1000) - (previousFrameTime or (love.timer.getTime()*1000))
@@ -1176,6 +1176,9 @@ function Gameplay:keyReleased(key)
             ho:kill()
             ho:destroy()
             self.combo = self.combo + 1
+            if self.combo > self.maxCombo then
+                self.maxCombo = self.combo
+            end
             self:doJudgement(math.abs(ho.endTime - musicTime), true)
             self.hitObjects:remove(ho)
             break
@@ -1205,6 +1208,9 @@ function Gameplay:goodNoteHit(note, time)
 
         if not note.isSustainNote then
             self.combo = self.combo + 1
+            if self.combo > self.maxCombo then
+                self.maxCombo = self.combo
+            end
             self.hits = self.hits + 1
             self:doJudgement(time)
             if #note.children > 0 then

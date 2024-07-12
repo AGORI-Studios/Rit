@@ -45,7 +45,6 @@ function stepmaniaLoader.getDifficulties(path)
                             isDanceSingle = false
                         end
                     end
-                    
 
                     if metaIndex == 2 then
                         line = line:gsub("\t", ""):gsub(":", ""):trim()

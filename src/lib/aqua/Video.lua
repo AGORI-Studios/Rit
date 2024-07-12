@@ -46,13 +46,20 @@ end
 function Video:play(time)
     local time = time or 0
     local vid = self.video
-    
-    while time >= vid:tell() do
-        if not vid:read(self.imageData:getPointer()) then
-            break
+
+    Try(
+        function()
+            while time >= vid:tell() do
+                if not vid:read(self.imageData:getPointer()) then
+                    break
+                end
+            end
+            self.image:replacePixels(self.imageData)
+        end,
+        function()
+            print("[lib/aqua/Video.lua] Failed to update video.")
         end
-    end
-    self.image:replacePixels(self.imageData)
+    )
 end
 
 function Video:getWidth()

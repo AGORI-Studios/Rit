@@ -333,7 +333,6 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         for _, diff in pairs(diffs) do
                             local alreadyInList = false
                             for _, song in ipairs(songList) do
-                                print(song.title, diff.songName, song.difficultyName, diff.name)
                                 if song.title == diff.songName and song.difficultyName == diff.name then
                                     alreadyInList = true
                                 end
