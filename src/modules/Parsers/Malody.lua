@@ -1,5 +1,6 @@
 local malodyLoader = {}
 local chart, offset
+local noteCount, endNoteTime = 0, 0
 
 local function getTime(bpm, beat, prevOffset) 
     return (1000 * (60/bpm) * beat) + prevOffset 
@@ -24,6 +25,7 @@ local function getMilliSeconds(beat, offset)
 end
 
 function malodyLoader.load(chart_, folderPath, diffName, forNPS)
+    noteCount, endNoteTime = 0, 0
     chart = json.decode(love.filesystem.read(chart_))
 
     local meta = chart.meta
@@ -59,9 +61,13 @@ function malodyLoader.load(chart_, folderPath, diffName, forNPS)
 
             if doAprilFools and Settings.options["Events"].aprilFools then lane = 1; states.game.Gameplay.mode = 1 end
 
-            local ho = HitObject(startTime, lane, endTime)
-
-            table.insert(states.game.Gameplay.unspawnNotes, ho)
+            if not forNPS then
+                local ho = HitObject(startTime, lane, endTime)
+                table.insert(states.game.Gameplay.unspawnNotes, ho)
+            else
+                noteCount = noteCount + 1
+                endNoteTime = ((endTime and endTime ~= 0) and endTime) or startTime
+            end
         else
             if not forNPS then
                 states.game.Gameplay.soundManager:newSound("music", folderPath .. "/" .. note.sound, 1, false)
@@ -74,22 +80,11 @@ function malodyLoader.load(chart_, folderPath, diffName, forNPS)
     __diffName = chart.meta.version
 
     if forNPS then
-        -- find our average notes per second and return the nps
-
-        local noteCount = #states.game.Gameplay.unspawnNotes
-        local songLength = 0
-        local endNote = states.game.Gameplay.unspawnNotes[#states.game.Gameplay.unspawnNotes]
-        if endNote.endTime ~= 0 and endNote.endTime ~= endNote.time then
-            songLength = endNote.endTime
-        else
-            songLength = endNote.time
-        end
-
         states.game.Gameplay.unspawnNotes = {}
         states.game.Gameplay.timingPoints = {}
         states.game.Gameplay.sliderVelocities = {}
 
-        return noteCount / (songLength / 1000)
+        return noteCount / (endNoteTime / 1000)
     end
 end
 

@@ -1,6 +1,8 @@
 local fluXisLoader = {}
+local noteCount, endNoteTime = 0, 0
 
 function fluXisLoader.load(chart, folderPath_, diffName, forNPS)
+    noteCount, endNoteTime = 0, 0
     local chart = json.decode(love.filesystem.read(chart))
     local bpm = 0
 
@@ -55,9 +57,14 @@ function fluXisLoader.load(chart, folderPath_, diffName, forNPS)
 
         if not startTime then goto continue end
 
-        local ho = HitObject(startTime, lane, endTime)
-        ho.keySounds = {hitsound}
-        table.insert(states.game.Gameplay.unspawnNotes, ho)
+        if not forNPS then
+            local ho = HitObject(startTime, lane, endTime)
+            ho.keySounds = {hitsound}
+            table.insert(states.game.Gameplay.unspawnNotes, ho)
+        else
+            noteCount = noteCount + 1
+            endNoteTime = ((endTime and endTime ~= 0) and endTime) or startTime
+        end
         ::continue::
     end
 
@@ -76,31 +83,11 @@ function fluXisLoader.load(chart, folderPath_, diffName, forNPS)
     __diffName = diffName
 
     if forNPS then
-        -- find our average notes per second and return the nps
-
-        local noteCount = #states.game.Gameplay.unspawnNotes
-        local songLength = 0
-        local endNote = states.game.Gameplay.unspawnNotes[#states.game.Gameplay.unspawnNotes]
-        if endNote and endNote.endTime ~= 0 and endNote.endTime ~= endNote.time then
-            songLength = endNote.endTime
-        elseif endNote then
-            songLength = endNote.time
-        else
-            songLength = 0
-        end
-
         states.game.Gameplay.unspawnNotes = {}
         states.game.Gameplay.timingPoints = {}
         states.game.Gameplay.sliderVelocities = {}
 
-        local nps = noteCount / (songLength / 1000)
-        if tostring(nps) == "nan" then
-            return 0
-        elseif tostring(nps) == "inf" then
-            return 0
-        end
-
-        return nps
+        return noteCount / (endNoteTime / 1000)
     end
 end
 

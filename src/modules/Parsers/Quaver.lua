@@ -1,6 +1,8 @@
 local quaverLoader = {}
+local noteCount, endNoteTime = 0, 0
 
 function quaverLoader.load(chart, folderPath, diffName, forNPS)
+    noteCount, endNoteTime = 0, 0
     curChart = "Quaver"
 
     local chart = tinyyaml.parse(love.filesystem.read(chart):gsub("\r\n", "\n"))
@@ -74,9 +76,14 @@ function quaverLoader.load(chart, folderPath, diffName, forNPS)
 
         if not startTime then goto continue end
 
-        local ho = HitObject(startTime, lane, endTime)
-        ho.keySounds = hitObject.KeySounds or {}
-        table.insert(states.game.Gameplay.unspawnNotes, ho)
+        if not forNPS then
+            local ho = HitObject(startTime, lane, endTime)
+            ho.keySounds = hitObject.KeySounds or {}
+            table.insert(states.game.Gameplay.unspawnNotes, ho)
+        else
+            noteCount = noteCount + 1
+            endNoteTime = ((endTime and endTime ~= 0) and endTime) or startTime
+        end
         ::continue::
     end
 
@@ -84,20 +91,11 @@ function quaverLoader.load(chart, folderPath, diffName, forNPS)
     __diffName = meta.name
 
     if forNPS then
-        local noteCount = #states.game.Gameplay.unspawnNotes
-        local songLength = 0
-        local endNote = states.game.Gameplay.unspawnNotes[#states.game.Gameplay.unspawnNotes]
-        if endNote.endTime ~= 0 and endNote.endTime ~= endNote.time then
-            songLength = endNote.endTime
-        else
-            songLength = endNote.time
-        end
-
         states.game.Gameplay.unspawnNotes = {}
         states.game.Gameplay.timingPoints = {}
         states.game.Gameplay.sliderVelocities = {}
 
-        return noteCount / (songLength / 1000)
+        return noteCount / (endNoteTime / 1000)
     end
 end
 

@@ -4,6 +4,8 @@ local currentBlockName = ""
 local folderPath
 local forNPS
 
+local noteCount, endNoteTime = 0, 0
+
 local eases = {
     "linear",               -- 0  Linear: no easing
     "out-quad",             -- 1  Easing Out: the changes happen fast at first, but then slow down toward the end
@@ -67,6 +69,7 @@ local function splitAndReplaceWithNull(line, delimiter)
 end
 
 function osuLoader.load(chart, folderPath_, diffName, _forNPS)
+    noteCount, endNoteTime = 0, 0
     currentBoardObject = nil
     states.game.Gameplay.unspawnNotes = {}
     states.game.Gameplay.timingPoints = {}
@@ -101,20 +104,11 @@ function osuLoader.load(chart, folderPath_, diffName, _forNPS)
     chart = nil 
 
     if forNPS then
-        local noteCount = #states.game.Gameplay.unspawnNotes
-        local songLength = 0
-        local endNote = states.game.Gameplay.unspawnNotes[#states.game.Gameplay.unspawnNotes]
-        if endNote.endTime ~= nil and endNote.endTime ~= 0 and endNote.endTime ~= endNote.time then
-            songLength = endNote.endTime
-        else
-            songLength = endNote.time
-        end
-
         states.game.Gameplay.unspawnNotes = {}
         states.game.Gameplay.timingPoints = {}
         states.game.Gameplay.sliderVelocities = {}
 
-        return noteCount / (songLength / 1000)
+        return noteCount / (endNoteTime / 1000)
     end
 
     --[[ if storyboard then
@@ -365,6 +359,7 @@ function osuLoader.processEvent(line)
     end
 end
 function osuLoader.addTimingPoint(line)
+    if forNPS then return end
     local split = line:split(",")
     local tp = {}
 
@@ -463,9 +458,14 @@ function osuLoader.addHitObject(line)
 
     if doAprilFools and Settings.options["Events"].aprilFools then note.data = 1; states.game.Gameplay.mode = 1 end
 
-    local ho = HitObject(note.startTime, note.data, note.endTime)
+    if not forNPS then
+        local ho = HitObject(note.startTime, note.data, note.endTime)
+        table.insert(states.game.Gameplay.unspawnNotes, ho)
+    else
+        noteCount = noteCount + 1
+        endNoteTime = ((note.endTime and note.endTime ~= 0) and note.endTime) or note.startTime
+    end
 
-    table.insert(states.game.Gameplay.unspawnNotes, ho)
 end
 
 function osuLoader.convertToPlayfield(x, y)
