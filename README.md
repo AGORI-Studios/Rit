@@ -1,3 +1,6 @@
+<!--
+NOTE TO SELF: Update links.
+-->
 # Rit
 
 ### A rhythm game made in LÖVE.
@@ -44,7 +47,7 @@
 # External Libraries
 - [baton.lua](/src/lib/baton.lua)
 - [discordRPC.lua](/src/lib/discordRPC.lua)
-- [json.lua](/src/lib/json.lua)
+- [json.lua](/src/lib/jsonhybrid.lua) * Mix of 2 seperate json libraries
 - [timer.lua](/src/lib/timer.lua)
 - [tinyyaml.lua](/src/lib/tinyyaml.lua)
 - [xml.lua](/src/lib/xml.lua)
@@ -59,18 +62,20 @@
 - [Getsaa](https://twitter.com/GetsaaNG) - UI/UX Design, Rit's Branding, and a few translations (Spanish & Portuguese)
 - [Lumaah](https://github.com/Lumaah) - French translation
 - [LÖVE](https://love2d.org/) - Game Framework
-- [Quaver](https://store.steampowered.com/app/980610/Quaver/) - Inspiration
-- [osu!](https://osu.ppy.sh/) - Inspiration
+- [Quaver](https://store.steampowered.com/app/980610/Quaver/) - Inspiration, Quaver beatmap format
+- [osu!](https://osu.ppy.sh/) - Inspiration, osu! beatmap format
 - [Average4k](https://twitter.com/Average4k) - Inspiration
-- [Stepmania](https://www.stepmania.com/) - Inspiration
-- [Malody](https://m.mugzone.net/) - Inspiration
+- [StepMania](https://www.stepmania.com/) - Inspiration, StepMania beatmap format
+- [Malody](https://m.mugzone.net/) - Inspiration, MalodyV beatmap format
 - [Etterna](https://etternaonline.com/) - Inspiration
-- [Kenney.nl](https://kenney.nl/) - Some assets
+- [fluXis](https://fluxis.flux.moe/) - Inspiration, fluXis beatmap format
+- [NotITG](https://www.noti.tg/) - Inspiration
+- [Kenney.nl](https://kenney.nl/) - UI Assets
 
-\* If you are not credited and you should be, please contact me on Discord or Twitter
+\* If you are not credited and you should be, please contact me on [Discord](https://discord.gg/ehY5gMMPW8) or [Twitter](https://twitter.com/GuglioIsStupid)
 
 # License
-- [GNU License](/LICENSE)
+This project is licensed under the [GNU License](https://www.gnu.org/licenses/gpl-3.0.en.html#license-text) [(File)](/LICENSE), 
 
 # Contact
 - [AGORI Discord](https://discord.gg/8RrzKnNtKW) / [GuglioIsStupid Discord](https://discord.gg/ehY5gMMPW8)
