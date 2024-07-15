@@ -136,8 +136,6 @@ function Gameplay:reset()
     self.lastNoteTime = 10000 -- safe number
     self.firstNoteTime = 0
     self.hasSkipPeriod = false
-    self.songRating = 0
-    self.rating = 0
 
     self.storyBoardSprites = {
         Background = Group(),
@@ -146,7 +144,6 @@ function Gameplay:reset()
         Foreground = Group()
     }
 
-    self.songRating = self.rating
     self.rating = 0
 
     self.noteoffsets = {}

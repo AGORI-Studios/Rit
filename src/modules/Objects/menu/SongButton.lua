@@ -38,7 +38,7 @@ function SongButton:new(y, diffs, bmType, name, artist, creator, description, ta
         diffBtn.audioFile = diff.audioFile
         diffBtn.previewTime = diff.previewTime
         diffBtn.gameMode = gamemode
-        diffBtn.nps = nps
+        diffBtn.nps = diff.nps
     end
 
     self.extendedChildren[1] = Sprite(0, self.y + self.height-63, "assets/images/ui/menu/songTagSelectedBar.png")

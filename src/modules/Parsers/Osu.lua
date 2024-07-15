@@ -147,7 +147,7 @@ end
 
 function osuLoader.processDifficulty(line)
     local key, value = line:match("^(%a+):%s?(.*)")
-    if key == "CircleSize" and states.game.Gameplay.gameMode == 1 then
+    if key == "CircleSize" then
         states.game.Gameplay.mode = tonumber(value)
         states.game.Gameplay.strumX = states.game.Gameplay.strumX - ((states.game.Gameplay.mode - 4.5) * (100 + Settings.options["General"].columnSpacing))
     end

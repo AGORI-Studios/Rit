@@ -75,7 +75,6 @@ function SongMenu:enter()
         local nps = nil
         for j, diff in pairs(song) do
             if type(diff) == "table" then
-                table.insert(diffs, diff)
                 songName = diff.title:trim()
                 bmType = diff.type
                 creator = diff.creator
@@ -84,6 +83,7 @@ function SongMenu:enter()
                 tags = diff.tags
                 gamemode = diff.gameMode
                 nps = diff.nps
+                table.insert(diffs, diff)
             else
                 -- if diff is a key in songButtons, then don't set it
                 if songButtons[diff] then
@@ -229,14 +229,12 @@ function SongMenu:update(dt)
             local diffName = diff.name
             local mode = diff.mode
             love.filesystem.mount("songs/" .. filename, "song")
-            if chartver ~= "FNF" then
-                states.game.Gameplay.chartVer = chartver
-                states.game.Gameplay.songPath = songPath
-                states.game.Gameplay.folderpath = folderpath
-                states.game.Gameplay.difficultyName = diffName
-                states.game.Gameplay.rating = diff.nps
-                switchState(states.game.Gameplay, 0.3, nil)
-            end
+            states.game.Gameplay.chartVer = chartver
+            states.game.Gameplay.songPath = songPath
+            states.game.Gameplay.folderpath = folderpath
+            states.game.Gameplay.difficultyName = diffName
+            states.game.Gameplay.songRating = math.clamp(0, diff.nps, 100)
+            switchState(states.game.Gameplay, 0.3, nil)
             MenuSoundManager:removeAllSounds()
         end
     elseif input:pressed("back") and not transitioning then
@@ -346,14 +344,14 @@ function SongMenu:mousepressed(x, y, b)
 
                             love.filesystem.mount("songs/" .. filename, "song")
                             
-                            if chartver ~= "FNF" then
-                                states.game.Gameplay.chartVer = chartver
-                                states.game.Gameplay.songPath = songPath
-                                states.game.Gameplay.folderpath = folderpath
-                                states.game.Gameplay.difficultyName = diffName
-                                states.game.Gameplay.gameMode = gamemode
-                                switchState(states.game.Gameplay, 0.3, nil)
-                            end
+                            states.game.Gameplay.chartVer = chartver
+                            states.game.Gameplay.songPath = songPath
+                            states.game.Gameplay.folderpath = folderpath
+                            states.game.Gameplay.difficultyName = diffName
+                            states.game.Gameplay.gameMode = gamemode
+                            states.game.Gameplay.songRating = math.clamp(0, diff.nps, 100)
+                            print(states.game.Gameplay.songRating)
+                            switchState(states.game.Gameplay, 0.3, nil)
                             MenuSoundManager:removeAllSounds()
                         else
                             curSelected = i
