@@ -104,8 +104,12 @@ input = (require "lib.baton").new({
         confirm = { "key:return", "button:a" },
         back = { "key:escape", "button:back" },
 
+        -- Song Selection
+        randomSong = { "key:r" },
+
+        -- Gameplay
         pause = { "key:return", "button:start" },
-        --restart = { "key:r", "button:b" },
+        restart = { "key:`" },
 
         -- Misc
         extB = { "button:back" },

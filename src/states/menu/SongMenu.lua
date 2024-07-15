@@ -143,6 +143,9 @@ function SongMenu:update(dt)
     end
     if state.inSubstate then return end
     if curTab == "songs" then
+        if input:pressed("randomSong") then
+            curSelected = love.math.random(1, #songButtons)
+        end
         curSelected = math.clamp(curSelected, 1, #songButtons)
         lerpedSongPos = math.fpsLerp(lerpedSongPos, (-(curSelected - 2.5)) * songButton.height * 0.75 + 250, 25, dt)
         if curButton then
@@ -154,6 +157,9 @@ function SongMenu:update(dt)
             curButton.selected = true
         end
     else
+        if input:pressed("randomSong") then
+            curSelected = love.math.random(1, #curButton.children)
+        end
         if curButton then
             curSelected = math.clamp(curSelected, 1, #curButton.children)
         else

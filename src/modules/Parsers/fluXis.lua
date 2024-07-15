@@ -40,12 +40,12 @@ function fluXisLoader.load(chart, folderPath_, diffName, forNPS)
     end
 
     for _, hitObject in ipairs(chart.HitObjects) do
-        local startTime = hitObject.time or 0
-        local endTime = hitObject.holdtime or 0
+        local startTime = hitObject.time or hitObject.Time or 0
+        local endTime = hitObject.holdtime or hitObject.HoldTime or 0
         endTime = endTime + startTime
         if endTime == startTime then endTime = 0 end -- no.
-        local lane = hitObject.lane
-        local n_Type = hitObject.type -- 0 is a normal note, 1 is a "catch" (TODO: Implement this)
+        local lane = hitObject.lane or hitObject.Lane or 1
+        local n_Type = hitObject.type or hitObject.Type or 0 -- 0 is a normal note, 1 is a "catch" (TODO: Implement this)
         if n_Type ~= 0 then goto continue end
         local hitsound = hitObject.hitsound or ":normal"
 
