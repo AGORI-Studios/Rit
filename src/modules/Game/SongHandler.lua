@@ -299,7 +299,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                                 break
                             end
                         end
-                        local previewTime = filedata.Metadata.PreviewTime
+                        local previewTime = filedata.Metadata.PreviewTime or 0
                         local nps = Parsers["fluXis"].load(path .."/" .. file .. "/" .. song, path .."/" .. file, difficultyName, true)
                         Tags = Tags:split(" ")
                         songList[title..mapID] = songList[title..mapID] or {}

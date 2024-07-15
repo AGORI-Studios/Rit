@@ -447,6 +447,7 @@ function SongMenu:draw()
             love.graphics.setColor(1, 0.8, 0.8, 0.15)
             love.graphics.rectangle("fill", 1920/1.625, 275, 1920/2.74, 4, 10, 10)
             -- picture shadow
+            love.graphics.setColor(128/255, 34/255, 88/255, 0.3)
             love.graphics.rectangle("fill", 1920/1.1, 125, 125, 125, 10, 10)
 
             love.graphics.setColor(1, 1, 1)
@@ -508,7 +509,7 @@ function SongMenu:draw()
                 mapper = newString
             end
 
-            love.graphics.setColor(225/255, 105/255, 129/255)
+            love.graphics.setColor(225/255, 102/255, 133/255)
             love.graphics.print("Mapped by " .. (mapper or "Unknown"), 1920/1.625, 125 + 75, 0, 1, 1)
 
             setFont("NatsRegular26")
