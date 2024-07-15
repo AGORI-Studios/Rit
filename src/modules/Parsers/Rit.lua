@@ -61,16 +61,16 @@ function ritLoader.processVelocities(line)
     local info = line:split(":")
     if _forNPS then return end
     table.insert(states.game.Gameplay.sliderVelocities, {
-        startTime = tonumber(info[1]),
-        multiplier = tonumber(info[2])
+        startTime = tonumber(info[1]) or 0,
+        multiplier = tonumber(info[2]) or 1
     })
 end
 
 function ritLoader.addHitObject(line)
     local info = line:split(":")
-    local startTime = tonumber(info[1])
-    local endTime = tonumber(info[2])
-    local lane = tonumber(info[3])
+    local startTime = tonumber(info[1]) or 0
+    local endTime = tonumber(info[2]) or 0
+    local lane = tonumber(info[3]) or 1
 
     if not startTime then goto continue end
 
