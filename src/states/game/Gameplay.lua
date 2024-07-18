@@ -436,7 +436,7 @@ end
 function Gameplay:getCommonBpm()
     if #self.timingPoints == 0 then
         print("No timing points found")
-        return 0
+        return 120
     end
 
     if #self.unspawnNotes == 0 then
@@ -484,6 +484,7 @@ function Gameplay:getCommonBpm()
     end
 
     if #durations == 0 then
+        print("New 'common' BPM: " .. self.timingPoints[1].Bpm)
         return self.timingPoints[1].Bpm
     end
 
@@ -505,7 +506,7 @@ function Gameplay:normalizeSVs()
 
     local normalizedScrollVelocities = {}
 
-    local currentBpm = self.timingPoints[1].Bpm
+    local currentBpm = self.timingPoints[1] and self.timingPoints[1].Bpm or baseBpm or 120
     local currentSvIndex = 1
     local currentSvStartTime
     local currentSvMultiplier = 1

@@ -69,7 +69,7 @@ DRAW_VIRTUAL_CONTROLLER = love.system.getSystem() == "Mobile"
 if love.system.getOS() == "Windows" then
     Try(
         function()
-           Steam = require("lib.sworks.main")
+           --Steam = require("lib.sworks.main")
             --[[ error("No Steamworks for Windows for GITHUB builds") ]]
         end,
         function()

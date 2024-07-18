@@ -401,6 +401,7 @@ function osuLoader.addTimingPoint(line)
         }
         table.insert(states.game.Gameplay.sliderVelocities, velocity)
     else
+        print("CALLED")
         if not _bpm then _bpm = 60000/tp.beatLength; bpm = _bpm end
         table.insert(states.game.Gameplay.timingPoints, {
             StartTime = tp.offset,
