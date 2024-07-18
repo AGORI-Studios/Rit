@@ -154,3 +154,20 @@ function math.smootherstep(edge0, edge1, x)
     return x * x * x * (x * (x * 6 - 15) + 10)
 end
 
+-- Uncomment this to break the game lol
+--[[ setmetatable(math, {
+    __index = function(self, f)
+        return function(val)
+            return val
+        end
+    end
+})
+
+for k, v in pairs(math) do
+    if type(v) == "function" then
+        math[k] = function(...)
+            local args = {...}
+            return args[1]
+        end
+    end
+end ]]

@@ -291,7 +291,7 @@ function Gameplay:doJudgement(time, wasLN)
     local judgement = nil
     if not wasLN then
         for _, judge in ipairs(self.judgements) do
-            if time <= judge.time then
+            if time <= judge.time*(wasLN and 1.2 or 1) then
                 judgement = judge
                 break
             end
