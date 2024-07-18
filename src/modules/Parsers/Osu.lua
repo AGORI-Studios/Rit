@@ -146,6 +146,7 @@ function osuLoader.processLine(line)
 end
 
 function osuLoader.processDifficulty(line)
+    if forNPS then return end
     local key, value = line:match("^(%a+):%s?(.*)")
     if key == "CircleSize" then
         states.game.Gameplay.mode = tonumber(value)

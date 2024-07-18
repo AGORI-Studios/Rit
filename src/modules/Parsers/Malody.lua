@@ -38,7 +38,9 @@ function malodyLoader.load(chart_, folderPath, diffName, forNPS)
         states.game.Gameplay.mode = meta.mode_ext.column
     end
 
-    states.game.Gameplay.strumX = states.game.Gameplay.strumX - ((states.game.Gameplay.mode - 4.5) * (100 + (not forNPS and Settings.options["General"].columnSpacing or 0)))
+    if not forNPS then 
+        states.game.Gameplay.strumX = states.game.Gameplay.strumX - ((states.game.Gameplay.mode - 4.5) * (100 + (not forNPS and Settings.options["General"].columnSpacing or 0)))
+    end
 
     -- if theres only 1 timing point, then create 1 more (copy of the first one)
     if #chart.time == 1 then

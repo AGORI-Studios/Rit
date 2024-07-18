@@ -110,7 +110,9 @@ function stepmaniaLoader.load(chart, folderPath, diffName, forNPS)
     local chart = love.filesystem.read(chart)
 
     states.game.Gameplay.mode = 4
-    states.game.Gameplay.strumX = states.game.Gameplay.strumX - ((states.game.Gameplay.mode - 4.5) * (100 + Settings.options["General"].columnSpacing))
+    if not forNPS then
+        states.game.Gameplay.strumX = states.game.Gameplay.strumX - ((states.game.Gameplay.mode - 4.5) * (100 + Settings.options["General"].columnSpacing))
+    end
     
     local bpms = {}
     local stops = {}

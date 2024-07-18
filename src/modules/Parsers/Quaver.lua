@@ -24,7 +24,9 @@ function quaverLoader.load(chart, folderPath, diffName, forNPS)
         inputMode = chart.Mode:gsub("Keys", ""),
     }
     states.game.Gameplay.mode = meta.inputMode
-    states.game.Gameplay.strumX = states.game.Gameplay.strumX - ((states.game.Gameplay.mode - 4.5) * (100 + (not forNPS and Settings.options["General"].columnSpacing or 0)))
+    if not forNPS then 
+        states.game.Gameplay.strumX = states.game.Gameplay.strumX - ((states.game.Gameplay.mode - 4.5) * (100 + (not forNPS and Settings.options["General"].columnSpacing or 0)))
+    end
     states.game.Gameplay.bpmAffectsScrollVelocity = not chart.BPMDoesNotAffectScrollVelocity
 
     if not forNPS then

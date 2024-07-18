@@ -94,6 +94,7 @@ function ritLoader.processMetadata(line)
     elseif key == "SongDiff" then
         diff = value
     elseif key == "KeyAmount" then
+        if _forNPS then return end
         states.game.Gameplay.mode = tonumber(value)
         states.game.Gameplay.strumX = states.game.Gameplay.strumX - ((states.game.Gameplay.mode - 4.5) * (100 + (not _forNPS and Settings.options["General"].columnSpacing or 0)))
     elseif key == "AudioFile" then
