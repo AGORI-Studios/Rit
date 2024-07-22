@@ -605,6 +605,48 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                     }
 
                     createSongCache(songList[title..mapID][difficultyName], ".cache/.songs/" .. file .. song .. ".cache")
+                elseif ext == "ritc" then
+                    local fileData = lf.read("song/" .. song)
+                    local title = fileData:match("SongTitle:(.-)\r?\n")
+                    local difficultyName = fileData:match("SongDiff:(.-)\r?\n")
+                    local AudioFile = fileData:match("AudioFile:(.-)\r?\n"):trim()
+                    local Creator = fileData:match("Creator:(.-)\r?\n")
+                    local Artist = fileData:match("Artist:(.-)\r?\n")
+                    local description = fileData:match("Description:(.-)\r?\n")
+                    local Tags = fileData:match("Tags:(.-)\r?\n"):strip()
+                    local bpm = fileData:match("%[Timings%]\r?\n(.-)\r?\n%[Hits%]")
+                    local previewTime = fileData:match("PreviewTime:(.-)\r?\n"):trim()
+                    local mapID = tonumber(fileData:match("MapID:(%d+)\r?\n"))
+                    local Mode = tonumber(fileData:match("KeyAmount:(%d+)\r?\n"))
+                    bpm = bpm:split("\r?\n")
+                    bpm = bpm[1]:split(":")[2]
+                    Tags = Tags:split(" ")
+
+                    local nps = Parsers["Rit"].load("song/" .. song, path .."/" .. file, difficultyName, true)
+
+                    songList[title..mapID] = songList[title..mapID] or {}
+                    songList[title..mapID][difficultyName] = {
+                        filename = file,
+                        title = title,
+                        difficultyName = difficultyName,
+                        path = "song/" .. song,
+                        folderPath = path .."/" .. file,
+                        type = "Rit",
+                        nps = nps,
+                        creator = Creator,
+                        artist = Artist,
+                        description = description,
+                        tags = Tags,
+                        bpm = bpm,
+                        previewTime = tonumber(previewTime or 0),
+                        audioFile = "song/" .. AudioFile,
+                        gameMode = 1,
+                        mapID = mapID,
+                        mode = Mode
+                    }
+                    songList[title..mapID].type = "Rit"
+
+                    createSongCache(songList[title..mapID][difficultyName], ".cache/.songs/" .. file .. song .. ".cache")
                 end
 
                 ::__EndLoop__::

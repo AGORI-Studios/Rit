@@ -265,7 +265,9 @@ function GI.LoadClasses()
     end
     
     -- API Stuff
-    --RequestJsonData = require("modules.API.RequestJsonData")
+    RequestJsonData = require("modules.API.RequestJsonData")
+    StorageAPI = require("modules.API.StorageAPI")
+    --[[ StorageAPI.downloadTestSong() ]]
 end
 
 function GI.LoadShaders()

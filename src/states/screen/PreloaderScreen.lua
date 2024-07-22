@@ -23,7 +23,6 @@ local curRndText = ""
 local rndTime = 0
 local rndTimeMax = 5
 local finishedSongs = false
-local finishedDefault, finishedUser = false, false
 
 local threadChannel = love.thread.getChannel("ThreadChannels.LoadSongs.Output")
 local graphicThreadChannel = love.thread.getChannel("ThreadChannels.LoadGraphic.Output")
@@ -61,7 +60,6 @@ function PreloaderScreen:enter(last, args)
     total = 1
 
     ThreadModules.LoadGraphic:start(unpack(assets))
-
     ThreadModules.LoadSongs:start()
 
     localize.loadLocale(Settings.options["General"].language)
@@ -128,6 +126,13 @@ function PreloaderScreen:draw()
     love.graphics.setColor(0, 0, 0, fade[1])
     love.graphics.rectangle("fill", 0, 0,Inits.GameWidth,Inits.GameHeight)
     love.graphics.setColor(1, 1, 1, 1)
-end    
+end
+
+function PreloaderScreen:exit()
+    rndTime = 0
+    loaded = 0
+    total = 0
+    finishedSongs = false
+end
 
 return PreloaderScreen

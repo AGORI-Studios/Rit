@@ -15,17 +15,19 @@ function RequestJsonData.testConnection()
     local code = https.request(API_SERVER_URL .. "test_connection")
     if code == 200 then
         connected = true
+    else
+        print("UNABLE TO PING SERVER")
     end
 end
 
-RequestJsonData.testConnection() -- <- Do we have a connection to the api server?
+--[[ RequestJsonData.testConnection() ]] -- <- Do we have a connection to the api server?
 
 function RequestJsonData.getUsers()
     if not connected then
         return {}
     end
     local code, body, headers = https.request(API_SERVER_URL .. "users")
-    print(body)
+    
     body = json.decode(body)
     if body.code == 404 then
         return {}
