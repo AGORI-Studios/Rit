@@ -442,6 +442,15 @@ end
 function GI.UpdateDiscord()
     if discordRPC then
         if discordRPC.presence then
+            -- Safe guards to not make discordRPC crash if our details/state are too long
+            if (#discordRPC.presence.state or "") > 127 then
+                discordRPC.presence.state = string.sub(discordRPC.presence.state, 1, 124) .. "..."
+            end
+            if (#discordRPC.presence.details or "") > 127 then
+                discordRPC.presence.details = string.sub(discordRPC.presence.details, 1, 124) .. "..."
+            end
+            --
+
             discordRPC.updatePresence(discordRPC.presence)
         end
         discordRPC.runCallbacks()

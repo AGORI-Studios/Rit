@@ -862,7 +862,7 @@ function Gameplay:generateStrums()
     --self.bgLane.x = self.strumX - ((self.mode - 4) * (200 * 0.0185))
     -- above code, but with Settings.options["General"].columnSpacing
     self.strumX = self.strumX - (self.mode * Settings.options["General"].columnSpacing) / 2
-    self.bgLane.x = self.strumX - ((self.mode - 4) * ((200 + Settings.options["General"].columnSpacing) * 0.0185))
+    self.bgLane.x = self.strumX - 15
     for i = 1, self.mode do
         self.noteoffsets[i] = {x=0, y=0}
         local strum = StrumObject(self.strumX, strumY, i)
@@ -876,7 +876,7 @@ function Gameplay:generateStrums()
     -- do some math to convert the 10 to other values. Higher columnSpacing = higher number
     -- Lower columnSpacing = lower number
     local normalPadding = 12
-    normalPadding = normalPadding / (Settings.options["General"].columnSpacing * 1.25 + 1)
+    normalPadding = normalPadding / (Settings.options["General"].columnSpacing + 1)
     self.bgLane.width = self.mode * (200 + Settings.options["General"].columnSpacing + normalPadding)
 end
 
@@ -1295,7 +1295,7 @@ function Gameplay:draw()
             -- move down the playfield based off scale, 4 = 0
             love.graphics.translate(0, (self.mode - 4) * 25)
             for _, playfield in ipairs(self.playfields) do
-                playfield:draw(self.hitObjects.members, self.timingLines.members, self.bgLane.width, scale*Settings.options["General"].noteSize, self.bgLane.x)
+                playfield:draw(self.hitObjects.members, self.timingLines.members, scale*Settings.options["General"].noteSize)
             end
         love.graphics.pop()
     love.graphics.pop()
@@ -1333,12 +1333,10 @@ function Gameplay:draw()
     love.graphics.printf(localize("Rating: ") .. string.format("%.2f", lerpedRating), 0, 100, 960, "right", 0, 2, 2)
 
     if musicTime <= self.firstNoteTime and self.hasSkipPeriod and input:pressed("Skip_Key") then
-        -- right align
-        love.graphics.setColor(1,1,1,1)
         love.graphics.printf(localize("Press SPACE to skip intro"), 0, Inits.GameWidth-50, 960, "right", 0, 2, 2)
     end
 
-    love.graphics.rectangle("fill", self.bgLane.width*1.6 + 50, Inits.GameHeight - 50, 25, -lerpedHealth * 5)
+    love.graphics.rectangle("fill", self.bgLane.width+self.bgLane.x+50, Inits.GameHeight - 50, 25, -lerpedHealth * 5)
 
     love.graphics.setFont(lastFont)
 end

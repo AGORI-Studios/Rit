@@ -261,7 +261,7 @@ end
 function OptionsMenu:mousepressed(x, y, b)
     local mx, my = toGameScreen(x, y)
 
-    local canc = Header:mousepressed(x, y, b)
+    local canc = Header:mousepressed(mx, my, b)
     if canc then return end
 
     for i, v in ipairs(buttons) do
