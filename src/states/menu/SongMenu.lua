@@ -143,7 +143,7 @@ function SongMenu:update(dt)
     end
     if state.inSubstate then return end
     if curTab == "songs" then
-        if input:pressed("randomSong") then
+        if input:pressed("randomSong") and not typing then
             curSelected = love.math.random(1, #songButtons)
         end
         curSelected = math.clamp(curSelected, 1, #songButtons)
@@ -157,7 +157,7 @@ function SongMenu:update(dt)
             curButton.selected = true
         end
     else
-        if input:pressed("randomSong") then
+        if input:pressed("randomSong") and not typing then
             curSelected = love.math.random(1, #curButton.children)
         end
         if curButton then
