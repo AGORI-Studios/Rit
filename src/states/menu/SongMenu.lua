@@ -82,6 +82,7 @@ function SongMenu:enter()
                 description = diff.description
                 tags = diff.tags
                 gamemode = diff.gameMode
+                keymode = diff.mode
                 nps = diff.nps
                 table.insert(diffs, diff)
             else
@@ -435,10 +436,10 @@ function SongMenu:draw()
             love.graphics.setColor(0, 0, 0, 0.25)
             -- Right side box
             love.graphics.rectangle("fill", 1920/1.15, 310, 1920/9, 425, 25, 25)
-            local nps = string.format("%.2f", curButton.nps or 0)
+            --[[ local nps = string.format("%.2f", curButton.nps or 0) -- Moved to  the diff tab
             love.graphics.setColor(1, 1, 1)
             setFont("menuExtraBold")
-            love.graphics.print("NPS: " .. nps, 1920/1.15+5, 315, 0, 1, 1)
+            love.graphics.print("NPS: " .. nps, 1920/1.15+5, 315, 0, 1, 1) ]]
 
             love.graphics.setColor(0, 0, 0, 0.6)
             -- Description box
@@ -520,8 +521,113 @@ function SongMenu:draw()
         love.graphics.setFont(lastFont)
     end
 
-    --[[ if curTab == "diffs" then
-        --statsBox:draw()
+    if curTab == "diffs" then
+        local parent = curButton
+        local curButton = parent.children[curSelected]
+        local lastFont = love.graphics.getFont()
+        if curButton then
+            local name = (parent.name or "Unknown"):strip()
+            local artist = (parent.artist or "Unknown"):strip()
+            local mapper = (parent.creator or "Unknown"):strip()
+            local desc = (parent.description or "This map has no description."):strip()
+            local descLength = #desc:splitAllCharacters()
+            local maxLength = ("Hi this is testing a \"very long\" description in rit to see how it displays. Look off? Please report it. Description's should look no longer than this.")
+            if descLength > #maxLength:splitAllCharacters() then
+                desc = desc:sub(1, #maxLength) .. "..."
+            end
+            --1920/1.7, 85
+            love.graphics.setColor(0, 0, 0, 0.25)
+            -- Right side box
+            love.graphics.rectangle("fill", 1920/1.15, 310, 1920/9, 425, 25, 25)
+
+            love.graphics.setColor(1, 1, 1)
+
+            local nps = string.format("%.2f", curButton.nps or 0)
+            
+            setFont("menuExtraBold")
+            love.graphics.print("NPS: " .. nps, 1920/1.15+5, 315, 0, 1, 1)
+            local keymode = tostring((tonumber(curButton.keyMode) or "?")) .. "k"
+            love.graphics.print("Keymode: " .. keymode, 1920/1.15+5, 335, 0, 1, 1)
+
+            love.graphics.setColor(0, 0, 0, 0.6)
+            -- Description box
+            love.graphics.rectangle("fill", 1920/1.625, 775, 1920/2.74, 235, 25, 25)
+
+            love.graphics.setColor(1, 0.8, 0.8, 0.15)
+            love.graphics.rectangle("fill", 1920/1.625, 275, 1920/2.74, 4, 10, 10)
+            -- picture shadow
+            love.graphics.setColor(128/255, 34/255, 88/255, 0.3)
+            love.graphics.rectangle("fill", 1920/1.1, 125, 125, 125, 10, 10)
+
+            love.graphics.setColor(1, 1, 1)
+            setFont("menuExtraBoldX2.5")
+
+            if fontWidth("menuExtraBoldX2.5", name) > 550 then
+                local newWidth = 0
+                local newString = ""
+                for i = 1, #name:splitAllCharacters() do
+                    local char = name:sub(i, i)
+                    newWidth = newWidth + fontWidth("menuExtraBoldX2.5", char)
+                    if newWidth > 550 then
+                        -- break, remove last 3, and add "..."
+                        newString = newString:sub(1, #newString - 3) .. "..."
+                        break
+                    else
+                        newString = newString .. char
+                    end
+                end
+                name = newString
+            end
+            love.graphics.print(name, 1920/1.625, 105, 0, 1, 1)
+
+            setFont("menuExtraBoldX1.5")
+            if fontWidth("menuExtraBoldX1.5", artist) > 400 then
+                local newWidth = 0
+                local newString = ""
+                for i = 1, #artist:splitAllCharacters() do
+                    local char = artist:sub(i, i)
+                    newWidth = newWidth + fontWidth("menuExtraBoldX1.5", char)
+                    if newWidth > 317 then
+                        newString = newString:sub(1, #newString - 3) .. "..."
+                        break
+                    else
+                        newString = newString .. char
+                    end
+                end
+                artist = newString
+            end
+
+            love.graphics.setColor(200/255, 80/255, 104/255)
+            love.graphics.print("By " .. (artist or "Unknown"), 1920/1.625, 125 + 40, 0, 1, 1)
+            
+            setFont("menuBoldX1.5")
+
+            if fontWidth("menuBoldX1.5", mapper) > 400 then
+                local newWidth = 0
+                local newString = ""
+                for i = 1, #mapper:splitAllCharacters() do
+                    local char = mapper:sub(i, i)
+                    newWidth = newWidth + fontWidth("menuBoldX1.5", char)
+                    if newWidth > 317 then
+                        newString = newString:sub(1, #newString - 3) .. "..."
+                        break
+                    else
+                        newString = newString .. char
+                    end
+                end
+                mapper = newString
+            end
+
+            love.graphics.setColor(225/255, 102/255, 133/255)
+            love.graphics.print("Mapped by " .. (mapper or "Unknown"), 1920/1.625, 125 + 75, 0, 1, 1)
+
+            setFont("NatsRegular26")
+            love.graphics.setColor(1, 1, 1)
+            love.graphics.printf(desc, 1920/1.6, 800, 1920/4, "left", 0, 1.5, 1.5)
+        end
+
+        love.graphics.setFont(lastFont)
+        --[[ --statsBox:draw()
         love.graphics.setColor(0.5, 0.5, 0.5)
         love.graphics.setLineWidth(1)
         love.graphics.rectangle("fill", 900, 125, 920, 800, 5, 5)
@@ -554,8 +660,8 @@ function SongMenu:draw()
             end
         end
 
-        love.graphics.setLineWidth(1)
-    end ]]
+        love.graphics.setLineWidth(1) ]]
+    end
     love.graphics.push()
     setFont("menuBold")
     love.graphics.translate(0, lerpedSongPos)

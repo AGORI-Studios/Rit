@@ -26,8 +26,7 @@ function SongButton:new(y, diffs, bmType, name, artist, creator, description, ta
     for _, diff in ipairs(diffs) do
         local diffBtn = Sprite(0, self.height-55, "assets/images/ui/menu/diffBtn.png")
         diffBtn.text = diff.difficultyName
-        table.insert(self.children, diffBtn)
-        diffBtn.y = (#self.children-1) * diffBtn.height * 1.1
+        diffBtn.y = #self.children * diffBtn.height * 1.1
         diffBtn.x = -diffBtn.width
         diffBtn.name = diff.difficultyName
         diffBtn.chartVer = bmType
@@ -39,6 +38,9 @@ function SongButton:new(y, diffs, bmType, name, artist, creator, description, ta
         diffBtn.previewTime = diff.previewTime
         diffBtn.gameMode = gamemode
         diffBtn.nps = diff.nps
+        diffBtn.keyMode = diff.mode
+
+        table.insert(self.children, diffBtn)
     end
 
     self.extendedChildren[1] = Sprite(0, self.y + self.height-63, "assets/images/ui/menu/songTagSelectedBar.png")

@@ -99,6 +99,7 @@ function Gameplay:reset()
     self.unspawnNotes = {}
     self.sliderVelocities = {}
     self.strumLineObjects = Group()
+    self.hitTimeLines = Group()
     self.songPercent = 0
     self.updateTime = false
     self.endingSong = false
@@ -136,6 +137,7 @@ function Gameplay:reset()
     self.lastNoteTime = 10000 -- safe number
     self.firstNoteTime = 0
     self.hasSkipPeriod = false
+    self.hitTimings = {}
 
     self.storyBoardSprites = {
         Background = Group(),
@@ -166,59 +168,32 @@ function Gameplay:reset()
         {
             name = "marvellous", img = skin:format("judgements/MARVELLOUS.png"),
             time = 23, scoreMultiplier = 1, weight = 125.000,
-            forLN = true
+            forLN = true, colour = {1, 1, 1}
         },
         {
             name = "perfect", img = skin:format("judgements/PERFECT.png"),
             time = 40, scoreMultiplier = 0.93, weight = 122.950,
-            forLN = true
+            forLN = true, colour = {247/255, 242/255, 84/255}
         },
         {
             name = "great", img = skin:format("judgements/GREAT.png"),
             time = 74, scoreMultiplier = 0.7, weight = 81.963,
-            forLN = true
+            forLN = true, colour = {49/255, 188/255, 247/255}
         },
         {
             name = "good", img = skin:format("judgements/GOOD.png"),
             time = 103, scoreMultiplier = 0.55, weight = 40.975,
-            forLN = false
+            forLN = false, colour = {10/255, 204/255, 23/255}
         },
         {
             name = "bad", img = skin:format("judgements/BAD.png"),
             time = 127, scoreMultiplier = 0.3, weight = 20.488,
-            forLN = false
+            forLN = false, colour = {242/255, 120/255, 5/255}
         },
         {
             name = "miss", img = skin:format("judgements/MISS.png"),
             time = 160, scoreMultiplier = 0, weight = 0.000,
-            forLN = false
-        }
-    }
-
-    self.timingColours = {
-        {
-            time = 23,
-            colour = {}
-        },
-        {
-            time = 40,
-            colour = {}
-        },
-        {
-            time = 74,
-            colour = {}
-        },
-        {
-            time = 103,
-            colour = {}
-        },
-        {
-            time = 127,
-            colour = {},
-        },
-        {
-            time = 160,
-            colour = {1, 0, 0}
+            forLN = false, colour = {133/255, 32/255, 4/255}
         }
     }
 
@@ -289,21 +264,13 @@ end
 function Gameplay:doJudgement(time, wasLN)
     local wasLN = wasLN or false
     local judgement = nil
-    if not wasLN then
-        for _, judge in ipairs(self.judgements) do
-            if time <= judge.time*(wasLN and 1.2 or 1) then
-                judgement = judge
-                break
-            end
-        end
-    else
-        for _, judge in ipairs(self.judgements) do
-            if time <= judge.time and judge.forLN then
-                judgement = judge
-                break
-            end
+    for _, judge in ipairs(self.judgements) do
+        if math.abs(time) <= judge.time*(wasLN and 1.2 or 1) then
+            judgement = judge
+            break
         end
     end
+
     if not judgement then 
         judgement = self.judgements[not wasLN and #self.judgements or 3] 
     end -- default to miss
@@ -318,6 +285,9 @@ function Gameplay:doJudgement(time, wasLN)
         self.rating = self:calculateRating()
         if tostring(self.rating) == "nan" then self.rating = 0 end
     end
+
+    self.hitTimeLines:add(HitTimeLine(time, judgement.colour))
+    table.insert(self.hitTimings, {time = time, musicTime = musicTime})
 
     self.allJudgements[judgement.name] = self.allJudgements[judgement.name] + 1
 
@@ -358,7 +328,6 @@ function Gameplay:doJudgement(time, wasLN)
     self:doHealthIncreaseForJudgement(judgement.name)
 end
 
--- // Slider Velocity Functions \\ --
 function Gameplay:initializePositionMarkers()
     if #self.sliderVelocities == 0 then
         return
@@ -978,8 +947,10 @@ function Gameplay:update(dt)
                         good = self.allJudgements["good"],
                         bad = self.allJudgements["bad"],
                         miss = self.misses
-                    }}
-                )
+                    },
+                    timings = self.hitTimings,
+                    songLength = self.lastNoteTime
+                })
                 MenuSoundManager:removeAllSounds()
 
                 -- Only save stats for singleplayer
@@ -1045,6 +1016,15 @@ function Gameplay:update(dt)
     for _, member in ipairs(self.members) do
         if member.update then
             member:update(dt)
+        end
+    end
+
+    --[[ self.hitTimeLines:update(dt) ]]
+    for i, hitTimeLine in ipairs(self.hitTimeLines.members) do
+        if not hitTimeLine then return end
+        hitTimeLine:update(dt)
+        if hitTimeLine.alpha <= 0 then
+            table.remove(hitTimeLine, i)
         end
     end
 
@@ -1158,7 +1138,7 @@ function Gameplay:keyPressed(key)
                     end
 
                     if not notesStopped then
-                        self:goodNoteHit(epicNote, math.abs(math.round(epicNote.time - lastTime)))
+                        self:goodNoteHit(epicNote, math.round(epicNote.time - lastTime))
                     end
                     table.insert(pressNotes, epicNote)
                 end
@@ -1190,7 +1170,7 @@ function Gameplay:keyReleased(key)
             if self.combo > self.maxCombo then
                 self.maxCombo = self.combo
             end
-            self:doJudgement(math.abs(ho.endTime - musicTime), true)
+            self:doJudgement(ho.endTime - musicTime, true)
             self.hitObjects:remove(ho)
             break
         end
@@ -1311,12 +1291,14 @@ function Gameplay:draw()
         love.graphics.pop()
     love.graphics.pop()
 
-    -- draw members2
+    -- draw members2 (judgements and combo)
     for _, member in ipairs(self.members2) do
         if member.draw then
             member:draw()
         end
     end
+
+    self.hitTimeLines:draw()
 
     for _, spr in pairs(Modscript.funcs.sprites) do
         if not spr.drawWithoutRes and spr.drawOverNotes then
@@ -1371,6 +1353,7 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName, for
             end
         end
     end
+    self.totalNoteCount = #self.unspawnNotes
     self.lastNoteTime = lastNoteTime
     local firstNoteTime = #self.unspawnNotes > 0 and self.unspawnNotes[1].time or 0
     self.firstNoteTime = firstNoteTime
@@ -1414,7 +1397,7 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName, for
                 Modscript:call("OnBeat", {beat})
 
                 local needToResync = self:checkForAudioSync()
-                if needToResync and beat ~= 0 then
+                if needToResync and beat > 0 and musicTime > 0 then
                     print("RESYNCING AUDIO")
                     self:resyncAudio()
                 end
@@ -1422,7 +1405,7 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName, for
         else
             self.soundManager:setBeatCallback("music", function(beat)
                 local needToResync = self:checkForAudioSync()
-                if needToResync and beat ~= 0 then
+                if needToResync and beat > 0 and musicTime > 0 then
                     print("RESYNCING AUDIO")
                     self:resyncAudio()
                 end

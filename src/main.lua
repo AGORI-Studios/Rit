@@ -228,17 +228,29 @@ function love.keypressed(key)
 
     if key == "f7" then
         state.switch(states.screens.MapEditorScreen)
-    --[[ elseif __DEBUG__ and key == "f6" then
+    elseif __DEBUG__ and key == "f6" then
         state.switch(states.screens.game.ResultsScreen, {score = 1000000, accuracy = 100, misses = 0, maxCombo = 423, rating = 19.23,
                                                     judgements = {
-                                                        marvellous = 423,
-                                                        perfect = 0,
-                                                        great = 0,
-                                                        good = 0,
-                                                        bad = 0,
+                                                        marvellous = 400,
+                                                        perfect = 10,
+                                                        great = 5,
+                                                        good = 7,
+                                                        bad = 1,
                                                         miss = 0
-                                                    }
-    }) ]]
+                                                    },
+                                                    timings = {
+                                                        {time = 0, musicTime = 2000},
+                                                        {time = 20, musicTime = 2000},
+                                                        {time = 40, musicTime = 4000},
+                                                        {time = 60, musicTime = 6000},
+                                                        {time = 80, musicTime = 8000},
+                                                        {time = 100, musicTime = 10000},
+                                                        {time = 120, musicTime = 12000},
+                                                        {time = 140, musicTime = 14000},
+                                                        {time = 160, musicTime = 16000}
+                                                    },
+                                                    songLength = 120*1000 -- in miilliseconds
+    })
     end
 end
 

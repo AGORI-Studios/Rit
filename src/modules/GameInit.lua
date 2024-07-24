@@ -293,6 +293,7 @@ function GI.LoadObjects()
     HitObject = require("modules.Objects.game.Mania.HitObject")
     Playfield = require("modules.Objects.game.Mania.Playfield")
     TimingLine = require("modules.Objects.game.Mania.TimingLine")
+    HitTimeLine = require("modules.Objects.game.Mania.HitTimeLine")
 
     SongButton = require("modules.Objects.menu.SongButton")
     ServerButton = require("modules.Objects.menu.ServerButton")
