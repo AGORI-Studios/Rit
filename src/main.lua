@@ -314,7 +314,7 @@ function love.draw()
     end
 
     -- info
-    --[[ if Settings.options["General"].debugText then
+    if Settings.options["General"].debugText then
         love.graphics.setFont(lastFont)
         love.graphics.print(
             -- debug info
@@ -328,7 +328,7 @@ function love.draw()
             (Steam and "Steam ID: " .. tostring(SteamID) .. "\n" or "") ..
             "Volume: " .. math.round(masterVolume, 2)
         )
-    end ]]
+    end
 end
 
 function love.quit()

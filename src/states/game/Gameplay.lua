@@ -496,7 +496,7 @@ function Gameplay:normalizeSVs()
             end
 
             local sv = self.sliderVelocities[currentSvIndex]
-            if sv.startTime > timingPoint.StartTime then
+            if sv.startTime or 0 > timingPoint.StartTime or 0 then
                 break
             end
 
