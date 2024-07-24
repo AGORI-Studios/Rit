@@ -41,7 +41,7 @@ end
 
 if love.system.getSystem() == "Desktop" then
     pathOLD = pathOLD:gsub("$USER", username):gsub("%%username%%", username)
-    pathLAZER = patpathLAZERhOLD:gsub("$USER", username):gsub("%%username%%", username)
+    pathLAZER = pathLAZER:gsub("$USER", username):gsub("%%username%%", username)
 end
 
 local frame = 0

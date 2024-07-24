@@ -387,7 +387,7 @@ function GI.LoadStates()
             MapEditorScreen = require("states.screen.MapEditorScreen"),
             Importers = {
                 QuaverImportScreen = require("states.screen.Importers.QuaverImportScreen"),
-                OsuImportScreen = require("states.screen.Importers.OsuImportScreen"),
+                --[[ OsuImportScreen = require("states.screen.Importers.OsuImportScreen"), ]] -- Read file for information on why this is unused.
                 fluXisImportScreen = require("states.screen.Importers.fluXisImportScreen"),
             },
             Jukebox = require("states.screen.JukeboxScreen"),
