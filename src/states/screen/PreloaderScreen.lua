@@ -1,7 +1,6 @@
 local PreloaderScreen = state()
 doneLoading = false
 local fade = {0}
-local lerpedFinshed = 0
 
 local ritLogo = Cache:loadImage("assets/images/ui/menu/logo.png")
 

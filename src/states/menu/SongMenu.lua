@@ -214,7 +214,7 @@ function SongMenu:update(dt)
                 curTab = "diffs"
                 lastCurSelected = curSelected
                 curSelected = 1
-                 curButton.open = true
+                curButton.open = true
 
                 -- songName and songDiff
                 self.songName = curButton.name

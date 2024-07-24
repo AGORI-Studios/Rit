@@ -228,7 +228,7 @@ function love.keypressed(key)
 
     if key == "f7" then
         state.switch(states.screens.MapEditorScreen)
-    elseif __DEBUG__ and key == "f6" then
+    --[[ elseif __DEBUG__ and key == "f6" then
         state.switch(states.screens.game.ResultsScreen, {score = 1000000, accuracy = 100, misses = 0, maxCombo = 423, rating = 19.23,
                                                     judgements = {
                                                         marvellous = 400,
@@ -250,7 +250,7 @@ function love.keypressed(key)
                                                         {time = 160, musicTime = 16000}
                                                     },
                                                     songLength = 120*1000 -- in miilliseconds
-    })
+    }) ]]
     end
 end
 
@@ -317,19 +317,11 @@ function love.draw()
     --[[ if Settings.options["General"].debugText then
         love.graphics.setFont(lastFont)
         love.graphics.print(
-            "FPS: " .. love.timer.getFPS() .. "\n" ..
-
             -- debug info
-            (__DEBUG__ and 
-            
-                ("Music Time: " .. (musicTime or "N/A") .. "\n" ..
-                "Draw Calls: " .. love.graphics.getStats().drawcalls .. "\n" ..
-                "Memory: " .. math.floor(collectgarbage("count")) .. "KB\n" ..
-                "Graphics Memory: " .. math.floor(love.graphics.getStats().texturememory/1024/1024) .. "MB\n") 
-
-                or ""
-            ) ..
-            --
+            ("Music Time: " .. (musicTime or "N/A") .. "\n" ..
+            "Draw Calls: " .. love.graphics.getStats().drawcalls .. "\n" ..
+            "Memory: " .. math.floor(collectgarbage("count")) .. "KB\n" ..
+            "Graphics Memory: " .. math.floor(love.graphics.getStats().texturememory/1024/1024) .. "MB\n") ..
         
             "Steam: " .. (Steam and "true" or "false") .. "\n" ..
             (Steam and "Steam User: " .. SteamUserName .. "\n" or "") ..

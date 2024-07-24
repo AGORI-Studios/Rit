@@ -157,8 +157,8 @@ function ResultsScreen:draw()
     love.graphics.print("Bad", 130, 808)
 
     love.graphics.setColor(gameplayState.judgements[6].colour)
-    love.graphics.rectangle("fill", 250, 840, 680*self.missPert, 35)
-    love.graphics.print("Miss", 130, 843)
+    love.graphics.rectangle("fill", 250, 850, 680*self.missPert, 35)
+    love.graphics.print("Miss", 130, 853)
 
     -- Timing graph-like display
     love.graphics.setFont(Cache.members.font["defaultBold"])

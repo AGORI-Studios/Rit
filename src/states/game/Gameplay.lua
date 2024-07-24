@@ -1225,7 +1225,7 @@ function Gameplay:substateReturn(restarted, leftGame)
 end
 
 function Gameplay:draw()
-    if self.background and musicTime >= 0 then
+    if self.background then
         -- background dim is 0-1, 0 being no dim, 1 being full backgroun dim
         if shaders and shaders.backgroundEffects then
             love.graphics.setShader(shaders.backgroundEffects)
