@@ -42,8 +42,7 @@ end
 function Header:mousepressed(x, y, b)
     if gear:isHovered(x, y) then
         if love.system.getSystem() ~= "Mobile" then
-           --switchState(states.menu.OptionsMenu, 0.3)
-           state.substate(substates.menu.Options)
+           state.switch(states.menu.OptionsMenu)
         else
             shakeObject(gear)
         end

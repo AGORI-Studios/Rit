@@ -303,6 +303,7 @@ function GI.LoadObjects()
     Header = require("modules.Objects.menu.Header")
     Header.userData = _USERDATA
     Switch = require("modules.Objects.menu.options.Switch")
+    Slider = require("modules.Objects.menu.options.Slider")
 
     OverlayObject = require("modules.Objects.overlay.OverlayObject")
     FPSOverlay = OverlayObject({

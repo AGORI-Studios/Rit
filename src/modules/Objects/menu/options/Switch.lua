@@ -6,12 +6,16 @@ function Switch:new(tag, state, optionTag, option)
     self.tag = tag or "Tag" -- The longest tag will be "Photosensitive Mode"
     self.state = state or false
     self.x, self.y = 0, 0
-    self.optionTag = optionTag or "Switch" -- Settings.options[self.optionTag]
-    self.option = option or "Switch" -- Settings.options[self.optionTag][self.option]
+    self.optionTag = optionTag or "General" -- Settings.options[self.optionTag]
+    self.option = option or "downscroll" -- Settings.options[self.optionTag][self.option]
+    self.state = Settings.options[self.optionTag][self.option]
 
     self.onSprite = Sprite(0, 0, "assets/images/ui/menu/options/switchOnFull.png")
     self.offSprite = Sprite(0, 0, "assets/images/ui/menu/options/switchOffFull.png")
     self.sprite = self.offSprite
+    if self.state then
+        self.sprite = self.onSprite
+    end
 end
 
 function Switch:onToggle() end -- <- Override me
@@ -34,6 +38,8 @@ function Switch:toggle()
     else
         self.sprite = self.offSprite
     end
+
+    Settings.options[self.optionTag][self.option] = self.state
 
     self:onToggle()
 end

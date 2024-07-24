@@ -1,4 +1,4 @@
----@diagnostic disable: redundant-parameter
+---@diagnostic disable: redundant-parameter, param-type-mismatch
 local OptionsMenu = state()
 local bg
 local curTab = "language"
@@ -102,10 +102,18 @@ local keybindsTabs = {
 }
 
 local curBindTab = "4k"
+local curSelectedBind = 1
 
+-- I should of probably made this use my "Group" class, but oh well.
+-- I suck at coding option menus, but if it works, it works.
 local tabs = {
     ["draw_language"] = function()
-        
+        setFont("menuExtraBoldX1.5")
+        love.graphics.print(localize("Language"), 100, 275)
+        love.graphics.setColor(0.5, 0.5, 0.5)
+        love.graphics.rectangle("line", 100, 325, 575, 1)
+        love.graphics.setColor(1, 1, 1)
+        setFont("defaultBoldX1.5")
     end,
     ["update_language"] = function(dt)
 
@@ -115,18 +123,52 @@ local tabs = {
     end,
 
     ["draw_gameplay"] = function()
-        
+        setFont("menuExtraBoldX1.5")
+        love.graphics.print(localize("Gameplay"), 100, 275)
+        love.graphics.setColor(0.5, 0.5, 0.5)
+        love.graphics.rectangle("line", 100, 325, 575, 1)
+        love.graphics.setColor(1, 1, 1)
+        setFont("defaultBoldX1.5")
+
+        DOWNSCROLL_switch:draw()
+        NSV_switch:draw()
+        SCROLLSPEED_slider:draw()
+        BACKGROUNDDIM_slider:draw()
+        BACKGROUNDBLUR_slider:draw()
     end,
     ["update_gameplay"] = function(dt)
-
+        DOWNSCROLL_switch:update(dt)
+        NSV_switch:update(dt)
+        SCROLLSPEED_slider:update(dt)
+        BACKGROUNDDIM_slider:update(dt)
+        BACKGROUNDBLUR_slider:update(dt)
     end,
-    ["mousepressed_gameplay"] = function()
-
+    ["mousepressed_gameplay"] = function(mx, my)
+        DOWNSCROLL_switch:mousepressed(mx, my)
+        NSV_switch:mousepressed(mx, my)
+        SCROLLSPEED_slider:mousepressed(mx, my)
+        BACKGROUNDDIM_slider:mousepressed(mx, my)
+        BACKGROUNDBLUR_slider:mousepressed(mx, my)
+    end,
+    ["mousemoved_gameplay"] = function(mx, my, mdx, mdy)
+        SCROLLSPEED_slider:mousemoved(mx, my, mdx, mdy)
+        BACKGROUNDDIM_slider:mousemoved(mx, my, mdx, mdy)
+        BACKGROUNDBLUR_slider:mousemoved(mx, my, mdx, mdy)
+    end,
+    ["mousereleased_gameplay"] = function(mx, my)
+        SCROLLSPEED_slider:mousereleased(mx, my)
+        BACKGROUNDDIM_slider:mousereleased(mx, my)
+        BACKGROUNDBLUR_slider:mousereleased(mx, my)
+    end,
+    ["keypressed_gameplay"] = function(k)
+        SCROLLSPEED_slider:keypressed(k)
+        BACKGROUNDDIM_slider:keypressed(k)
+        BACKGROUNDBLUR_slider:keypressed(k)
     end,
 
     ["draw_controls"] = function()
         setFont("menuExtraBoldX1.5")
-        love.graphics.print("Keybinds", 100, 275)
+        love.graphics.print(localize("Controls"), 100, 275)
         love.graphics.setColor(0.5, 0.5, 0.5)
         love.graphics.rectangle("line", 100, 325, 575, 1)
         love.graphics.setColor(0, 0, 0, 0.25)
@@ -141,6 +183,30 @@ local tabs = {
             end
             love.graphics.print(i .. "k", 67 + 57.5*i - fontWidth("menuExtraBoldX1.5", i .. "k")/2, 340 + 35/2 - fontHeight("menuExtraBoldX1.5")/2)
         end
+
+        local subbed = string.gsub(curBindTab, "k", "")
+        local keyCount = tonumber(subbed)
+        local splitted = string.splitAllCharacters(Settings.options["Keybinds"][curBindTab .. "Binds"])
+        love.graphics.setColor(1, 1, 1)
+        for i = 1, keyCount do
+            local char = splitted[i]
+            if char == " " then char = "SP" end
+            local button = KB_Buttons[i]
+            button.x, button.y = 105 + 80 * (i-1), 400
+
+            if curSelectedBind == i then
+                love.graphics.setColor(1, 1, 1)
+                button.color = {1, 1, 1}
+            else
+                love.graphics.setColor(0.5, 0.5, 0.5)
+                button.color = {0.5, 0.5, 0.5}
+            end
+            button:draw()
+            love.graphics.printf(string.upper(char), 143 + 80 * (i-1) - Inits.GameWidth/2, 417, Inits.GameWidth, "center")
+        end
+
+        curSelectedBind = math.clamp(1, curSelectedBind or 0, keyCount)
+        --[[ keybindsTabs[curBindTab]:draw() ]]
     end,
     ["update_controls"] = function(dt)
 
@@ -150,6 +216,34 @@ local tabs = {
             if mx > 67 + 57.5*i - fontWidth("menuExtraBoldX1.5", i .. "k")/2 and mx < 67 + 57.5*i + fontWidth("menuExtraBoldX1.5", i .. "k")/2 and my > 340 and my < 375 then
                 curBindTab = i .. "k"
             end
+        end
+
+        local subbed = string.gsub(curBindTab, "k", "")
+        local keyCount = tonumber(subbed)
+        for i = 1, keyCount do
+            local button = KB_Buttons[i]
+
+            if mx >= button.x and mx <= button.x + button.width and my >= button.y and my <= button.y + button.height then
+                curSelectedBind = i
+            end
+        end
+    end,
+    ["textinput_controls"] = function(t)
+        local subbed = string.gsub(curBindTab, "k", "")
+        local keyCount = tonumber(subbed)
+        
+        if curSelectedBind and curSelectedBind >= 1 and curSelectedBind <= keyCount then
+            local keybinds = Settings.options["Keybinds"][curBindTab .. "Binds"]
+            local splitted = string.splitAllCharacters(keybinds)
+            
+            -- Update the character at the current bind position
+            if splitted[curSelectedBind] then
+                splitted[curSelectedBind] = t
+            end
+            
+            -- Reassemble the keybinds string
+            local newKeybinds = table.concat(splitted)
+            Settings.options["Keybinds"][curBindTab .. "Binds"] = newKeybinds
         end
     end,
 
@@ -163,20 +257,21 @@ local tabs = {
 
         love.graphics.print(localize("Screen Resolution"), 105, 345) -- TODO: Make the dropdown for this option
 
-        love.graphics.setColor(0.5, 0.5, 0.5)
-        love.graphics.rectangle("line", 105, 395, 575, 1)
-        love.graphics.setColor(1, 1, 1)
-
+        VSYNC_switch:draw()
     end,
     ["update_video"] = function(dt)
-        
+        VSYNC_switch:update(dt)
     end,
-    ["mousepressed_video"] = function()
-        
+    ["mousepressed_video"] = function(mx, my)
+        VSYNC_switch:mousepressed(mx, my)
     end,
 
     ["draw_audio"] = function()
-
+        setFont("menuExtraBoldX1.5")
+        love.graphics.print(localize("Audio"), 100, 275)
+        love.graphics.setColor(0.5, 0.5, 0.5)
+        love.graphics.rectangle("line", 100, 325, 575, 1)
+        love.graphics.setColor(1, 1, 1)
     end,
     ["update_audio"] = function(dt)
 
@@ -186,7 +281,11 @@ local tabs = {
     end,
 
     ["draw_online"] = function()
-
+        setFont("menuExtraBoldX1.5")
+        love.graphics.print(localize("Online"), 100, 275)
+        love.graphics.setColor(0.5, 0.5, 0.5)
+        love.graphics.rectangle("line", 100, 325, 575, 1)
+        love.graphics.setColor(1, 1, 1)
     end,
     ["update_online"] = function(dt)
 
@@ -196,7 +295,11 @@ local tabs = {
     end,
 
     ["draw_editor"] = function()
-
+        setFont("menuExtraBoldX1.5")
+        love.graphics.print(localize("Editor"), 100, 275)
+        love.graphics.setColor(0.5, 0.5, 0.5)
+        love.graphics.rectangle("line", 100, 325, 575, 1)
+        love.graphics.setColor(1, 1, 1)
     end,
     ["update_editor"] = function(dt)
 
@@ -206,7 +309,11 @@ local tabs = {
     end,
 
     ["draw_importData"] = function()
-
+        setFont("menuExtraBoldX1.5")
+        love.graphics.print(localize("Import Data"), 100, 275)
+        love.graphics.setColor(0.5, 0.5, 0.5)
+        love.graphics.rectangle("line", 100, 325, 575, 1)
+        love.graphics.setColor(1, 1, 1)
     end,
     ["update_importData"] = function(dt)
 
@@ -216,7 +323,11 @@ local tabs = {
     end,
 
     ["draw_skins"] = function()
-
+        setFont("menuExtraBoldX1.5")
+        love.graphics.print(localize("Skins"), 100, 275)
+        love.graphics.setColor(0.5, 0.5, 0.5)
+        love.graphics.rectangle("line", 100, 325, 575, 1)
+        love.graphics.setColor(1, 1, 1)
     end,
     ["update_skins"] = function(dt)
 
@@ -226,7 +337,11 @@ local tabs = {
     end,
 
     ["draw_miscellaneous"] = function()
-
+        setFont("menuExtraBoldX1.5")
+        love.graphics.print(localize("Miscellaneous"), 100, 275)
+        love.graphics.setColor(0.5, 0.5, 0.5)
+        love.graphics.rectangle("line", 100, 325, 575, 1)
+        love.graphics.setColor(1, 1, 1)
     end,
     ["update_miscellaneous"] = function(dt)
 
@@ -236,7 +351,11 @@ local tabs = {
     end,
 
     ["draw_about"] = function()
-
+        setFont("menuExtraBoldX1.5")
+        love.graphics.print(localize("About"), 100, 275)
+        love.graphics.setColor(0.5, 0.5, 0.5)
+        love.graphics.rectangle("line", 100, 325, 575, 1)
+        love.graphics.setColor(1, 1, 1)
     end,
     ["update_about"] = function(dt)
 
@@ -246,10 +365,46 @@ local tabs = {
     end
 }
 
+-- TODO LIST
+-- * Number input fields (Including: Min, Max, Difference, and keyboard input.) -- Highest priority right now. E.g. SCROLLSPEED_num = NumField("Scrollspeed", 1, "General", "scrollspeed", 0.1, 5, 0.1) 
+-- *^ tag, default, optiontabletag, optiontag, min, max, diff. NOTE TO SELF FOR THE MORNING. THIS IS NOW A SLIDER
+-- * Implement the keybinds tab fully -- Medium priority
+-- * Text input fields -- Lowest priority
 function OptionsMenu:enter(last)
     bg = Sprite(0, 0, "assets/images/ui/menu/playBG.png")
-    DOWNSCROLL_switch = Switch("Downscroll", Settings.options["General"])
+    -- [[ LANGUAGE TAB ]] --
+    -- [[ GAMEPLAY TAB ]] --
+    DOWNSCROLL_switch = Switch("Downscroll", false, "General", "downscroll")
     DOWNSCROLL_switch.x, DOWNSCROLL_switch.y = 105, 340
+
+    NSV_switch = Switch("No SV", false, "General", "noScrollVelocity")
+    NSV_switch.x, NSV_switch.y = 105, 400
+
+    SCROLLSPEED_slider = Slider("Scrollspeed", 1, "General", "scrollspeed", 0.1, 5)
+    SCROLLSPEED_slider.x, SCROLLSPEED_slider.y = 105, 460
+
+    BACKGROUNDDIM_slider = Slider("BG Dim", 0.5, "General", "backgroundDim", 0, 1)
+    BACKGROUNDDIM_slider.x, BACKGROUNDDIM_slider.y = 105, 520
+
+    BACKGROUNDBLUR_slider = Slider("BG Blur", 2.5, "General", "backgroundBlur", 0, 10)
+    BACKGROUNDBLUR_slider.x, BACKGROUNDBLUR_slider.y = 105, 580
+    -- [[ CONTROLS TAB ]] --
+    --[[ KB_Button = Sprite(0, 0,) ]]
+    KB_Buttons = {}
+    for i = 1, 10 do
+        KB_Buttons[i] = Sprite(0, 0, "assets/images/ui/menu/options/kbKey.png")
+    end
+    -- [[ VIDEO TAB ]] --
+    VSYNC_switch = Switch("VSYNC (!)", false, "Video", "VSYNC")
+    VSYNC_switch.x, VSYNC_switch.y = 105, 400
+    -- [[ AUDIO TAB ]] --
+    -- [[ ONLINE TAB ]] --
+    -- [[ EDITOR TAB ]] --
+    -- [[ IMPORT DATA TAB ]] --
+    -- [[ SKINS TAB ]] --
+    -- [[ SKINS TAB ]] --
+    -- [[ MISCELLANEOUS TAB ]] --
+    -- [[ ABOUT TAB ]] --
 end
 
 function OptionsMenu:update(dt)
@@ -275,6 +430,34 @@ function OptionsMenu:mousepressed(x, y, b)
 
     if tabs["mousepressed_"..curTab] then
         tabs["mousepressed_"..curTab](mx, my)
+    end
+end
+
+function OptionsMenu:mousemoved(x, y, dx, dy)
+    local mx, my = toGameScreen(x, y)
+
+    if tabs["mousemoved_"..curTab] then
+        tabs["mousemoved_"..curTab](mx, my)
+    end
+end
+
+function OptionsMenu:mousereleased(x, y, b)
+    local mx, my = toGameScreen(x, y)
+
+    if tabs["mousereleased_"..curTab] then
+        tabs["mousereleased_"..curTab](mx, my)
+    end
+end
+
+function OptionsMenu:keypressed(k)
+    if tabs["keypressed_"..curTab] then
+        tabs["keypressed_"..curTab](k)
+    end
+end
+
+function OptionsMenu:textinput(t)
+    if tabs["textinput_"..curTab] then
+        tabs["textinput_"..curTab](string.lower(t))
     end
 end
 
