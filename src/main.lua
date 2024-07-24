@@ -151,7 +151,7 @@ function love.load(args)
     gameScreen = love.graphics.newCanvas(Inits.GameWidth, Inits.GameHeight)
 
     MenuSoundManager = SoundManager()
-    masterVolume = Settings.options["General"].globalVolume * 100
+    masterVolume = Settings.options["Audio"].global
 
     doAprilFools = CheckAprilFools()
 

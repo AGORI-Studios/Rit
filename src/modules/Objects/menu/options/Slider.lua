@@ -20,6 +20,8 @@ function Slider:new(tag, value, optionTag, option, min, max)
     self.sliderXOffset = 250 -- Offset to the right
     self.sliderYOffset = 23 -- Offset down by 15 pixels
 
+    self.textXOffset = 0
+
     self.keyDiff = 0.1
 
     self:updateHandlePosition()
@@ -31,7 +33,7 @@ function Slider:updateHandlePosition()
     self.handleY = self.y + self.sliderYOffset + (self.barHeight - self.handleHeight) / 2
 end
 
-function Slider:onValueChanged() end -- <- Override me
+function Slider:onValueChanged(value) end -- <- Override me
 
 function Slider:update(dt)
     self:updateHandlePosition()
@@ -49,7 +51,7 @@ function Slider:mousepressed(x, y, b)
 
             Settings.options[self.optionTag][self.option] = self.value
 
-            self:onValueChanged()
+            self:onValueChanged(self.value)
             self.dragging = true
         end
     end
@@ -67,7 +69,7 @@ function Slider:mousemoved(x, y, dx, dy)
 
         Settings.options[self.optionTag][self.option] = self.value
 
-        self:onValueChanged()
+        self:onValueChanged(self.value)
     end
 end
 
@@ -84,7 +86,7 @@ function Slider:keypressed(key)
         end
 
         Settings.options[self.optionTag][self.option] = self.value
-        self:onValueChanged()
+        self:onValueChanged(self.value)
         self:updateHandlePosition()
     end
 end
@@ -97,7 +99,7 @@ function Slider:draw()
     love.graphics.rectangle("fill", self.handleX, self.handleY, self.handleWidth, self.handleHeight)
     local lastFont = love.graphics.getFont()
     love.graphics.setFont(Cache.members.font["defaultBold"])
-    love.graphics.print(string.format("%.2f", self.value), self.x + self.sliderXOffset - 35, self.y + self.sliderYOffset - 6)
+    love.graphics.print(string.format("%.2f", self.value), self.x + self.sliderXOffset - 35 + self.textXOffset, self.y + self.sliderYOffset - 6)
     love.graphics.setFont(lastFont)
 end
 

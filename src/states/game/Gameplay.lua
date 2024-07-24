@@ -916,7 +916,7 @@ function Gameplay:update(dt)
     MenuSoundManager:removeAllSounds() -- a final safe guard to remove any sounds that may have been left over
     if self.inPause then return end
     if self.updateTime then
-        if musicTime >= 0 and not self.soundManager:isPlaying("music") and musicTime < 1000 then
+        if musicTime >= 0 and not self.soundManager:isPlaying("music") and musicTime < 1000 and self.score < 100 then
             self.soundManager:play("music")
             musicTime = 0
         elseif ((self.lastNoteIsFinish and musicTime > self.lastNoteTime+750) or (not self.lastNoteIsFinish and not self.soundManager:isPlaying("music") and musicTime > self.lastNoteTime+750)) then
@@ -1089,7 +1089,7 @@ function Gameplay:checkForAudioSync()
     -- If theres a 100ms difference between the current time of the audio file, and the MusicTime, then set the musicTime to the current audio file time
     local audioTime = self.soundManager:tell("music", "seconds") * 1000
     local absDiff = math.abs(audioTime - musicTime)
-    return absDiff > 100
+    return absDiff > 25
 end
 
 function Gameplay:resyncAudio()
@@ -1098,7 +1098,7 @@ end
 
 function Gameplay:keyPressed(key)
     local cloned = self.hitsound:clone()
-    cloned:setVolume(Settings.options["General"].hitsoundVolume)
+    cloned:setVolume((Settings.options["Audio"].hitsound/100) * skinData.Miscellaneous.hitsoundVolume)
     cloned:play()
     cloned:release()
 
@@ -1330,6 +1330,9 @@ function Gameplay:draw()
     end
 
     love.graphics.rectangle("fill", self.bgLane.width+self.bgLane.x+50, Inits.GameHeight - 50, 25, -lerpedHealth * 5)
+
+    local pert = musicTime / self.lastNoteTime
+    love.graphics.rectangle("fill", 0, Inits.GameHeight-25, Inits.GameWidth * pert, 25)
 
     love.graphics.setFont(lastFont)
 end

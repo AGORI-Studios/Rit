@@ -34,7 +34,7 @@ function skin:loadSkins(baseDir)
             local skinData = ini.parse(skinPath .. "/skin.ini")
             local name = skinData.Metadata.name
             local creator = skinData.Metadata.creator
-            local scale = skinData.Misceallaneous.noteSize or 1
+            local scale = skinData.Miscellaneous.noteSize or 1
             local skin = {
                 name = name or skinFolder,
                 creator = creator or "Unknown",

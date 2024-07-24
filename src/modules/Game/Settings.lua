@@ -26,6 +26,10 @@ Settings.options = {
 
         scrollUnderlayAlpha = 1,
     },
+    ["Audio"] = {
+        global = 50,
+        hitsound = 50
+    },
     ["Video"] = {
         ["VSYNC"] = false,
         ["Width"] = 1280,

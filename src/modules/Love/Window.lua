@@ -26,4 +26,6 @@ function love.window.setWindowSize(w, h)
             love.window.updateMode(w, h)
         end
     )
+
+    love.window._handle = love.window._sdl.SDL_GL_GetCurrentWindow()
 end

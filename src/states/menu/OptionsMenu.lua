@@ -65,40 +65,7 @@ local buttons = {
 }
 
 local tabOptions = {
-    
-}
 
-local keybindsTabs = {
-    ["1k"] = {
-
-    },
-    ["2k"] = {
-
-    },
-    ["3k"] = {
-
-    },
-    ["4k"] = {
-
-    },
-    ["5k"] = {
-
-    },
-    ["6k"] = {
-
-    },
-    ["7k"] = {
-
-    },
-    ["8k"] = {
-
-    },
-    ["9k"] = {
-
-    },
-    ["10k"] = {
-
-    }
 }
 
 local curBindTab = "4k"
@@ -289,13 +256,32 @@ local tabs = {
         love.graphics.setColor(0.5, 0.5, 0.5)
         love.graphics.rectangle("line", 100, 325, 575, 1)
         love.graphics.setColor(1, 1, 1)
+
+        setFont("defaultBoldX1.5")
+        GLOBAL_slider:draw()
+        HITSOUND_slider:draw()
     end,
     ["update_audio"] = function(dt)
-
+        GLOBAL_slider:update(dt)
+        HITSOUND_slider:update(dt)
     end,
-    ["mousepressed_audio"] = function()
-
+    ["mousepressed_audio"] = function(mx, my, b)
+        GLOBAL_slider:mousepressed(mx, my, b)
+        HITSOUND_slider:mousepressed(mx, my, b)
     end,
+    ["mousereleased_audio"] = function(mx, my, b)
+        GLOBAL_slider:mousereleased(mx, my, b)
+        HITSOUND_slider:mousereleased(mx, my, b)
+    end,
+    ["mousemoved_audio"] = function(mx, my, mdx, mdy)
+        GLOBAL_slider:mousemoved(mx, my, mdx, mdy)
+        HITSOUND_slider:mousemoved(mx, my, mdx, mdy)
+    end,
+    ["keypressed_audio"] = function(key)
+        GLOBAL_slider:keypressed(key)
+        HITSOUND_slider:keypressed(key)
+    end,
+
 
     ["draw_online"] = function()
         setFont("menuExtraBoldX1.5")
@@ -443,10 +429,19 @@ function OptionsMenu:enter(last)
     }, nil, "Video", "FPS")
     FPSOPTIONS_dropdown.x, FPSOPTIONS_dropdown.y = 105, 585
     -- [[ AUDIO TAB ]] --
+    GLOBAL_slider = Slider("Global Vol", 50, "Audio", "global", 0, 100)
+    GLOBAL_slider.x, GLOBAL_slider.y = 105, 340
+    GLOBAL_slider.textXOffset = -15
+    function GLOBAL_slider:onValueChanged(val)
+        masterVolume = val
+    end
+
+    HITSOUND_slider = Slider("Hitsound Vol", 50, "Audio", "hitsound", 0, 100)
+    HITSOUND_slider.x, HITSOUND_slider.y = 105, 400
+    HITSOUND_slider.textXOffset = -15
     -- [[ ONLINE TAB ]] --
     -- [[ EDITOR TAB ]] --
     -- [[ IMPORT DATA TAB ]] --
-    -- [[ SKINS TAB ]] --
     -- [[ SKINS TAB ]] --
     local allSkinNames = {}
     for _, skin in ipairs(skinList) do
@@ -454,7 +449,7 @@ function OptionsMenu:enter(last)
     end
 
     SKIN_dropdown = Dropdown("Skin", allSkinNames, nil, "Skin", "name")
-    SKIN_dropdown.x, SKIN_dropdown.y = 105, 400
+    SKIN_dropdown.x, SKIN_dropdown.y = 105, 340
     function SKIN_dropdown:onSelect(option)
         for _, lskin in ipairs(skinList) do
             if lskin.name == option then
