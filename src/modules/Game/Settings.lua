@@ -34,16 +34,16 @@ Settings.options = {
         ["VSYNC"] = false,
         ["Width"] = 1280,
         ["Height"] = 720,
-        ["FPS"] = "unlimited", -- 1000fps
+        ["FPS"] = "500", -- really just 1000 fps
         --[[
-        Possible selections, unlimited, refresh rate, double refresh, 500
+        Possible selections, 60, 120, 240, 500, unlimited
         ]]
         ["UnfocusedFPS"] = true,
         ["Shaders"] = true,
         ["ScreenRes"] = "1280x720"
     },
     ["Keybinds"] = {
-        -- Characters like " " get converted to the text "space"
+        -- Characters like " " get converted to the text "space"/"SP"
         ["1kBinds"] = " ",
         ["2kBinds"] = "fj",
         ["3kBinds"] = "f j",
@@ -63,6 +63,12 @@ Settings.options = {
         path = "Circle Default",
         scale = 1,
         flippedEnd = false,
+    },
+    ["Online"] = {
+        safeChat = true -- Will use https://github.com/dsojevic/profanity-list/blob/main/en.json probably
+    },
+    ["Editor"] = {
+
     },
     ["Meta"] = {
         __VERSION__ = 1
