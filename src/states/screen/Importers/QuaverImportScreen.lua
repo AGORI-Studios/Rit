@@ -59,7 +59,7 @@ function QuaverImportScreen:update(dt)
             end
         end
 
-        state.switch(states.screens.Importers.OsuImportScreen)
+        state.switch(states.screens.Importers.fluXisImportScreen)
     end
 end
 
