@@ -1,9 +1,9 @@
 local skin = {}
 
-skin.name = Settings.options["General"].skin.name or "Circle Default"
-skin.path = Settings.options["General"].skin.path or "defaultSkins/Circle Default"
-skin.scale = Settings.options["General"].skin.scale or 1
-skin.flippedEnd = Settings.options["General"].skin.flippedEnd or false
+skin.name = Settings.options["Skin"].name or "Circle Default"
+skin.path = Settings.options["Skin"].path or "defaultSkins/Circle Default"
+skin.scale = Settings.options["Skin"].scale or 1
+skin.flippedEnd = Settings.options["Skin"].flippedEnd or false
 skin.skins = {}
 
 function skin:format(path)

@@ -27,7 +27,7 @@ require("modules.Utilities")
 ffi = require("ffi")
 
 Inits = require("init")
-__WINDOW_WIDTH, __WINDOW_HEIGHT = Inits.__WINDOW_WIDTH, Inits.__WINDOW_HEIGHT
+WindowWidth, WindowHeight = Inits.WindowWidth, Inits.WindowHeight
 
 _TRANSITION = {
     x = Inits.GameWidth,
@@ -38,8 +38,8 @@ _TRANSITION = {
 }
 
 function convertScissorCoordinates(x, y, width, height)
-    local scaleX = __WINDOW_WIDTH / Inits.GameWidth
-    local scaleY = __WINDOW_HEIGHT / Inits.GameHeight
+    local scaleX = WindowWidth / Inits.GameWidth
+    local scaleY = WindowHeight / Inits.GameHeight
     
     local convertedX = x * scaleX
     local convertedY = y * scaleY
@@ -206,10 +206,14 @@ function love.focus(f)
     state.focus(f)
     if doneLoading then
         if not f and volume then
-            love.setFpsCap(30)
+            if Settings.options["Video"]["UnfocusedFPS"] then
+                love.setFpsCap(30)
+            end
             Timer.tween(0.5, volume, {0.25}, "linear")
         elseif f and volume then
-            love.setFpsCap(500)
+            if Settings.options["Video"]["UnfocusedFPS"] then
+                setFpsCapFromSetting()
+            end
             Timer.tween(0.5, volume, {1}, "linear")
         end
     end
@@ -255,24 +259,28 @@ function love.keypressed(key)
 end
 
 function love.resize(w,h)
-    __WINDOW_WIDTH, __WINDOW_HEIGHT = w, h
+    WindowWidth, WindowHeight = w, h
+    Settings.options["Video"].Width, Settings.options["Video"].Height = w, h
+    Settings.options["Video"]["ScreenRes"] = w .. "x" .. h
     state.resize(w,h)
 end
+
 local os = love.system.getOS()
+
 function toGameScreen(x, y)
     if os ~= "Android" and os ~= "iOS" then
         -- converts our mouse position to the game screen (canvas) with the correct ratio
         local ratio = 1
-        ratio = math.min(__WINDOW_WIDTH/Inits.GameWidth, __WINDOW_HEIGHT/Inits.GameHeight)
+        ratio = math.min(WindowWidth/Inits.GameWidth, WindowHeight/Inits.GameHeight)
 
-        local x, y = x - __WINDOW_WIDTH/2, y - __WINDOW_HEIGHT/2
+        local x, y = x - WindowWidth/2, y - WindowHeight/2
         x, y = x / ratio, y / ratio
         x, y = x + Inits.GameWidth/2, y + Inits.GameHeight/2
 
         return x, y
     else
         -- same thing, but its a stretched res
-        local ratioX, ratioY = __WINDOW_WIDTH/Inits.GameWidth, __WINDOW_HEIGHT/Inits.GameHeight
+        local ratioX, ratioY = WindowWidth/Inits.GameWidth, WindowHeight/Inits.GameHeight
         local x, y = x / ratioX, y / ratioY
         return x, y
     end

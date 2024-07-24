@@ -164,6 +164,8 @@ function StartMenu:enter()
         firstOpen = false
         playRandomSong() 
     end
+
+    
 end
 
 function StartMenu:update(dt)

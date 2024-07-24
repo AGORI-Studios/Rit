@@ -28,6 +28,15 @@ Settings.options = {
     },
     ["Video"] = {
         ["VSYNC"] = false,
+        ["Width"] = 1280,
+        ["Height"] = 720,
+        ["FPS"] = "unlimited", -- 1000fps
+        --[[
+        Possible selections, unlimited, refresh rate, double refresh, 500
+        ]]
+        ["UnfocusedFPS"] = true,
+        ["Shaders"] = true,
+        ["ScreenRes"] = "1280x720"
     },
     ["Keybinds"] = {
         -- Characters like " " get converted to the text "space"
@@ -44,6 +53,12 @@ Settings.options = {
     },
     ["Events"] = {
         aprilFools = true,
+    },
+    ["Skin"] = {
+        name = "Circle Default",
+        path = "Circle Default",
+        scale = 1,
+        flippedEnd = false,
     },
     ["Meta"] = {
         __VERSION__ = 1

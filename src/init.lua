@@ -1,13 +1,11 @@
-local inits = {
+return {
     -- Game base resolution
     GameWidth = 1920,
     GameHeight = 1080,
 
     -- Window base resolution
-    __WINDOW_WIDTH = 1280,
-    __WINDOW_HEIGHT = 720,
+    WindowWidth = 1280,
+    WindowHeight = 720,
 
-    networkingEnabled = false
+    NetworkingEnabled = false
 }
-
-return inits

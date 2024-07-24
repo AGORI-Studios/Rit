@@ -56,7 +56,7 @@ local buttons = {
     },
     {
         text = "Miscellaneous",
-        tabName = "Miscellaneous"
+        tabName = "miscellaneous"
     },
     {
         text = "About",
@@ -255,15 +255,32 @@ local tabs = {
         love.graphics.rectangle("line", 100, 325, 575, 1)
         love.graphics.setColor(1, 1, 1)
 
-        love.graphics.print(localize("Screen Resolution"), 105, 345) -- TODO: Make the dropdown for this option
+        --love.graphics.print(localize("Screen Resolution"), 105, 345) -- TODO: Make the dropdown for this option
 
         VSYNC_switch:draw()
+        UNFOCUSEDFPS_switch:draw()
+        SHADERS_switch:draw()
+        SCREENRESOLUTION_dropdown:draw()
+        FPSOPTIONS_dropdown:draw()
     end,
     ["update_video"] = function(dt)
         VSYNC_switch:update(dt)
+        UNFOCUSEDFPS_switch:update(dt)
+        SHADERS_switch:update(dt)
     end,
-    ["mousepressed_video"] = function(mx, my)
+    ["mousepressed_video"] = function(mx, my, b)
+        dontCont = SCREENRESOLUTION_dropdown:mousepressed(mx, my, b)
+        if dontCont then
+            return 
+        end
+        local dontCont = FPSOPTIONS_dropdown:mousepressed(mx, my, b)
+        if dontCont then
+            setFpsCapFromSetting()
+            return 
+        end
         VSYNC_switch:mousepressed(mx, my)
+        UNFOCUSEDFPS_switch:mousepressed(mx, my)
+        SHADERS_switch:mousepressed(mx, my)
     end,
 
     ["draw_audio"] = function()
@@ -328,12 +345,15 @@ local tabs = {
         love.graphics.setColor(0.5, 0.5, 0.5)
         love.graphics.rectangle("line", 100, 325, 575, 1)
         love.graphics.setColor(1, 1, 1)
+
+        SKIN_dropdown:draw()
     end,
     ["update_skins"] = function(dt)
-
+        SKIN_dropdown:update(dt)
     end,
-    ["mousepressed_skins"] = function()
-
+    ["mousepressed_skins"] = function(mx, my, b)
+        local dontCont = SKIN_dropdown:mousepressed(mx, my, b)
+        if dontCont then return end
     end,
 
     ["draw_miscellaneous"] = function()
@@ -365,11 +385,6 @@ local tabs = {
     end
 }
 
--- TODO LIST
--- * Number input fields (Including: Min, Max, Difference, and keyboard input.) -- Highest priority right now. E.g. SCROLLSPEED_num = NumField("Scrollspeed", 1, "General", "scrollspeed", 0.1, 5, 0.1) 
--- *^ tag, default, optiontabletag, optiontag, min, max, diff. NOTE TO SELF FOR THE MORNING. THIS IS NOW A SLIDER
--- * Implement the keybinds tab fully -- Medium priority
--- * Text input fields -- Lowest priority
 function OptionsMenu:enter(last)
     bg = Sprite(0, 0, "assets/images/ui/menu/playBG.png")
     -- [[ LANGUAGE TAB ]] --
@@ -395,14 +410,70 @@ function OptionsMenu:enter(last)
         KB_Buttons[i] = Sprite(0, 0, "assets/images/ui/menu/options/kbKey.png")
     end
     -- [[ VIDEO TAB ]] --
-    VSYNC_switch = Switch("VSYNC (!)", false, "Video", "VSYNC")
+    SCREENRESOLUTION_dropdown = Dropdown("Screen Resolution", {
+        "640x360",
+        "1280x720",
+        "1664x936",
+        "1920x1080"
+    }, nil, "Video", "ScreenRes")
+    SCREENRESOLUTION_dropdown.x, SCREENRESOLUTION_dropdown.y = 105, 345
+    function SCREENRESOLUTION_dropdown:onSelect(option)
+        local split = string.split(option, "x")
+        local w, h = split[1], split[2]
+        Settings.options["Video"].Width, Settings.options["Video"].Height = w, h
+        love.window.setWindowSize(w, h)
+        love.resize(w, h)
+        Settings.options["Video"]["ScreenRes"] = w .. "x" .. h
+    end
+    VSYNC_switch = Switch("VSYNC (Not currently implemented.)", false, "Video", "VSYNC")
     VSYNC_switch.x, VSYNC_switch.y = 105, 400
+    
+    UNFOCUSEDFPS_switch = Switch("Unfocus FPS", false, "Video", "UnfocusedFPS")
+    UNFOCUSEDFPS_switch.x, UNFOCUSEDFPS_switch.y = 105, 460
+
+    SHADERS_switch = Switch("Shaders", false, "Video", "Shaders")
+    SHADERS_switch.x, SHADERS_switch.y = 105, 520
+
+    FPSOPTIONS_dropdown = Dropdown("FPS Cap", {
+        "60",
+        "120",
+        "240",
+        "500",
+        "Unlimited"
+    }, nil, "Video", "FPS")
+    FPSOPTIONS_dropdown.x, FPSOPTIONS_dropdown.y = 105, 585
     -- [[ AUDIO TAB ]] --
     -- [[ ONLINE TAB ]] --
     -- [[ EDITOR TAB ]] --
     -- [[ IMPORT DATA TAB ]] --
     -- [[ SKINS TAB ]] --
     -- [[ SKINS TAB ]] --
+    local allSkinNames = {}
+    for _, skin in ipairs(skinList) do
+        table.insert(allSkinNames, skin.name)
+    end
+
+    SKIN_dropdown = Dropdown("Skin", allSkinNames, nil, "Skin", "name")
+    SKIN_dropdown.x, SKIN_dropdown.y = 105, 400
+    function SKIN_dropdown:onSelect(option)
+        for _, lskin in ipairs(skinList) do
+            if lskin.name == option then
+                Settings.options["Skin"] = {
+                    name = lskin.name,
+                    path = lskin.path,
+                    scale = lskin.scale,
+                    flippedEnd = lskin.flippedEnd
+                }
+                skin.name = lskin.name
+                skin.path = lskin.path
+                skin.scale = lskin.scale
+                skin.flippedEnd = lskin.flippedEnd
+                skinData = ini.parse(love.filesystem.read(skin:format("skin.ini")))
+
+                break
+            end
+        end
+    end
     -- [[ MISCELLANEOUS TAB ]] --
     -- [[ ABOUT TAB ]] --
 end
@@ -429,7 +500,7 @@ function OptionsMenu:mousepressed(x, y, b)
     end
 
     if tabs["mousepressed_"..curTab] then
-        tabs["mousepressed_"..curTab](mx, my)
+        tabs["mousepressed_"..curTab](mx, my, b)
     end
 end
 
@@ -489,6 +560,7 @@ function OptionsMenu:draw()
         love.graphics.print(v.text, x, y)
     end
 
+    love.graphics.setColor(1,1,1)
     if tabs["draw_"..curTab] then
         tabs["draw_"..curTab]()
     end

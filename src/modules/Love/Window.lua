@@ -18,5 +18,12 @@ function love.window.setWindowOpacity(opacity)
 end
 
 function love.window.setWindowSize(w, h)
-    love.window._sdl.SDL_SetWindowSize(love.window._handle, w, h)
+    Try(
+        function()
+            love.window._sdl.SDL_SetWindowSize(love.window._handle, w, h)
+        end,
+        function()
+            love.window.updateMode(w, h)
+        end
+    )
 end

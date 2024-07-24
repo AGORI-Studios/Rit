@@ -131,7 +131,7 @@ function Options:enter()
             end
         end
 
-        -- List for Settings.options["General"].skin (has skin.skins)
+        -- List for Settings.options["Skin"] (has skin.skins)
         local skinCollapse = loveframes.Create("collapsiblecategory", settings)
         skinCollapse:SetPos(10, 140 + (doAprilFools and 30 or 0))
         skinCollapse:SetSize(100, 100)
@@ -152,7 +152,7 @@ function Options:enter()
             local skinButton = loveframes.Create("button")
             skinButton:SetText(v.name)
             skinButton.OnClick = function()
-                Settings.options["General"].skin = {
+                Settings.options["Skin"] = {
                     name = v.name,
                     path = v.path, 
                     scale = v.scale,

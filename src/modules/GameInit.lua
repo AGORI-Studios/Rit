@@ -23,7 +23,7 @@ function GI.LoadLibraries()
         Video = require("lib.aqua.Video")
 
         networking = {}
-        if Steam and Inits.networkingEnabled then
+        if Steam and Inits.NetworkingEnabled then
             noobhub = require("lib.networking.noobhub")
             networking = {
                 latencies = {},
@@ -181,6 +181,9 @@ function GI.LoadClasses()
     require("modules.Game.SongHandler")
     Settings = require("modules.Game.Settings")
     Settings.loadOptions()
+    setFpsCapFromSetting()
+    love.window.setWindowSize(Settings.options["Video"].Width, Settings.options["Video"].Height)
+    love.resize(Settings.options["Video"].Width, Settings.options["Video"].Height)
     Modscript = require("modules.Game.Modding.Modscript")
     SearchAlgorithm = require("modules.Game.Helpers.SearchAlgorithm")
     SaveUserData = require("modules.Game.Helpers.SaveUserData")
@@ -304,6 +307,7 @@ function GI.LoadObjects()
     Header.userData = _USERDATA
     Switch = require("modules.Objects.menu.options.Switch")
     Slider = require("modules.Objects.menu.options.Slider")
+    Dropdown = require("modules.Objects.menu.options.Dropdown")
 
     OverlayObject = require("modules.Objects.overlay.OverlayObject")
     FPSOverlay = OverlayObject({
@@ -859,6 +863,16 @@ end
 
 function love.setFpsCap(fps)
     love._fps_cap = fps or 500
+end
+
+function setFpsCapFromSetting()
+    --[[ if Settings.options["Video"].FPS == "500" then
+        love.setFpsCap(500)
+    elseif Settings.options["Video"].FPS == "Unlimited" then
+        -- I lied, its just 1000fps
+        love.setFpsCap(1000)
+    end ]]
+    love.setFpsCap(tonumber(Settings.options["Video"].FPS) or 1000)
 end
 
 -- End of Love Functions
