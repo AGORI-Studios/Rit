@@ -114,7 +114,7 @@ function love.load(args)
 
     GameInit.LoadLibraries()
     importer = lovefs()
-    
+
     GameInit.ClearOSModule()
     GameInit.LoadClasses()
     GameInit.CreateFolders()

@@ -165,7 +165,7 @@ function SoundManager:seek(name, seconds, unit)
 end
 
 function SoundManager:tell(name, unit)
-    return self.channel[name].sound:tell(unit)
+    return self.channel[name].sound:tell(unit or "seconds")
 end
 
 function SoundManager:clone(name)

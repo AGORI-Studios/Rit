@@ -1105,6 +1105,17 @@ function Gameplay:update(dt)
     end
 end
 
+function Gameplay:checkForAudioSync()
+    -- If theres a 100ms difference between the current time of the audio file, and the MusicTime, then set the musicTime to the current audio file time
+    local audioTime = self.soundManager:tell("music", "seconds") * 1000
+    local absDiff = math.abs(audioTime - musicTime)
+    return absDiff > 100
+end
+
+function Gameplay:resyncAudio()
+    musicTime = self.soundManager:tell("music", "seconds") * 1000
+end
+
 function Gameplay:keyPressed(key)
     local cloned = self.hitsound:clone()
     cloned:setVolume(Settings.options["General"].hitsoundVolume)
@@ -1401,6 +1412,20 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName, for
         if self.ableToModscript then
             self.soundManager:setBeatCallback("music", function(beat)
                 Modscript:call("OnBeat", {beat})
+
+                local needToResync = self:checkForAudioSync()
+                if needToResync and beat ~= 0 then
+                    print("RESYNCING AUDIO")
+                    self:resyncAudio()
+                end
+            end)
+        else
+            self.soundManager:setBeatCallback("music", function(beat)
+                local needToResync = self:checkForAudioSync()
+                if needToResync and beat ~= 0 then
+                    print("RESYNCING AUDIO")
+                    self:resyncAudio()
+                end
             end)
         end
     end
