@@ -464,6 +464,7 @@ function OptionsMenu:enter(last)
                 skin.scale = lskin.scale
                 skin.flippedEnd = lskin.flippedEnd
                 skinData = ini.parse(love.filesystem.read(skin:format("skin.ini")))
+                skinData.Miscellaneous = skinData.Miscellaneous or skinData.Misceallaneous
 
                 break
             end

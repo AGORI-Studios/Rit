@@ -412,7 +412,6 @@ function GI.LoadSubstates()
             Pause = require("substates.game.Pause"),
         },
         menu = {
-            Options = require("substates.menu.Options")
         }
     }
 end

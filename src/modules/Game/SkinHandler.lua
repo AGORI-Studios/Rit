@@ -32,6 +32,7 @@ function skin:loadSkins(baseDir)
         local skinPath = baseDir .. "/" .. skinFolder
         if love.filesystem.getInfo(skinPath .. "/skin.ini") then
             local skinData = ini.parse(skinPath .. "/skin.ini")
+            skinData.Miscellaneous = skinData.Miscellaneous or skinData.Misceallaneous
             local name = skinData.Metadata.name
             local creator = skinData.Metadata.creator
             local scale = skinData.Miscellaneous.noteSize or 1

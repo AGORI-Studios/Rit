@@ -141,6 +141,7 @@ function love.load(args)
 
     -- Parse the skin's data file
     skinData = ini.parse(love.filesystem.read(skin:format("skin.ini")))
+    skinData.Miscellaneous = skinData.Miscellaneous or skinData.Misceallaneous
 
     -- Initialize 3rd party applications
     GameInit.InitSteam()
