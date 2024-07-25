@@ -37,6 +37,80 @@ _TRANSITION = {
     ovalHeight = 0
 }
 
+_AUDIOSLIDER = {
+    x = Inits.GameWidth - 200,
+    y = Inits.GameHeight - 25,
+    width = 175,
+    handleWidth = 8,
+    height = 10,
+    handleHeight = 16,
+    handleX = 0,
+    handleY = 0,
+    visible = false,
+    dragging = false,
+    timer = 0,
+    timerMax = 5,
+    updateHandlePosition = function(self)
+        local normalizedValue = masterVolume / 100
+        self.handleX = self.x + normalizedValue * (self.width - self.handleWidth)
+        self.handleY = self.y + (self.height - self.handleHeight) / 2
+    end,
+    update = function(self, dt)
+        self:updateHandlePosition()
+
+        self.timer = self.timer - dt
+        if self.timer < 0 and not self.dragging then
+            self.visible = false
+        end
+    end,
+    mousemoved = function(self, x, y)
+        if not self.visible then return end
+
+        if self.dragging then
+            local newHandleX = math.clamp(self.x, x - self.handleWidth / 2, self.x + self.width - self.handleWidth)
+            local normalizedValue = (newHandleX - (self.x)) / (self.width - self.handleWidth)
+            masterVolume = normalizedValue * 100
+    
+            Settings.options["Audio"]["global"] = masterVolume
+        end
+    end,
+    mousepressed = function(self, x, y)
+        if not self.visible then return end
+
+        if x >= self.handleX and x <= self.handleX + self.handleWidth and y >= self.handleY and y <= self.handleY + self.handleHeight then
+            self.dragging = true
+        else
+            if x >= self.x and x <= self.x + self.width and
+               y >= self.y and y <= self.y + self.height then
+                local newHandleX = math.clamp(self.x, x - self.handleWidth / 2, self.x + self.width - self.handleWidth)
+                local normalizedValue = (newHandleX - (self.x)) / (self.width - self.handleWidth)
+                masterVolume = normalizedValue * 100
+    
+                Settings.options["Audio"]["global"] = masterVolume
+                self.dragging = true
+            end
+        end
+    end,
+    mousereleased = function(self, x, y)
+        if not self.visible then return end
+
+        self.dragging = false
+    end,
+    draw = function(self)
+        if not self.visible then return end
+        love.graphics.setColor(0, 0, 0, 0.5)
+        love.graphics.rectangle("fill", self.x-75, self.y-8, self.width+90, self.height+15, 10)
+        love.graphics.setColor(0.8, 0.8, 0.8)
+        love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.rectangle("fill", self.handleX, self.handleY, self.handleWidth, self.handleHeight)
+        local lastFont = love.graphics.getFont()
+        love.graphics.setFont(Cache.members.font["defaultBold"])
+        love.graphics.print(string.format("%.2f", masterVolume), self.x - 59, self.y - 6)
+        love.graphics.setFont(lastFont)
+    end
+}
+
 function convertScissorCoordinates(x, y, width, height)
     local scaleX = WindowWidth / Inits.GameWidth
     local scaleY = WindowHeight / Inits.GameHeight
@@ -178,6 +252,7 @@ function love.update(dt)
     if not isLoading then state.update(dt) end
 
     updateAudioThread()
+    _AUDIOSLIDER:update(dt)
 
     if not __InJukebox then
         love.audio.setVolume(volume[1] * (masterVolume/100))
@@ -302,6 +377,8 @@ function love.draw()
 
         FPSOverlay:draw()
         dtOverlay:draw()
+
+        _AUDIOSLIDER:draw()
     love.graphics.setCanvas()
 
     -- ratio

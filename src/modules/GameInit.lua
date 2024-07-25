@@ -491,6 +491,8 @@ function love.wheelmoved(x, y)
         masterVolume = masterVolume + y * 5
     end
     masterVolume = math.clamp(masterVolume, 0, 100)
+    _AUDIOSLIDER.timer = _AUDIOSLIDER.timerMax
+    _AUDIOSLIDER.visible = true
     Settings.options["Audio"].global = masterVolume
     if GLOBAL_slider then
         GLOBAL_slider.value = Settings.options["Audio"].global
@@ -500,17 +502,20 @@ end
 function love.mousepressed(x, y, b, istouch, presses)
     if istouch then return end
     state.mousepressed(x, y, b)
+    _AUDIOSLIDER:mousepressed(toGameScreen(x, y))
     --currentController:touchpressed(0, x, y, 0, 0, 0)
 end
 
 function love.mousereleased(x, y, b, istouch, presses)
     if istouch then return end
     state.mousereleased(x, y, b)
+    _AUDIOSLIDER:mousereleased(toGameScreen(x, y))
     --currentController:touchreleased(0, x, y, 0, 0, 0)
 end
 
 function love.mousemoved(x, y, dx, dy, istouch)
     state.mousemoved(x, y, dx, dy, istouch)
+    _AUDIOSLIDER:mousemoved(toGameScreen(x, y))
     --currentController:touchmoved(0, x, y, dx, dy, 0)
 end
 
