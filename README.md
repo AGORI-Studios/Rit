@@ -52,7 +52,9 @@ NOTE TO SELF: Update links.
 - [tinyyaml.lua](/src/lib/tinyyaml.lua)
 - [loveloader.lua](/src/lib/loveloader.lua)
 - [sworks](/src/lib/sworks/)
-- [aqua](/src/lib/aqua) * Just the video module
+- [aqua](/src/lib/aqua/) * Just the video module
+- [lovefs](/src/lib/lovefs/)
+- [noobhub](/src/lib/networking/noobhub.lua)
 
 # Credits
 - [Getsaa](https://twitter.com/GetsaaNG) - UI/UX Design, Rit's Branding, and a few translations (Spanish & Portuguese)

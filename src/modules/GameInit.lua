@@ -13,7 +13,6 @@ function GI.LoadLibraries()
     clone = require("lib.clone")
     threadLoader = require("lib.loveloader")
     require("lib.lovefs.lovefs")
-    require("lib.luafft")
     if love.system.getOS() == "Windows" then
         windowUtil = require("lib.windows.window")
         windowUtil.setDarkMode(true)
@@ -299,7 +298,6 @@ function GI.LoadObjects()
 
     SongButton = require("modules.Objects.menu.SongButton")
     ServerButton = require("modules.Objects.menu.ServerButton")
-    Spectrum = require("modules.Objects.menu.Spectrum")
 
     HeaderButton = require("modules.Objects.menu.HeaderButton")
     Header = require("modules.Objects.menu.Header")
