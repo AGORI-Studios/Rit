@@ -456,6 +456,8 @@ function GI.UpdateDiscord()
             if (#discordRPC.presence.details or "") > 127 then
                 discordRPC.presence.details = string.sub(discordRPC.presence.details, 1, 124) .. "..."
             end
+            discordRPC.presence.button1Label = discordRPC.presence.button1Label or "GitHub"
+            discordRPC.presence.button1Url = discordRPC.presence.button1Url or "https://github.com/AGORI-Studios/Rit"
             --
 
             discordRPC.updatePresence(discordRPC.presence)

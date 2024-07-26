@@ -10,6 +10,8 @@ local animatedTimings = {}
 local curBlur = {1} -- 1 is basically no blur,.,., max blur is 8
 local updatingShader = true
 
+local graphCanvas = love.graphics.newCanvas(1920, 1080)
+
 function ResultsScreen:enter(_, ...)
     local gameplayState = states.game.Gameplay
     gameplayState.judgements = {
@@ -77,6 +79,64 @@ function ResultsScreen:enter(_, ...)
             updatingShader = false 
         end)
     end)
+
+    -- Instead of looping through an array that can have thousands of indexes every frame, just do it once when you first load the state
+    graphCanvas:renderTo(function()
+        love.graphics.clear()
+        love.graphics.setFont(Cache.members.font["defaultBold"])
+        local lastLineWidth = love.graphics.getLineWidth()
+        love.graphics.setLineWidth(2)
+        for i = 1, #gameplayState.judgements do
+            local maxTime = 160
+            local midPoint = 625 + 200
+            local halfHeight = 400 / 2
+
+            local startX = 1030
+            local endX = 1030 + 740
+
+            -- Draw lines based on judgement times (positive)
+            local judgement = gameplayState.judgements[i]
+            love.graphics.setColor(judgement.colour)
+            local normalizedTime = judgement.time / maxTime
+            local y = midPoint + (normalizedTime * halfHeight)
+            local textX = startX - 60
+            love.graphics.print(string.format("%.2f", judgement.time), textX, y - 6)
+
+            love.graphics.line(startX, y, endX, y)
+
+            -- Draw lines based on judgement times (negative)
+            normalizedTime = -judgement.time / maxTime
+            y = midPoint + (normalizedTime * halfHeight)
+            love.graphics.print(string.format("%.2f", -judgement.time), textX, y - 6)
+            love.graphics.line(startX, y, endX, y)
+        end
+        love.graphics.setLineWidth(lastLineWidth)
+        
+        local lastPointSize = love.graphics.getPointSize()
+        love.graphics.setPointSize(5)
+        for i, timing in ipairs(timings) do
+            local colour = gameplayState.judgements[6].colour
+            for _, judge in ipairs(gameplayState.judgements) do
+                if math.abs(timing.time) <= judge.time then
+                    colour = judge.colour
+                    break
+                end
+            end
+            love.graphics.setColor(colour)
+            local pert = timing.musicTime / args.songLength
+            local width = 740
+            local x = 1030 + width * pert
+            local midPoint = 625 + 200
+            local maxTime = 160 
+            local halfHeight = 400 / 2
+            local normalizedTime = timing.time / maxTime
+            local y = midPoint + (normalizedTime * halfHeight)
+            y = math.clamp(605, y, 605 + 440)
+            --[[ love.graphics.points(x, y) ]]
+            love.graphics.circle("fill", x, y, 2)
+        end
+        love.graphics.setPointSize(lastPointSize)
+    end)
 end
 
 function ResultsScreen:update(dt)
@@ -137,86 +197,33 @@ function ResultsScreen:draw()
 
     -- Draw our judgement display, 10px padding between each bar
     love.graphics.setColor(gameplayState.judgements[1].colour)
-    love.graphics.rectangle("fill", 250, 625, 680*self.marvPert, 35)
+    love.graphics.rectangle("fill", 250, 625, 550*self.marvPert, 35)
     love.graphics.print("Marvellous", 130, 628)
 
     love.graphics.setColor(gameplayState.judgements[2].colour)
-    love.graphics.rectangle("fill", 250, 670, 680*self.perfPert, 35)
+    love.graphics.rectangle("fill", 250, 670, 550*self.perfPert, 35)
     love.graphics.print("Perfect", 130, 673)
 
     love.graphics.setColor(gameplayState.judgements[3].colour)
-    love.graphics.rectangle("fill", 250, 715, 680*self.greatPert, 35)
+    love.graphics.rectangle("fill", 250, 715, 550*self.greatPert, 35)
     love.graphics.print("Great", 130, 718)
 
     love.graphics.setColor(gameplayState.judgements[4].colour)
-    love.graphics.rectangle("fill", 250, 760, 680*self.goodPert, 35)
+    love.graphics.rectangle("fill", 250, 760, 550*self.goodPert, 35)
     love.graphics.print("Good", 130, 763)
 
     love.graphics.setColor(gameplayState.judgements[5].colour)
-    love.graphics.rectangle("fill", 250, 805, 680*self.badPert, 35)
+    love.graphics.rectangle("fill", 250, 805, 550*self.badPert, 35)
     love.graphics.print("Bad", 130, 808)
 
     love.graphics.setColor(gameplayState.judgements[6].colour)
-    love.graphics.rectangle("fill", 250, 850, 680*self.missPert, 35)
+    love.graphics.rectangle("fill", 250, 850, 550*self.missPert, 35)
     love.graphics.print("Miss", 130, 853)
 
-    -- Timing graph-like display
-    love.graphics.setFont(Cache.members.font["defaultBold"])
-    local lastLineWidth = love.graphics.getLineWidth()
-    love.graphics.setLineWidth(2)
-    for i = 1, #gameplayState.judgements do
-        local maxTime = 160
-        local midPoint = 625 + 200
-        local halfHeight = 400 / 2
-
-        local startX = 1030
-        local endX = 1030 + 740
-
-        -- Draw lines based on judgement times (positive)
-        local judgement = gameplayState.judgements[i]
-        love.graphics.setColor(judgement.colour)
-        local normalizedTime = judgement.time / maxTime
-        local y = midPoint + (normalizedTime * halfHeight)
-        local textX = startX - 60
-        love.graphics.print(string.format("%.2f", judgement.time), textX, y - 6)
-
-        love.graphics.line(startX, y, endX, y)
-
-        -- Draw lines based on judgement times (negative)
-        normalizedTime = -judgement.time / maxTime
-        y = midPoint + (normalizedTime * halfHeight)
-        love.graphics.print(string.format("%.2f", -judgement.time), textX, y - 6)
-        love.graphics.line(startX, y, endX, y)
-    end
-    love.graphics.setLineWidth(lastLineWidth)
-
-    local lastPointSize = love.graphics.getPointSize()
-    love.graphics.setPointSize(5)
-    for i, timing in ipairs(timings) do
-        local colour = gameplayState.judgements[6].colour
-        for _, judge in ipairs(gameplayState.judgements) do
-            if math.abs(timing.time) <= judge.time then
-                colour = judge.colour
-                break
-            end
-        end
-        love.graphics.setColor(colour)
-        local pert = timing.musicTime / args.songLength
-        local width = 740
-        local x = 1030 + width * pert
-        local midPoint = 625 + 200
-        local maxTime = 160 
-        local halfHeight = 400 / 2
-        local normalizedTime = timing.time / maxTime
-        local y = midPoint + (normalizedTime * halfHeight)
-        y = math.clamp(605, y, 605 + 440)
-        --[[ love.graphics.points(x, y) ]]
-        love.graphics.circle("fill", x, y, 2)
-    end
-    love.graphics.setPointSize(lastPointSize)
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.draw(graphCanvas)
 
     love.graphics.setFont(Cache.members.font["defaultBoldX2.5"])
-    love.graphics.setColor(1, 1, 1)
 
     love.graphics.printf(localize("Results for ") .. (songname or "UnknownSong") .. " on " .. (diffname or "UnknownDiff"), 15, 200, 1920, "left")
     -- ^ Idk where else to put this rn

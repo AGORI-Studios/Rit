@@ -12,6 +12,10 @@ typedef struct DiscordRichPresence {
     const char* smallImageKey;  /* max 32 bytes */
     const char* smallImageText; /* max 128 bytes */
     const char* partyId;        /* max 128 bytes */
+    const char* button1_label;  /* max 128 bytes */
+    const char* button1_url;    /* max 128 bytes */
+    const char* button2_label;  /* max 128 bytes */
+    const char* button2_url;    /* max 128 bytes */
     int partySize;
     int partyMax;
     const char* matchSecret;    /* max 128 bytes */
@@ -194,6 +198,11 @@ function discordRPC.updatePresence(presence)
     checkStrArg(presence.smallImageText, 127, "presence.smallImageText", func, true)
     checkStrArg(presence.partyId, 127, "presence.partyId", func, true)
 
+    checkStrArg(presence.button1Label, 127, "presence.button1_label", func, true)
+    checkStrArg(presence.button1Url, 127, "presence.button1_url", func, true)
+    checkStrArg(presence.button2Label, 127, "presence.button2_label", func, true)
+    checkStrArg(presence.button2Url, 127, "presence.button2_url", func, true)
+
     checkIntArg(presence.partySize, 32, "presence.partySize", func, true)
     checkIntArg(presence.partyMax, 32, "presence.partyMax", func, true)
 
@@ -214,6 +223,10 @@ function discordRPC.updatePresence(presence)
     cpresence.largeImageText = presence.largeImageText
     cpresence.smallImageKey = presence.smallImageKey
     cpresence.smallImageText = presence.smallImageText
+    cpresence.button1_label = presence.button1Label
+    cpresence.button1_url = presence.button1Url
+    cpresence.button2_label = presence.button2Label
+    cpresence.button2_url = presence.button2Url
     cpresence.partyId = presence.partyId
     cpresence.partySize = presence.partySize or 0
     cpresence.partyMax = presence.partyMax or 0

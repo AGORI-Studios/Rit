@@ -46,16 +46,14 @@ NOTE TO SELF: Update links.
 
 # External Libraries
 - [baton.lua](/src/lib/baton.lua)
-- [discordRPC.lua](/src/lib/discordRPC.lua)
-- [json.lua](/src/lib/jsonhybrid.lua) * Mix of 2 seperate json libraries
+- [discordRPC.lua](/src/lib/discordRPC.lua) * Modified slightly to support [this custom discordRPC library](https://github.com/hipvpitsme/discord-rpc-with-buttons)
+- [jsonhybrid.lua](/src/lib/jsonhybrid.lua) * Mix of 2 seperate json libraries, check out file for more info
 - [timer.lua](/src/lib/timer.lua)
 - [tinyyaml.lua](/src/lib/tinyyaml.lua)
 - [xml.lua](/src/lib/xml.lua)
 - [loveloader.lua](/src/lib/loveloader.lua)
 - [sworks](/src/lib/sworks/)
-- [lovefs](/src/lib/lovefs/)
-- [aqua](/src/lib/aqua) (Just the video module)
-- [loveframes](/src/lib/loveframes)
+- [aqua](/src/lib/aqua) * Just the video module
 - [cimgui](/src/lib/cimgui)
 
 # Credits
