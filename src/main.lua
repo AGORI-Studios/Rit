@@ -57,9 +57,10 @@ _AUDIOSLIDER = {
     end,
     update = function(self, dt)
         self:updateHandlePosition()
+        if self.dragging then return end
 
         self.timer = self.timer - dt
-        if self.timer < 0 and not self.dragging then
+        if self.timer < 0 then
             self.visible = false
         end
     end,
@@ -276,22 +277,35 @@ end
 
 function love.filedropped(file)
     state.filedropped(file)
+
+    local curState = state.current()
+    if curState == states.menu.StartMenu or states.menu.SongMenu then
+        file:open("r")
+        local data = file:read("data")
+        local fullpath = file:getFilename()
+        local filename = fullpath:match("^.+\\(.+)$")
+        local extension = filename:match("^.+(%..+)$")
+        if extension == ".osz" or extension == ".qp" or extension == ".rit" or extension == ".fms" then
+            love.filesystem.write("songs/" .. filename, data)
+            switchState(states.screens.PreloaderScreen)
+        else
+            print("Wasn't given a proper file archive.")
+        end
+    end
 end
 
 function love.focus(f)
     state.focus(f)
-    if doneLoading then
-        if not f and volume then
-            if Settings.options["Video"]["UnfocusedFPS"] then
-                love.setFpsCap(30)
-            end
-            Timer.tween(0.5, volume, {0.25}, "linear")
-        elseif f and volume then
-            if Settings.options["Video"]["UnfocusedFPS"] then
-                setFpsCapFromSetting()
-            end
-            Timer.tween(0.5, volume, {1}, "linear")
+    if not f and volume then
+        if Settings.options["Video"]["UnfocusedFPS"] then
+            love.setFpsCap(30)
         end
+        Timer.tween(0.5, volume, {0.25}, "linear")
+    elseif f and volume then
+        if Settings.options["Video"]["UnfocusedFPS"] then
+            setFpsCapFromSetting()
+        end
+        Timer.tween(0.5, volume, {1}, "linear")
     end
 end
 

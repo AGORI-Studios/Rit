@@ -27,6 +27,9 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         local mapID = data[11]
                         local nps = data[12]
                         local maptype = data[13]
+
+                        if gamemode == -1 then goto __EndLoop__ end
+
                         data = {
                             title = title,
                             difficultyName = difficultyName,
@@ -177,7 +180,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         Tags = Tags:split(" ")
 
                         local Mode = fileData:match("Mode:(.-)\r?\n"):trim()
-                        if Mode ~= "3" and Mode ~= "1" then goto continue end
+                        if Mode ~= "3" then goto continue end
                         local nps = Parsers["osu!"].load(path .."/" .. file .. "/" .. song, path .."/" .. file, difficultyName, true)
                         songList[title..mapID] = songList[title..mapID] or {}
                         songList[title..mapID][difficultyName] = {
@@ -194,7 +197,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             bpm = bpm,
                             previewTime = tonumber(previewTime or 0),
                             audioFile = path .."/" .. file .. "/" .. AudioFile,
-                            gameMode = Mode == "3" and 1 or Mode == "1" and 2 or 1,
+                            gameMode = Mode == "3" and 1 or -1,
                             mapID = mapID,
                             mode = keys
                         }
@@ -534,7 +537,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         end
                      end
                     Tags = Tags:split(" ")
-                    if Mode ~= "3" and Mode ~= "1" then goto continue end
+                    if Mode ~= "3" then goto continue end
 
                     local nps = Parsers["osu!"].load("song/" .. song, "song", difficultyName, true)
 
@@ -554,7 +557,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         bpm = bpm,
                         previewTime = tonumber(previewTime or 0),
                         audioFile = "song/" .. AudioFile,
-                        gameMode = Mode == "3" and 1 or Mode == "1" and 2 or 1,
+                        gameMode = Mode == "3" and 1 or -1,
                         mapID = mapID,
                         mode = keys
                     }

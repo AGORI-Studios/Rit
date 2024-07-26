@@ -26,9 +26,6 @@ local finishedSongs = false
 local threadChannel = love.thread.getChannel("ThreadChannels.LoadSongs.Output")
 local graphicThreadChannel = love.thread.getChannel("ThreadChannels.LoadGraphic.Output")
 
-local _songList = {}
-local nSongList = {}
-
 local total = 0
 local loaded = 0
 
@@ -132,6 +129,10 @@ function PreloaderScreen:exit()
     loaded = 0
     total = 0
     finishedSongs = false
+    doneLoading = false
+
+    threadChannel = love.thread.getChannel("ThreadChannels.LoadSongs.Output")
+    graphicThreadChannel = love.thread.getChannel("ThreadChannels.LoadGraphic.Output")
 end
 
 return PreloaderScreen
