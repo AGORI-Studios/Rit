@@ -50,11 +50,9 @@ NOTE TO SELF: Update links.
 - [jsonhybrid.lua](/src/lib/jsonhybrid.lua) * Mix of 2 seperate json libraries, check out file for more info
 - [timer.lua](/src/lib/timer.lua)
 - [tinyyaml.lua](/src/lib/tinyyaml.lua)
-- [xml.lua](/src/lib/xml.lua)
 - [loveloader.lua](/src/lib/loveloader.lua)
 - [sworks](/src/lib/sworks/)
 - [aqua](/src/lib/aqua) * Just the video module
-- [cimgui](/src/lib/cimgui)
 
 # Credits
 - [Getsaa](https://twitter.com/GetsaaNG) - UI/UX Design, Rit's Branding, and a few translations (Spanish & Portuguese)
@@ -82,4 +80,5 @@ This project is licensed under the [GNU License](https://www.gnu.org/licenses/gp
 # Useful links
 - [Quaver](https://quavergame.com/)
 - [osu!](https://osu.ppy.sh/)
+- [fluXis](https://fluxis.flux.moe)
 - [LÖVE](https://love2d.org/)

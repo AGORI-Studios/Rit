@@ -1,4 +1,5 @@
--- This is possibly the weirdest file format i have EVEr seen lol
+---@diagnostic disable: undefined-global
+-- This is possibly the weirdest file format i have EVEr seen lol (I lied, its still osu's)
 -- still highly wip
 local clone = {
     _NAME = "Clone",

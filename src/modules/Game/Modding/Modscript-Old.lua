@@ -59,21 +59,6 @@ function Modscript:load(script)
     )
 
     self:set(
-        "SetSpriteFrames",
-        function(name, xmlPath)
-            local NewPath = states.game.Gameplay.M_folderPath .. "/mod/" .. xmlPath
-            try(
-                function()
-                    self.funcs:setSpriteFrames(name, NewPath)
-                end,
-                function()
-                    return false
-                end
-            )
-        end
-    )
-
-    self:set(
         "AddSpriteAnimation",
         function(name, animation)
             try(

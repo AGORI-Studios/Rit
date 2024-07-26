@@ -430,12 +430,6 @@ function Modscript:load(script)
         )
     end
 
-    function SetSpriteFrames(name, xmlPath)
-        if Modscript.funcs.sprites[name] then
-            Modscript.funcs.sprites[name]:setFrames(xmlPath)
-        end
-    end
-
     function AddSpriteAnimation(name, prefix, animName, framerate, looped)
         if Modscript.funcs.sprites[name] then
             Modscript.funcs.sprites[name]:addAnimation(prefix, animName, framerate, looped)

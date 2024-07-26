@@ -12,7 +12,6 @@ function GI.LoadLibraries()
     ini = require("lib.ini")
     clone = require("lib.clone")
     threadLoader = require("lib.loveloader")
-    xml = require("lib.xml")
     require("lib.lovefs.lovefs")
     require("lib.luafft")
     if love.system.getOS() == "Windows" then

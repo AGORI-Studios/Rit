@@ -11,12 +11,6 @@ function MSFuncs:createSprite(name, path, x, y)
     return spr
 end
 
-function MSFuncs:setSpriteFrames(name, xmlPath)
-    if self.sprites[name] then
-        self.sprites[name]:setFrames(xmlPath)
-    end
-end
-
 function MSFuncs:AddSpriteAnimation(name, prefix, animName, framerate, looped)
     if self.sprites[name] then
         self.sprites[name]:addAnimation(prefix, animName, framerate, looped)
