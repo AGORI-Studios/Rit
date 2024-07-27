@@ -489,13 +489,14 @@ function love.wheelmoved(x, y)
 
     if love.keyboard.isDown("lalt") then
         masterVolume = masterVolume + y * 5
+
+        masterVolume = math.clamp(masterVolume, 0, 100)
+        _AUDIOSLIDER.timer = _AUDIOSLIDER.timerMax
+        _AUDIOSLIDER.visible = true
+        Settings.options["Audio"].global = masterVolume
+        if GLOBAL_slider then
+            GLOBAL_slider.value = Settings.options["Audio"].global
     end
-    masterVolume = math.clamp(masterVolume, 0, 100)
-    _AUDIOSLIDER.timer = _AUDIOSLIDER.timerMax
-    _AUDIOSLIDER.visible = true
-    Settings.options["Audio"].global = masterVolume
-    if GLOBAL_slider then
-        GLOBAL_slider.value = Settings.options["Audio"].global
     end
 end
 

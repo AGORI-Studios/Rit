@@ -63,7 +63,7 @@ function fluXisLoader.load(chart, folderPath_, diffName, forNPS)
             table.insert(states.game.Gameplay.unspawnNotes, ho)
         else
             noteCount = noteCount + 1
-            endNoteTime = ((endTime and endTime ~= 0) and endTime) or startTime
+            endNoteTime = ((endTime and endTime > 0) and endTime) or startTime
         end
         ::continue::
     end
@@ -87,7 +87,7 @@ function fluXisLoader.load(chart, folderPath_, diffName, forNPS)
         states.game.Gameplay.timingPoints = {}
         states.game.Gameplay.sliderVelocities = {}
 
-        return noteCount / (endNoteTime / 1000)
+        return noteCount / (endNoteTime/ 1000)
     end
 end
 

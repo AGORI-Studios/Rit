@@ -23,6 +23,10 @@ function SongButton:new(y, diffs, bmType, name, artist, creator, description, ta
 
     self:load("assets/images/ui/menu/songTag.png")
 
+    table.sort(diffs, function(a, b)
+        return tonumber(a.nps) < tonumber(b.nps)
+    end)
+    
     for _, diff in ipairs(diffs) do
         local diffBtn = Sprite(0, self.height-55, "assets/images/ui/menu/diffBtn.png")
         diffBtn.text = diff.difficultyName
@@ -39,7 +43,7 @@ function SongButton:new(y, diffs, bmType, name, artist, creator, description, ta
         diffBtn.gameMode = gamemode
         diffBtn.nps = diff.nps
         diffBtn.keyMode = diff.mode
-
+    
         table.insert(self.children, diffBtn)
     end
 
