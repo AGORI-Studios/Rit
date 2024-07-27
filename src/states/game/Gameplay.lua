@@ -278,7 +278,7 @@ function Gameplay:doHealthIncreaseForJudgement(judgementName)
     self.health = math.clamp(self.healthMin, self.health + amount, self.healthMax)
 end
 
-function Gameplay:doJudgement(time, wasLN)
+function Gameplay:doJudgement(time, wasLN, hasLN, dontAddHitTime)
     local wasLN = wasLN or false
     local judgement = nil
     for _, judge in ipairs(self.judgements) do
@@ -292,19 +292,19 @@ function Gameplay:doJudgement(time, wasLN)
         judgement = self.judgements[not wasLN and #self.judgements or 3] 
     end -- default to miss
 
-    if not wasLN then
-        local score = self.noteScore * judgement.scoreMultiplier
+    local score = self.noteScore * judgement.scoreMultiplier
 
-        self.score = self.score + score
+    self.score = self.score + (score / (hasLN and 2 or 1))
 
-        self.accuracy = self:calculateAccuracy() 
-        if tostring(self.accuracy) == "nan" then self.accuracy = 0 end
-        self.rating = self:calculateRating()
-        if tostring(self.rating) == "nan" then self.rating = 0 end
+    self.accuracy = self:calculateAccuracy() 
+    if tostring(self.accuracy) == "nan" then self.accuracy = 0 end
+    self.rating = self:calculateRating()
+    if tostring(self.rating) == "nan" then self.rating = 0 end
+
+    if not dontAddHitTime then
+        self.hitTimeLines:add(HitTimeLine(time, judgement.colour))
+        table.insert(self.hitTimings, {time = time, musicTime = musicTime})
     end
-
-    self.hitTimeLines:add(HitTimeLine(time, judgement.colour))
-    table.insert(self.hitTimings, {time = time, musicTime = musicTime})
 
     self.allJudgements[judgement.name] = self.allJudgements[judgement.name] + 1
 
@@ -1068,7 +1068,7 @@ function Gameplay:update(dt)
                         ho:kill()
                         self.hitObjects:remove(ho)
                         ho:destroy()
-                        self:doJudgement(1000) -- miss
+                        self:doJudgement(10000, false, false, true)
                     end
                 end
             end
@@ -1192,7 +1192,7 @@ function Gameplay:keyReleased(key)
             if self.combo > self.maxCombo then
                 self.maxCombo = self.combo
             end
-            self:doJudgement(ho.endTime - musicTime, true)
+            self:doJudgement(ho.endTime - musicTime, true, #ho.children > 0)
             self.hitObjects:remove(ho)
             break
         end
@@ -1225,7 +1225,7 @@ function Gameplay:goodNoteHit(note, time)
                 self.maxCombo = self.combo
             end
             self.hits = self.hits + 1
-            self:doJudgement(time)
+            self:doJudgement(time, false, #note.children > 0)
             if #note.children > 0 then
                 note.moveWithScroll = false
             else
@@ -1368,20 +1368,20 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName, for
     Parsers[chartType].load(songPath, folderPath, diffName, forNPS)
     
 
-    --[[ self:normalizeSVs() ]]
     self:SVFactor()
+    
     table.sort(self.unspawnNotes, function(a, b)
         return a.time < b.time
     end)
 
-    local lastNoteTime = #self.unspawnNotes > 0 and self.unspawnNotes[#self.unspawnNotes].time or 0
-    if #self.unspawnNotes > 0 then
-        if self.unspawnNotes[#self.unspawnNotes].endTime then
-            if self.unspawnNotes[#self.unspawnNotes].endTime > lastNoteTime then
-                lastNoteTime = self.unspawnNotes[#self.unspawnNotes].endTime
-            end
+    local lastNoteTime = 0
+    for _, note in ipairs(self.unspawnNotes) do
+        local time = ((note.endTime > 0 and note.endTime > note.time) and note.endTime) or note.time
+        if time > lastNoteTime then
+            lastNoteTime = time
         end
-    end
+    end 
+
     self.totalNoteCount = #self.unspawnNotes
     self.lastNoteTime = lastNoteTime
     local firstNoteTime = #self.unspawnNotes > 0 and self.unspawnNotes[1].time or 0
