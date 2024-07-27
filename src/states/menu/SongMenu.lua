@@ -179,7 +179,6 @@ function SongMenu:update(dt)
     for i, bubble in ipairs(balls) do
         --bubble.ogX = bubble.ogX + math.sin(time2 / 250 / i) * (12.5 * i) * dt
         bubble.ogX = bubble.ogX + math.sin((love.timer.getTime()*1000) / 250 / i) * (12.5 * i) * dt
-        bubble.ogX = bubble.ogX + math.sin((love.timer.getTime()*1000) / 250 / i) * (12.5 * i) * dt
         -- velY is the speed of the bubble
         bubble.ogY = bubble.ogY - bubble.velY * dt
 
