@@ -380,8 +380,7 @@ function love.draw()
     local lastFont = love.graphics.getFont()
     love.graphics.setCanvas({gameScreen, stencil = true})
         love.graphics.clear(0,0,0,1)
-        --[[ love.graphics.scale(0.5, 0.5)
-        love.graphics.translate(1920/2, 1080/2) ]]
+
         state.draw()
         love.graphics.setColor(0,0,0,1)
         love.graphics.rectangle("fill", _TRANSITION.x, _TRANSITION.y, _TRANSITION.width, Inits.GameHeight)

@@ -825,6 +825,7 @@ function Gameplay:enter()
 
     if shaders and shaders.backgroundEffects then
         shaders.backgroundEffects:send("dim", Settings.options["General"].backgroundDim)
+        shaders.backgroundEffects:send("blur_radius", Settings.options["General"].backgroundBlur)
     end
 
     Timer.after(1.2, function() -- forced delay to prevent potential desync's

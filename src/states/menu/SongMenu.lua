@@ -17,6 +17,13 @@ local inSidebar = false
 local songTimer
 local typing = false
 local searchText = ""
+
+local mouseDown = false
+local moveThresUp = -25 -- the amount of pixels the mouse has to move before dragging the song list
+local moveThresDown = 25
+local curMove = 0
+local didAMove = false
+
 SongMenu.replays = {}
 
 local utf8 = require("utf8")
@@ -170,7 +177,9 @@ function SongMenu:update(dt)
     end
 
     for i, bubble in ipairs(balls) do
-        bubble.ogX = bubble.ogX + math.sin((love.timer.getTime()*1000) / (100 * i)) * 0.05
+        --bubble.ogX = bubble.ogX + math.sin(time2 / 250 / i) * (12.5 * i) * dt
+        bubble.ogX = bubble.ogX + math.sin((love.timer.getTime()*1000) / 250 / i) * (12.5 * i) * dt
+        bubble.ogX = bubble.ogX + math.sin((love.timer.getTime()*1000) / 250 / i) * (12.5 * i) * dt
         -- velY is the speed of the bubble
         bubble.ogY = bubble.ogY - bubble.velY * dt
 
@@ -326,9 +335,44 @@ end
 
 function SongMenu:mousepressed(x, y, b)
     if state.inSubstate then return end
-    local x, y = toGameScreen(x-10, y)
+    local x, y = toGameScreen(x, y)
     local canc = Header:mousepressed(x, y, b)
     if canc then return end
+
+    mouseDown = true
+end
+
+function SongMenu:mousemoved(x, y, dx, dy)
+    if mouseDown then
+        curMove = curMove + dy
+
+        if curMove < 0 then
+            if curMove <= moveThresUp then
+                curSelected = math.clamp(1, curSelected + 1, #songButtons)
+                curMove = 0
+                didAMove = true
+            end
+        elseif curMove > 0 then
+            if curMove >= moveThresDown then
+                curSelected = math.clamp(1, curSelected - 1, #songButtons)
+                curMove = 0
+                didAMove = true
+            end
+        end
+    end
+end
+
+function SongMenu:mousereleased(x, y, b)
+    if state.inSubstate then return end
+    local x, y = toGameScreen(x, y)
+    local canc = Header:mousepressed(x, y, b)
+    if canc then return end
+    mouseDown = false
+    if didAMove then
+        didAMove = false
+        return
+    end
+
     if b == 1 then
         y = y - lerpedSongPos
 

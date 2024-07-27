@@ -227,7 +227,7 @@ function StartMenu:update(dt)
     end
 
     for i, bubble in ipairs(balls) do
-        bubble.ogX = bubble.ogX + math.sin(time2 / (100 * i)) * 0.05
+        bubble.ogX = bubble.ogX + math.sin(time2 / 250 / i) * (12.5 * i) * dt
         -- velY is the speed of the bubble
         bubble.ogY = bubble.ogY - bubble.velY * dt
 
