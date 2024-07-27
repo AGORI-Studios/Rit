@@ -27,7 +27,8 @@ function SoundManager:newSound(name, path, volume, loop, type)
         time = 0,
         lastFrameTime = 0,
         onBeat = function() end,
-        paused = false
+        paused = false,
+        pitch = 1,
     }
 end
 
@@ -122,6 +123,12 @@ function SoundManager:setLooping(name, loop)
     self.channel[name].loop = loop
     self.channel[name].sound:setLooping(loop)
 end
+
+function SoundManager:setPitch(name, pitch)
+    self.channel[name].pitch = pitch
+    self.channel[name].sound:setPitch(pitch)
+end
+
 
 function SoundManager:getLooping(name)
     return self.channel[name].loop

@@ -25,8 +25,8 @@ function HitObject:new(time, data, endTime)
     self.x = self.x + 25
     self.y = -2000
 
-    self.time = time
-    self.endTime = endTime
+    self.time = time / Modifiers.Rate
+    self.endTime = Modifiers.NLN == false and ((endTime or -1) / Modifiers.Rate) or -1
     self.data = data
 
     self.visible = true

@@ -396,7 +396,7 @@ function osuLoader.addTimingPoint(line)
 
     if isSV then
         local velocity = {
-            startTime = tp.offset,
+            startTime = tp.offset / Modifiers.Rate,
             multiplier = tp.velocity or 0
         }
         table.insert(states.game.Gameplay.sliderVelocities, velocity)

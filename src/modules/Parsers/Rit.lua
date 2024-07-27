@@ -61,7 +61,7 @@ function ritLoader.processVelocities(line)
     local info = line:split(":")
     if _forNPS then return end
     table.insert(states.game.Gameplay.sliderVelocities, {
-        startTime = tonumber(info[1]) or 0,
+        startTime = (tonumber(info[1]) or 1) / Modifiers.Rate,
         multiplier = tonumber(info[2]) or 1
     })
 end

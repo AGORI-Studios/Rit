@@ -1,6 +1,6 @@
 local Gameplay = state()
 
-Gameplay.strumX = 525
+Gameplay.strumX = 500
 
 Gameplay.spawnTime = 3000
 
@@ -92,7 +92,7 @@ function Gameplay:reset()
     lerpedScore, lerpedAccuracy, lerpedRating = 0, 0, 0
     -- Reset all variables to their default values
     self.lastNoteIsFinish = true
-    self.strumX = 525
+    self.strumX = 500
     self.spawnTime = 1000
     self.hitObjects = Group()
     self.timingLines = Group()
@@ -353,7 +353,7 @@ function Gameplay:updateCurrentTrackPosition()
 end
 
 function Gameplay:GetPositionFromTime(time, index)
-    if Settings.options["General"].noScrollVelocity then
+    if Modifiers.NSV then
         return time * self.trackRounding
     end
     if index == 1 then
@@ -917,6 +917,7 @@ function Gameplay:update(dt)
     if self.inPause then return end
     if self.updateTime then
         if musicTime >= 0 and not self.soundManager:isPlaying("music") and musicTime < 1000 and self.score < 100 then
+            self.soundManager:setPitch("music", Modifiers.Rate)
             self.soundManager:play("music")
             musicTime = 0
         elseif ((self.lastNoteIsFinish and musicTime > self.lastNoteTime+750) or (not self.lastNoteIsFinish and not self.soundManager:isPlaying("music") and musicTime > self.lastNoteTime+750)) then
@@ -1087,13 +1088,13 @@ end
 
 function Gameplay:checkForAudioSync()
     -- If theres a 100ms difference between the current time of the audio file, and the MusicTime, then set the musicTime to the current audio file time
-    local audioTime = self.soundManager:tell("music", "seconds") * 1000
+    local audioTime = (self.soundManager:tell("music", "seconds") * 1000) / Modifiers.Rate
     local absDiff = math.abs(audioTime - musicTime)
     return absDiff > 25
 end
 
 function Gameplay:resyncAudio()
-    musicTime = self.soundManager:tell("music", "seconds") * 1000
+    musicTime = (self.soundManager:tell("music", "seconds") * 1000) / Modifiers.Rate
 end
 
 function Gameplay:keyPressed(key)
