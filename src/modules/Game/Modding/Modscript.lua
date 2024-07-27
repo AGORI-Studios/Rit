@@ -524,6 +524,14 @@ function Modscript:load(script)
         end
     end
 
+    function CreatePlayfieldVertSprite(id)
+        return states.game.Gameplay:createPlayfieldVertSprite(id)
+    end
+
+    function GetMainPlayfieldVertSprite()
+        return states.game.Gameplay.playfieldVertSprites[1]
+    end
+
     -- SOME BACKEND MODSCRIPTING FUNCTIONS
 
     -- Init Mods

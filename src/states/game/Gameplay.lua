@@ -65,6 +65,8 @@ Gameplay.gameModes = {
 
 Gameplay.eventTimers = {}
 
+Gameplay.playfieldVertSprites = {}
+
 local lerpedScore = 0
 local lerpedAccuracy = 0
 local lerpedRating = 0
@@ -132,6 +134,7 @@ function Gameplay:reset()
     self.noteScore = 0
     self.soundManager = SoundManager()
     self.playfields = {}
+    Gameplay.playfieldVertSprites = {}
     self.hits = 0
     self.misses = 0
     self.lastNoteTime = 10000 -- safe number
@@ -240,6 +243,20 @@ function Gameplay:addPlayfield(x, y)
     local y = y or 0
     local playfield = Playfield(x, y)
     table.insert(self.playfields, playfield)
+end
+
+function Gameplay:createPlayfieldVertSprite(id)
+    local spr = VertSprite(
+        0, 0, 0,
+        self.playfields[math.clamp(1, id or 1, #self.playfields)].canvas
+    )
+    table.insert(
+        self.playfieldVertSprites,
+        spr
+    )
+    spr:updateHitbox()
+
+    return spr
 end
 
 function Gameplay:doHealthIncreaseForJudgement(judgementName)
@@ -773,6 +790,7 @@ function Gameplay:enter()
     self:add2(self.comboGroup)
 
     self:addPlayfield(0, 0) -- Add the main playfield. We need at least one playfield to draw the notes
+    self:createPlayfieldVertSprite(1)
 
     if self.ableToModscript then
         Modscript:call("Start")
@@ -915,6 +933,9 @@ function Gameplay:update(dt)
     end
     MenuSoundManager:removeAllSounds() -- a final safe guard to remove any sounds that may have been left over
     if self.inPause then return end
+    if self.ableToModscript then
+        Modscript:call("Update", {dt})
+    end
     if self.updateTime then
         if musicTime >= 0 and not self.soundManager:isPlaying("music") and musicTime < 1000 and self.score < 100 then
             self.soundManager:setPitch("music", Modifiers.Rate)
@@ -1291,6 +1312,10 @@ function Gameplay:draw()
             end
         love.graphics.pop()
     love.graphics.pop()
+
+    for _, playfieldVertSprite in ipairs(self.playfieldVertSprites) do
+        playfieldVertSprite:draw()
+    end
 
     -- draw members2 (judgements and combo)
     for _, member in ipairs(self.members2) do

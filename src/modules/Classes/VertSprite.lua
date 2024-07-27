@@ -82,7 +82,7 @@ function VertSprite:new(x, y, z, graphic)
     self.depth = 0
     self.rotation = Point()
     self.init()
-    self.graphic = Cache:loadImage(graphic)
+    if graphic then self:load(graphic) end
 
     self.vertices = {
 		{0, 0, 0, 0, 0},
