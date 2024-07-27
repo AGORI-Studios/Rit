@@ -29,6 +29,8 @@ local laneSpeeds = {}
 
 activeMods = {{}}
 
+currentPlayfield = 1
+
 local function scale(x, l1, h1, l2, h2)
     return (((x) - (l1)) * ((h2) - (l2)) / ((h1) - (l1)) + (l2))
 end
@@ -393,15 +395,20 @@ function Modscript:load(script)
     function definemod(t)
         local k, v = t[1], t[2]
         if not v then v = 0 end
-        storedMods[Modscript.funcs.currentPlayfield][k] = v
-        targetMods[Modscript.funcs.currentPlayfield][k] = v
-        isTweening[Modscript.funcs.currentPlayfield][k] = false
-        tweenStart[Modscript.funcs.currentPlayfield][k] = 0
-        tweenLen[Modscript.funcs.currentPlayfield][k] = 0
-        tweenCurve[Modscript.funcs.currentPlayfield][k] = linear
-        tweenEx1[Modscript.funcs.currentPlayfield][k] = nil
-        tweenEx2[Modscript.funcs.currentPlayfield][k] = nil
-        table.insert(modnames[1], k)
+        for i = 1, #states.game.Gameplay.playfields do
+            storedMods[i][k] = v
+            targetMods[i][k] = v
+            isTweening[i][k] = false
+            tweenStart[i][k] = 0
+            tweenLen[i][k] = 0
+            tweenCurve[i][k] = linear
+            tweenEx1[i][k] = nil
+            tweenEx2[i][k] = nil
+            for i = 1, #states.game.Gameplay.playfields do
+                table.insert(modnames[i], k)
+            end
+        end
+        --[[ table.insert(modnames[1], k) ]]
     end
 
     for k, v in pairs(modlist[1]) do
@@ -461,8 +468,8 @@ function Modscript:load(script)
     end
 
     function MovePlayfield(x, y)
-        states.game.Gameplay.playfields[Modscript.funcs.currentPlayfield].x = x
-        states.game.Gameplay.playfields[Modscript.funcs.currentPlayfield].y = y
+        states.game.Gameplay.playfields[currentPlayfield].x = x
+        states.game.Gameplay.playfields[currentPlayfield].y = y
     end
 
     function SetShader(shader)
@@ -492,11 +499,43 @@ function Modscript:load(script)
     function CreatePlayfield(x, y)
         table.insert(modlist, {}) -- add a new mods table for the new playfield
         table.insert(enabledMods, {})
+        storedMods[#states.game.Gameplay.playfields+1] = {}
+        targetMods[#states.game.Gameplay.playfields+1] = {}
+        isTweening[#states.game.Gameplay.playfields+1] = {}
+        tweenStart[#states.game.Gameplay.playfields+1] = {}
+        tweenLen[#states.game.Gameplay.playfields+1] = {}
+        tweenCurve[#states.game.Gameplay.playfields+1] = {}
+        tweenEx1[#states.game.Gameplay.playfields+1] = {}
+        tweenEx2[#states.game.Gameplay.playfields+1] = {}
+        activeMods[#states.game.Gameplay.playfields+1] = {}
+        activeMods[#states.game.Gameplay.playfields+1].xmod = storedScrollSpeed
+        modlist[#states.game.Gameplay.playfields+1].xmod = storedScrollSpeed
+
+        for i = 1, states.game.Gameplay.mode do
+            modlist[#states.game.Gameplay.playfields+1]["movex" .. i] = 0
+            modlist[#states.game.Gameplay.playfields+1]["movey" .. i] = 0
+            modlist[#states.game.Gameplay.playfields+1]["amovex" .. i] = 0
+            modlist[#states.game.Gameplay.playfields+1]["amovey" .. i] = 0
+            modlist[#states.game.Gameplay.playfields+1]["dark" .. i] = 0
+            modlist[#states.game.Gameplay.playfields+1]["stealth" .. i] = 0
+            modlist[#states.game.Gameplay.playfields+1]["confusion" .. i] = 0
+            modlist[#states.game.Gameplay.playfields+1]["reverse" .. i] = 0
+            modlist[#states.game.Gameplay.playfields+1]["xmod" .. i] = 1
+        end
+
+        for k, v in pairs(modlist[#states.game.Gameplay.playfields+1]) do
+            activeMods[#states.game.Gameplay.playfields+1][k] = v
+        end
+    
+        for k, v in pairs(activeMods[#states.game.Gameplay.playfields+1]) do
+            definemod({k, v})
+        end
+
         states.game.Gameplay:addPlayfield(x, y)
     end
 
     function SetPlayfield(id)
-        Modscript.funcs.currentPlayfield = id
+        currentPlayfield = id
     end
 
     function MovePlayfield(x, y)
@@ -565,14 +604,14 @@ function Modscript:load(script)
     end
     
     function set(t)
-        table.insert(mods,{t[1],0,linear,t[2],t[3]})
+        table.insert(mods,{t[1],0,linear,t[2],t[3],currentPlayfield})
     end
 
     function setdefault(...)
         -- val, name, val, name, ...
         local args = {...}
         for i = 1, #args, 2 do
-            activeMods[1][args[i+1]] = args[i]
+            activeMods[currentPlayfield][args[i+1]] = args[i]
         end
     end
 
@@ -590,50 +629,53 @@ function Modscript:load(script)
     return true
 end
 
+
 function Modscript:update(dt, beat)
     beat = (musicTime / 1000) * (states.game.Gameplay.soundManager:getBPM("music") / 60)
     beatcutoff = activeMods[1].drawsize
     
-    while curMod <= #mods and beat > mods[curMod][1] do
-        local v = mods[curMod]
-        
-        local mn = v[5]
-        local dur = v[2]
-        if v.timing and v.timing == "end" then
-            dur = v[2] - v[1]
-        end
-
-        tweenStart[1][mn] = v[1]
-        tweenLen[1][mn] = dur
-        tweenCurve[1][mn] = v[3]
-        if v.startVal then
-            storedMods[1][mn] = v.startVal
-        else
-            storedMods[1][mn] = activeMods[1][mn]
-        end
-        targetMods[1][mn] = v[4]
-        tweenEx1[1][mn] = v.ex1
-        tweenEx2[1][mn] = v.ex2
-        isTweening[1][mn] = true
-
-        curMod = curMod + 1
-    end
-
-    for _, v in pairs(modnames[1]) do
-        if isTweening[1][v] then
-            local curTime = beat - tweenStart[1][v]
-            local duration = tweenLen[1][v]
-            local startStrength = storedMods[1][v]
-            local diff = targetMods[1][v] - startStrength
-            local curve = tweenCurve[1][v]
-            local strength = curve(curTime, startStrength, diff, duration, tweenEx1[1][v], tweenEx2[1][v])
-            activeMods[1][v] = strength
-            if beat > tweenStart[1][v] + duration then
-                print(beat, tweenStart[1][v] + duration, v, activeMods[1][v], targetMods[1][v])
-                isTweening[1][v] = false
+    for i = 1, #states.game.Gameplay.playfields do
+        while curMod <= #mods and beat > mods[curMod][1] do
+            local v = mods[curMod]
+            
+            local mn = v[5]
+            local dur = v[2]
+            if v.timing and v.timing == "end" then
+                dur = v[2] - v[1]
             end
-        else
-            activeMods[1][v] = targetMods[1][v]
+
+            tweenStart[i][mn] = v[1]
+            tweenLen[i][mn] = dur
+            tweenCurve[i][mn] = v[3]
+            if v.startVal then
+                storedMods[i][mn] = v.startVal
+            else
+                storedMods[i][mn] = activeMods[i][mn]
+            end
+            targetMods[i][mn] = v[4]
+            tweenEx1[i][mn] = v.ex1
+            tweenEx2[i][mn] = v.ex2
+            isTweening[i][mn] = true
+
+            curMod = curMod + 1
+        end
+
+        for _, v in pairs(modnames[1]) do
+            if isTweening[i][v] then
+                local curTime = beat - tweenStart[i][v]
+                local duration = tweenLen[i][v]
+                local startStrength = storedMods[i][v]
+                local diff = targetMods[i][v] - startStrength
+                local curve = tweenCurve[i][v]
+                local strength = curve(curTime, startStrength, diff, duration, tweenEx1[i][v], tweenEx2[i][v])
+                activeMods[i][v] = strength
+                if beat > tweenStart[i][v] + duration then
+                    --[[ print(beat, tweenStart[1][v] + duration, v, activeMods[i][v], targetMods[i][v]) ]]
+                    isTweening[i][v] = false
+                end
+            else
+                activeMods[i][v] = targetMods[i][v]
+            end
         end
     end
 

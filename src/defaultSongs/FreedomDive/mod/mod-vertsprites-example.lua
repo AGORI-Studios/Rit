@@ -1,3 +1,4 @@
+-- Multiple main playfield copies mapped to a vert sprite
 local playfieldSprs = {}
 function Start()
     playfieldSprs[1] = states.game.Gameplay.playfieldVertSprites[1]
