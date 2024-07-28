@@ -38,8 +38,12 @@ function Playfield:draw(notes, timingLines, scale)
             love.graphics.translate(self.x, self.y)
             love.graphics.translate(self.offsets.x, self.offsets.y)
             love.graphics.scale(1, self.reversed and -1 or 1)
-            love.graphics.setColor(0,0,0, self.alpha * Settings.options["General"].scrollUnderlayAlpha)
-            love.graphics.rectangle("fill", states.game.Gameplay.bgLane.x, -200*(scale+1), states.game.Gameplay.bgLane.width+30, 1080*(scale+1))
+            if not states.game.Gameplay.ableToModscript then
+                love.graphics.setColor(0,0,0, self.alpha * Settings.options["General"].scrollUnderlayAlpha)
+            
+                love.graphics.rectangle("fill", states.game.Gameplay.bgLane.x, -200*(scale+1), states.game.Gameplay.bgLane.width+30, 1080*(scale+1))
+            end
+
             love.graphics.setColor(1,1,1, self.alpha)
             
             love.graphics.push()
