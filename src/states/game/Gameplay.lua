@@ -940,7 +940,7 @@ function Gameplay:update(dt)
     MenuSoundManager:removeAllSounds() -- a final safe guard to remove any sounds that may have been left over
     if self.inPause then return end
     if self.ableToModscript then
-        Modscript:call("Update", {dt})
+        Modscript:call("OnUpdate", {dt, musicTime, self.soundManager:getBeat("music")})
     end
     if self.updateTime then
         if musicTime >= 0 and not self.soundManager:isPlaying("music") and musicTime < 1000 and self.score < 100 then
