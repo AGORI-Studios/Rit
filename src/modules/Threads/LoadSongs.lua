@@ -11,6 +11,7 @@ require "modules.Game.SongHandler"
 GameInit = require "modules.GameInit"
 json = require "lib.jsonhybrid"
 tinyyaml = require "lib.tinyyaml"
+Modifiers = require "modules.Game.Modifiers"
 
 local channel = love.thread.getChannel("ThreadChannels.LoadSongs.Output")
 

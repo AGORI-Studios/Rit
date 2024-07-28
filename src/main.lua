@@ -298,7 +298,7 @@ function love.focus(f)
     state.focus(f)
     if not f and volume then
         if Settings.options["Video"]["UnfocusedFPS"] then
-            love.setFpsCap(30)
+            love.setFpsCap(60)
         end
         Timer.tween(0.5, volume, {0.25}, "linear")
     elseif f and volume then
