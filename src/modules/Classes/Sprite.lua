@@ -303,7 +303,11 @@ function Sprite:centerOffsets()
 end 
 
 function Sprite:centerOrigin()
-    self.origin = Point(self.width / 2, self.height / 2)
+    if self.forcedDimensions and self.dimensions then
+        self.origin = Point(self.dimensions.width / 2, self.dimensions.height / 2)
+    else
+        self.origin = Point(self.width / 2, self.height / 2)
+    end
 
     return self
 end

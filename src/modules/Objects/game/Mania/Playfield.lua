@@ -30,9 +30,7 @@ function Playfield:draw(notes, timingLines, scale)
     love.graphics.push()
         love.graphics.translate(1920/2, 1080/2)
         love.graphics.scale(scale, scale)
-        love.graphics.rotate(math.rad(Modscript.cam.angle or 0))
         love.graphics.translate(-1920/2, -1080/2)
-        love.graphics.translate(Modscript.cam.x or 0, Modscript.cam.y or 0)
         love.graphics.push()
             love.graphics.scale(self.offsets.scale.x, self.offsets.scale.y)
             love.graphics.translate(self.x, self.y)
@@ -50,11 +48,50 @@ function Playfield:draw(notes, timingLines, scale)
                 love.graphics.translate(self.lanes[1].x, self.lanes[1].y)
                 for _, receptor in ipairs(states.game.Gameplay.strumLineObjects.members) do
                     if receptor.draw then
+                        if states.game.Gameplay.ableToModscript then
+                            local pos = Modscript:getPos(0, 0, 0, states.game.Gameplay.soundManager:getBeat("music"), receptor.data, 1, receptor, {})
+                            Modscript:updateObject(states.game.Gameplay.soundManager:getBeat("music"), receptor, pos, self.id)
+                            receptor.x, receptor.y = pos.x, pos.y
+                            receptor.z = pos.z * 200
+                        end
                         receptor:draw()
                     end
                 end
                 for _, note in ipairs(notes) do
                     if note.draw then
+                        if states.game.Gameplay.ableToModscript then
+                            local vis = -((musicTime - note.time) * Settings.options["General"].scrollspeed)
+                            if not note.moveWithScroll then
+                                vis = 0
+                            end
+                            local pos = Modscript:getPos(note.time, vis, note.time - musicTime, 
+                                states.game.Gameplay.soundManager:getBeat("music"), note.data, 1, note, {}
+                            )
+                            Modscript:updateObject(states.game.Gameplay.soundManager:getBeat("music"), note, pos, self.id)
+                            note.x, note.y = pos.x, pos.y
+                            note.z = pos.z * 200
+
+                            if #note.children > 0 then
+                                local vis = -((musicTime - note.endTime) * Settings.options["General"].scrollspeed)
+                                local pos2 = Modscript:getPos(note.time, vis, note.endTime - musicTime, 
+                                    states.game.Gameplay.soundManager:getBeat("music"), note.data, 1, note.children[1], {}
+                                )
+                                
+                                note.children[1].x = pos.x
+                                note.children[1].y = pos.y + 100
+                                note.children[1].z = pos.z * 200
+                                local endY = pos2.y
+
+                                note.children[1].dimensions = {width = 200, height = endY - pos.y - 95}
+                                note.children[2].dimensions = {width = 200, height = 95}
+                                
+                                note.children[2].x = pos.x
+                                note.children[2].y = pos.y + note.children[1].dimensions.height
+                                note.children[2].z = pos.z * 200
+                                note.children[2].offset.y = -95
+                                note.children[2].flipY = true
+                            end
+                        end
                         note:draw(Settings.options["General"].noteSize * scale)
                     end
                 end

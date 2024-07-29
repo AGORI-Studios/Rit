@@ -23,6 +23,7 @@ function StrumObject:new(x, y, data)
 
     self.forcedDimensions = true
     self.dimensions = {width = 200, height = 200}
+    self:centerOrigin()
 
     return self
 end

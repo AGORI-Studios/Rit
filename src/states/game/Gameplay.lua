@@ -686,9 +686,9 @@ function Gameplay:updateNotePosition(offset, curTime)
 
     for _, hitObject in ipairs(self.hitObjects.members) do
 
-        --[[ if hitObject.time - musicTime > 15000 then -- Only update notes that are within 15 seconds of the current time to prevent lag issues from too many notes
+        if hitObject.time - musicTime > 15000 then -- Only update notes that are within 15 seconds of the current time to prevent lag issues from too many notes
             break
-        end ]]
+        end
 
         spritePosition = self:getNotePosition(offset, hitObject.initialTrackPosition)
 
@@ -714,11 +714,6 @@ function Gameplay:updateNotePosition(offset, curTime)
             else
                 hitObject.children[2].y = hitObject.children[2].y + pixelDistance
             end
-        end
-
-        if (Settings.options["General"].downscroll and hitObject.y < -hitObject.height) or 
-            (not Settings.options["General"].downscroll and hitObject.y > 1080) then
-            break
         end
     end
 end
@@ -769,7 +764,6 @@ end
 
 function Gameplay:enter()
     self:reset()
-    strumY = not Modscript.downscroll and 50 or 825
 
     self.inputsArray = {false, false, false, false}
 
@@ -862,6 +856,15 @@ function Gameplay:generateStrums()
 
         self.strumLineObjects:add(strum)
         strum:postAddToGroup()
+
+        Try(
+            function()
+                __defaultPositions[1][i].x, __defaultPositions[1][i].y =
+                    states.game.Gameplay.strumLineObjects.members[i].x, states.game.Gameplay.strumLineObjects.members[i].y
+            end,
+            function(e)
+            end
+        )
     end
 
     --self.bgLane.width = self.mode * (200 + Settings.options["General"].columnSpacing + 10)
@@ -1023,7 +1026,7 @@ function Gameplay:update(dt)
     end
 
     if self.ableToModscript then
-        Modscript:update(dt, self.soundManager:getBeat("music"))
+        --[[ Modscript:update(dt, self.soundManager:getBeat("music")) ]]
     end
 
     self.storyBoardSprites.Foreground:update(dt)
@@ -1402,11 +1405,17 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName, for
         Modscript.vars = {sprites={}} -- reset modscript vars
 
         self.mode = tonumber(self.mode)
-        self:generateStrums()
         local modPath = folderPath .. "/mod/mod.lua"
         if love.filesystem.getInfo(modPath) then
             self.ableToModscript = Modscript:load(modPath)
+            if self.ableToModscript then
+                Modscript.downscroll = false
+            else
+                Modscript.downscroll = Settings.options["General"].downscroll
+            end
         end
+        strumY = not Modscript.downscroll and 50 or 825
+        self:generateStrums()
 
         if discordRPC then
             local details = ""

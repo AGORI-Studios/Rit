@@ -112,7 +112,7 @@ function VertSprite:draw()
         x = x - self.offset.x
         y = y - self.offset.y
         z = (z or 0) - (self.offset.z or 0)
-        local rx, ry, rz = self.rotation.x, self.rotation.y, ((self.rotation.z or 0) - self.angle)
+        local rx, ry, rz = self.rotation.x, self.rotation.y, ((self.rotation.z or 0)) - self.angle
         local sx, sy, sz = self.scale.x, self.scale.y, (self.scale.z or 0)
         local ox, oy, oz = self.origin.x, self.origin.y, (self.origin.z or 0)
 
@@ -136,7 +136,7 @@ function VertSprite:draw()
         local fw, fh, uvx, uvy, uvw, uvh = gw, gh, 0, 0, 1, 1
 
         fw, fh = fw*sx, fh*sy
-        ox, oy, oz = ox*sx, oy*sy, oz*sz
+        ox, oy, oz = ox, oy, oz
 
         if self.flipX then uvx, uvw = uvx + uvw, -uvw end
         if self.flipY then 
@@ -160,8 +160,8 @@ function VertSprite:draw()
         love.graphics.setColor(lastColor[1] * self.color[1], lastColor[2] * self.color[2], lastColor[3] * self.color[3], lastColor[4] * self.alpha)
         love.graphics.setShader(defaultShader)
 
-        love.graphics.draw(mesh, 0, 0, 0--[[ , sx, sy ]])
-        
+        love.graphics.draw(mesh)
+
         love.graphics.setColor(lastColor)
         if love.graphics.getSupportedBlend() then
             love.graphics.setBlendMode(lastBlend, lastAlphaMode)
@@ -171,10 +171,10 @@ function VertSprite:draw()
     love.graphics.setShader()
 end
 
-function VertSprite:centerOffsets(w, h, d)
+--[[ function VertSprite:centerOffsets(w, h, d)
     self.offset = {
-        x = ((w or self.width) - self.width) / 2,
-        y = ((h or self.height) - self.height) / 2,
+        x = ((w or self.graphic:getWidth()) - self.graphic:getWidth()) / 2,
+        y = ((h or self.graphic:getHeight()) - self.graphic:getHeight()) / 2,
         z = ((d or self.depth) - self.depth) / 2
     }
 
@@ -183,12 +183,12 @@ end
 
 function VertSprite:centerOrigin(w, h, d)
     self.origin = {
-        x = (w or self.width) / 2,
-        y = (h or self.height) / 2,
+        x = (w or self.graphic:getWidth()) / 2,
+        y = (h or self.graphic:getHeight()) / 2,
         z = (d or self.depth) / 2
     }
 
     return self
-end
+end ]]
 
 return VertSprite

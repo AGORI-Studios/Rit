@@ -39,6 +39,7 @@ function HitObject:new(time, data, endTime)
     self.forcedDimensions = true
     self.dimensions = {width = 200, height = 200}
     self:updateHitbox()
+    self:centerOrigin()
     _G.__NOTE_OBJECT_WIDTH = 200
 
     self.x = self.x + (200) * (data-1)

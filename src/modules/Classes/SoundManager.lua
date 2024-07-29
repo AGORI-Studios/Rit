@@ -147,6 +147,14 @@ function SoundManager:getBeat(name)
     return self.channel[name].beat
 end
 
+function SoundManager:getDecBeat(name)
+    local time = self.channel[name].time
+
+    local decBeat = time / self.channel[name].beatLength
+
+    return decBeat
+end
+
 function SoundManager:getFullBeat(name)
     return self.channel[name].fullBeat
 end
