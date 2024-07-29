@@ -25,6 +25,7 @@ function SoundManager:newSound(name, path, volume, loop, type)
         fullBeat = 0, 
         beatLength = 60 / 120,
         time = 0,
+        time2 = 0,
         lastFrameTime = 0,
         onBeat = function() end,
         paused = false,
@@ -50,6 +51,7 @@ function SoundManager:playFromTime(name, time, clone)
     local time = math.abs(time or 0)
     if not self.channel[name] then return end
     self.channel[name].paused = false
+    self.channel[name].time2 = time * 1000
     if clone then
         local clone = self.channel[name].sound:clone()
         clone:seek(time or 0)
@@ -69,6 +71,7 @@ function SoundManager:update(dt)
             v.lastFrameTime = love.timer.getTime()
         end
         v.time = v.time + (love.timer.getTime() - v.lastFrameTime)
+        v.time2 = v.time2 + (love.timer.getTime() - v.lastFrameTime)
         v.fullBeat = v.time / v.beatLength
         v.lastFrameTime = love.timer.getTime()
         if v.time >= v.beatLength then
@@ -148,7 +151,7 @@ function SoundManager:getBeat(name)
 end
 
 function SoundManager:getDecBeat(name)
-    local time = self.channel[name].time
+    local time = self.channel[name].time2
 
     local decBeat = time / self.channel[name].beatLength
 

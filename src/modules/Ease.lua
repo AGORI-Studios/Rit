@@ -1,385 +1,221 @@
---[[
-Disclaimer for Robert Penner's Easing Equations license:
+local PI2 = math.pi / 2
 
-TERMS OF USE - EASING EQUATIONS
+local EL = 2 * math.pi / 0.45
+local B1 = 1 / 2.75
+local B2 = 2 / 2.75
+local B3 = 1.5 / 2.75
+local B4 = 2.5 / 2.75
+local B5 = 2.25 / 2.75
+local B6 = 2.625 / 2.75
+local ELASTIC_AMPLITUDE = 1
+local ELASTIC_PERIOD = 0.4
 
-Open source under the BSD License.
-
-Copyright © 2001 Robert Penner
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-    * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-    * Neither the name of the author nor the names of contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-]]
-
--- For all easing functions:
--- t = elapsed time
--- b = begin
--- c = change == ending - beginning
--- d = duration (total time)
-
-local pow = math.pow
-local sin = math.sin
-local cos = math.cos
-local pi = math.pi
-local sqrt = math.sqrt
-local abs = math.abs
-local asin  = math.asin
-
-function linear(t, b, c, d)
-  return c * t / d + b
+function linear(t)
+    return t
 end
 
-function inQuad(t, b, c, d)
-  t = t / d
-  return c * pow(t, 2) + b
+function quadIn(t)
+    return t * t
 end
 
-function outQuad(t, b, c, d)
-  t = t / d
-  return -c * t * (t - 2) + b
+function quadOut(t)
+    return -t * (t - 2)
 end
 
-function inOutQuad(t, b, c, d)
-  t = t / d * 2
-  if t < 1 then
-    return c / 2 * pow(t, 2) + b
-  else
-    return -c / 2 * ((t - 1) * (t - 3) - 1) + b
-  end
+function quadInOut(t)
+    if t <= 0.5 then
+        return t * t * 2
+    else
+        t = t - 1
+        return 1 - t * t * 2
+    end
 end
 
-function outInQuad(t, b, c, d)
-  if t < d / 2 then
-    return outQuad (t * 2, b, c / 2, d)
-  else
-    return inQuad((t * 2) - d, b + c / 2, c / 2, d)
-  end
+function cubeIn(t)
+    return t * t * t
 end
 
-function inCubic (t, b, c, d)
-  t = t / d
-  return c * pow(t, 3) + b
-end
-
-function outCubic(t, b, c, d)
-  t = t / d - 1
-  return c * (pow(t, 3) + 1) + b
-end
-
-function inOutCubic(t, b, c, d)
-  t = t / d * 2
-  if t < 1 then
-    return c / 2 * t * t * t + b
-  else
-    t = t - 2
-    return c / 2 * (t * t * t + 2) + b
-  end
-end
-
-function outInCubic(t, b, c, d)
-  if t < d / 2 then
-    return outCubic(t * 2, b, c / 2, d)
-  else
-    return inCubic((t * 2) - d, b + c / 2, c / 2, d)
-  end
-end
-
-function inQuart(t, b, c, d)
-  t = t / d
-  return c * pow(t, 4) + b
-end
-
-function outQuart(t, b, c, d)
-  t = t / d - 1
-  return -c * (pow(t, 4) - 1) + b
-end
-
-function inOutQuart(t, b, c, d)
-  t = t / d * 2
-  if t < 1 then
-    return c / 2 * pow(t, 4) + b
-  else
-    t = t - 2
-    return -c / 2 * (pow(t, 4) - 2) + b
-  end
-end
-
-function outInQuart(t, b, c, d)
-  if t < d / 2 then
-    return outQuart(t * 2, b, c / 2, d)
-  else
-    return inQuart((t * 2) - d, b + c / 2, c / 2, d)
-  end
-end
-
-function inQuint(t, b, c, d)
-  t = t / d
-  return c * pow(t, 5) + b
-end
-
-function outQuint(t, b, c, d)
-  t = t / d - 1
-  return c * (pow(t, 5) + 1) + b
-end
-
-function inOutQuint(t, b, c, d)
-  t = t / d * 2
-  if t < 1 then
-    return c / 2 * pow(t, 5) + b
-  else
-    t = t - 2
-    return c / 2 * (pow(t, 5) + 2) + b
-  end
-end
-
-function outInQuint(t, b, c, d)
-  if t < d / 2 then
-    return outQuint(t * 2, b, c / 2, d)
-  else
-    return inQuint((t * 2) - d, b + c / 2, c / 2, d)
-  end
-end
-
-function inSine(t, b, c, d)
-  return -c * cos(t / d * (pi / 2)) + c + b
-end
-
-function outSine(t, b, c, d)
-  return c * sin(t / d * (pi / 2)) + b
-end
-
-function inOutSine(t, b, c, d)
-  return -c / 2 * (cos(pi * t / d) - 1) + b
-end
-
-function outInSine(t, b, c, d)
-  if t < d / 2 then
-    return outSine(t * 2, b, c / 2, d)
-  else
-    return inSine((t * 2) -d, b + c / 2, c / 2, d)
-  end
-end
-
-function inExpo(t, b, c, d)
-  if t == 0 then
-    return b
-  else
-    return c * pow(2, 10 * (t / d - 1)) + b - c * 0.001
-  end
-end
-
-function outExpo(t, b, c, d)
-  if t == d then
-    return b + c
-  else
-    return c * 1.001 * (-pow(2, -10 * t / d) + 1) + b
-  end
-end
-
-function inOutExpo(t, b, c, d)
-  if t == 0 then return b end
-  if t == d then return b + c end
-  t = t / d * 2
-  if t < 1 then
-    return c / 2 * pow(2, 10 * (t - 1)) + b - c * 0.0005
-  else
+function cubeOut(t)
     t = t - 1
-    return c / 2 * 1.0005 * (-pow(2, -10 * t) + 2) + b
-  end
+    return 1 + t * t * t
 end
 
-function outInExpo(t, b, c, d)
-  if t < d / 2 then
-    return outExpo(t * 2, b, c / 2, d)
-  else
-    return inExpo((t * 2) - d, b + c / 2, c / 2, d)
-  end
+function cubeInOut(t)
+    if t <= 0.5 then
+        return t * t * t * 4
+    else
+        t = t - 1
+        return 1 + t * t * t * 4
+    end
 end
 
-function inCirc(t, b, c, d)
-  t = t / d
-  return(-c * (sqrt(1 - pow(t, 2)) - 1) + b)
+function quartIn(t)
+    return t * t * t * t
 end
 
-function outCirc(t, b, c, d)
-  t = t / d - 1
-  return(c * sqrt(1 - pow(t, 2)) + b)
-end
-
-function inOutCirc(t, b, c, d)
-  t = t / d * 2
-  if t < 1 then
-    return -c / 2 * (sqrt(1 - t * t) - 1) + b
-  else
-    t = t - 2
-    return c / 2 * (sqrt(1 - t * t) + 1) + b
-  end
-end
-
-function outInCirc(t, b, c, d)
-  if t < d / 2 then
-    return outCirc(t * 2, b, c / 2, d)
-  else
-    return inCirc((t * 2) - d, b + c / 2, c / 2, d)
-  end
-end
-
-function inElastic(t, b, c, d, a, p)
-  if t == 0 then return b end
-
-  t = t / d
-
-  if t == 1  then return b + c end
-
-  if not p then p = d * 0.3 end
-
-  local s
-
-  if not a or a < abs(c) then
-    a = c
-    s = p / 4
-  else
-    s = p / (2 * pi) * asin(c/a)
-  end
-
-  t = t - 1
-
-  return -(a * pow(2, 10 * t) * sin((t * d - s) * (2 * pi) / p)) + b
-end
-
--- a: amplitud
--- p: period
-function outElastic(t, b, c, d, a, p)
-  if t == 0 then return b end
-
-  t = t / d
-
-  if t == 1 then return b + c end
-
-  if not p then p = d * 0.3 end
-
-  local s
-
-  if not a or a < abs(c) then
-    a = c
-    s = p / 4
-  else
-    s = p / (2 * pi) * asin(c/a)
-  end
-
-  return a * pow(2, -10 * t) * sin((t * d - s) * (2 * pi) / p) + c + b
-end
-
--- p = period
--- a = amplitud
-function inOutElastic(t, b, c, d, a, p)
-  if t == 0 then return b end
-
-  t = t / d * 2
-
-  if t == 2 then return b + c end
-
-  if not p then p = d * (0.3 * 1.5) end
-  if not a then a = 0 end
-
-  local s
-
-  if not a or a < abs(c) then
-    a = c
-    s = p / 4
-  else
-    s = p / (2 * pi) * asin(c / a)
-  end
-
-  if t < 1 then
+function quartOut(t)
     t = t - 1
-    return -0.5 * (a * pow(2, 10 * t) * sin((t * d - s) * (2 * pi) / p)) + b
-  else
+    return 1 - t * t * t * t
+end
+
+function quartInOut(t)
+    if t <= 0.5 then
+        return t * t * t * t * 8
+    else
+        t = t * 2 - 2
+        return (1 - t * t * t * t) / 2 + 0.5
+    end
+end
+
+function quintIn(t)
+    return t * t * t * t * t
+end
+
+function quintOut(t)
     t = t - 1
-    return a * pow(2, -10 * t) * sin((t * d - s) * (2 * pi) / p ) * 0.5 + c + b
-  end
+    return t * t * t * t * t + 1
 end
 
--- a: amplitud
--- p: period
-function outInElastic(t, b, c, d, a, p)
-  if t < d / 2 then
-    return outElastic(t * 2, b, c / 2, d, a, p)
-  else
-    return inElastic((t * 2) - d, b + c / 2, c / 2, d, a, p)
-  end
+function quintInOut(t)
+    t = t * 2
+    if t < 1 then
+        return t * t * t * t * t / 2
+    else
+        t = t - 2
+        return (t * t * t * t * t + 2) / 2
+    end
 end
 
-function inBack(t, b, c, d, s)
-  if not s then s = 1.70158 end
-  t = t / d
-  return c * t * t * ((s + 1) * t - s) + b
+function smoothStepIn(t)
+    return 2 * smoothStepInOut(t / 2)
 end
 
-function outBack(t, b, c, d, s)
-  if not s then s = 1.70158 end
-  t = t / d - 1
-  return c * (t * t * ((s + 1) * t + s) + 1) + b
+function smoothStepOut(t)
+    return 2 * smoothStepInOut(t / 2 + 0.5) - 1
 end
 
-function inOutBack(t, b, c, d, s)
-  if not s then s = 1.70158 end
-  s = s * 1.525
-  t = t / d * 2
-  if t < 1 then
-    return c / 2 * (t * t * ((s + 1) * t - s)) + b
-  else
-    t = t - 2
-    return c / 2 * (t * t * ((s + 1) * t + s) + 2) + b
-  end
+function smoothStepInOut(t)
+    return t * t * (t * -2 + 3)
 end
 
-function outInBack(t, b, c, d, s)
-  if t < d / 2 then
-    return outBack(t * 2, b, c / 2, d, s)
-  else
-    return inBack((t * 2) - d, b + c / 2, c / 2, d, s)
-  end
+function smootherStepIn(t)
+    return 2 * smootherStepInOut(t / 2)
 end
 
-function outBounce(t, b, c, d)
-  t = t / d
-  if t < 1 / 2.75 then
-    return c * (7.5625 * t * t) + b
-  elseif t < 2 / 2.75 then
-    t = t - (1.5 / 2.75)
-    return c * (7.5625 * t * t + 0.75) + b
-  elseif t < 2.5 / 2.75 then
-    t = t - (2.25 / 2.75)
-    return c * (7.5625 * t * t + 0.9375) + b
-  else
-    t = t - (2.625 / 2.75)
-    return c * (7.5625 * t * t + 0.984375) + b
-  end
+function smootherStepOut(t)
+    return 2 * smootherStepInOut(t / 2 + 0.5) - 1
 end
 
-function inBounce(t, b, c, d)
-  return c - outBounce(d - t, 0, c, d) + b
+function smootherStepInOut(t)
+    return t * t * t * (t * (t * 6 - 15) + 10)
 end
 
-function inOutBounce(t, b, c, d)
-  if t < d / 2 then
-    return inBounce(t * 2, 0, c, d) * 0.5 + b
-  else
-    return outBounce(t * 2 - d, 0, c, d) * 0.5 + c * .5 + b
-  end
+function sineIn(t)
+    return -math.cos(PI2 * t) + 1
 end
 
-function outInBounce(t, b, c, d)
-  if t < d / 2 then
-    return outBounce(t * 2, b, c / 2, d)
-  else
-    return inBounce((t * 2) - d, b + c / 2, c / 2, d)
-  end
+function sineOut(t)
+    return math.sin(PI2 * t)
+end
+
+function sineInOut(t)
+    return -math.cos(math.pi * t) / 2 + 0.5
+end
+
+function bounceIn(t)
+    return 1 - bounceOut(1 - t)
+end
+
+function bounceOut(t)
+    if t < B1 then
+        return 7.5625 * t * t
+    elseif t < B2 then
+        t = t - B3
+        return 7.5625 * t * t + 0.75
+    elseif t < B4 then
+        t = t - B5
+        return 7.5625 * t * t + 0.9375
+    else
+        t = t - B6
+        return 7.5625 * t * t + 0.984375
+    end
+end
+
+function bounceInOut(t)
+    if t < 0.5 then
+        return (1 - bounceOut(1 - 2 * t)) / 2
+    else
+        return (1 + bounceOut(2 * t - 1)) / 2
+    end
+end
+
+function circIn(t)
+    return -(math.sqrt(1 - t * t) - 1)
+end
+
+function circOut(t)
+    return math.sqrt(1 - (t - 1) * (t - 1))
+end
+
+function circInOut(t)
+    if t <= 0.5 then
+        return (math.sqrt(1 - t * t * 4) - 1) / -2
+    else
+        t = t * 2 - 2
+        return (math.sqrt(1 - t * t) + 1) / 2
+    end
+end
+
+function expoIn(t)
+    return math.pow(2, 10 * (t - 1))
+end
+
+function expoOut(t)
+    return -math.pow(2, -10 * t) + 1
+end
+
+function expoInOut(t)
+    if t < 0.5 then
+        return math.pow(2, 10 * (t * 2 - 1)) / 2
+    else
+        return (-math.pow(2, -10 * (t * 2 - 1)) + 2) / 2
+    end
+end
+
+function backIn(t)
+    return t * t * (2.70158 * t - 1.70158)
+end
+
+function backOut(t)
+    t = t - 1
+    return 1 - t * t * (-2.70158 * t - 1.70158)
+end
+
+function backInOut(t)
+    t = t * 2
+    if t < 1 then
+        return t * t * (2.70158 * t - 1.70158) / 2
+    else
+        t = t - 1
+        return (1 - t * t * (-2.70158 * t - 1.70158)) / 2 + 0.5
+    end
+end
+
+function elasticIn(t)
+    t = t - 1
+    return -(ELASTIC_AMPLITUDE * math.pow(2, 10 * t) * math.sin((t - (ELASTIC_PERIOD / (2 * math.pi) * math.asin(1 / ELASTIC_AMPLITUDE))) * (2 * math.pi) / ELASTIC_PERIOD))
+end
+
+function elasticOut(t)
+    return (ELASTIC_AMPLITUDE * math.pow(2, -10 * t) * math.sin((t - (ELASTIC_PERIOD / (2 * math.pi) * math.asin(1 / ELASTIC_AMPLITUDE))) * (2 * math.pi) / ELASTIC_PERIOD) + 1)
+end
+
+function elasticInOut(t)
+    if t < 0.5 then
+        t = t * 2 - 0.5
+        return -0.5 * (math.pow(2, 10 * t) * math.sin((t - (ELASTIC_PERIOD / 4)) * (2 * math.pi) / ELASTIC_PERIOD))
+    else
+        t = t * 2 - 1
+        return math.pow(2, -10 * t) * math.sin((t - (ELASTIC_PERIOD / 4)) * (2 * math.pi) / ELASTIC_PERIOD) * 0.5 + 1
+    end
 end

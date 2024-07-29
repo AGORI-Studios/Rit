@@ -49,7 +49,7 @@ function Playfield:draw(notes, timingLines, scale)
                 for _, receptor in ipairs(states.game.Gameplay.strumLineObjects.members) do
                     if receptor.draw then
                         if states.game.Gameplay.ableToModscript then
-                            local pos = Modscript:getPos(0, 0, 0, states.game.Gameplay.soundManager:getBeat("music"), receptor.data, 1, receptor, {})
+                            local pos = Modscript:getPos(0, 0, 0, states.game.Gameplay.soundManager:getBeat("music"), receptor.data, self.id, receptor, {})
                             Modscript:updateObject(states.game.Gameplay.soundManager:getBeat("music"), receptor, pos, self.id)
                             receptor.x, receptor.y = pos.x, pos.y
                             receptor.z = pos.z * 200
@@ -60,12 +60,15 @@ function Playfield:draw(notes, timingLines, scale)
                 for _, note in ipairs(notes) do
                     if note.draw then
                         if states.game.Gameplay.ableToModscript then
+                            if note.time - musicTime > 15000 then
+                                break
+                            end
                             local vis = -((musicTime - note.time) * Settings.options["General"].scrollspeed)
                             if not note.moveWithScroll then
                                 vis = 0
                             end
                             local pos = Modscript:getPos(note.time, vis, note.time - musicTime, 
-                                states.game.Gameplay.soundManager:getBeat("music"), note.data, 1, note, {}
+                                states.game.Gameplay.soundManager:getBeat("music"), note.data, self.id, note, {}, Point()
                             )
                             Modscript:updateObject(states.game.Gameplay.soundManager:getBeat("music"), note, pos, self.id)
                             note.x, note.y = pos.x, pos.y
@@ -74,7 +77,7 @@ function Playfield:draw(notes, timingLines, scale)
                             if #note.children > 0 then
                                 local vis = -((musicTime - note.endTime) * Settings.options["General"].scrollspeed)
                                 local pos2 = Modscript:getPos(note.time, vis, note.endTime - musicTime, 
-                                    states.game.Gameplay.soundManager:getBeat("music"), note.data, 1, note.children[1], {}
+                                    states.game.Gameplay.soundManager:getBeat("music"), note.data, self.id, note.children[1], {}
                                 )
                                 
                                 note.children[1].x = pos.x

@@ -14,10 +14,10 @@ function Drunk:updateReceptor(beat, receptor, pos, playfield)
 end
 
 function Drunk:getPos(time, visualDiff, timeDiff, beat, pos, data, playfield, obj)
-    local drunkPerc = self:getValue(playfield)
-    local tipsyPerc = self:getSubmodvalue("tipsy", playfield)
-    local bumpPerc = self:getSubmodvalue("bumpy", playfield)
-    local tipZPerc = self:getSubmodvalue("tipZ", playfield)
+    local drunkPerc = self:getValue(playfield) or 0
+    local tipsyPerc = self:getSubmodValue("Tipsy", playfield)
+    local bumpPerc = self:getSubmodValue("Bumpy", playfield)
+    local tipZPerc = self:getSubmodValue("TipZ", playfield)
 
     local time = musicTime / 1000
 
@@ -31,6 +31,7 @@ function Drunk:getPos(time, visualDiff, timeDiff, beat, pos, data, playfield, ob
     end
 
     if tipsyPerc ~= 0 then
+        print("Test")
         local speed = self:getSubmodValue("tipsySpeed", playfield)
         local offset = self:getSubmodValue("tipsyOffset", playfield)
 
@@ -57,8 +58,8 @@ end
 
 function Drunk:getSubmods()
     return {
-        "tipsy",
-        "bumpy",
+        "Tipsy",
+        "Bumpy",
         "drunkSpeed",
         "drunkOffset",
         "drunkPeriod",
@@ -67,7 +68,7 @@ function Drunk:getSubmods()
         "bumpyOffset",
         "bumpyPeriod",
 
-        "tipZ",
+        "TipZ",
         "tipZSpeed",
         "tipZOffset",
 

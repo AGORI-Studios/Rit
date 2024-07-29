@@ -100,6 +100,8 @@ function VertSprite:new(x, y, z, graphic)
     self.mesh = love.graphics.newMesh(vertexFormat, self.vertices, "fan")
     self.mesh:setTexture(self.graphic)
 
+    self.zIndex = 0
+
     return self
 end
 

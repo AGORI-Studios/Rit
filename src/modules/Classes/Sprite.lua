@@ -74,6 +74,8 @@ function Sprite:new(x, y, graphic)
     self.type = "Image"
     self.addOrigin = true
 
+    self.zIndex = 0
+
     if graphic then self:load(graphic) end
 
     return self

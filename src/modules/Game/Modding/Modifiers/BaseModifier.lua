@@ -4,8 +4,13 @@ Modifier.percents = {0} -- add more with each playfield
 Modifier.submods = {}
 Modifier.parent = nil
 Modifier.active = false
+Modifier.type = "Mod"
 
 function Modifier:new(parent)
+    self.percents = {0} -- add more with each playfield
+    self.submods = {}
+    self.parent = nil
+    self.active = false
     self.parent = parent
     for _, submod in ipairs(self:getSubmods()) do
         self.submods[submod] = BaseSubModifier(submod, self)
@@ -17,11 +22,13 @@ function Modifier:getOrder()
 end
 
 function Modifier:getValue(playfield)
-    return self.percents[math.clamp(1, playfield, #self.percents)]
+    if not self.percents[playfield] then self.percents[playfield] = 0 end
+    return self.percents[playfield]
 end
 
 function Modifier:getPercent(playfield)
-    return self.percents[math.clamp(1, playfield, #self.percents)] * 100
+    if not self.percents[playfield] then self.percents[playfield] = 0 end
+    return self.percents[playfield] * 100
 end
 
 function Modifier:setValue(value, playfield)
@@ -31,7 +38,8 @@ function Modifier:setValue(value, playfield)
             self.percents[i] = value
         end
     else
-        self.percents[math.clamp(1, playfield, #self.percents)] = value
+        if not self.percents[playfield] then self.percents[playfield] = 0 end
+        self.percents[playfield] = value
     end
 end
 
@@ -53,7 +61,7 @@ end
 
 function Modifier:getSubmodValue(modName, playfield)
     if self.submods[modName] then
-        return self.submods[modName]:getSubmodValue(playfield)
+        return self.submods[modName]:getValue(playfield)
     end
 
     return 0

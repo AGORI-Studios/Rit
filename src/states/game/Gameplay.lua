@@ -791,6 +791,15 @@ function Gameplay:enter()
     self:addPlayfield(0, 0) -- Add the main playfield. We need at least one playfield to draw the notes
     self:createPlayfieldVertSprite(1)
 
+   --[[  local p1 = GetMainPlayfieldVertSprite()
+    CreatePlayfield(0, 0)
+    local p2 = CreatePlayfieldVertSprite(2)
+
+    p1.x, p2.x = -400, 400
+    --[[ QueueEase(1, 2, "Drunk", 1, linear, 2)--
+    QueueEase(2, 3, "Tipsy", 1, linear, 0)
+    QueueSet(0, "Reverse", 1, 1) ]]
+
     if self.ableToModscript then
         Modscript:call("Start")
     end
@@ -942,8 +951,9 @@ function Gameplay:update(dt)
     end
     MenuSoundManager:removeAllSounds() -- a final safe guard to remove any sounds that may have been left over
     if self.inPause then return end
-    if self.ableToModscript then
+    if self.ableToModscript and self.updateTime then
         Modscript:call("OnUpdate", {dt, musicTime, self.soundManager:getBeat("music")})
+        Modscript:update(dt)
     end
     if self.updateTime then
         if musicTime >= 0 and not self.soundManager:isPlaying("music") and musicTime < 1000 and self.score < 100 then
@@ -1364,7 +1374,7 @@ function Gameplay:draw()
         love.graphics.printf(localize("Press SPACE to skip intro"), 0, Inits.GameWidth-50, 960, "right", 0, 2, 2)
     end
 
-    love.graphics.rectangle("fill", self.bgLane.width+self.bgLane.x+50, Inits.GameHeight - 50, 25, -lerpedHealth * 5)
+    love.graphics.rectangle("fill", 0, 0, lerpedHealth * 5, 15)
 
     local pert = musicTime / self.lastNoteTime
     love.graphics.rectangle("fill", 0, Inits.GameHeight-25, Inits.GameWidth * pert, 25)
