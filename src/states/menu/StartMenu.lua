@@ -282,9 +282,7 @@ function StartMenu:draw()
     for i = 1, #balls do
         balls[i]:draw()
     end
-    for i = 1, #balls do
-        balls[i]:draw()
-    end
+
     love.graphics.push()
         love.graphics.scale(0.35, 0.35)
         love.graphics.setColor(1, 1, 1)
