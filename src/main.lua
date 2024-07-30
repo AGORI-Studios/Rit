@@ -236,6 +236,24 @@ function love.load(args)
 
     love.keyboard.setKeyRepeat(true)
 
+    MAINGAME = {
+        shaderList = {},
+        curShader = "",
+        canvas = nil,
+        getShader = function(self, name)
+            return self.shaderList[name or self.curShader]
+        end
+    }
+    
+    if love.graphics.getSupportedShader() then
+        MAINGAME.shaderList["Split"] = love.graphics.newShader("shaders/Split.glsl")
+        MAINGAME.shaderList["3D"] = love.graphics.newShader("shaders/3D.glsl")
+
+       --[[  MAINGAME.shaderList["3D"]:send("xrot", 15/2)
+        MAINGAME.shaderList["3D"]:send("zpos", 0.5)
+        MAINGAME.shaderList["3D"]:send("ypos", 0.25) ]]
+    end
+
     -- Lastly, switch to the preloader screen to preload all of our needed assets
     state.switch(states.screens.PreloaderScreen, args)
 end
@@ -397,7 +415,11 @@ function love.draw()
     love.graphics.setCanvas()
 
     -- ratio
-   if os ~= "Android" and os ~= "iOS" then
+    if love.graphics.getSupportedShader() then
+        ---@diagnostic disable-next-line: undefined-global
+        love.graphics.setShader(MAINGAME.shaderList[MAINGAME.curShader])
+    end
+    if os ~= "Android" and os ~= "iOS" then
         local ratio = 1
         ratio = math.min(love.graphics.getWidth()/Inits.GameWidth, love.graphics.getHeight()/Inits.GameHeight)
         love.graphics.setColor(1,1,1,1)
@@ -408,6 +430,9 @@ function love.draw()
         love.graphics.setColor(1,1,1,1)
         love.graphics.draw(gameScreen, 0, 0, 0, ratioX, ratioY)
     end 
+    if love.graphics.getSupportedShader() then
+        love.graphics.setShader()
+    end
 
     -- draw Popup.popups
     for _, popup in ipairs(Popup.popups) do

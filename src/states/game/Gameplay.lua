@@ -67,6 +67,8 @@ Gameplay.eventTimers = {}
 
 Gameplay.playfieldVertSprites = {}
 
+Gameplay.playfieldsCanvas = love.graphics.newCanvas(1920, 1080)
+
 local lerpedScore = 0
 local lerpedAccuracy = 0
 local lerpedRating = 0
@@ -141,6 +143,15 @@ function Gameplay:reset()
     self.firstNoteTime = 0
     self.hasSkipPeriod = false
     self.hitTimings = {}
+
+    self.curShader = ""
+    self.shaderList = {
+    }
+    if love.graphics.getSupportedShader() then
+        self.shaderList = {
+            ["Split"] = love.graphics.newShader("shaders/Split.glsl")
+        }
+    end
 
     self.storyBoardSprites = {
         Background = Group(),
@@ -1268,6 +1279,10 @@ function Gameplay:substateReturn(restarted, leftGame)
     self.updateTime = true
 end
 
+function Gameplay:getShader(name)
+    return self.shaderList[name or self.curShader]
+end
+
 function Gameplay:draw()
     if self.background then
         -- background dim is 0-1, 0 being no dim, 1 being full backgroun dim
@@ -1335,6 +1350,9 @@ function Gameplay:draw()
         love.graphics.pop()
     love.graphics.pop()
 
+    local lastCanvas = love.graphics.getCanvas()
+    love.graphics.setCanvas(self.playfieldsCanvas)
+    love.graphics.clear()
     for _, playfieldVertSprite in ipairs(self.playfieldVertSprites) do
         playfieldVertSprite:draw()
     end
@@ -1344,6 +1362,20 @@ function Gameplay:draw()
         if member.draw then
             member:draw()
         end
+    end
+
+    love.graphics.setCanvas(lastCanvas)
+
+    local lastShader
+    if love.graphics.getSupportedShader() then
+        lastShader = love.graphics.getShader()
+        love.graphics.setShader(self.shaderList[self.curShader])
+    end
+
+    love.graphics.draw(self.playfieldsCanvas)
+
+    if love.graphics.getSupportedShader() then
+        love.graphics.setShader(lastShader)
     end
 
     self.hitTimeLines:draw()
@@ -1474,6 +1506,8 @@ end
 function Gameplay:exit()
     musicTime = 0
     currentController = menuController
+    MAINGAME.curShader = ""
+    self.curShader = ""
 end
 
 return Gameplay

@@ -52,6 +52,8 @@ function Modscript:reset()
     modArray = {}
     timeline = {}
 
+    GAME = states.game.Gameplay
+
     function SetValue(name, val, playfield)
         local playfield = playfield or -1
 
@@ -85,6 +87,9 @@ function Modscript:reset()
     end
     function QueueSet(...)
         Modscript:queueSet(...)
+    end
+    function QueueFunc(...)
+        Modscript:queueFunc(...)
     end
 
     function CreatePlayfield(...)
@@ -263,6 +268,19 @@ function Modscript:queueSet(beat, modName, val, playfield)
             end
         })
     end
+end
+
+function Modscript:queueFunc(beat, func)
+    table.insert(timeline, {
+        startBeat = beat,
+        func = func,
+        finished = false,
+
+        run = function(self, curBeat)
+            self.finished = true
+            self.func()
+        end
+    })
 end
 
 function Modscript:queueEaseP(beat, endBeat, modName, percent, easeStyle, playfield, startVal)
