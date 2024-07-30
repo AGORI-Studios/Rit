@@ -36,7 +36,7 @@ function Beat:getPos(time, visualDiff, timeDiff, beat, pos, data, playfield, obj
 
     local shift = 40 * amount * math.sin((visualDiff / 30) + math.pi)
     pos.x = pos.x + self:getValue(playfield) * shift
-    
+
     return pos
 end
 

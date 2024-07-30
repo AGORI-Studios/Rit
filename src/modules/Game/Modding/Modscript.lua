@@ -60,16 +60,21 @@ function Modscript:reset()
                 SetValue(name, val, i)
             end
         else
-            local mod = register[name]
+            local lmod = register[name]
+            local mod = lmod.parent or lmod
             local name = mod.name
 
             if not activeMods[playfield] then activeMods[playfield] = {} end
-            register[name]:setValue(val, playfield)
-            if register[name].parent then
-                register[name].parent:setSubmodValue(name, val, playfield)
+            mod:setValue(val, playfield)
+            if lmod.parent then
+                lmod.parent:setSubmodValue(lmod.name, val, playfield)
             end
 
             if not table.find(activeMods[playfield], name) then
+                --[[ table.insert(activeMods[playfield], name) ]]
+                if lmod.name ~= name then
+                    table.insert(activeMods[playfield], lmod.name)
+                end
                 table.insert(activeMods[playfield], name)
             end
         end
@@ -87,6 +92,9 @@ function Modscript:reset()
         for _, mod in ipairs(register) do
             if mod.type == "Mod" then
                 table.insert(mod.percents, 0)
+                for _, submod in ipairs(mod.submods) do
+                    table.insert(submod.percents, 0)
+                end
             else
                 for _, submod in ipairs(mod.submods) do
                     table.insert(submod.percents, 0)
@@ -114,16 +122,30 @@ function Modscript:load(script)
         ConfusionModifier,
         DrunkModifier,
         ReverseModifier,
-        BeatModifier
+        BeatModifier,
+        TransformModifier,
+        MoveModifier
     }
 
     for _, mod in ipairs(mods) do
         __quickRegister(mod())
     end
 
+    local chunk 
+    local ok = Try(
+        function()
+            chunk = love.filesystem.load(script)()
+        end,
+        function(e)
+            print("FAILED TO LOAD MODSCRIPT | " .. e)
+        end
+    )
+
+    self.chunk = chunk
+
     --[[ QueueSet(1, "Drunk", 1, 1) ]]
 
-    return false
+    return ok
 end
 
 function Modscript:update(dt)
@@ -162,7 +184,7 @@ function Modscript:getPos(time, diff, tDiff, beat, data, playfield, obj, exclusi
     local exclusions = exclusions or {}
     local pos = pos or Point()
 
-    pos.x = __defaultPositions[1][data].x
+    pos.x = __defaultPositions[math.clamp(1, playfield, #__defaultPositions)][data].x
     pos.y = strumY + diff
     pos.z = 0
 
@@ -191,7 +213,7 @@ function Modscript:queueEase(beat, endBeat, modName, val, easeStyle, playfield, 
             endBeat = endBeat,
             length = endBeat - beat,
             easeFunc = ease,
-            startVal = startVal or 0,
+            startVal = startVal,
             endVal = val,
             modName = modName,
             finished = false,
@@ -208,10 +230,11 @@ function Modscript:queueEase(beat, endBeat, modName, val, easeStyle, playfield, 
                         self.startVal = register[self.modName]:getValue(self.playfield)
                     end
 
-                    local passed = curBeat - self.startBeat
-                    local v = self:ease(self.easeFunc, passed, self.startVal, self.length, self.length)
+                    local passed = (curBeat - self.startBeat) / self.length
+                    local change = self.endVal - self.startVal
+                    local v = self:ease(self.easeFunc, math.clamp(0, passed, 1), self.startVal, change, 1)
                     SetValue(self.modName, v, self.playfield)
-                else
+                elseif curBeat > self.endBeat then
                     self.finished = true
                     SetValue(self.modName, self.endVal, self.playfield)
                 end

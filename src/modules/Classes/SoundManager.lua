@@ -147,6 +147,7 @@ function SoundManager:getBPM(name)
 end
 
 function SoundManager:getBeat(name)
+    if not self.channel[name] then return end
     return self.channel[name].beat
 end
 

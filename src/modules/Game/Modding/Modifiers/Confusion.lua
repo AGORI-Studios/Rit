@@ -6,22 +6,23 @@ Confusion.parent = nil
 Confusion.active = false
 
 function Confusion:updateNote(beat, note, pos, playfield)
-    note.angle = self:getValue(playfield) + self:getSubmodValue("confusion" .. note.data, playfield) + 
-        self:getSubmodValue("note" .. note.data .. "Angle")
+    local playfield = playfield or 1
+    note.angle = self:getValue(playfield) + self:getSubmodValue("Confusion" .. note.data, playfield) + 
+        self:getSubmodValue("Note" .. note.data .. "Angle")
 end
 
 function Confusion:updateReceptor(beat, receptor, pos, playfield)
-    receptor.angle = self:getValue(playfield) + self:getSubmodValue("confusion" .. receptor.data, playfield) + 
-    self:getSubmodValue("receptor" .. receptor.data .. "Angle")
+    receptor.angle = self:getValue(playfield) + self:getSubmodValue("Confusion" .. receptor.data, playfield) + 
+    self:getSubmodValue("Receptor" .. receptor.data .. "Angle")
 end
 
 function Confusion:getSubmods()
-    local subMods = {"noteAngle", "receptorAngle"}
+    local subMods = {"NoteAngle", "ReceptorAngle"}
 
     for i = 1, states.game.Gameplay.mode do
-        table.insert(subMods, "note" .. i .. "Angle")
-        table.insert(subMods, "receptor" .. i .. "Angle")
-        table.insert(subMods, "confusion" .. i)
+        table.insert(subMods, "Note" .. i .. "Angle")
+        table.insert(subMods, "Receptor" .. i .. "Angle")
+        table.insert(subMods, "Confusion" .. i)
     end
 
     return subMods

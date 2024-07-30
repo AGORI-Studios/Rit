@@ -22,7 +22,8 @@ function Modifier:getOrder()
 end
 
 function Modifier:getValue(playfield)
-    if not self.percents[playfield] then self.percents[playfield] = 0 end
+    local playfield = playfield or 1
+    if self.percents[playfield] == nil then self.percents[playfield] = 0 end
     return self.percents[playfield]
 end
 
@@ -85,7 +86,8 @@ end
 function Modifier:updateNote()
 end
 
-function Modifier:getPos()
+function Modifier:getPos(time, visualDiff, timeDiff, beat, pos, data, playfield, obj)
+    return pos
 end
 
 function Modifier:update()

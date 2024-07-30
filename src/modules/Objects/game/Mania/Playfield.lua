@@ -9,7 +9,7 @@ function Playfield:new(x, y, reversed)
     self.id = #states.game.Gameplay.playfields + 1
     self.lanes = {}
     self.mods = {}
-    self.offsets = {x = 0, y = 0, scale = {x = 1, y = 1}}
+    self.offset = {x = 0, y = 0, scale = {x = 1, y = 1}}
     self.alpha = 1
     self.canvas = love.graphics.newCanvas(1920, 1080)
     for i = 1, states.game.Gameplay.mode do
@@ -32,9 +32,9 @@ function Playfield:draw(notes, timingLines, scale)
         love.graphics.scale(scale, scale)
         love.graphics.translate(-1920/2, -1080/2)
         love.graphics.push()
-            love.graphics.scale(self.offsets.scale.x, self.offsets.scale.y)
+            love.graphics.scale(self.offset.scale.x, self.offset.scale.y)
             love.graphics.translate(self.x, self.y)
-            love.graphics.translate(self.offsets.x, self.offsets.y)
+            love.graphics.translate(self.offset.x, self.offset.y)
             love.graphics.scale(1, self.reversed and -1 or 1)
             if not states.game.Gameplay.ableToModscript then
                 love.graphics.setColor(0,0,0, self.alpha * Settings.options["General"].scrollUnderlayAlpha)

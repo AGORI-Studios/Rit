@@ -1014,7 +1014,9 @@ function Gameplay:update(dt)
                 self.background:play(musicTime/1000)
             end
             musicTime = musicTime + (love.timer.getTime() * 1000) - (previousFrameTime or (love.timer.getTime()*1000))
-            self.soundManager:update(dt)
+            if self.soundManager:isPlaying("music") then
+                self.soundManager:update(dt)
+            end
             previousFrameTime = love.timer.getTime() * 1000
         end
         if musicTime <= self.firstNoteTime and self.hasSkipPeriod and input:pressed("Skip_Key") then
@@ -1048,6 +1050,7 @@ function Gameplay:update(dt)
             local tp = self.timingPoints[1]
 
             if (tp.StartTime or 0) <= musicTime then
+                print(tp.Bpm)
                 self.soundManager:setBPM("music", (tp.Bpm or 120))
                 table.remove(self.timingPoints, 1)
             end
