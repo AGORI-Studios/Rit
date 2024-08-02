@@ -2,8 +2,8 @@ local RequestJsonData = {}
 local env = require("lib.env")
 local data = env.parse("assets/data/api/.env")
 
-local API_SERVER_URL = "http://localhost:3000/api/v1/" -- development : localhost:3000
---                                                     -- production  : api.rit.agori.dev
+local API_SERVER_URL = "http://127.0.0.1:8090/api/" -- development : 127.0.0.1:8090
+--                                                         -- production  : api.rit.agori.dev
 
 x,d,y,RequestJsonData.setAPIAccessKey=nil,nil,nil,nil
 local connected = false
@@ -12,7 +12,7 @@ function RequestJsonData.testConnection()
     if not https then
         return
     end
-    local code = https.request(API_SERVER_URL .. "test_connection")
+    local code = https.request(API_SERVER_URL)
     if code == 200 then
         connected = true
     else

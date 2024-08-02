@@ -496,7 +496,7 @@ function love.wheelmoved(x, y)
         Settings.options["Audio"].global = masterVolume
         if GLOBAL_slider then
             GLOBAL_slider.value = Settings.options["Audio"].global
-    end
+        end
     end
 end
 
