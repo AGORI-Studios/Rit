@@ -137,6 +137,9 @@ function ResultsScreen:enter(_, ...)
         end
         love.graphics.setPointSize(lastPointSize)
     end)
+
+    Header:recaclulateOverallRating()
+    SaveUserData.SaveData(_USERDATA)
 end
 
 function ResultsScreen:update(dt)

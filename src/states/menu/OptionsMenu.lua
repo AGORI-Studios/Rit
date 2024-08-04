@@ -568,7 +568,7 @@ function OptionsMenu:draw()
 end
 
 function OptionsMenu:exit()
-    
+    Settings.saveOptions()
 end
 
 

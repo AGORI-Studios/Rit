@@ -61,15 +61,21 @@ end
 
 function SongButton:draw(transX, transY, current, total)
     -- return if not on screen
-    if self.y + (transX or 0) < -self.height-600 or self.y + (transY or 0) > Inits.GameHeight+self.height+600 then return end
+    if self.y + (transX or 0) < -self.height or self.y + (transY or 0) > Inits.GameHeight+self.height then 
+        if curTab == "songs" then
+            self.extendedChildren[1].y = self.y + self.height - 63
+        end
+
+        return
+    end
 
     if curTab == "songs" then
         if self.selected then
             self.extendedChildren[1].y = math.fpsLerp(self.extendedChildren[1].y, self.y + self.height - 45, 25)
-            self.x = math.fpsLerp(self.x, 0, 25)
+            self.x = math.fpsLerp(self.x, 0, 12.5)
         elseif not self.selected then
             self.extendedChildren[1].y = math.fpsLerp(self.extendedChildren[1].y, self.y + self.height - 63, 25)
-            self.x = math.fpsLerp(self.x, -125, 25)
+            self.x = math.fpsLerp(self.x, -125, 12.5)
         end
 
         -- I am so sorry for this code

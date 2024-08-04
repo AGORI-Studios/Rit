@@ -184,6 +184,8 @@ local function CheckAprilFools()
     return CurrentDateTime.month == 4 and CurrentDateTime.day == 1
 end
 
+__FORCE_MOUSERELEASED_CANCEL__ = false
+
 function love.load(args)
     __NOTE_OBJECT_WIDTH = 0 -- Determined from the width of the noteskins note object.
 
@@ -462,9 +464,6 @@ function love.quit()
     if discordRPC then
         discordRPC.shutdown()
     end
-
-    Settings.saveOptions()
-    SaveUserData.SaveData(_USERDATA)
 
     if Steam and networking.connected and networking.currentServerData then
         networking.hub:publish({

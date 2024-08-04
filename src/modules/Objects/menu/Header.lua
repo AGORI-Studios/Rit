@@ -39,6 +39,13 @@ function Header:new()
     return self
 end
 
+function Header:recaclulateOverallRating()
+    self.userData.OverallRating = 0
+    for i, v in ipairs(_USERDATA.allRatings) do -- TODO: Implement this into the API.
+        self.userData.OverallRating = self.userData.OverallRating + v * math.pow(0.925, i - 1)
+    end 
+end
+
 function Header:mousepressed(x, y, b)
     if gear:isHovered(x, y) then
         if love.system.getSystem() ~= "Mobile" then

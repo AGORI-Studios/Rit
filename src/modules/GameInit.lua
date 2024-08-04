@@ -509,7 +509,10 @@ function love.mousepressed(x, y, b, istouch, presses)
 end
 
 function love.mousereleased(x, y, b, istouch, presses)
-    if istouch then return end
+    if istouch or __FORCE_MOUSERELEASED_CANCEL__ then 
+        __FORCE_MOUSERELEASED_CANCEL__ = false
+        return 
+    end
     state.mousereleased(x, y, b)
     _AUDIOSLIDER:mousereleased(toGameScreen(x, y))
     --currentController:touchreleased(0, x, y, 0, 0, 0)

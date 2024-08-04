@@ -336,6 +336,7 @@ function SongMenu:mousepressed(x, y, b)
     if state.inSubstate then return end
     local x, y = toGameScreen(x, y)
     local canc = Header:mousepressed(x, y, b)
+    __FORCE_MOUSERELEASED_CANCEL__ = canc
     if canc then return end
 
     mouseDown = true
@@ -347,13 +348,47 @@ function SongMenu:mousemoved(x, y, dx, dy)
 
         if curMove < 0 then
             if curMove <= moveThresUp then
-                curSelected = math.clamp(1, curSelected + 1, #songButtons)
+                if curTab == "songs" then
+                    curSelected = math.clamp(1, curSelected + 1, #songButtons)
+                    lastCurSelected = curSelected
+                    if songTimer then Timer.cancel(songTimer) end
+                    songTimer = Timer.after(1, function()
+                        if songButtons[lastCurSelected] then
+                            playSelectedSong(songButtons[lastCurSelected], songButtons[lastCurSelected].name)
+                        end
+                    end)
+                elseif curTab == "diffs" then
+                    if curButton then
+                        curSelected = math.clamp(1, curSelected + 1, #curButton.children)
+                        self.songName = curButton.name
+                        self.songDiff = curButton.children[curSelected].name
+                    else
+                        curSelected = 1
+                    end
+                end
                 curMove = 0
                 didAMove = true
             end
         elseif curMove > 0 then
             if curMove >= moveThresDown then
-                curSelected = math.clamp(1, curSelected - 1, #songButtons)
+                if curTab == "songs" then
+                    curSelected = math.clamp(1, curSelected - 1, #songButtons)
+                    lastCurSelected = curSelected
+                    if songTimer then Timer.cancel(songTimer) end
+                    songTimer = Timer.after(1, function()
+                        if songButtons[lastCurSelected] then
+                            playSelectedSong(songButtons[lastCurSelected], songButtons[lastCurSelected].name)
+                        end
+                    end)
+                elseif curTab == "diffs" then
+                    if curButton then
+                        curSelected = math.clamp(1, curSelected - 1, #curButton.children)
+                        self.songName = curButton.name
+                        self.songDiff = curButton.children[curSelected].name
+                    else
+                        curSelected = 1
+                    end
+                end
                 curMove = 0
                 didAMove = true
             end
@@ -364,8 +399,6 @@ end
 function SongMenu:mousereleased(x, y, b)
     if state.inSubstate then return end
     local x, y = toGameScreen(x, y)
-    local canc = Header:mousepressed(x, y, b)
-    if canc then return end
     mouseDown = false
     if didAMove then
         didAMove = false
@@ -374,7 +407,6 @@ function SongMenu:mousereleased(x, y, b)
 
     if b == 1 then
         y = y - lerpedSongPos
-
         if searchCatTab:isHovered(x, y) and showCat then
             typing = not typing
         end
