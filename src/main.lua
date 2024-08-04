@@ -144,7 +144,7 @@ DRAW_VIRTUAL_CONTROLLER = love.system.getSystem() == "Mobile"
 if love.system.getOS() == "Windows" then
     Try(
         function()
-           --Steam = require("lib.sworks.main")
+           Steam = require("lib.sworks.main")
             --[[ error("No Steamworks for Windows for GITHUB builds") ]]
         end,
         function()
@@ -259,6 +259,7 @@ function love.load(args)
 end
 
 function love.update(dt)
+    threadLoader:update()
     if Steam and networking.connected then
         networking.frameCount = networking.frameCount + 1
         if networking.frameCount == 60 then

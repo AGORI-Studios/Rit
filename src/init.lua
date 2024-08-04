@@ -7,5 +7,5 @@ return {
     WindowWidth = 1280,
     WindowHeight = 720,
 
-    NetworkingEnabled = false
+    NetworkingEnabled = true
 }

@@ -62,16 +62,22 @@ local noobhub = {
 				return false;
 			end
 			threadLoader.encodeJSON(cache, "encodedJSON", message.message)
+			return Try(
+				function()
+					--[[ self.callback(json.decode(message)) ]]
+					local data = json.encode(message.message)
 
-			threadLoader.start(function()
-				local send_result, message, num_bytes = self.sock:send("__JSON__START__"..cache.encodedJSON.."__JSON__END__")
-				if (send_result == nil) then
-					print("Network publish error: "..message..'  sent '..num_bytes..' bytes');
-					if (message == 'closed') then  self:reconnect() end
-					return false;
+					local send_result, message, num_bytes = self.sock:send("__JSON__START__"..data.."__JSON__END__")
+					if (send_result == nil) then
+						print("Network publish error: "..message..'  sent '..num_bytes..' bytes');
+						if (message == 'closed') then self:reconnect() end
+						return false;
+					end
+					return true
+				end,
+				function()
 				end
-				return true
-			end)
+			)
 		end
 
 		function self:enterFrame()
@@ -96,11 +102,19 @@ local noobhub = {
 							local message = string.sub(self.buffer, start+15, finish-1)
 							self.buffer = string.sub(self.buffer, 1, start-1)  ..   string.sub(self.buffer, finish + 13 ) -- cutting our message from buffer
 							local data
-							threadLoader.decodeJSON(cache, "decodedJSON", message)
+							print(message)
+							Try(
+								function()
+									self.callback(json.decode(message))
+								end,
+								function()
+								end
+							)
 							
-							threadLoader.start(function()
+							
+							--[[ threadLoader.start(function()
 								self.callback(cache.decodedJSON)
-							end)
+							end) ]]
 						else
 							break
 						end

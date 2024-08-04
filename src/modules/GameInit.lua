@@ -105,7 +105,7 @@ function GI.LoadLibraries()
                         if networking.currentServerID and message.id == networking.currentServerData.id then
                             networking.inMultiplayerGame = true
                             local song = getSongFromNameAndDiff(networking.currentServerData.currentSong.songName, networking.currentServerData.currentSong.songDiff)
-                            --print("Starting game with song: " .. tostring(song))
+                            print("Starting game with song: " .. tostring(song))
                             local songPath = song.path
                             local chartVer = song.type
                             local folderPath = song.folderPath

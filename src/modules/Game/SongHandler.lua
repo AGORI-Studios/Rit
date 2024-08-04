@@ -771,9 +771,9 @@ end
 
 function getSongFromNameAndDiff(name, diff)
     for songName, song in pairs(songList) do
-        if songName == name then
+        if song.title:strip() == name:strip() then
             for diffName, diffData in pairs(song) do
-                if diffName == diff then
+                if diffName:strip() == diff:strip() then
                     return diffData
                 end
             end
