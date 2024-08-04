@@ -1111,9 +1111,9 @@ function Gameplay:update(dt)
                     if musicTime - ho.time > self.objectKillOffset and not ho.wasGoodHit then
                         ho.active = false
                         ho.visible = false
-                        ho:kill()
+                        if ho.kill then ho:kill() end
                         self.hitObjects:remove(ho)
-                        ho:destroy()
+                        if ho.destroy then ho:destroy() end
                         self:doJudgement(10000, false, false, true)
                     end
                 end
@@ -1180,7 +1180,7 @@ function Gameplay:keyPressed(key)
             local sortedNotesList = {}
 
             for _, note in ipairs(self.hitObjects.members) do
-                if note.canBeHit and not note.tooLate and not note.wasGoodHit and not note.isSustainNote then
+                if note.canBeHit and not note.tooLate and not note.wasGoodHit and not note.isSustainNote and note.type == 1 then
                     if key == note.data then
                         table.insert(sortedNotesList, note)
                     end
@@ -1254,11 +1254,15 @@ function Gameplay:keyDown(key)
     self.inputsArray[key] = true
 
     for _, ho in ipairs(self.hitObjects.members) do
-        if ho.data == key and not ho.moveWithScroll then -- HOLD NOTE
+        if ho.data == key and not ho.moveWithScroll and ho.type == 1 then -- HOLD NOTE
             -- if in a distance of 15ms, then remove note
             if ho.endTime - musicTime <= -15 then
                 ho.visible = false
                 break
+            end
+        elseif ho.type == 2 then
+            if math.abs(ho.time - musicTime) < 15 then
+                self:goodNoteHit(ho, 0)
             end
         end
     end
@@ -1452,7 +1456,7 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName, for
 
     local lastNoteTime = 0
     for _, note in ipairs(self.unspawnNotes) do
-        local time = ((note.endTime > 0 and note.endTime > note.time) and note.endTime) or note.time
+        local time = (((note.endTime or 0) > 0 and (note.endTime or 0) > note.time) and (note.endTime or 0)) or note.time
         if time > lastNoteTime then
             lastNoteTime = time
         end

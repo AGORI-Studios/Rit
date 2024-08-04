@@ -46,7 +46,7 @@ function fluXisLoader.load(chart, folderPath_, diffName, forNPS)
         if endTime == startTime then endTime = 0 end -- no.
         local lane = hitObject.lane or hitObject.Lane or 1
         local n_Type = hitObject.type or hitObject.Type or 0 -- 0 is a normal note, 1 is a "catch" (TODO: Implement this)
-        if n_Type ~= 0 then goto continue end
+        if n_Type ~= 0 and n_Type ~= 1 then goto continue end
         local hitsound = hitObject.hitsound or ":normal"
 
         if lane > states.game.Gameplay.mode then
@@ -58,7 +58,12 @@ function fluXisLoader.load(chart, folderPath_, diffName, forNPS)
         if not startTime then goto continue end
 
         if not forNPS then
-            local ho = HitObject(startTime, lane, endTime)
+            local ho --= HitObject(startTime, lane, endTime)
+            if n_Type == 0 then
+                ho = HitObject(startTime, lane, endTime)
+            elseif n_Type == 1 then
+                ho = CatchObject(startTime, lane)
+            end
             ho.keySounds = {hitsound}
             table.insert(states.game.Gameplay.unspawnNotes, ho)
         else

@@ -294,6 +294,7 @@ end
 function GI.LoadObjects()
     StrumObject = require("modules.Objects.game.Mania.StrumObject")
     HitObject = require("modules.Objects.game.Mania.HitObject")
+    CatchObject = require("modules.Objects.game.Mania.CatchObject")
     Playfield = require("modules.Objects.game.Mania.Playfield")
     TimingLine = require("modules.Objects.game.Mania.TimingLine")
     HitTimeLine = require("modules.Objects.game.Mania.HitTimeLine")
