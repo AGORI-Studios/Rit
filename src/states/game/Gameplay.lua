@@ -994,6 +994,18 @@ function Gameplay:update(dt)
             end
             if Steam and networking.connected and networking.currentServerData and networking.inMultiplayerGame then
                 switchState(states.menu.StartMenu, 0.3, nil, {score = self.score, accuracy = self.accuracy, misses = self.misses, maxCombo = self.maxCombo})
+                if networking.connected then
+                    networking.hub:publish({
+                        message = {
+                            action = "updateServerInfo_FORCEREMOVEUSER",
+                            id = networking.currentServerID,
+                            user = {
+                                steamID = tostring(SteamID),
+                                name = tostring(SteamUserName)
+                            }
+                        }
+                    })
+                end
                 MenuSoundManager:removeAllSounds()
                 self.soundManager:removeAllSounds()
             else
