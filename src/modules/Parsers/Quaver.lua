@@ -80,7 +80,7 @@ function quaverLoader.load(chart, folderPath, diffName, forNPS)
 
         if not forNPS then
             local ho = HitObject(startTime, lane, endTime)
-            ho.keySounds = hitObject.KeySounds or {}
+            ho.hitsound = hitObject.HitSound or ""
             table.insert(states.game.Gameplay.unspawnNotes, ho)
         else
             noteCount = noteCount + 1

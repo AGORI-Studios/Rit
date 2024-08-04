@@ -116,8 +116,14 @@ function Gameplay:reset()
     self.didTimer = false
     self.objectKillOffset = 350
     self.inputsArray = {false, false, false, false}
-    self.hitsound = love.audio.newSource(skin:format("hitsound.wav"), "static")
-    self.hitsound:setVolume(0.1)
+    --[[ self.hitsound = love.audio.newSource(skin:format("hitsound.wav"), "static")
+    self.hitsound:setVolume(0.1) ]]
+    self.hitsounds = {
+        ["Default"] = love.audio.newSource(skin:format("sounds/sound-hit.wav"), "static"),
+        ["Whistle"] = love.audio.newSource(skin:format("sounds/sound-hitwhistle.wav"), "static"),
+        ["Finish"] = love.audio.newSource(skin:format("sounds/sound-hitfinish.wav"), "static"),
+        ["Clap"] = love.audio.newSource(skin:format("sounds/sound-hitclap.wav"), "static")
+    }
     self.judgement = nil
     self.comboGroup = Group()
     self.combo = 0
@@ -1152,14 +1158,11 @@ function Gameplay:resyncAudio()
 end
 
 function Gameplay:keyPressed(key)
-    local cloned = self.hitsound:clone()
-    cloned:setVolume((Settings.options["Audio"].hitsound/100) * skinData.Miscellaneous.hitsoundVolume)
-    cloned:play()
-    cloned:release()
-
     if not self.watchingReplay then
         table.insert(self.replay.hits, {key=key, time=musicTime, releasedTime=musicTime})
     end
+
+    local didANote = false
 
     if self.updateTime then
         if #self.hitObjects.members > 0 then
@@ -1193,12 +1196,20 @@ function Gameplay:keyPressed(key)
                     end
 
                     if not notesStopped then
+                        didANote = true
                         self:goodNoteHit(epicNote, math.round(epicNote.time - lastTime))
                     end
                     table.insert(pressNotes, epicNote)
                 end
             end
         end
+    end
+
+    if not didANote then
+        local cloned = self.hitsounds["Default"]:clone()
+        cloned:setVolume((Settings.options["Audio"].hitsound/100) * skinData.Miscellaneous.hitsoundVolume)
+        cloned:play()
+        cloned:release()
     end
 end
 
@@ -1251,6 +1262,7 @@ end
 function Gameplay:goodNoteHit(note, time)
     if not note.wasGoodHit then
         note.wasGoodHit = true
+        note:onHit()
 
         if not note.isSustainNote then
             self.combo = self.combo + 1

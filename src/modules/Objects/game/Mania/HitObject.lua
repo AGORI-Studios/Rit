@@ -44,6 +44,8 @@ function HitObject:new(time, data, endTime)
 
     self.x = self.x + (200) * (data-1)
 
+    self.hitsound = ""
+
     if self.endTime and self.endTime > self.time then
         local holdObj = VertSprite():load(skin:format("notes/" .. tostring(states.game.Gameplay.mode) .. "K/note" .. data .. "-hold.png"))
         holdObj.endTime = self.endTime
@@ -77,6 +79,40 @@ function HitObject:new(time, data, endTime)
     self.x = self.x + self.offsetX
 
     return self
+end
+
+function HitObject:onHit()
+    local gameplayState = states.game.Gameplay
+    local foundSound = false
+
+    if self.hitsound:find("Whistle") then
+        foundSound = true
+        local clone = gameplayState.hitsounds["Whistle"]:clone()
+        clone:setVolume((Settings.options["Audio"].hitsound/100) * skinData.Miscellaneous.hitsoundVolume)
+        clone:play()
+        clone:release()
+    end
+    if self.hitsound:find("Finish") then
+        foundSound = true
+        local clone = gameplayState.hitsounds["Finish"]:clone()
+        clone:setVolume((Settings.options["Audio"].hitsound/100) * skinData.Miscellaneous.hitsoundVolume)
+        clone:play()
+        clone:release()
+    end
+    if self.hitsound:find("Clap") then
+        foundSound = true
+        local clone = gameplayState.hitsounds["Clap"]:clone()
+        clone:setVolume((Settings.options["Audio"].hitsound/100) * skinData.Miscellaneous.hitsoundVolume)
+        clone:play()
+        clone:release()
+    end
+
+    if not foundSound then
+        local clone = gameplayState.hitsounds["Default"]:clone()
+        clone:setVolume((Settings.options["Audio"].hitsound/100) * skinData.Miscellaneous.hitsoundVolume)
+        clone:play()
+        clone:release()
+    end
 end
 
 function HitObject:update(dt)

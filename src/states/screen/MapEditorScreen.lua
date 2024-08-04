@@ -39,7 +39,7 @@ local utf8 = require("utf8")
 
 local musicTime = 0
 
-local hitsound = love.audio.newSource("defaultSkins/skinThrowbacks/hitsound.wav", "stream")
+local hitsound
 
 local exporting = false
 local exporting_CURTAG = "SongTitle"
@@ -119,6 +119,8 @@ function MapEditorScreen:enter(songPath)
     self.audioSource = nil
     self.backgroundData = nil
     self.waveformPoints = {}
+
+    hitsound = love.audio.newSource("defaultSkins/skinThrowbacks/sounds/sound-hit.wav", "stream")
 
     love.audio.stop()
 end
