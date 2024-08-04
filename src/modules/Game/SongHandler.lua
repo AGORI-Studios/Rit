@@ -770,12 +770,10 @@ function playSelectedSong(song, songName)
 end
 
 function getSongFromNameAndDiff(name, diff)
-    for songName, song in pairs(songList) do
-        if song.title:strip() == name:strip() then
-            for diffName, diffData in pairs(song) do
-                if diffName:strip() == diff:strip() then
-                    return diffData
-                end
+    for _, song in pairs(songList) do
+        for diffName, diffData in pairs(song) do
+            if diffName:strip() == diff:strip() and diffData.title == name then
+                return diffData
             end
         end
     end

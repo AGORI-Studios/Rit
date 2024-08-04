@@ -75,7 +75,8 @@ local noobhub = {
 					end
 					return true
 				end,
-				function()
+				function(e)
+					print(e)
 				end
 			)
 		end
@@ -102,12 +103,12 @@ local noobhub = {
 							local message = string.sub(self.buffer, start+15, finish-1)
 							self.buffer = string.sub(self.buffer, 1, start-1)  ..   string.sub(self.buffer, finish + 13 ) -- cutting our message from buffer
 							local data
-							print(message)
 							Try(
 								function()
 									self.callback(json.decode(message))
 								end,
-								function()
+								function(e)
+									print(e)
 								end
 							)
 							

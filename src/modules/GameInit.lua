@@ -39,7 +39,7 @@ function GI.LoadLibraries()
             networking.connected = networking.hub:subscribe({
                 channel = "main-channel",
                 callback = function(message)
-                    if message and (type(message) == "string" or type(message) == "number" or type(message) == "boolean") then
+                    if type(message) ~= "table" then 
                         return
                     end
                     --print("Received message: " .. json.encode(message))
@@ -105,7 +105,6 @@ function GI.LoadLibraries()
                         if networking.currentServerID and message.id == networking.currentServerData.id then
                             networking.inMultiplayerGame = true
                             local song = getSongFromNameAndDiff(networking.currentServerData.currentSong.songName, networking.currentServerData.currentSong.songDiff)
-                            print("Starting game with song: " .. tostring(song))
                             local songPath = song.path
                             local chartVer = song.type
                             local folderPath = song.folderPath
@@ -118,7 +117,9 @@ function GI.LoadLibraries()
                             states.game.Gameplay.songPath = songPath
                             states.game.Gameplay.folderpath = folderPath
                             states.game.Gameplay.difficultyName = diffName
+                            states.game.Gameplay.songRating = math.clamp(0, song.nps, 100)
                             switchState(states.game.Gameplay, 0.3, nil)
+                            MenuSoundManager:removeAllSounds()
 
                             networking.hub:publish({
                                 message = {
