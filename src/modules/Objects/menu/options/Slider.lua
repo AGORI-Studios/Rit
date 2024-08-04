@@ -20,7 +20,7 @@ function Slider:new(tag, value, optionTag, option, min, max)
     self.sliderXOffset = 250 -- Offset to the right
     self.sliderYOffset = 23 -- Offset down by 15 pixels
 
-    self.textXOffset = 0
+    self.textXOffset = 25
 
     self.keyDiff = 0.1
 
@@ -99,7 +99,7 @@ function Slider:draw()
     love.graphics.rectangle("fill", self.handleX, self.handleY, self.handleWidth, self.handleHeight)
     local lastFont = love.graphics.getFont()
     love.graphics.setFont(Cache.members.font["defaultBold"])
-    love.graphics.print(string.format("%.2f", self.value), self.x + self.sliderXOffset - 35 + self.textXOffset, self.y + self.sliderYOffset - 6)
+    love.graphics.printf(string.format("%.2f", self.value), self.x + self.sliderXOffset - 35 + self.textXOffset - 1920, self.y + self.sliderYOffset - 6, 1920, "right")
     love.graphics.setFont(lastFont)
 end
 

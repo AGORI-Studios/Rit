@@ -1,5 +1,15 @@
 local Settings = {}
 
+function __getScrollspeed(speed)
+    local factor = 1920 / 1366
+    return (speed / 10) / 20 * factor * 15
+end
+
+local function __calculateNewScrollspeed(oldSpeed)
+    local factor = 1920 / 1366
+    return (oldSpeed / (factor * 15)) * 20 * 10
+end
+
 Settings.options = {
     ["General"] = {
         downscroll = true,
@@ -71,7 +81,7 @@ Settings.options = {
 
     },
     ["Meta"] = {
-        __VERSION__ = 1
+        __VERSION__ = 2
     }
 }
 
@@ -106,6 +116,14 @@ function Settings.loadOptions()
         for j, _ in pairs(type) do
             Settings.options[i][j] = savedOptions[i][j]
         end
+    end
+
+    if Settings.options["Meta"].__VERSION__ < 2 then --  NEED TO UPDATE SCROLLSPEED
+        print("SCROLLSPEED UPDATE CHANGE")
+        Settings.options["Meta"].__VERSION__ = 2
+
+        -- Calculate the new scrollspeed
+        Settings.options["General"].scrollspeed = __calculateNewScrollspeed(Settings.options["General"].scrollspeed)
     end
 end
 

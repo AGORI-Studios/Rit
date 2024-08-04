@@ -381,7 +381,7 @@ function OptionsMenu:enter(last)
     NSV_switch = Switch("No SV", false, "General", "noScrollVelocity")
     NSV_switch.x, NSV_switch.y = 105, 400
 
-    SCROLLSPEED_slider = Slider("Scrollspeed", 1, "General", "scrollspeed", 0.1, 5)
+    SCROLLSPEED_slider = Slider("Scrollspeed", 1, "General", "scrollspeed", 1, 75)
     SCROLLSPEED_slider.x, SCROLLSPEED_slider.y = 105, 460
 
     BACKGROUNDDIM_slider = Slider("BG Dim", 0.5, "General", "backgroundDim", 0, 1)

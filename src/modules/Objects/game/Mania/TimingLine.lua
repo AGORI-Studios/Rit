@@ -18,7 +18,7 @@ function TimingLine:update(offset)
     self.y = self.targetY + (
         self.currentTrackPosition * (
             Modscript.downscroll and Settings.options["General"].scrollspeed or -Settings.options["General"].scrollspeed)
-            / states.game.Gameplay.trackRounding
+            / 100
         )
 end
 

@@ -23,7 +23,6 @@ Gameplay.members2 = {} -- judgements, combo, etc
 
 Gameplay.chartType = ""
 
-Gameplay.trackRounding = 100
 Gameplay.initialScrollVelocity = 1
 Gameplay.velocityPositionMakers = {}
 
@@ -368,12 +367,12 @@ function Gameplay:initializePositionMarkers()
     end
 
     -- Compute for Change Points
-    local position = math.floor(self.sliderVelocities[1].startTime * self.initialScrollVelocity * self.trackRounding)
+    local position = math.floor(self.sliderVelocities[1].startTime * self.initialScrollVelocity * 100)
     table.insert(self.velocityPositionMakers, position)
 
     for i = 2, #self.sliderVelocities do
         position = position + math.floor((self.sliderVelocities[i].startTime - self.sliderVelocities[i - 1].startTime)
-                                         * self.sliderVelocities[i - 1].multiplier * self.trackRounding)
+                                         * self.sliderVelocities[i - 1].multiplier * 100)
         table.insert(self.velocityPositionMakers, position)
     end
 end
@@ -388,14 +387,14 @@ end
 
 function Gameplay:GetPositionFromTime(time, index)
     if Modifiers.NSV then
-        return time * self.trackRounding
+        return time * 100
     end
     if index == 1 then
-        return time * self.initialScrollVelocity * self.trackRounding
+        return time * self.initialScrollVelocity * 100
     end
     index = index - 1
     local curPos = self.velocityPositionMakers[index]
-    curPos = curPos + (time - self.sliderVelocities[index].startTime) * (self.sliderVelocities[index].multiplier or 0) * self.trackRounding
+    curPos = curPos + (time - self.sliderVelocities[index].startTime) * (self.sliderVelocities[index].multiplier or 0) * 100
     return curPos
 end
 
@@ -656,11 +655,7 @@ function Gameplay:initPositions()
 end
 
 function Gameplay:getNotePosition(offset, initialPos)
-    if not Modscript.downscroll then
-        return strumY + (((initialPos or 0) - offset) * Settings.options["General"].scrollspeed / self.trackRounding)
-    else
-        return strumY - (((initialPos or 0) - offset) * Settings.options["General"].scrollspeed / self.trackRounding)
-    end
+    return strumY + ((((initialPos or 0) - offset) * __getScrollspeed(Settings.options["General"].scrollspeed) / 100) * (Modscript.downscroll and -1 or 1))
 end
 
 function Gameplay:setupTimingLines()
@@ -1435,8 +1430,11 @@ function Gameplay:draw()
 
     love.graphics.rectangle("fill", 0, 0, lerpedHealth * 5, 15)
 
+    love.graphics.setColor(0.2, 0.2, 0.2)
+    love.graphics.rectangle("fill", 0, Inits.GameHeight-10, Inits.GameWidth, 10)
+    love.graphics.setColor(1, 1, 1)
     local pert = musicTime / self.lastNoteTime
-    love.graphics.rectangle("fill", 0, Inits.GameHeight-25, Inits.GameWidth * pert, 25)
+    love.graphics.rectangle("fill", 0, Inits.GameHeight-10, Inits.GameWidth * pert, 10)
 
     love.graphics.setFont(lastFont)
 end
