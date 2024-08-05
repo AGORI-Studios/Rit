@@ -63,7 +63,7 @@ function Playfield:draw(notes, timingLines, scale)
                             if note.time - musicTime > 15000 then
                                 break
                             end
-                            local vis = -((musicTime - note.time) * Settings.options["General"].scrollspeed)
+                            local vis = -((musicTime - note.time) * __getScrollspeed(Settings.options["General"].scrollspeed))
                             if not note.moveWithScroll then
                                 vis = 0
                             end
@@ -75,7 +75,7 @@ function Playfield:draw(notes, timingLines, scale)
                             note.z = pos.z * 200
 
                             if #note.children > 0 then
-                                local vis = -((musicTime - note.endTime) * Settings.options["General"].scrollspeed)
+                                local vis = -((musicTime - note.endTime) * __getScrollspeed(Settings.options["General"].scrollspeed))
                                 local pos2 = Modscript:getPos(note.time, vis, note.endTime - musicTime, 
                                     states.game.Gameplay.soundManager:getBeat("music"), note.data, self.id, note.children[1], {}
                                 )

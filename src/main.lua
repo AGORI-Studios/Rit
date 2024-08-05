@@ -10,6 +10,10 @@ local o_Print = print
 
 local printChannelThreadOutput = love.thread.getChannel("ThreadChannels.Print.Output")
 function print(...)
+    local args = {...}
+    for _, arg in ipairs(args) do
+        arg = tostring(arg)
+    end
     printChannelThreadOutput:push({...})
 end
 
@@ -251,9 +255,10 @@ function love.load(args)
         MAINGAME.shaderList["Split"] = love.graphics.newShader("shaders/Split.glsl")
         MAINGAME.shaderList["3D"] = love.graphics.newShader("shaders/3D.glsl")
 
-       --[[  MAINGAME.shaderList["3D"]:send("xrot", 15/2)
+        --[[ MAINGAME.shaderList["3D"]:send("xrot", 15/2)
         MAINGAME.shaderList["3D"]:send("zpos", 0.5)
-        MAINGAME.shaderList["3D"]:send("ypos", 0.25) ]]
+        MAINGAME.shaderList["3D"]:send("ypos", 0.25)
+        MAINGAME.curShader = "3D" ]]
     end
 
     -- Lastly, switch to the preloader screen to preload all of our needed assets
