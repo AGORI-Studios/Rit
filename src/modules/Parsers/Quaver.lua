@@ -58,9 +58,11 @@ function quaverLoader.load(chart, folderPath, diffName, forNPS)
 
     for i = 1, #chart.SliderVelocities do
         local sliderVelocity = chart.SliderVelocities[i]
-        local startTime = sliderVelocity.StartTime / Modifiers.Rate
-        local multiplier = sliderVelocity.Multiplier
+        local startTime = sliderVelocity.StartTime 
         if not startTime then goto continue end
+        startTime = startTime / Modifiers.Rate
+        local multiplier = sliderVelocity.Multiplier
+        
         table.insert(states.game.Gameplay.sliderVelocities, {
             startTime = startTime, 
             multiplier = multiplier or 0
