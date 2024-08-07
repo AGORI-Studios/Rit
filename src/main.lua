@@ -250,7 +250,7 @@ function love.load(args)
             return self.shaderList[name or self.curShader]
         end
     }
-    
+
     if love.graphics.getSupportedShader() then
         MAINGAME.shaderList["Split"] = love.graphics.newShader("shaders/Split.glsl")
         MAINGAME.shaderList["3D"] = love.graphics.newShader("shaders/3D.glsl")

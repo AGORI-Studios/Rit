@@ -1438,9 +1438,9 @@ function Gameplay:draw()
 
     local lastFont = love.graphics.getFont()
     love.graphics.setFont(Cache.members.font["menuBold"])
-    love.graphics.printf(localize("Score: ") .. string.format("%07d", math.round(math.floor(lerpedScore))), 0, 0, 960, "right", 0, 2, 2)
-    love.graphics.printf(localize("Accuracy: ") .. string.format("%.2f", lerpedAccuracy) .. "%", 0, 50, 960, "right", 0, 2, 2)
-    love.graphics.printf(localize("Rating: ") .. string.format("%.2f", lerpedRating), 0, 100, 960, "right", 0, 2, 2)
+    love.graphics.printf(string.format("%07d", math.round(math.floor(lerpedScore))), 0, 0, 960, "right", 0, 2, 2)
+    love.graphics.printf(string.format("%.2f", lerpedAccuracy) .. "%", 0, 50, 960, "right", 0, 2, 2)
+    love.graphics.printf(string.format("%.2f", lerpedRating), 0, 100, 960, "right", 0, 2, 2)
 
     if musicTime <= self.firstNoteTime and self.hasSkipPeriod and input:pressed("Skip_Key") then
         love.graphics.printf(localize("Press SPACE to skip intro"), 0, Inits.GameWidth-50, 960, "right", 0, 2, 2)

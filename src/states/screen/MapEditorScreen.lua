@@ -212,41 +212,48 @@ function MapEditorScreen:keypressed(key)
     ::endfunction::
 end
 
+-- TODO: Multiple export types
+local exportType = "Rit"
+
 function MapEditorScreen:onMapSave()
     love.filesystem.createDirectory("songs/" .. self.map.meta.SongTitle .. "/")
     local exportString = ""
 
-    -- [Meta] section
-    exportString = exportString .. "[Meta]\n"
-    exportString = exportString .. "AudioFile:" .. self.map.meta.AudioFile .. "\n"
-    exportString = exportString .. "SongTitle:" .. self.map.meta.SongTitle .. "\n"
-    exportString = exportString .. "SongDiff:" .. self.map.meta.SongDiff .. "\n"
-    exportString = exportString .. "Background:" .. self.map.meta.Background .. "\n"
-    exportString = exportString .. "Banner:" .. self.map.meta.Banner .. "\n"
-    exportString = exportString .. "KeyAmount:" .. self.map.meta.KeyAmount .. "\n"
-    exportString = exportString .. "Creator:" .. self.map.meta.Creator .. "\n"
-    exportString = exportString .. "CreatorID:" .. self.map.meta.CreatorID .. "\n"
-    exportString = exportString .. "Artist:" .. self.map.meta.Artist .. "\n"
-    exportString = exportString .. "Tags:" .. self.map.meta.Tags .. "\n"
-    exportString = exportString .. "Description:" .. self.map.meta.Description .. "\n"
-    exportString = exportString .. "PreviewTime:" .. self.map.meta.PreviewTime .. "\n\n"
+    if exportType == "Rit" then
+        -- [Meta] section
+        exportString = exportString .. "[Meta]\n"
+        exportString = exportString .. "AudioFile:" .. self.map.meta.AudioFile .. "\n"
+        exportString = exportString .. "SongTitle:" .. self.map.meta.SongTitle .. "\n"
+        exportString = exportString .. "SongDiff:" .. self.map.meta.SongDiff .. "\n"
+        exportString = exportString .. "Background:" .. self.map.meta.Background .. "\n"
+        exportString = exportString .. "Banner:" .. self.map.meta.Banner .. "\n"
+        exportString = exportString .. "KeyAmount:" .. self.map.meta.KeyAmount .. "\n"
+        exportString = exportString .. "Creator:" .. self.map.meta.Creator .. "\n"
+        exportString = exportString .. "CreatorID:" .. self.map.meta.CreatorID .. "\n"
+        exportString = exportString .. "Artist:" .. self.map.meta.Artist .. "\n"
+        exportString = exportString .. "Tags:" .. self.map.meta.Tags .. "\n"
+        exportString = exportString .. "Description:" .. self.map.meta.Description .. "\n"
+        exportString = exportString .. "PreviewTime:" .. self.map.meta.PreviewTime .. "\n\n"
 
-    -- [Timings] section
-    exportString = exportString .. "[Timings]\n"
-    exportString = exportString .. "0:" .. self.map.curBPM .. "\n"
-    for _, timing in ipairs(self.map.timings) do -- TODO: Add a timings thingy a bobber
-        exportString = exportString .. timing.ms_starttime .. ":" .. timing.bpm .. "\n"
-    end
-    exportString = exportString .. "\n"
+        -- [Timings] section
+        exportString = exportString .. "[Timings]\n"
+        exportString = exportString .. "0:" .. self.map.curBPM .. "\n"
+        for _, timing in ipairs(self.map.timings) do -- TODO: Add a timings thingy a bobber
+            exportString = exportString .. timing.ms_starttime .. ":" .. timing.bpm .. "\n"
+        end
+        exportString = exportString .. "\n"
 
-    -- [Hits] section
-    exportString = exportString .. "[Hits]\n"
-    for _, note in ipairs(self.map.hits) do
-        exportString = exportString .. note.starttime .. ":" .. note.endtime .. ":" .. note.lane .. "\n"
+        -- [Hits] section
+        exportString = exportString .. "[Hits]\n"
+        for _, note in ipairs(self.map.hits) do
+            exportString = exportString .. note.starttime .. ":" .. note.endtime .. ":" .. note.lane .. "\n"
+        end
+        if #self.map.hits == 0 then
+            exportString = exportString .. "0:0:1"
+        end
     end
-    if #self.map.hits == 0 then
-        exportString = exportString .. "0:0:1"
-    end
+
+    local ext = ".ritc"
 
     love.filesystem.write("songs/" .. self.map.meta.SongTitle .. "/" .. self.map.meta.SongDiff .. ".ritc", exportString)
 
