@@ -829,7 +829,7 @@ end
 
 love._fps_cap = 500
 
---[[ function love.run()
+function love.run()
     ---@diagnostic disable-next-line: redundant-parameter
     if love.load then love.load(love.arg.parseGameArguments(arg), arg) end
 
@@ -876,7 +876,7 @@ love._fps_cap = 500
         end
         love.timer.sleep(next_time - cur_time)
     end
-end ]]
+end
 
 function love.setFpsCap(fps)
     love._fps_cap = fps or 500
