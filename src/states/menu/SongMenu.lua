@@ -242,12 +242,15 @@ function SongMenu:update(dt)
             local folderpath = diff.folderPath
             local filename = diff.filename
             local diffName = diff.name
-            local mode = diff.mode
+            local gamemode = diff.gameMode
+
             love.filesystem.mount("songs/" .. filename, "song")
+            
             states.game.Gameplay.chartVer = chartver
             states.game.Gameplay.songPath = songPath
             states.game.Gameplay.folderpath = folderpath
             states.game.Gameplay.difficultyName = diffName
+            states.game.Gameplay.gameMode = tonumber(gamemode)
             states.game.Gameplay.songRating = math.clamp(0, diff.nps, 100)
             switchState(states.game.Gameplay, 0.3, nil)
             MenuSoundManager:removeAllSounds()
@@ -430,9 +433,8 @@ function SongMenu:mousereleased(x, y, b)
                             states.game.Gameplay.songPath = songPath
                             states.game.Gameplay.folderpath = folderpath
                             states.game.Gameplay.difficultyName = diffName
-                            states.game.Gameplay.gameMode = gamemode
+                            states.game.Gameplay.gameMode = tonumber(gamemode)
                             states.game.Gameplay.songRating = math.clamp(0, diff.nps, 100)
-                            print(states.game.Gameplay.songRating)
                             switchState(states.game.Gameplay, 0.3, nil)
                             MenuSoundManager:removeAllSounds()
                         else
@@ -621,8 +623,14 @@ function SongMenu:draw()
             
             setFont("menuExtraBold")
             love.graphics.print("NPS: " .. nps, 1920/1.15+5, 315, 0, 1, 1)
-            local keymode = tostring((tonumber(curButton.keyMode) or "?")) .. "k"
-            love.graphics.print("Keymode: " .. keymode, 1920/1.15+5, 335, 0, 1, 1)
+            local gameMode = states.game.Gameplay.gameModes[curButton.gameMode]
+            local offsetY = 0
+            if gameMode == "Mania" then
+                offsetY = 20
+                local keymode = tostring((tonumber(curButton.keyMode) or "?")) .. "k"
+                love.graphics.print("Keymode: " .. keymode, 1920/1.15+5, 335, 0, 1, 1)
+            end
+            love.graphics.print("Mode: " .. (gameMode or "Mania"), 1920/1.15+5, 335 + offsetY, 0, 1, 1)
 
             love.graphics.setColor(0, 0, 0, 0.6)
             -- Description box

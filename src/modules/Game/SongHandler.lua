@@ -23,7 +23,8 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         local Tags = string.split(data[7], ", ")
                         local bpm = data[8]
                         local previewTime = data[9]
-                        local gamemode = data[10]
+                        local stripped = tostring(data[10]):strip()
+                        local gamemode = tonumber(stripped)
                         local mapID = data[11]
                         local nps = data[12]
                         local maptype = data[13]
@@ -180,8 +181,9 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         Tags = Tags:split(" ")
 
                         local Mode = fileData:match("Mode:(.-)\r?\n"):trim()
-                        if Mode ~= "3" then goto continue end
-                        local nps = Parsers["osu!"].load(path .."/" .. file .. "/" .. song, path .."/" .. file, difficultyName, true)
+                        if Mode ~= "3" and Mode ~= "1" then goto continue end
+
+                        local nps = Parsers["osu!"].load(path .."/" .. file .. "/" .. song, path .."/" .. file, difficultyName, true, tonumber(Mode))
                         songList[title..mapID] = songList[title..mapID] or {}
                         songList[title..mapID][difficultyName] = {
                             filename = file,
@@ -197,7 +199,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                             bpm = bpm,
                             previewTime = tonumber(previewTime or 0),
                             audioFile = path .."/" .. file .. "/" .. AudioFile,
-                            gameMode = Mode == "3" and 1 or -1,
+                            gameMode = Mode == "3" and 1 or Mode == "1" and 2,
                             mapID = mapID,
                             mode = keys
                         }
@@ -537,9 +539,9 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         end
                      end
                     Tags = Tags:split(" ")
-                    if Mode ~= "3" then goto continue end
+                    if Mode ~= "3" and Mode ~= "1" then goto continue end
 
-                    local nps = Parsers["osu!"].load("song/" .. song, "song", difficultyName, true)
+                    local nps = Parsers["osu!"].load("song/" .. song, "song", difficultyName, true, tonumber(Mode))
 
                     songList[title..mapID] = songList[title..mapID] or {}
                     songList[title..mapID][difficultyName] = {
@@ -557,7 +559,7 @@ function loadSongs(path) -- Gross yucky way of loading all of our songs in the g
                         bpm = bpm,
                         previewTime = tonumber(previewTime or 0),
                         audioFile = "song/" .. AudioFile,
-                        gameMode = Mode == "3" and 1 or -1,
+                        gameMode = Mode == "3" and 1 or Mode == "1" and 2,
                         mapID = mapID,
                         mode = keys
                     }
@@ -749,7 +751,7 @@ end
 function playSelectedSong(song, songName)
     if songName == (curPlayingSong or "") then return end
     curPlayingSong = songName
-    if not song or not song.children then return end
+    if not song or not song.children ~= nil then return end
     local diff = table.random(song.children)
 
     if not diff then return end

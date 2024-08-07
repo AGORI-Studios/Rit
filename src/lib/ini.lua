@@ -1,7 +1,7 @@
 local ini = {
     _NAME = "Ini",
-    _VERSION = "1.0.0",
-    _DESCRIPTION = "A simple ini parser",
+    _VERSION = "1.1.0",
+    _DESCRIPTION = "A simple ini parser with table support",
     _CREATOR = "GuglioIsStupid",
     _LICENSE = [[
         MIT LICENSE
@@ -44,6 +44,8 @@ function ini.parse(ini)
 
     local data = {}
     local currentSection = nil
+    local currentKey = nil
+    local isArray = false
 
     for _, line in ipairs(lines) do
         local comment = string.match(line, "^%s*;(.*)")
@@ -55,7 +57,29 @@ function ini.parse(ini)
             else
                 local name, value = string.match(line, "^%s*(.-)%s*=%s*(.-)%s*$")
                 if name and value then
-                    data[currentSection][name] = convert(value)
+                    currentKey = name
+                    if value:sub(1, 1) == "[" then
+                        isArray = true
+                        data[currentSection][currentKey] = {}
+                        local trimmedValue = value:match("^%s*%[(.*)%]%s*$")
+                        if trimmedValue and trimmedValue ~= "" then
+                            for _, v in ipairs(split(trimmedValue, ",")) do
+                                table.insert(data[currentSection][currentKey], convert(v:match("^%s*(.-)%s*$")))
+                            end
+                        end
+                    else
+                        data[currentSection][name] = convert(value)
+                    end
+                elseif isArray then
+                    if line:match("^%s*%]") then
+                        isArray = false
+                        currentKey = nil
+                    else
+                        local trimmedValue = line:match("^%s*(.-)%s*$")
+                        if trimmedValue and trimmedValue ~= "" then
+                            table.insert(data[currentSection][currentKey], convert(trimmedValue))
+                        end
+                    end
                 end
             end
         end
@@ -66,7 +90,6 @@ end
 
 function ini.save(tab, fileName)
     -- sort 0-Z
-    
     local newTab = {}
     for k, _ in pairs(tab) do
         table.insert(newTab, k)
@@ -83,7 +106,15 @@ function ini.save(tab, fileName)
         end
         table.sort(newTab2, function(a, b) return a < b end)
         for _, name in ipairs(newTab2) do
-            str = str .. name .. " = " .. tostring(tab[section][name]) .. "\n"
+            if type(tab[section][name]) == "table" then
+                str = str .. name .. " = [\n"
+                for _, v in ipairs(tab[section][name]) do
+                    str = str .. "    " .. tostring(v) .. "\n"
+                end
+                str = str .. "]\n"
+            else
+                str = str .. name .. " = " .. tostring(tab[section][name]) .. "\n"
+            end
         end
         str = str .. "\n"
     end

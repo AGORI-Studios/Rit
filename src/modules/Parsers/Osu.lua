@@ -3,6 +3,7 @@ local osuLoader = {}
 local currentBlockName = ""
 local folderPath
 local forNPS
+local mode
 
 local noteCount, endNoteTime = 0, 0
 
@@ -68,7 +69,7 @@ local function splitAndReplaceWithNull(line, delimiter)
     return result
 end
 
-function osuLoader.load(chart, folderPath_, diffName, _forNPS)
+function osuLoader.load(chart, folderPath_, diffName, _forNPS, _mode)
     noteCount, endNoteTime = 0, 0
     currentBoardObject = nil
     states.game.Gameplay.unspawnNotes = {}
@@ -80,6 +81,7 @@ function osuLoader.load(chart, folderPath_, diffName, _forNPS)
     curChart = "osu!"
     folderPath = folderPath_
     currentBlockName = ""
+    mode = _mode
 
     local storyboard = nil
 
@@ -148,7 +150,7 @@ end
 function osuLoader.processDifficulty(line)
     if forNPS then return end
     local key, value = line:match("^(%a+):%s?(.*)")
-    if key == "CircleSize" then
+    if key == "CircleSize" and mode == 1 then
         states.game.Gameplay.mode = tonumber(value)
         states.game.Gameplay.strumX = states.game.Gameplay.strumX - ((states.game.Gameplay.mode - 4.5) * (100 + Settings.options["General"].columnSpacing))
     end
@@ -433,14 +435,16 @@ function osuLoader.addHitObject(line)
     note.x = tonumber(split[1]) or 0
     note.y = tonumber(split[2]) or 0
     note.startTime = tonumber(split[3]) or 0
-    if states.game.Gameplay.gameMode == 2 then
+    if mode == 2 then
         states.game.Gameplay.mode = 2
         if bit.band(tonumber(split[5]) or 0, 10) ~= 0 then
             note.data = 2
         else
             note.data = 1
         end
-    else
+        note.isBig = bit.band(tonumber(split[5] or 0), 4) ~= 0
+        print("I AM SO CONFUSED")
+    elseif mode == 1 then
         note.data = math.max(1, math.min(states.game.Gameplay.mode, math.floor(note.x/512*states.game.Gameplay.mode+1))) or 1
     end
 
@@ -465,7 +469,13 @@ function osuLoader.addHitObject(line)
     if doAprilFools and Settings.options["Events"].aprilFools then note.data = 1; states.game.Gameplay.mode = 1 end
 
     if not forNPS then
-        local ho = HitObject(note.startTime, note.data, note.endTime)
+        local ho-- = HitObject(note.startTime, note.data, note.endTime)
+        if mode == 2 then
+            ho = TaikoObject(note.startTime, note.data, note.isBig)
+            print("HUH")
+        elseif mode == 1 then
+            ho = HitObject(note.startTime, note.data, note.endTime)
+        end
         table.insert(states.game.Gameplay.unspawnNotes, ho)
     else
         noteCount = noteCount + 1

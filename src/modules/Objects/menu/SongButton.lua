@@ -43,6 +43,8 @@ function SongButton:new(y, diffs, bmType, name, artist, creator, description, ta
         diffBtn.gameMode = gamemode
         diffBtn.nps = diff.nps
         diffBtn.keyMode = diff.mode
+        print(diff.gameMode)
+        diffBtn.gameMode = diff.gameMode
     
         table.insert(self.children, diffBtn)
     end

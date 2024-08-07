@@ -7,13 +7,6 @@ HitObject.canBeHit = false
 HitObject.tooLate = false
 HitObject.wasGoodHit = false
 
-HitObject.tail = {}
-HitObject.parent = nil
-
-HitObject.offsetX = 0
-HitObject.offsetY = 0
-
-HitObject.children = {}
 HitObject.moveWithScroll = true
 
 function HitObject:new(time, data, endTime) 
@@ -31,7 +24,6 @@ function HitObject:new(time, data, endTime)
 
     self.visible = true
 
-    self.children = {}
     self.moveWithScroll = true
 
     self:load(skin:format("notes/" .. tostring(states.game.Gameplay.mode) .. "K/note" .. data .. ".png"))
@@ -47,6 +39,7 @@ function HitObject:new(time, data, endTime)
     self.hitsound = ""
 
     if self.endTime and self.endTime > self.time then
+        self.children = {}
         local holdObj = VertSprite():load(skin:format("notes/" .. tostring(states.game.Gameplay.mode) .. "K/note" .. data .. "-hold.png"))
         holdObj.endTime = self.endTime
         holdObj.length = self.endTime - self.time -- hold time
@@ -75,8 +68,6 @@ function HitObject:new(time, data, endTime)
 
         table.insert(self.children, endObj)
     end
-
-    self.x = self.x + self.offsetX
 
     self.type = 1
 
@@ -134,8 +125,10 @@ function HitObject:draw(scale)
     if not self.visible then return end
     
     if self.y < 1080/scale and self.y > -400 / scale then
-        for _, child in ipairs(self.children) do
-            child:draw()
+        if self.children then
+            for _, child in ipairs(self.children) do
+                child:draw()
+            end
         end
         self.super.draw(self)
     end

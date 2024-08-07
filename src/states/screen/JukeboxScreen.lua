@@ -146,6 +146,9 @@ function Jukebox:enter()
     bg = Sprite(0, 0, "assets/images/ui/menu/playBG.png")
     for i = 1, 5 do
         balls[i] = Sprite(love.math.random(0, 1600), love.math.random(0, 720), "assets/images/ui/menu/BGball" .. i .. ".png")
+        balls[i].alpha = 0.71
+        balls[i].blend = "lighten"
+        balls[i].blendAlphaMode = "premultiplied"
         balls[i].ogX, balls[i].ogY = love.math.random(0, 1920 - balls[i].width), love.math.random(0, 1080 - balls[i].height)
         balls[i].velY = love.math.random(25, 50)
     end

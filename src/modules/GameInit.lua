@@ -292,12 +292,16 @@ function GI.ClearOSModule()
 end
 
 function GI.LoadObjects()
+    -- Mania
     StrumObject = require("modules.Objects.game.Mania.StrumObject")
     HitObject = require("modules.Objects.game.Mania.HitObject")
     CatchObject = require("modules.Objects.game.Mania.CatchObject")
-    Playfield = require("modules.Objects.game.Mania.Playfield")
+    Playfield = require("modules.Objects.game.Playfield")
     TimingLine = require("modules.Objects.game.Mania.TimingLine")
     HitTimeLine = require("modules.Objects.game.Mania.HitTimeLine")
+
+    -- Taiko
+    TaikoObject = require("modules.Objects.game.Taiko.TaikoObject")
 
     SongButton = require("modules.Objects.menu.SongButton")
     ServerButton = require("modules.Objects.menu.ServerButton")
@@ -825,7 +829,7 @@ end
 
 love._fps_cap = 500
 
-function love.run()
+--[[ function love.run()
     ---@diagnostic disable-next-line: redundant-parameter
     if love.load then love.load(love.arg.parseGameArguments(arg), arg) end
 
@@ -872,7 +876,7 @@ function love.run()
         end
         love.timer.sleep(next_time - cur_time)
     end
-end
+end ]]
 
 function love.setFpsCap(fps)
     love._fps_cap = fps or 500

@@ -59,8 +59,10 @@ Gameplay.allJudgements = {}
 
 Gameplay.gameModes = {
     "Mania",
+    "Taiko",
     "TBD"
 }
+Gameplay.gameMode = 1
 
 Gameplay.eventTimers = {}
 
@@ -610,7 +612,7 @@ function Gameplay:SVFactor()
     for i = 1, #self.unspawnNotes do
         local note = self.unspawnNotes[i]
         table.insert(importantTimestamps, note.time)
-        if note.children[1] then
+        if note.children ~= nil then
             table.insert(importantTimestamps, note.endTime)
         end
     end
@@ -655,7 +657,11 @@ function Gameplay:initPositions()
 end
 
 function Gameplay:getNotePosition(offset, initialPos)
-    return strumY + ((((initialPos or 0) - offset) * __getScrollspeed(Settings.options["General"].scrollspeed) / 100) * (Modscript.downscroll and -1 or 1))
+    if self.gameMode == 1 then
+        return strumY + ((((initialPos or 0) - offset) * __getScrollspeed(Settings.options["General"].scrollspeed) / 100) * (Modscript.downscroll and -1 or 1))
+    else
+        return 225 + ((((initialPos or 0) - offset) * __getScrollspeed(Settings.options["General"].scrollspeed) / 100))
+    end
 end
 
 function Gameplay:setupTimingLines()
@@ -693,39 +699,47 @@ function Gameplay:setupTimingLines()
     end
 end
 
-function Gameplay:updateNotePosition(offset, curTime)
+function Gameplay:updateNotePosition(offset)
     local spritePosition = 0
 
     for _, hitObject in ipairs(self.hitObjects.members) do
-
         if hitObject.time - musicTime > 15000 then -- Only update notes that are within 15 seconds of the current time to prevent lag issues from too many notes
             break
         end
 
         spritePosition = self:getNotePosition(offset, hitObject.initialTrackPosition)
 
-        if not hitObject.moveWithScroll then
-            -- go to strumY (it's a hold)
-            spritePosition = strumY
-        end
-
-        hitObject.y = spritePosition
-
-        if #hitObject.children > 0 then
-            -- Determine the hold notes position and scale
-            hitObject.children[1].y = spritePosition + 100
-            hitObject.children[2].y = spritePosition + 100
-
-            hitObject.endY = self:getNotePosition(offset, hitObject.endTrackPosition)
-            local pixelDistance = hitObject.endY - hitObject.children[1].y + 100-- the distance of start and end we need
-            hitObject.children[1].dimensions = {width = 200, height = pixelDistance}
-            hitObject.children[2].dimensions = {width = 200, height = 100}
-
-            if Modscript.downscroll then
-                hitObject.children[2].y = hitObject.children[2].y + pixelDistance - 100
-            else
-                hitObject.children[2].y = hitObject.children[2].y + pixelDistance
+        if self.gameMode == 1 then
+            if not hitObject.moveWithScroll then
+                -- go to strumY (it's a hold)
+                spritePosition = strumY
             end
+
+            hitObject.y = spritePosition
+
+            if hitObject.children ~= nil then
+                -- Determine the hold notes position and scale
+                hitObject.children[1].y = spritePosition + 100
+                hitObject.children[2].y = spritePosition + 100
+
+                hitObject.endY = self:getNotePosition(offset, hitObject.endTrackPosition)
+                local pixelDistance = hitObject.endY - hitObject.children[1].y + 100-- the distance of start and end we need
+                hitObject.children[1].dimensions = {width = 200, height = pixelDistance}
+                hitObject.children[2].dimensions = {width = 200, height = 100}
+
+                if Modscript.downscroll then
+                    hitObject.children[2].y = hitObject.children[2].y + pixelDistance - 100
+                else
+                    hitObject.children[2].y = hitObject.children[2].y + pixelDistance
+                end
+            end
+        elseif self.gameMode == 2 then
+            if not hitObject.moveWithScroll then
+                -- go to strumY (it's a hold)
+                spritePosition = 225
+            end
+
+            hitObject.x = spritePosition
         end
     end
 end
@@ -793,7 +807,7 @@ function Gameplay:enter()
     --table.sort(self.timingPoints.members, function(a, b)
     --    return a.targetY < b.targetY
     --end)
-    self:updateNotePosition(self.currentTrackPosition, musicTime)
+    self:updateNotePosition(self.currentTrackPosition)
     self:addObjectsToGroups()
 
     safeZoneOffset = 160 -- start/end ms time for a note to be able to be hit
@@ -858,7 +872,7 @@ end
 function Gameplay:addObjectsToGroups()
     for _, ho in ipairs(self.unspawnNotes) do
         ho.x = self.strumLineObjects.members[ho.data].x
-        if #ho.children > 0 then
+        if ho.children ~= nil then
             ho.children[1].x = ho.x
             ho.children[2].x = ho.x
         end
@@ -1053,7 +1067,7 @@ function Gameplay:update(dt)
         end
         self:updateCurrentTrackPosition()
         if not self.ableToModscript then -- Use default note positioning
-            self:updateNotePosition(self.currentTrackPosition, musicTime)
+            self:updateNotePosition(self.currentTrackPosition)
         end
     end
 
@@ -1243,7 +1257,7 @@ function Gameplay:keyReleased(key)
             if self.combo > self.maxCombo then
                 self.maxCombo = self.combo
             end
-            self:doJudgement(ho.endTime - musicTime, true, #ho.children > 0)
+            self:doJudgement(ho.endTime - musicTime, true, ho.children ~= nil)
             self.hitObjects:remove(ho)
             break
         end
@@ -1281,8 +1295,8 @@ function Gameplay:goodNoteHit(note, time)
                 self.maxCombo = self.combo
             end
             self.hits = self.hits + 1
-            self:doJudgement(time, false, #note.children > 0)
-            if #note.children > 0 then
+            self:doJudgement(time, false, note.children ~= nil)
+            if note.children ~= nil then
                 note.moveWithScroll = false
             else
                 note.visible = false
@@ -1445,7 +1459,7 @@ end
 
 function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName, forNPS)
     self.mode = 4 -- Amount of key lanes, reset to 4 until the chart specifies otherwise
-    Parsers[chartType].load(songPath, folderPath, diffName, forNPS)
+    Parsers[chartType].load(songPath, folderPath, diffName, forNPS, self.gameMode)
     
 
     self:SVFactor()
