@@ -1033,12 +1033,15 @@ function Gameplay:update(dt)
                 MenuSoundManager:removeAllSounds()
 
                 -- Only save stats for singleplayer
-                _USERDATA.allRatings = _USERDATA.allRatings or {}
-                table.insert(_USERDATA.allRatings, self.rating)
-                _USERDATA.totalScore = (_USERDATA.totalScore or 0) + self.score
-                _USERDATA.averageAccuracy = (_USERDATA.averageAccuracy or 0) + self.accuracy
-                _USERDATA.totalHits = (_USERDATA.totalHits or 0) + self.hits
-                _USERDATA.plays = (_USERDATA.plays or 0) + 1
+                --[[ _USERDATA.allRatings = _USERDATA.allRatings or {}
+                table.insert(_USERDATA.allRatings, self.rating) ]]
+                if API.LoggedInUser.id then
+                    API.LoggedInUser.totalScore = (API.LoggedInUser.totalScore or 0) + self.score
+                    API.LoggedInUser.totalAccuracy = (API.LoggedInUser.totalAccuracy or 0) + self.accuracy
+                    API.LoggedInUser.totalHits = (API.LoggedInUser.totalHits or 0) + self.hits
+                    API.LoggedInUser.playCount = (API.LoggedInUser.playCount or 0) + 1
+                    API:SetUserData()
+                end
             end
             return
         elseif self.escapeTimer >= 0.7 then

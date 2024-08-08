@@ -41,9 +41,9 @@ end
 
 function Header:recaclulateOverallRating()
     self.userData.OverallRating = 0
-    for i, v in ipairs(_USERDATA.allRatings) do -- TODO: Implement this into the API.
+    --[[ for i, v in ipairs(_USERDATA.allRatings) do -- TODO: Implement this into the API.
         self.userData.OverallRating = self.userData.OverallRating + v * math.pow(0.925, i - 1)
-    end 
+    end  ]]
 end
 
 function Header:mousepressed(x, y, b)
@@ -127,11 +127,11 @@ function Header:draw()
 
     setFont("menuExtraBoldX2")
     love.graphics.setColor(203/255, 36/255, 145/255)
-    love.graphics.printf(SteamUserName or localize("Not Logged In"), 260, 12, 1080/2, "left", 0, 1, 1) -- Steam name
+    love.graphics.printf(API.LoggedInUser.realUsername or localize("Not Logged In"), 260, 12, 1080/2, "left", 0, 1, 1) -- Steam name
     love.graphics.setColor(1, 1, 1)
     -- draw SteamUserAvatarSmall to the right of the name
-    if SteamUserAvatarMedium then
-        love.graphics.draw(SteamUserAvatarMedium, 185, 10, 0, 1, 1)
+    if API.CurrentUserAvatar then
+        love.graphics.draw(API.CurrentUserAvatar, 185, 10, 0, 0.425, 0.425)
     end
 
     if showUserDropdown then
@@ -143,16 +143,21 @@ function Header:draw()
         local lastFont = love.graphics.getFont()
         love.graphics.setFont(Cache.members.font["defaultBoldX1.5"])
 
-        love.graphics.print("Stats for " .. (SteamUserName or "UNKNOWN (LOCAL)"), 200, 100)
-        love.graphics.print("Overall Rating: " .. string.format("%.2f", self.userData.OverallRating), 200, 120)
-        local acc = 0
-        if self.userData.plays > 0 then
-            acc = self.userData.averageAccuracy / self.userData.plays
+        if API.LoggedInUser.realUsername then
+            love.graphics.print("Stats for " .. API.LoggedInUser.realUsername, 200, 100)
+            love.graphics.print("Overall Rating: " .. string.format("%.2f", API.LoggedInUser.OverallRating), 200, 120) -- Will stay at 0 until ranked beatmaps are implemented.
+            -- All of the below are for unranked/ranked maps. Will be seperate in the future
+            local acc = 0
+            if API.LoggedInUser.playCount > 0 then
+                acc = API.LoggedInUser.totalAccuracy / API.LoggedInUser.playCount
+            end
+            love.graphics.print("Average Accuracy: " .. string.format("%.2f", acc) .. "%", 200, 140)
+            love.graphics.print("Total Score: " .. math.floor(API.LoggedInUser.totalScore), 200, 160)
+            love.graphics.print("Plays: " .. API.LoggedInUser.playCount, 200, 180)
+            love.graphics.print("Total Hits: " .. API.LoggedInUser.totalHits, 200, 200)
+        else
+            love.graphics.print("Unavailable", 200, 100)
         end
-        love.graphics.print("Average Accuracy: " .. string.format("%.2f", acc) .. "%", 200, 140)
-        love.graphics.print("Total Score: " .. math.floor(self.userData.totalScore), 200, 160)
-        love.graphics.print("Plays: " .. self.userData.plays, 200, 180)
-        love.graphics.print("Total Hits: " .. self.userData.totalHits, 200, 200)
 
         love.graphics.setFont(lastFont)
     end

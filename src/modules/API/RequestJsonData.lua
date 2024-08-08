@@ -2,11 +2,11 @@ local RequestJsonData = {}
 local env = require("lib.env")
 local data = env.parse("assets/data/api/.env")
 
-local API_SERVER_URL = "http://127.0.0.1:8090/api/" -- development : 127.0.0.1:8090
---                                                         -- production  : api.rit.agori.dev
+API_SERVER_URL = "https://rit.agori.dev/"         -- development : 127.0.0.1:8090
+--                                                -- production  : rit.agori.dev
 
 x,d,y,RequestJsonData.setAPIAccessKey=nil,nil,nil,nil
-local connected = false
+API_CONNECTED = false
 
 function RequestJsonData.testConnection()
     if not https then
@@ -14,16 +14,17 @@ function RequestJsonData.testConnection()
     end
     local code = https.request(API_SERVER_URL)
     if code == 200 then
-        connected = true
+        API_CONNECTED = true
+        API_SERVER_URL = API_SERVER_URL .. "api/"
     else
         print("UNABLE TO PING SERVER")
     end
 end
 
---[[ RequestJsonData.testConnection() ]] -- <- Do we have a connection to the api server?
+RequestJsonData.testConnection()-- <- Do we have a connection to the api server?
 
 function RequestJsonData.getUsers()
-    if not connected then
+    if not API_CONNECTED then
         return {}
     end
     local code, body, headers = https.request(API_SERVER_URL .. "users")
@@ -39,7 +40,7 @@ function RequestJsonData.getUsers()
 end
 
 function RequestJsonData.getUser(id)
-    if not connected then
+    if not API_CONNECTED then
         return {}
     end
     local _, body = https.request(API_SERVER_URL .. "users/" .. id)
@@ -54,7 +55,7 @@ function RequestJsonData.getUser(id)
 end
 
 function RequestJsonData.createUser(id)
-    if not connected then
+    if not API_CONNECTED then
         return {}
     end
     -- POST request

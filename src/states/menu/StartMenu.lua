@@ -108,6 +108,21 @@ local buttons = {
         action = function()
             love.event.quit()
         end
+    },
+    {
+        img = love.graphics.newImage("assets/images/ui/menu/buttons/lilCuteBtnOwo.png"),
+        text = "Login",
+        textX = 0,
+        textY = 0,
+        x = Inits.GameWidth - 500,
+        y = Inits.GameHeight/2 + 250,
+        scaleBorder = 1.25,
+        scale = 1.25,
+        color = {1, 1, 1},
+        down = false,
+        action = function()
+            switchState(states.screens.Auth.LoginScreen, 0.3)
+        end
     }
 }
 if curLocale == "es-LATAM" then
@@ -292,7 +307,7 @@ function StartMenu:draw()
     local lastColor = {love.graphics.getColor()}
     local lastFont = love.graphics.getFont()
     love.graphics.setColor(0, 0, 0, 0.13)
-    love.graphics.rectangle("fill", Inits.GameWidth - 695, Inits.GameHeight/2 - 300, 650, 570, 75, 75)
+    love.graphics.rectangle("fill", Inits.GameWidth - 695, Inits.GameHeight/2 - 300, 650, 670, 75, 75)
     setFont("menuBold")
     for i = 1, #buttons do
         local x, y = buttons[i].x, buttons[i].y

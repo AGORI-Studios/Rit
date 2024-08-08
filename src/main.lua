@@ -2,6 +2,7 @@ fade = 1
 masterVolume = 50
 isLoading = false
 __DEBUG__ = not love.filesystem.isFused()
+utf8 = require("utf8")
 --[[ if not __DEBUG__ then 
     function print() end -- disable print if not in debug mode, allows for better performance (because writing to io is very slow)
 end ]]

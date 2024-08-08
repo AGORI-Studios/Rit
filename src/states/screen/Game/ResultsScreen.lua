@@ -139,7 +139,6 @@ function ResultsScreen:enter(_, ...)
     end)
 
     Header:recaclulateOverallRating()
-    SaveUserData.SaveData(_USERDATA)
 end
 
 function ResultsScreen:update(dt)

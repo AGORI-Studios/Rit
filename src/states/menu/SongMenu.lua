@@ -26,8 +26,6 @@ local didAMove = false
 
 SongMenu.replays = {}
 
-local utf8 = require("utf8")
-
 function SongMenu:enter()
     typing = false
     searchText = ""

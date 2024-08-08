@@ -270,7 +270,14 @@ function GI.LoadClasses()
     -- API Stuff
     RequestJsonData = require("modules.API.RequestJsonData")
     StorageAPI = require("modules.API.StorageAPI")
+    require("modules.API")
+    if love.filesystem.getInfo("data/userinfo.dat") then
+        API:LoginUserFromSavedInfo()
+        API.CurrentUserAvatar = love.graphics.newImage(API:GetCurrentUserAvatar())
+    end
+    
     --[[ StorageAPI.downloadTestSong() ]]
+    
 end
 
 function GI.LoadShaders()
@@ -405,6 +412,9 @@ function GI.LoadStates()
             },
             game = {
                 ResultsScreen = require("states.screen.Game.ResultsScreen")
+            },
+            Auth = {
+                LoginScreen = require("states.screen.Auth.LoginScreen")
             }
         }
     }
