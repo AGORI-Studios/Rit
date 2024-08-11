@@ -925,7 +925,7 @@ function Gameplay:updateEvents()
                 local playfield = self.playfields[1]
                 
                 self.eventTimers[tostring(event.time) .. "_moveEvent"] = Timer.tween(
-                    duration, playfield.offsets, {x = x, y = y}, "linear"
+                    duration, playfield, {x = x, y = y}, "linear"
                 )
 
                 table.remove(self.songEvents.playfieldmove, i)

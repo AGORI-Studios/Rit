@@ -1,4 +1,3 @@
-// Implemented from https://www.shadertoy.com/view/Xltfzj
 extern float dim = 0.5;
 uniform float blur_radius = 1.0;
 extern vec2 tex_size = vec2(1920, 1080); // 1920x1080

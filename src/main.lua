@@ -176,7 +176,7 @@ if love.system.getOS() == "Windows" then
             print("Couldn't load https.")
         end
     )
-end 
+end
 
 local winOpacity = {1}
 local volume = {1}
