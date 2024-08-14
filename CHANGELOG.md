@@ -1,5 +1,17 @@
 # v0.1.0 - Public Steam Build
 ### Additions:
+
+### Reworks:
+- Rewrote the whole game to C#
+
+### Removals:
+
+### Fixes:
+
+
+!! OUTDATED vv
+# v0.1.0 - Public Steam Build
+### Additions:
 - New UI
 - New Skin system
 - New Modding system
@@ -33,6 +45,8 @@
 
 ### Fixes:
 - Game no longer crashes if a song is not found
+
+!! OUTDATED ^^
 
 # v0.0.5-SV Improvement
 Changes:
