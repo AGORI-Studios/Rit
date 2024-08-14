@@ -19,153 +19,6 @@ function GI.LoadLibraries()
     end
     if love.system.getOS() ~= "NX" then
         Video = require("lib.aqua.Video")
-
-        networking = {}
-        if Steam and Inits.NetworkingEnabled then
-            noobhub = require("lib.networking.noobhub")
-            networking = {
-                latencies = {},
-                hub = noobhub.new({
-                    server = "server.rit.agori.dev",
-                    port = 1337
-                }),
-                frameCount = 0,
-                connected = false,
-                currentServerID = 0,
-                currentServerData = {},
-                inMultiplayerGame = false
-            }
-
-            networking.connected = networking.hub:subscribe({
-                channel = "main-channel",
-                callback = function(message)
-                    if type(message) ~= "table" then 
-                        return
-                    end
-                    --print("Received message: " .. json.encode(message))
-                    if message.action == "ping" then
-                        networking.hub:publish({
-                            message = {
-                                action = "pong",
-                                id = message.id,
-                                original_timestamp = message.timestamp,
-                                timestamp = love.timer.getTime()
-                            }
-                        })
-                    elseif message.action == "pong" then
-                        --print("Pong id " .. message.id .. " took " .. love.timer.getTime() - message.original_timestamp .. " seconds")
-                        table.insert(networking.latencies, love.timer.getTime() - message.original_timestamp)
-                        local sum, count = 0, 0
-                        for _, latency in ipairs(networking.latencies) do
-                            sum = sum + latency
-                            count = count + 1
-                        end
-
-                        --print("Average latency: " .. sum / count)
-                    elseif message.action == "gotServers" then
-                        --print("Got servers: " .. json.encode(message.servers))
-                        -- we don't want it to affect everyone, so only affect the person with the SteamID that matches
-                        if message.user.steamID == tostring(SteamID) then
-                            states.menu.Multiplayer.ServerMenu.serverList = message.servers
-                            state.switch(states.menu.Multiplayer.ServerMenu)
-                            --print(#states.menu.Multiplayer.ServerMenu.serverList)
-                        end
-                    elseif message.action == "updateServerInfo_USERJOINED" then
-                        if networking.currentServerID and message.id == networking.currentServerData.id then
-                            networking.currentServerData = message.server
-                            networking.currentServerID = message.id
-
-                            if discordRPC and networking.currentServerData then
-                                discordRPC.presence = {
-                                    details = "In a multiplayer lobby",
-                                    state = "Lobby: " .. networking.currentServerData.name .. " - " .. #networking.currentServerData.players .. "/" .. networking.currentServerData.maxPlayers,
-                                    largeImageKey = "totallyreallogo",
-                                    largeImageText = "Rit" .. (__DEBUG__ and " DEBUG MODE" or "")
-                                }
-                                GI.UpdateDiscord()
-                            end
-                        end
-                        if message.user.steamID == tostring(SteamID) then
-                            --print("User joined: " .. message.user.steamID)
-                            state.switch(states.menu.Multiplayer.LobbyMenu, networking.currentServerData)
-                        end
-                    elseif message.action == "updateServerInfo_FORCEREMOVEUSER" then
-                        if networking.currentServerID and message.id == networking.currentServerData.id then
-                            networking.currentServerData = nil
-                            networking.currentServerID = nil
-                        end
-                    elseif message.action == "getPlayersInfo_INGAME" then
-                        if message.user.steamID == tostring(SteamID) then
-                            -- no state switch
-                            networking.currentServerData = message.server
-                            --print("Got players info: " .. json.encode(message.server))
-                        end
-                    elseif message.action == "startGame" then
-                        -- if user is in lobby (message.id)
-                        if networking.currentServerID and message.id == networking.currentServerData.id then
-                            networking.inMultiplayerGame = true
-                            local song = getSongFromNameAndDiff(networking.currentServerData.currentSong.songName, networking.currentServerData.currentSong.songDiff)
-                            local songPath = song.path
-                            local chartVer = song.type
-                            local folderPath = song.folderPath
-                            local filename = song.filename
-                            local diffName = song.difficultyName
-                            local mode = song.mode
-
-                            love.filesystem.mount("songs/" .. filename, "song")
-                            states.game.Gameplay.chartVer = chartVer
-                            states.game.Gameplay.songPath = songPath
-                            states.game.Gameplay.folderpath = folderPath
-                            states.game.Gameplay.difficultyName = diffName
-                            states.game.Gameplay.songRating = math.clamp(0, song.nps, 100)
-                            switchState(states.game.Gameplay, 0.3, nil)
-                            MenuSoundManager:removeAllSounds()
-
-                            networking.hub:publish({
-                                message = {
-                                    action = "updateServerInfo_INGAME_STARTEND",
-                                    user = {
-                                        steamID = tostring(SteamID),
-                                        name = tostring(SteamUserName)
-                                    },
-                                    id = networking.currentServerData.id,
-                                    started = true
-                                }
-                            })
-                        end
-                    elseif message.action == "resultScreen_NEWENTRY" then
-                        if message.id == networking.currentServerData.id then
-                            networking.currentServerData = message.server
-                            -- states.screens.Multiplayer.ResultsScreen.isEveryoneFinished
-                            states.screens.Multiplayer.ResultsScreen.isEveryoneFinished = true
-                            for _, player in ipairs(networking.currentServerData.players) do
-                                if not player.completed then
-                                    states.screens.Multiplayer.ResultsScreen.isEveryoneFinished = false
-                                    return
-                                end
-                            end
-                        end
-                    elseif message.action == "serverLobby_CHATMESSAGE" then
-                        if message.id == networking.currentServerData.id then
-                            networking.currentServerData = message.server -- update the server data and adds the message
-                        end
-                    end
-                end
-            })
-
-            if networking.connected then
-                networking.hub:publish({
-                    message = {
-                        action = "updateServerInfo_FORCEREMOVEUSER",
-                        id = networking.currentServerID or 0,
-                        user = {
-                            steamID = tostring(SteamID),
-                            name = tostring(SteamUserName)
-                        }
-                    }
-                })
-            end
-        end
     end
 end
 
@@ -266,18 +119,6 @@ function GI.LoadClasses()
         
         gameController = VirtualController(keys)
     end
-    
-    -- API Stuff
-    RequestJsonData = require("modules.API.RequestJsonData")
-    StorageAPI = require("modules.API.StorageAPI")
-    require("modules.API")
-    if love.filesystem.getInfo("data/userinfo.dat") then
-        API:LoginUserFromSavedInfo()
-        API.CurrentUserAvatar = love.graphics.newImage(API:GetCurrentUserAvatar())
-    end
-    
-    --[[ StorageAPI.downloadTestSong() ]]
-    
 end
 
 function GI.LoadShaders()
@@ -391,11 +232,7 @@ function GI.LoadStates()
             StartMenu = require("states.menu.StartMenu"),
             SongMenu = require("states.menu.SongMenu"),
             CreditsMenu = require("states.menu.CreditsMenu"),
-            OptionsMenu = require("states.menu.OptionsMenu"),
-            Multiplayer = {
-                ServerMenu = require("states.menu.Multiplayer.ServerMenu"),
-                LobbyMenu = require("states.menu.Multiplayer.LobbyMenu"),
-            },
+            OptionsMenu = require("states.menu.OptionsMenu")
         },
         screens = {
             PreloaderScreen = require("states.screen.PreloaderScreen"),
@@ -407,14 +244,8 @@ function GI.LoadStates()
                 fluXisImportScreen = require("states.screen.Importers.fluXisImportScreen"),
             },
             Jukebox = require("states.screen.JukeboxScreen"),
-            Multiplayer = {
-                ResultsScreen = require("states.screen.Multiplayer.ResultsScreen"),
-            },
             game = {
                 ResultsScreen = require("states.screen.Game.ResultsScreen")
-            },
-            Auth = {
-                LoginScreen = require("states.screen.Auth.LoginScreen")
             }
         }
     }
@@ -586,19 +417,6 @@ function love.errorhandler(msg)
 			return
 		end
 	end
-
-    if Steam and networking.connected and networking.currentServerData then
-        networking.hub:publish({
-            message = {
-                action = "updateServerInfo_FORCEREMOVEUSER",
-                id = networking.currentServerData.id,
-                user = {
-                    steamID = tostring(SteamID),
-                    name = tostring(SteamUserName)
-                }
-            }
-        })
-    end
 
 	-- Reset state.
 	if love.mouse then

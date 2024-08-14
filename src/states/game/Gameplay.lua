@@ -78,8 +78,6 @@ local lerpedHealth = 50
 local comboTimer = {}
 local judgeTimer = {}
 
-local networkingUpdateTime = 0 -- every 5 seconds, refresh players info
-
 function Gameplay:preloadAssets()
     -- Preload our judgement assets
     for i = 0, 9 do
@@ -958,23 +956,6 @@ function Gameplay:updateEvents()
 end
 
 function Gameplay:update(dt)
-    networkingUpdateTime = networkingUpdateTime + dt
-    if networkingUpdateTime >= 1.25 and Steam and networking.inMultiplayerGame and networking.connected then
-        networkingUpdateTime = 0
-        networking.hub:publish({
-            message = {
-                action = "getPlayersInfo_INGAME",
-                id = networking.currentServerData.id,
-                user = {
-                    steamID = tostring(SteamID),
-                    name = tostring(SteamUserName),
-                    score = self.score,
-                    accuracy = self.accuracy,
-                    completed = false
-                }
-            }
-        })
-    end
     MenuSoundManager:removeAllSounds() -- a final safe guard to remove any sounds that may have been left over
     if self.inPause then return end
     if self.ableToModscript and self.updateTime then
@@ -1001,48 +982,21 @@ function Gameplay:update(dt)
             if not self.watchingReplay then
                 love.filesystem.write("replays/" .. self.songName .. " - " .. self.difficultyName .. " - " .. os.time() .. ".ritreplay", json.encode(self.replay))
             end
-            if Steam and networking.connected and networking.currentServerData and networking.inMultiplayerGame then
-                switchState(states.menu.StartMenu, 0.3, nil, {score = self.score, accuracy = self.accuracy, misses = self.misses, maxCombo = self.maxCombo})
-                if networking.connected then
-                    networking.hub:publish({
-                        message = {
-                            action = "updateServerInfo_FORCEREMOVEUSER",
-                            id = networking.currentServerID,
-                            user = {
-                                steamID = tostring(SteamID),
-                                name = tostring(SteamUserName)
-                            }
-                        }
-                    })
-                end
-                MenuSoundManager:removeAllSounds()
-                self.soundManager:removeAllSounds()
-            else
-                switchState(states.screens.game.ResultsScreen, 0.3, nil, {score = self.score, accuracy = self.accuracy, misses = self.misses, maxCombo = self.maxCombo, rating = self.rating,
-                    judgements = {
-                        marvellous = self.allJudgements["marvellous"],
-                        perfect = self.allJudgements["perfect"],
-                        great = self.allJudgements["great"],
-                        good = self.allJudgements["good"],
-                        bad = self.allJudgements["bad"],
-                        miss = self.misses
-                    },
-                    timings = self.hitTimings,
-                    songLength = self.lastNoteTime
-                })
-                MenuSoundManager:removeAllSounds()
+            
+            switchState(states.screens.game.ResultsScreen, 0.3, nil, {score = self.score, accuracy = self.accuracy, misses = self.misses, maxCombo = self.maxCombo, rating = self.rating,
+                judgements = {
+                    marvellous = self.allJudgements["marvellous"],
+                    perfect = self.allJudgements["perfect"],
+                    great = self.allJudgements["great"],
+                    good = self.allJudgements["good"],
+                    bad = self.allJudgements["bad"],
+                    miss = self.misses
+                },
+                timings = self.hitTimings,
+                songLength = self.lastNoteTime
+            })
+            MenuSoundManager:removeAllSounds()
 
-                -- Only save stats for singleplayer
-                --[[ _USERDATA.allRatings = _USERDATA.allRatings or {}
-                table.insert(_USERDATA.allRatings, self.rating) ]]
-                if API.LoggedInUser.id then
-                    API.LoggedInUser.totalScore = (API.LoggedInUser.totalScore or 0) + self.score
-                    API.LoggedInUser.totalAccuracy = (API.LoggedInUser.totalAccuracy or 0) + self.accuracy
-                    API.LoggedInUser.totalHits = (API.LoggedInUser.totalHits or 0) + self.hits
-                    API.LoggedInUser.playCount = (API.LoggedInUser.playCount or 0) + 1
-                    API:SetUserData()
-                end
-            end
             return
         elseif self.escapeTimer >= 0.7 then
             state.substate(substates.game.Pause)
@@ -1343,35 +1297,6 @@ function Gameplay:draw()
         end
     end
 
-    local lastFont = love.graphics.getFont()
-    love.graphics.setFont(Cache.members.font["menuBold"])
-    if Steam and networking.inMultiplayerGame and networking.currentServerData then
-        for i, player in ipairs(networking.currentServerData.players) do
-            love.graphics.setColor(0, 0, 0, 0.5)
-            -- small box for the players
-            love.graphics.rectangle("fill", 0, 400 + (i * 100), 300, 100)
-            love.graphics.setColor(1, 1, 1)
-            local text = player.name
-
-            if table.find(player.tags, "Owner") then -- Game owner
-                text = text .. " (Owner)"
-            elseif table.find(player.tags, "Admin") then -- Admin
-                text = text .. " (Admin)"
-            elseif table.find(player.tags, "Mod") then -- Moderator
-                text = text .. " (Mod)"
-            elseif table.find(player.tags, "Developer") then -- Developers
-                text = text .. " (Developer)"
-            elseif table.find(player.tags, "Supporter") then -- Supporters
-                text = text .. " (Supporter)"
-            end
-            love.graphics.print(text, 10, 400 + (i * 100))
-            love.graphics.print("Score: " .. string.format("%07d", math.floor(player.score) or 0), 10, 420 + (i * 100)) 
-            love.graphics.print("Accuracy: " .. (string.format("%.2f", player.accuracy or 0) .. "%"), 10, 440 + (i * 100))
-            love.graphics.print("Rating: " .. (player.rating or 0), 10, 460 + (i * 100))
-        end
-    end
-    love.graphics.setFont(lastFont)
-
     self.storyBoardSprites.Background:draw()
 
     love.graphics.push()
@@ -1507,11 +1432,7 @@ function Gameplay:generateBeatmap(chartType, songPath, folderPath, diffName, for
 
         if discordRPC then
             local details = ""
-            if networking and networking.inMultiplayerGame then
-                details = localize("In a multiplayer game - ") .. networking.currentServerData.name .. " (" .. #networking.currentServerData.players .. "/" .. networking.currentServerData.maxPlayers .. ")"
-            else
-                details = "Playing a song"
-            end
+            details = "Playing a song"
             discordRPC.presence = {
                 details = details,
                 state = self.songName .. " - " .. self.difficultyName,

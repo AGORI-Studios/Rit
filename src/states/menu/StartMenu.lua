@@ -45,8 +45,8 @@ local buttons = {
         scale = 1.25,
         color = {1, 1, 1},
         down = false,
-        action = function()
-            switchState(states.menu.Multiplayer.ServerMenu, 0.3)
+        action = function() -- removed in lua builds
+            switchState(states.menu.SongMenu, 0.3)
         end
     },
     {
@@ -121,7 +121,7 @@ local buttons = {
         color = {1, 1, 1},
         down = false,
         action = function()
-            switchState(states.screens.Auth.LoginScreen, 0.3)
+            switchState(states.menu.SongMenu, 0.3)
         end
     }
 }

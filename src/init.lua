@@ -6,6 +6,4 @@ return {
     -- Window base resolution
     WindowWidth = 1280,
     WindowHeight = 720,
-
-    NetworkingEnabled = true
 }

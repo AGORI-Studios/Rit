@@ -1,6 +1,9 @@
 <!--
 NOTE TO SELF: Update links.
 -->
+
+### OLD. Head to https://github.com/AGORI-Studios/Rit/tree/CS-Rewrite
+
 # Rit
 
 ### A rhythm game made in LÖVE.
@@ -54,7 +57,6 @@ NOTE TO SELF: Update links.
 - [sworks](/src/lib/sworks/)
 - [aqua](/src/lib/aqua/) * Just the video module
 - [lovefs](/src/lib/lovefs/)
-- [noobhub](/src/lib/networking/noobhub.lua)
 
 # Credits
 - [Getsaa](https://twitter.com/GetsaaNG) - UI/UX Design, Rit's Branding, and a few translations (Spanish & Portuguese)

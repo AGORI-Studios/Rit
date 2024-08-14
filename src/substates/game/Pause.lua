@@ -22,7 +22,7 @@ function Pause:update(dt)
     if input:pressed("confirm") then
         if self.selection == 1 then
             
-        elseif self.selection == 2 and networking and not networking.inMultiplayerGame then
+        elseif self.selection == 2 then
             switchState(states.game.Gameplay, 0.3)
         elseif self.selection == 3 then
             switchState(states.menu.SongMenu, 0.3)
@@ -48,7 +48,7 @@ function Pause:touchpressed(id, x, y, dx, dy, pressure)
     if x > 0 and x < Inits.GameWidth and y > 0 and y < Inits.GameHeight then
         if self.selection == 1 then
             
-        elseif self.selection == 2 and networking and not networking.inMultiplayerGame then
+        elseif self.selection == 2 then
             switchState(states.game.Gameplay, 0.3)
         elseif self.selection == 3 then
             switchState(states.menu.SongMenu, 0.3)
@@ -65,26 +65,11 @@ function Pause:mousepressed(x, y, button, istouch)
     if x > 0 and x < Inits.GameWidth and y > 0 and y < Inits.GameHeight then
         if self.selection == 1 then
             
-        elseif self.selection == 2 and networking and not networking.inMultiplayerGame then
+        elseif self.selection == 2 then
             switchState(states.game.Gameplay, 0.3)
         elseif self.selection == 3 then
-            if networking and networking.inMultiplayerGame then
-                networking.hub:publish({
-                    message = {
-                        action = "updateServerInfo_FORCEREMOVEUSER",
-                        id = networking.currentServerID,
-                        user = {
-                            steamID = tostring(SteamID),
-                            name = tostring(SteamUserName)
-                        }
-                    }
-                })
-               -- state.switch(states.menu.Multiplayer.ServerMenu)
-               switchState(states.menu.Multiplayer.ServerMenu, 0.3)
-            else
-                states.game.Gameplay.soundManager:removeAllSounds()
-                switchState(states.menu.SongMenu, 0.3)
-            end
+            states.game.Gameplay.soundManager:removeAllSounds()
+            switchState(states.menu.SongMenu, 0.3)
         end
         states.game.Gameplay.inPause = false
         states.game.Gameplay.updateTime = true
@@ -106,7 +91,7 @@ function Pause:draw()
         else
             love.graphics.setColor(0.5, 0.5, 0.5, 1)
         end
-        if i == 2 and networking ~= nil and networking.inMultiplayerGame then
+        if i == 2 then
             love.graphics.setColor(0.6, 0.6, 0.6, 1)
         end
         love.graphics.printf(v, 0, 200 + (i * 50), Inits.GameWidth, "center")

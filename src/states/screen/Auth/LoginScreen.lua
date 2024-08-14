@@ -8,9 +8,7 @@ local typeMode = 0 -- 1 = email, 2 = password. 0 = off
 local emailStr, passStr = "", ""
 
 function LoginScreen:enter()
-    if API.LoggedInUser.id then
-        alreadyLoggedIn = true
-    end
+    alreadyLoggedIn = true
 end
 
 function LoginScreen:textinput(t)
@@ -30,7 +28,6 @@ function LoginScreen:keypressed(k)
             if not ok then
                 passwordThing = "errlogin"
             else
-                API.CurrentUserAvatar = love.graphics.newImage(API:GetCurrentUserAvatar())
                 switchState(states.menu.StartMenu, 0.3)
             end
         end

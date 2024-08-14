@@ -270,13 +270,7 @@ end
 
 function love.update(dt)
     threadLoader:update()
-    if Steam and networking.connected then
-        networking.frameCount = networking.frameCount + 1
-        if networking.frameCount == 60 then
-            networking.hub:enterFrame()
-            networking.frameCount = 0
-        end
-    end
+    
     Timer.update(dt)
     input:update()
     if not isLoading then state.update(dt) end
@@ -471,19 +465,6 @@ end
 function love.quit()
     if discordRPC then
         discordRPC.shutdown()
-    end
-
-    if Steam and networking.connected and networking.currentServerData then
-        networking.hub:publish({
-            message = {
-                action = "updateServerInfo_FORCEREMOVEUSER",
-                id = networking.currentServerID,
-                user = {
-                    steamID = tostring(SteamID),
-                    name = tostring(SteamUserName)
-                }
-            }
-        })
     end
 
     if not isClosing then
