@@ -1,0 +1,10 @@
+{
+  "solution": {
+    "path": "Rit.sln",
+    "projects": [
+      "Rit.Game\\Rit.Game.csproj",
+      "Rit.Resources\\Rit.Resources.csproj",
+      "Rit.iOS\\Rit.iOS.csproj"
+    ]
+  }
+}

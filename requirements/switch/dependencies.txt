@@ -1,2 +1,0 @@
-LÖVE 11.4-nx1 (love.elf) for Switch: https://github.com/retronx-team/love-nx/releases/tag/11.4-nx1
-	Download it and put the file in .

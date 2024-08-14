@@ -1,3 +1,0 @@
-LÖVE 11.5 (love-11.5-x86_64.AppImage) for Linux: https://github.com/love2d/love/releases/tag/11.5
-	Download it and put the file in . 
-	Rename to "love.AppImage"

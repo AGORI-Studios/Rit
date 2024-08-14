@@ -44,3 +44,6 @@ src/TODO.txt
 
 # Temp files from krita or other stuff
 *.png~
+
+bin/
+obj/

@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rit.Resources\Rit.Resources.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="YamlDotNet" Version="15.1.4" />
+    <PackageReference Include="ppy.osu.Framework" Version="2024.618.0" />
+  </ItemGroup>
+  <!-- <ItemGroup>
+    <PackageReference Include="YamlDotNet" Version="15.1.4" />
+  </ItemGroup> -->
+</Project>
