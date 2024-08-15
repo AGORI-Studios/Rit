@@ -1,0 +1,206 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\Code\\QuaToRitc\\rit\\Rit.Desktop\\Rit.Desktop.csproj": {}
+  },
+  "projects": {
+    "D:\\Code\\QuaToRitc\\rit\\Rit.Desktop\\Rit.Desktop.csproj": {
+      "version": "0.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Code\\QuaToRitc\\rit\\Rit.Desktop\\Rit.Desktop.csproj",
+        "projectName": "Rit",
+        "projectPath": "D:\\Code\\QuaToRitc\\rit\\Rit.Desktop\\Rit.Desktop.csproj",
+        "packagesPath": "C:\\Users\\Guglio\\.nuget\\packages\\",
+        "outputPath": "D:\\Code\\QuaToRitc\\rit\\Rit.Desktop\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Guglio\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "D:\\Code\\QuaToRitc\\rit\\Rit.Game\\Rit.Game.csproj": {
+                "projectPath": "D:\\Code\\QuaToRitc\\rit\\Rit.Game\\Rit.Game.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\Code\\QuaToRitc\\rit\\Rit.Game\\Rit.Game.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Code\\QuaToRitc\\rit\\Rit.Game\\Rit.Game.csproj",
+        "projectName": "Rit.Game",
+        "projectPath": "D:\\Code\\QuaToRitc\\rit\\Rit.Game\\Rit.Game.csproj",
+        "packagesPath": "C:\\Users\\Guglio\\.nuget\\packages\\",
+        "outputPath": "D:\\Code\\QuaToRitc\\rit\\Rit.Game\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Guglio\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "D:\\Code\\QuaToRitc\\rit\\Rit.Resources\\Rit.Resources.csproj": {
+                "projectPath": "D:\\Code\\QuaToRitc\\rit\\Rit.Resources\\Rit.Resources.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "YamlDotNet": {
+              "target": "Package",
+              "version": "[15.1.4, )"
+            },
+            "ppy.osu.Framework": {
+              "target": "Package",
+              "version": "[2024.618.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\Code\\QuaToRitc\\rit\\Rit.Resources\\Rit.Resources.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Code\\QuaToRitc\\rit\\Rit.Resources\\Rit.Resources.csproj",
+        "projectName": "Rit.Resources",
+        "projectPath": "D:\\Code\\QuaToRitc\\rit\\Rit.Resources\\Rit.Resources.csproj",
+        "packagesPath": "C:\\Users\\Guglio\\.nuget\\packages\\",
+        "outputPath": "D:\\Code\\QuaToRitc\\rit\\Rit.Resources\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Guglio\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
