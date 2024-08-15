@@ -10,7 +10,7 @@ public partial class SpriteTextObj : SpriteText {
     }
 
     // the font
-    public string Font {
+    public new string Font {
         get => base.Font.Family;
         set => base.Font = base.Font.With(family: value);
     }
