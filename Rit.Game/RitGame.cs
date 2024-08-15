@@ -1,9 +1,8 @@
 ﻿using System;
-using System.IO;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Screens;
-
+using osu.Framework.Configuration;
 using Rit.Game.Overlay;
 
 namespace Rit.Game
@@ -13,11 +12,14 @@ namespace Rit.Game
         private ScreenStack screenStack;
 
         [BackgroundDependencyLoader]
-        private void load()
+        private void load(FrameworkConfigManager config)
         {
             Child = screenStack = new ScreenStack { RelativeSizeAxes = Axes.Both };
 
             Console.WriteLine("RitGame.load()");
+
+            // Set FPS cap to unlimited
+            config.GetBindable<FrameSync>(FrameworkSetting.FrameSync).Value = FrameSync.Unlimited;
         }
 
         protected override void LoadComplete()
