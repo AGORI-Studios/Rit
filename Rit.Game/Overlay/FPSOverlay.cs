@@ -81,7 +81,7 @@ public partial class FPSOverlay : Container {
             var firstChar = thread.Name[0].ToString();
             firstChar = firstChar.ToUpper().ToCharArray()[0].ToString();
 
-            if (firstChar is "U" or "D") {
+            if (firstChar is "U" or "D" or "A" or "I") {
                 var fps = clock.FramesPerSecond;
                 // print to console to show we got here
                 textFlow.AddParagraph($"{fps:0} {firstChar}PS");
