@@ -18,8 +18,8 @@ namespace Rit.Game.Screens.Gameplay
         public MapData MapData { get; private set; }
         public HitObjectManager Manager { get; private set; }
 
-        private string mapFolder = "purpleeater/";
-        private string mapPath = "purpleeater/map.ritc";
+        private string mapFolder = "svahah/";
+        private string mapPath = "svahah/out.ritc";
         private DependencyContainer dependencies;
         public TextureStore Textures;
 

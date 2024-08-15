@@ -4,6 +4,7 @@ using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Textures;
+using osuTK.Graphics.OpenGL;
 using Rit.Game.Drawables.Map;
 using Rit.Game.Structures.Map;
 
@@ -17,12 +18,15 @@ public partial class HitObjectManager : Container<DrawableHitObject> {
     public double CurrentTime { get; private set; }
     private double enteredClock { get; set; }
 
+    private int svIndex { get; set; }= 0;
+
     [BackgroundDependencyLoader]
     private void load(TextureStore texture)
     {
         RelativeSizeAxes = Axes.Both;
 
         enteredClock = Clock.CurrentTime;
+        svIndex = 0;
     }
 
     protected override void LoadComplete()
@@ -71,8 +75,6 @@ public partial class HitObjectManager : Container<DrawableHitObject> {
     }
 
     private void updateTime() {
-        int svIndex = 0;
-
         while (svIndex < ScrollVelocities.Count && ScrollVelocities[svIndex].StartTime <= (Clock.CurrentTime - enteredClock))
             svIndex++;
 
