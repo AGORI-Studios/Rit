@@ -53,10 +53,10 @@ public partial class HitObjectManager : Container<DrawableHitObject> {
         }
     }
 
-    public double GetPositionFromTime(double time, int index = -1) {
-        if (index == -1)
-            for (index = 0; index < ScrollVelocities.Count; index++)
-                if (time < ScrollVelocities[index].StartTime)
+    public double GetPositionFromTime(double time, int index = -1) { // literally idk why i made it so weird in the l2d version
+        if (index == -1)                                             // TWO SEPERATE FUNCTIONS WITH THE EXACT NAME??? (one had a lowercase g.)
+            for (index = 0; index < ScrollVelocities.Count; index++) // Idk why i didn't just make it like this before 💀
+                if (time < ScrollVelocities[index].StartTime)        // Unrelated: I FUCKING LOVE DEFAULT ARGS
                     break;
 
         if (index == 0)
