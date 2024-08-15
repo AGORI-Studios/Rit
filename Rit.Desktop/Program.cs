@@ -16,8 +16,9 @@ namespace Rit.Desktop
 
             using GameHost host = Host.GetSuitableDesktopHost(@"Rit", new HostOptions { IPCPort = 24000 });
 
-            using (osu.Framework.Game game = new RitGame())
+            using (osu.Framework.Game game = new RitGame()) {
                 host.Run(game);
+            }
         }
     }
 }

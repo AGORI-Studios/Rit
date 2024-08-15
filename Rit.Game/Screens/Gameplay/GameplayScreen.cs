@@ -1,3 +1,4 @@
+using System;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Shapes;
@@ -13,14 +14,14 @@ namespace Rit.Game.Screens.Gameplay
     public partial class GameplayScreen : BaseScreen
     {
         public MapData MapData { get; private set; }
-        private string mapPath = "DefaultSongs/purpleeater/91021.qua";
+        private string mapPath = "purpleeater/map.ritc";
         [BackgroundDependencyLoader]
         private void load()
         {
             Anchor = Anchor.Centre;
             Origin = Anchor.Centre;
 
-            MapData = new MapData(new MapMeta());
+            MapData = new MapData(mapPath);
         }
     }
 }

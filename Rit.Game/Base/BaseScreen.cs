@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
@@ -21,6 +23,8 @@ public partial class BaseScreen : Screen {
     public const float ENTER_DELAY = 100;
 
     protected new RitGame Game => (RitGame)base.Game;
+
+    public static string BaseGamePath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rit");
 
     protected BaseScreen() {
         Anchor = Anchor.Centre;

@@ -12,7 +12,7 @@ namespace Rit.Game.Tests.Visual
 
         public TestSceneMainScreen()
         {
-            Add(new ScreenStack(new Screens.MainScreen()) { RelativeSizeAxes = Axes.Both });
+            Add(new ScreenStack(new Screens.PreloadScreen()) { RelativeSizeAxes = Axes.Both });
         }
     }
 }
