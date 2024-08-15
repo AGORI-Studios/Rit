@@ -19,7 +19,7 @@ namespace Rit.Game.Map
         public MapMeta Meta { get; set; }
 
         public List<StructureHitObject> HitObjects { get; set; }
-        public List<int> ScrollVelocities { get; set; }
+        public List<StructureScrollVelocity> ScrollVelocities { get; set; }
         public List<int> BPMChanges { get; set; }
 
         private Track track;
@@ -32,7 +32,7 @@ namespace Rit.Game.Map
 
             Meta = new MapMeta();
             HitObjects = new List<StructureHitObject>();
-            ScrollVelocities = new List<int>();
+            ScrollVelocities = new List<StructureScrollVelocity>();
             BPMChanges = new List<int>();
 
             RitMap.Generate(mapPath, this);

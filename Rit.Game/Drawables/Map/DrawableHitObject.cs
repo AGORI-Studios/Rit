@@ -15,9 +15,15 @@ public partial class DrawableHitObject : CompositeDrawable {
 
     protected HitObjectManager Manager { get; private set; }
 
+    protected double ScrollVelocityTime { get; private set; }
+    protected double ScrollVelocityEndTime { get; private set; }
+
     public DrawableHitObject(StructureHitObject data, HitObjectManager manager) {
         Data = data;
         Manager = manager;
+
+        ScrollVelocityTime = Manager.GetPositionFromTime(Data.StartTime);
+        ScrollVelocityEndTime = Manager.GetPositionFromTime(Data.EndTime);
     }
 
     [BackgroundDependencyLoader]
@@ -41,6 +47,6 @@ public partial class DrawableHitObject : CompositeDrawable {
     {
         base.Update();
 
-        Y = Manager.GetNotePosition(Data.StartTime);
+        Y = Manager.GetNotePosition(ScrollVelocityTime);
     }
 }

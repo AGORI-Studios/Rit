@@ -12,6 +12,8 @@ namespace Rit.Game.Managers;
 public partial class HitObjectManager : Container<DrawableHitObject> {
     public List<StructureHitObject> HitObjects { get; set; } = new List<StructureHitObject>();
     public List<DrawableHitObject> DrawableHitObjects { get; } = new List<DrawableHitObject>();
+    public List<StructureScrollVelocity> ScrollVelocities { get; set; } = new List<StructureScrollVelocity>();
+    private List<double> scrollVelocityMarks { get; } = new List<double>();
     public double CurrentTime { get; private set; }
     private double enteredClock { get; set; }
 
@@ -29,11 +31,53 @@ public partial class HitObjectManager : Container<DrawableHitObject> {
     }
 
     public bool IsOnScreen(double time) {
-        return time - CurrentTime <= DrawHeight;
+        return GetNotePosition(GetPositionFromTime(time)) <= DrawHeight;
+    }
+
+    public void InitSVMarks() {
+        if (ScrollVelocities.Count == 0)
+            return;
+
+        StructureScrollVelocity first = ScrollVelocities[0];
+
+        var time = first.StartTime;
+        scrollVelocityMarks.Add(time);
+
+        for (var i = 1; i < ScrollVelocities.Count; i++)
+        {
+            StructureScrollVelocity prev = ScrollVelocities[i - 1];
+            StructureScrollVelocity current = ScrollVelocities[i];
+
+            time += (int)((current.StartTime - prev.StartTime) * prev.Multiplier);
+            scrollVelocityMarks.Add(time);
+        }
+    }
+
+    public double GetPositionFromTime(double time, int index = -1) {
+        if (index == -1)
+            for (index = 0; index < ScrollVelocities.Count; index++)
+                if (time < ScrollVelocities[index].StartTime)
+                    break;
+
+        if (index == 0)
+            return time;
+
+        StructureScrollVelocity previous = ScrollVelocities[index - 1];
+
+        double pos = scrollVelocityMarks[index - 1];
+        pos += (time - previous.StartTime) * previous.Multiplier;
+
+        return pos;
     }
 
     private void updateTime() {
-        CurrentTime = Clock.CurrentTime - enteredClock;
+        int svIndex = 0;
+
+        while (svIndex < ScrollVelocities.Count && ScrollVelocities[svIndex].StartTime <= (Clock.CurrentTime - enteredClock))
+            svIndex++;
+
+        /* Console.WriteLine(CurrentTime); */
+        CurrentTime = GetPositionFromTime(Clock.CurrentTime - enteredClock, svIndex);
     }
 
     protected override void Update() {
@@ -51,5 +95,5 @@ public partial class HitObjectManager : Container<DrawableHitObject> {
         base.Update();
     }
 
-    public float GetNotePosition(double time) => (float)(time - CurrentTime);
+    public float GetNotePosition(double time) => (float)(time - (float)CurrentTime);
 }

@@ -80,7 +80,20 @@ public class RitMap {
                 }
 
                 if (inTimingPoints) {
+                    if (string.IsNullOrWhiteSpace(line))
+                        continue;
 
+                    var parts = line.Split(":");
+                    if (parts.Length < 3) continue;
+
+                    if (parts[0] == "SV") {
+                        var scrollVelocity = new StructureScrollVelocity {
+                            StartTime = double.Parse(parts[1]),
+                            Multiplier = double.Parse(parts[2])
+                        };
+
+                        mapData.ScrollVelocities.Add(scrollVelocity);
+                    }
                 }
 
                 if (inHitObjects) {

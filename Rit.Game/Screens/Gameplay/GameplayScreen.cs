@@ -42,6 +42,8 @@ namespace Rit.Game.Screens.Gameplay
             });
 
             Manager.HitObjects = MapData.HitObjects;
+            Manager.ScrollVelocities = MapData.ScrollVelocities;
+            Manager.InitSVMarks();
 
             InternalChildren = new Drawable[]
             {
