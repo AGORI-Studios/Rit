@@ -1,33 +1,72 @@
 using System;
 using System.Collections.Generic;
+using osu.Framework.Audio;
+using osu.Framework.Audio.Track;
+using osu.Framework.Allocation;
+using osu.Framework.IO.Stores;
 using Rit.Game.Map.Generate;
 using Rit.Game.Structures.Map;
-using SixLabors.ImageSharp.PixelFormats;
+using osu.Framework.Platform;
+using System.IO;
 
-namespace Rit.Game.Map;
+namespace Rit.Game.Map
+{
+    public class MapData
+    {
+        public string AudioFile { get; set; } = string.Empty;
+        public string BackgroundFile { get; set; } = string.Empty;
 
-public class MapData {
-    public string AudioFile { get; set; } = string.Empty;
-    public string BackgroundFile { get; set; } = string.Empty;
+        public MapMeta Meta { get; set; }
 
-    public MapMeta Meta { get; set; }
+        public List<StructureHitObject> HitObjects { get; set; }
+        public List<int> ScrollVelocities { get; set; }
+        public List<int> BPMChanges { get; set; }
 
-    public List<StructureHitObject> HitObjects { get; set; }
-    public List<int> ScrollVelocities { get; set; }
-    public List<int> BPMChanges { get; set; }
+        private Track track;
 
-    public MapData(MapMeta meta, string mapPath) : this(mapPath) {
-        Meta = meta;
-    }
+        private readonly DependencyContainer dependencies;
 
-    public MapData(string mapPath) {
-        Meta = new MapMeta();
-        HitObjects = new List<StructureHitObject>();
-        ScrollVelocities = new List<int>();
-        BPMChanges = new List<int>();
+        public MapData(string mapPath, string mapFolder, DependencyContainer dependencies)
+        {
+            this.dependencies = dependencies;
 
-        RitMap.Generate(mapPath, this);
+            Meta = new MapMeta();
+            HitObjects = new List<StructureHitObject>();
+            ScrollVelocities = new List<int>();
+            BPMChanges = new List<int>();
 
-        Console.WriteLine($"SIZE OF HIT OBJECTS: {HitObjects.Count}");
+            RitMap.Generate(mapPath, this);
+
+            loadAndPlayAudio(Path.Combine(Path.Combine(Base.BaseScreen.BaseGamePath, "Maps/" + mapFolder), AudioFile));
+
+            Console.WriteLine($"SIZE OF HIT OBJECTS: {HitObjects.Count}");
+        }
+
+        private void loadAndPlayAudio(string audioPath)
+        {
+            var audioManager = dependencies.Get<AudioManager>();
+
+            if (audioManager == null)
+            {
+                Console.WriteLine("Failed to resolve AudioManager.");
+                return;
+            }
+
+            var fileStore = new StorageBackedResourceStore(new NativeStorage(System.IO.Path.GetDirectoryName(audioPath)));
+            var trackStore = audioManager.GetTrackStore(fileStore);
+
+            track = trackStore.Get(System.IO.Path.GetFileName(audioPath));
+
+            if (track != null)
+            {
+                track.Looping = false;
+                track.Start();
+                Console.WriteLine($"Playing audio: {audioPath}");
+            }
+            else
+            {
+                Console.WriteLine($"Failed to load audio: {audioPath}");
+            }
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace Rit.Game.Map.Generate;
 public class RitMap {
     public static void Generate(string mapPath, MapData mapData) {
         try {
-            var lines = File.ReadAllLines(Path.Combine(Rit.Game.Base.BaseScreen.BaseGamePath, "Maps/" + mapPath));
+            var lines = File.ReadAllLines(Path.Combine(Base.BaseScreen.BaseGamePath, "Maps/" + mapPath));
             bool inMeta = false;
             bool inTimingPoints = false;
             bool inHitObjects = false;
