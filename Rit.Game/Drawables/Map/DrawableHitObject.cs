@@ -37,7 +37,7 @@ public partial class DrawableHitObject : CompositeDrawable {
         string notePath = "Skins/tempSkin/notes/4K/note1.png";
 
         if (Manager.Storage.Exists(notePath)) {
-            Console.WriteLine("GOATED");
+            /* Console.WriteLine("GOATED"); */
 
             if (!tex_cache.TryGetValue(notePath, out var texture))
             {

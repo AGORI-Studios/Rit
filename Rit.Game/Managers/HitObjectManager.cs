@@ -1,11 +1,16 @@
+using System;
 using System.Collections.Generic;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.Platform;
+using osu.Framework.Screens;
 using Rit.Game.Drawables.Map;
+using Rit.Game.Input;
+using Rit.Game.Screens.Gameplay;
 using Rit.Game.Structures.Map;
+using SharpGen.Runtime.Win32;
 
 namespace Rit.Game.Managers;
 
@@ -22,6 +27,15 @@ public partial class HitObjectManager : Container<CompositeDrawable> {
     public Storage Storage { get; set; }
 
     public int STRUM_Y = 50;
+
+    private GameplayScreen screen { get; set; }
+
+    private InputGameplay input { get; set; }
+
+    public HitObjectManager(GameplayScreen screen) {
+        this.screen = screen;
+        input = screen.Input;
+    }
 
     [BackgroundDependencyLoader]
     private void load(TextureStore texture)
@@ -42,6 +56,16 @@ public partial class HitObjectManager : Container<CompositeDrawable> {
     protected override void LoadComplete()
     {
         base.LoadComplete();
+
+        input.OnPress += key => {
+            var lane = input.Keys.IndexOf(key) + 1;
+           /*  var hit = false; */
+
+            Console.WriteLine("HELPPP MEEEEE");
+
+            /* if (hit == null)
+                return; */
+        };
     }
 
     public bool IsOnScreen(double time) {

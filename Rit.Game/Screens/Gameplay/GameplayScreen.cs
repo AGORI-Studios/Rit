@@ -5,18 +5,25 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
+using osu.Framework.Input.Bindings;
+using osu.Framework.Input.Events;
 using osu.Framework.Screens;
 using osuTK.Graphics;
+using osuTK.Input;
 using Rit.Game.Base;
+using Rit.Game.Input;
+using Rit.Game.Input.Keybinds;
 using Rit.Game.Managers;
 using Rit.Game.Map;
 
 namespace Rit.Game.Screens.Gameplay
 {
-    public partial class GameplayScreen : BaseScreen
+    public partial class GameplayScreen : BaseScreen, IKeyBindingHandler
     {
         public MapData MapData { get; private set; }
         public HitObjectManager Manager { get; private set; }
+        public InputGameplay Input { get; private set; }
+        private KeybindsGameplay keysContainer;
 
         private string mapFolder = "svahah/";
         private string mapPath = "svahah/out.ritc";
@@ -36,7 +43,9 @@ namespace Rit.Game.Screens.Gameplay
 
             MapData = new MapData(mapPath, mapFolder, dependencies);
 
-            dependencies.CacheAs(Manager = new HitObjectManager {
+            dependencies.CacheAs(Input = GetInput());
+
+            dependencies.CacheAs(Manager = new HitObjectManager(this) {
                 AlwaysPresent = true,
                 Masking = true
             });
@@ -48,9 +57,13 @@ namespace Rit.Game.Screens.Gameplay
 
             InternalChildren = new Drawable[]
             {
-                Manager
+                Input,
+                Manager,
+                keysContainer = new KeybindsGameplay()
             };
         }
+
+        protected virtual InputGameplay GetInput() => new(this);
 
         protected override void Update() {
             base.Update();
