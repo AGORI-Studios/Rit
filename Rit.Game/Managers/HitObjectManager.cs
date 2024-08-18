@@ -1,16 +1,15 @@
-using System;
 using System.Collections.Generic;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Textures;
-using osuTK.Graphics.OpenGL;
+using osu.Framework.Platform;
 using Rit.Game.Drawables.Map;
 using Rit.Game.Structures.Map;
 
 namespace Rit.Game.Managers;
 
-public partial class HitObjectManager : Container<DrawableHitObject> {
+public partial class HitObjectManager : Container<CompositeDrawable> {
     public List<StructureHitObject> HitObjects { get; set; } = new List<StructureHitObject>();
     public List<DrawableHitObject> DrawableHitObjects { get; } = new List<DrawableHitObject>();
     public List<StructureScrollVelocity> ScrollVelocities { get; set; } = new List<StructureScrollVelocity>();
@@ -18,7 +17,11 @@ public partial class HitObjectManager : Container<DrawableHitObject> {
     public double CurrentTime { get; private set; }
     private double enteredClock { get; set; }
 
-    private int svIndex { get; set; }= 0;
+    private int svIndex { get; set; } = 0;
+
+    public Storage Storage { get; set; }
+
+    public int STRUM_Y = 50;
 
     [BackgroundDependencyLoader]
     private void load(TextureStore texture)
@@ -27,6 +30,13 @@ public partial class HitObjectManager : Container<DrawableHitObject> {
 
         enteredClock = Clock.CurrentTime;
         svIndex = 0;
+
+        createReceptors();
+    }
+
+    private void createReceptors() {
+        for (int i = 1; i <= 4; i++)
+            AddInternal(new DrawableReceptor(i, this));
     }
 
     protected override void LoadComplete()
@@ -87,7 +97,7 @@ public partial class HitObjectManager : Container<DrawableHitObject> {
         while (HitObjects.Count > 0 && IsOnScreen(HitObjects[0].StartTime)) {
             var hitObject = new DrawableHitObject(HitObjects[0], this);
 
-            Console.WriteLine($"Adding DrawableHitObject for: {HitObjects[0].StartTime}");
+           /*  Console.WriteLine($"Adding DrawableHitObject for: {HitObjects[0].StartTime}"); */
 
             AddInternal(hitObject);
 
@@ -97,5 +107,5 @@ public partial class HitObjectManager : Container<DrawableHitObject> {
         base.Update();
     }
 
-    public float GetNotePosition(double time) => (float)(time - (float)CurrentTime);
+    public float GetNotePosition(double time) => STRUM_Y + (float)(time - (float)CurrentTime);
 }

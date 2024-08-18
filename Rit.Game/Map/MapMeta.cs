@@ -20,4 +20,6 @@ public class MapMeta {
     public string Tags { get; set; } = string.Empty;
 
     public int PreviewTime { get; set; } = 0;
+
+    public int KeyCount { get; set; } = 4;
 }

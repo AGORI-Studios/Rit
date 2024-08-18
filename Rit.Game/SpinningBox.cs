@@ -37,7 +37,7 @@ namespace Rit.Game
                     {
                         Anchor = Anchor.Centre,
                         Origin = Anchor.Centre,
-                        Texture = textures.Get("logo")
+                        Texture = textures.Get("note1")
                     },
                 }
             };

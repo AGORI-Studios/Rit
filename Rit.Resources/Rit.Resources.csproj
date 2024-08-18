@@ -5,7 +5,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Fonts\**\*" />
     <EmbeddedResource Include="Samples\**\*" />
-    <EmbeddedResource Include="Textures\**\*" />
+    <EmbeddedResource Include="Textures\**\*.png" />
     <EmbeddedResource Include="Tracks\**\*" />
   </ItemGroup>
 </Project>

@@ -4,30 +4,27 @@ using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Rendering;
+using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.IO.Stores;
+using osu.Framework.Platform;
+using osuTK.Graphics.ES11;
 using Rit.Game.Managers;
 using Rit.Game.Structures.Map;
 
 namespace Rit.Game.Drawables.Map;
 
-public partial class DrawableHitObject : CompositeDrawable {
-    public StructureHitObject Data { get; }
+public partial class DrawableReceptor : CompositeDrawable {
+    public int Data;
 
     protected HitObjectManager Manager { get; private set; }
 
-    protected double ScrollVelocityTime { get; private set; }
-    protected double ScrollVelocityEndTime { get; private set; }
-
     private static readonly Dictionary<string, Texture> tex_cache = new Dictionary<string, Texture>();
 
-    public DrawableHitObject(StructureHitObject data, HitObjectManager manager) {
+    public DrawableReceptor(int data, HitObjectManager manager) {
         Data = data;
         Manager = manager;
-
-        ScrollVelocityTime = Manager.GetPositionFromTime(Data.StartTime);
-        ScrollVelocityEndTime = Manager.GetPositionFromTime(Data.EndTime);
     }
 
     [BackgroundDependencyLoader]
@@ -43,7 +40,7 @@ public partial class DrawableHitObject : CompositeDrawable {
             {
                 var customStore = new ResourceStore<byte[]>(new StorageBackedResourceStore(Manager.Storage.GetStorageForDirectory("Skins/tempSkin/notes/4K")));
                 var textureLoaderStore = new TextureLoaderStore(customStore);
-                var textureUpload = textureLoaderStore.Get($"note{Data.Data}.png");
+                var textureUpload = textureLoaderStore.Get($"receptor{Data}-unpressed.png");
 
                 if (textureUpload != null)
                 {
@@ -69,14 +66,8 @@ public partial class DrawableHitObject : CompositeDrawable {
                 };
             }
 
-            X += 100 + texture.Width * Data.Data;
+            X += 100 + texture.Width * Data;
+            Y = Manager.STRUM_Y;
         }
-    }
-
-    protected override void Update()
-    {
-        base.Update();
-
-        Y = Manager.GetNotePosition(ScrollVelocityTime);
     }
 }

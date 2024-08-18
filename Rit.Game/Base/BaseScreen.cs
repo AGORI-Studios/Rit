@@ -3,6 +3,7 @@ using System.IO;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
+using osu.Framework.Platform;
 using osu.Framework.Screens;
 using Rit.Game.Screens;
 
@@ -22,6 +23,8 @@ public partial class BaseScreen : Screen {
     public const float FADE_DURATION = 250;
     public const float ENTER_DELAY = 100;
 
+    public Storage Storage;
+
     protected new RitGame Game => (RitGame)base.Game;
 
     public static string BaseGamePath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rit");
@@ -31,12 +34,18 @@ public partial class BaseScreen : Screen {
         Origin = Anchor.Centre;
     }
 
+    [BackgroundDependencyLoader]
+    private void load(Storage storage) {
+        Storage = storage;
+    }
+
     public override bool OnExiting(ScreenExitEvent e) {
         /* if (!AllowExit) {
             e.Cancel();
             return true;
         }
- */
+        */
+
         return base.OnExiting(e);
     }
 }
