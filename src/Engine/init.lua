@@ -4,6 +4,7 @@ Class = require("Lib.Class")
 
 require(path .. "System")
 require(path .. "Graphics")
+require(path .. "Input")
 
 Game = TypedGroup(State)
 Game._currentState = State()
