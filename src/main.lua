@@ -1,7 +1,8 @@
 require("Engine")
 
 function love.load()
-
+    Game._currentState:add(Sprite("Assets/Textures/test.png", 100, 100))
+    Game._currentState:add(Drawable(100, 100, 300, 300))
 end
 
 function love.update(dt)
@@ -11,6 +12,8 @@ end
 
 function love.resize(w, h)
     Game:resize(w, h)
+    Game._windowWidth = w
+    Game._windowHeight = h
 end
 
 function love.keypressed(key)
