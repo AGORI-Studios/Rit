@@ -1,4 +1,5 @@
 local Json = {}
+Json.tabSize = 4
 
 local charEscape = {
     ['"'] = '\\"',
@@ -19,7 +20,8 @@ function Json:encodeString(s)
     return s:gsub('[%z\1-\31\\"]', Json.escapeChar)
 end
 
-function Json:encodeValue(v)
+function Json:encodeValue(v, indent)
+    indent = indent or 0
     if type(v) == "string" then
         return '"' .. Json:encodeString(v) .. '"'
     elseif type(v) == "number" then
@@ -27,13 +29,14 @@ function Json:encodeValue(v)
     elseif type(v) == "boolean" then
         return v and "true" or "false"
     elseif type(v) == "table" then
-        return Json:encode(v)
+        return Json:encode(v, indent)
     else
         return "null"
     end
 end
 
-function Json:encodeTable(t)
+function Json:encodeTable(t, indent)
+    indent = indent or 0
     local result = {}
     local array = true
     for k, v in pairs(t) do
@@ -44,23 +47,20 @@ function Json:encodeTable(t)
     end
     if array then
         for i, v in ipairs(t) do
-            table.insert(result, Json:encodeValue(v))
+            table.insert(result, Json:encodeValue(v, indent))
         end
         return "[" .. table.concat(result, ",") .. "]"
     else
         for k, v in pairs(t) do
-            table.insert(result, '"' .. k .. '":' .. Json:encodeValue(v))
+            table.insert(result, '"' .. k .. '":' .. Json:encodeValue(v, indent))
         end
         return "{" .. table.concat(result, ",") .. "}"
     end
 end
 
-function Json:encode(value)
-    if type(value) == "table" then
-        return Json:encodeTable(value)
-    else
-        return Json:encodeValue(value)
-    end
+function Json:encode(value, indent)
+    indent = indent or 0
+    return Json:encodeTable(value, indent)
 end
 
 local i = 1
@@ -186,7 +186,4 @@ local test = Json:decode([[
 }
 ]])
 
-
---[[ print(Json:encode(test))
- ]]
 return Json
