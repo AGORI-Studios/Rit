@@ -1,11 +1,194 @@
 local Json = {}
 
+local charEscape = {
+    ['"'] = '\\"',
+    ['\\'] = '\\\\',
+    ['/'] = '\\/',
+    ['\b'] = '\\b',
+    ['\f'] = '\\f',
+    ['\n'] = '\\n',
+    ['\r'] = '\\r',
+    ['\t'] = '\\t'
+}
+
+function Json:escapeChar(c)
+    return charEscape[c] or string.format("\\u%04x", c:byte())
+end
+
+function Json:encodeString(s)
+    return s:gsub('[%z\1-\31\\"]', Json.escapeChar)
+end
+
+function Json:encodeValue(v)
+    if type(v) == "string" then
+        return '"' .. Json:encodeString(v) .. '"'
+    elseif type(v) == "number" then
+        return tostring(v)
+    elseif type(v) == "boolean" then
+        return v and "true" or "false"
+    elseif type(v) == "table" then
+        return Json:encode(v)
+    else
+        return "null"
+    end
+end
+
+function Json:encodeTable(t)
+    local result = {}
+    local array = true
+    for k, v in pairs(t) do
+        if type(k) ~= "number" then
+            array = false
+            break
+        end
+    end
+    if array then
+        for i, v in ipairs(t) do
+            table.insert(result, Json:encodeValue(v))
+        end
+        return "[" .. table.concat(result, ",") .. "]"
+    else
+        for k, v in pairs(t) do
+            table.insert(result, '"' .. k .. '":' .. Json:encodeValue(v))
+        end
+        return "{" .. table.concat(result, ",") .. "}"
+    end
+end
+
 function Json:encode(value)
-    print("Json:encode not implemented")
+    if type(value) == "table" then
+        return Json:encodeTable(value)
+    else
+        return Json:encodeValue(value)
+    end
 end
 
-function Json:decode(value)
-    print("Json:decode not implemented")
+local function parse(s)
+    local i = 1
+    local function parseValue()
+        local c = s:sub(i, i)
+        if c == "{" then
+            print("Object")
+            i = i + 1
+            local result = {}
+            while true do
+                local key = parseValue()
+                if key == nil then
+                    print("End of object")
+                    return result
+                end
+                if s:sub(i, i) ~= ":" then
+                    error("Expected ':'")
+                end
+                i = i + 1
+                local value = parseValue()
+                ---@diagnostic disable-next-line: need-check-nil -- It literally checks if its nil but it still gives the warning
+                result[key] = value
+                if s:sub(i, i) == "}" then
+                    i = i + 1
+                    return result
+                end
+                if s:sub(i, i) ~= "," then
+                    error("Expected ','")
+                end
+                i = i + 1
+            end
+        elseif c == "[" then
+            print("Array")
+            i = i + 1
+            local result = {}
+            while true do
+                local value = parseValue()
+                table.insert(result, value)
+                if s:sub(i, i) == "]" then
+                    i = i + 1
+                    return result
+                end
+                if s:sub(i, i) ~= "," then
+                    error("Expected ','")
+                end
+                i = i + 1
+            end
+        elseif c == '"' then
+            i = i + 1
+            local result = ""
+            while true do
+                local c = s:sub(i, i)
+                if c == '"' then
+                    i = i + 1
+                    return result
+                end
+                if c == "\\" then
+                    i = i + 1
+                    c = s:sub(i, i)
+                    if c == "u" then
+                        i = i + 1
+                        local hex = s:sub(i, i + 3)
+                        i = i + 4
+                        result = result .. string.char(tonumber(hex, 16))
+                    else
+                        result = result .. c
+                    end
+                else
+                    result = result .. c
+                end
+                i = i + 1
+            end
+        elseif c == "t" then
+            if s:sub(i, i + 3) == "true" then
+                i = i + 4
+                return true
+            end
+        elseif c == "f" then
+            if s:sub(i, i + 4) == "false" then
+                i = i + 5
+                return false
+            end
+        elseif c == "n" then
+            if s:sub(i, i + 3) == "null" then
+                i = i + 4
+                return nil
+            end
+        else
+            local j = i
+            while true do
+                local c = s:sub(j, j)
+                if c == "," or c == "}" or c == "]" then
+                    local value = tonumber(s:sub(i, j - 1))
+                    i = j
+                    return value
+                end
+                j = j + 1
+            end
+        end
+
+        error("Unexpected character: " .. c)
+
+    end
+
+    return parseValue()
 end
 
+function Json:decode(s)
+    s = s:gsub("%s", "")
+    print(s)
+    return parse(s)
+end
+
+local test = Json:decode([[
+{
+    "name": "John",
+    "age": 30,
+    "cars": {
+        "car1": "Ford",
+        "car2": "BMW",
+        "car3": "Fiat"
+    },
+    "tools": ["hammer", "screwdriver", "wrench"]
+}
+]])
+
+
+--[[ print(Json:encode(test))
+ ]]
 return Json
