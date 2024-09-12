@@ -6,10 +6,10 @@ env:
 on:
     push:
         branches:
-            - main
+            - Rewrite
     pull_request:
         branches:
-            - main
+            - Rewrite
 
 jobs:
     build:
