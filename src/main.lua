@@ -1,8 +1,8 @@
 require("Engine")
+require("Game")
 
 function love.load()
-    Game._currentState:add(Sprite("Assets/Textures/test.png", 100, 100))
-    Game._currentState:add(Drawable(100, 100, 300, 300))
+    Game:SwitchState(States.Testing.TestState)
 end
 
 function love.update(dt)

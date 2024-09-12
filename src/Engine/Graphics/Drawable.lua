@@ -11,7 +11,7 @@ function Drawable:new(x, y, w, h)
     self.height = h
     self.baseWidth = w
     self.baseHeight = h
-    self.scale = 1
+    self.scale = {x = 1, y = 1}
 
     self.blendMode = "alpha"
     self.blendModeAlpha = "alphamultiply"
@@ -107,8 +107,9 @@ function Drawable:move(x, y)
     self.y = y
 end
 
-function Drawable:scale(s)
-    self.scale = s
+function Drawable:scale(x, y)
+    self.scale.x = x or 1
+    self.scale.y = y or x or 1
 end
 
 return Drawable

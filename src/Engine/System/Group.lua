@@ -26,6 +26,7 @@ function Group:clear()
     self.objects = {}
 end
 
+-- I Should probably just use a metatable for this
 function Group:update(dt)
     for _, obj in ipairs(self.objects) do
         if obj.update then
@@ -50,7 +51,55 @@ function Group:resize(w, h)
     end
 end
 
-function Group:__tostring()
+function Group:keypressed(key, scancode, isrepeat)
+    for _, obj in ipairs(self.objects) do
+        if obj.keypressed then
+            obj:keypressed(key, scancode, isrepeat)
+        end
+    end
+end
+
+function Group:keyreleased(key, scancode)
+    for _, obj in ipairs(self.objects) do
+        if obj.keyreleased then
+            obj:keyreleased(key, scancode)
+        end
+    end
+end
+
+function Group:mousepressed(x, y, button, istouch, presses)
+    for _, obj in ipairs(self.objects) do
+        if obj.mousepressed then
+            obj:mousepressed(x, y, button, istouch, presses)
+        end
+    end
+end
+
+function Group:mousereleased(x, y, button, istouch, presses)
+    for _, obj in ipairs(self.objects) do
+        if obj.mousereleased then
+            obj:mousereleased(x, y, button, istouch, presses)
+        end
+    end
+end
+
+function Group:mousemoved(x, y, dx, dy, istouch)
+    for _, obj in ipairs(self.objects) do
+        if obj.mousemoved then
+            obj:mousemoved(x, y, dx, dy, istouch)
+        end
+    end
+end
+
+function Group:wheelmoved(x, y)
+    for _, obj in ipairs(self.objects) do
+        if obj.wheelmoved then
+            obj:wheelmoved(x, y)
+        end
+    end
+end
+
+--[[ function Group:__tostring()
     if #self.objects == 0 then
         return "Group (empty)"
     elseif self.size > 0 then
@@ -58,7 +107,7 @@ function Group:__tostring()
     else
         return "Group (" .. #self.objects .. " objects)"
     end
-end
+end ]]
 
 function Group:kill()
     for _, obj in ipairs(self.objects) do

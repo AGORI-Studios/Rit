@@ -14,10 +14,10 @@ end
 
 function Sprite:draw()
     love.graphics.push()
-        local lastBlendMode, lastBlendModeAlpha = love.graphics.getBlendMode()
         love.graphics.setBlendMode(self.blendMode, self.blendModeAlpha)
+        love.graphics.setColor(self.colour[1], self.colour[2], self.colour[3], self.alpha)
 
-        love.graphics.draw(self.image, self.drawX, self.drawY, 0, self.scale * self.windowScale, self.scale * self.windowScale)
+        love.graphics.draw(self.image, self.drawX, self.drawY, 0, self.scale.x * self.windowScale, self.scale.y * self.windowScale)
 
         if Game.debug then
             self:__debugDraw()
