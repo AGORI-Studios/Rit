@@ -1,7 +1,7 @@
-local path = (...):match("(.-)[^%.]+$")
+local path = ... .. "."
 
-Keyboard = require(path .. "Input.Keyboard")
-InputClass = require(path .. "Input.Input")
+Keyboard = require(path .. "Keyboard")
+InputClass = require(path .. "Input")
 
 Input = InputClass({
     MenuPress = {"return", "space", "m"}

@@ -1,12 +1,4 @@
-local ini = {
-    _NAME = "Ini",
-    _VERSION = "1.1.0",
-    _DESCRIPTION = "A 'simple' ini parser with table support",
-    _CREATOR = "GuglioIsStupid",
-    _LICENSE = [[
-        MIT LICENSE
-    ]]
-}
+local ini = {}
 
 local function split(str, sep)
     local sep, fields = sep or ":", {}

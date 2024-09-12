@@ -1,7 +1,7 @@
 local path = ... .. "."
 
-Class = require("Lib.Class")
-
+require(path .. "Base")
+require(path .. "Format")
 require(path .. "System")
 require(path .. "Graphics")
 require(path .. "Input")

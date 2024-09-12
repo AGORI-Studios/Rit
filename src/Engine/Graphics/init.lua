@@ -1,4 +1,4 @@
-local path = (...):match("(.-)[^%.]+$")
+local path = ... .. "."
 
-Drawable = require(path .. "Graphics.Drawable")
-Sprite = require(path .. "Graphics.Sprite")
+Drawable = require(path .. "Drawable")
+Sprite = require(path .. "Sprite")

@@ -1,11 +1,6 @@
 ---@diagnostic disable: deprecated
-local console = {
-    _NAME = "Console",
-    _DESC = "A simple console library for Love2D",
-    _CREATOR = "GuglioIsStupid",
-    _LICENSE = "MIT",
-    _VERSION = "1.0.0"
-}
+local console = {}
+
 console.lines = {}
 console.hidden = false
 console.overridePrint = true
