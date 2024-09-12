@@ -85,7 +85,7 @@ function Drawable:resize(w, h)
         self.windowScale = 1
         self.width = self.baseWidth
         self.height = self.baseHeight
-        
+
         if w / Game._gameWidth < h / Game._gameHeight then
             self.windowScale = w / Game._gameWidth
         else

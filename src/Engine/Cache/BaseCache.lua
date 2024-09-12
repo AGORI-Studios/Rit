@@ -1,0 +1,18 @@
+local BaseCache = Class:extend("BaseCache")
+
+function BaseCache:new()
+    self._cache = {}
+end
+
+function BaseCache:get(path)
+    print("BaseCache:get(path) is not implemented.")
+end
+
+function BaseCache:clear()
+    for path, asset in pairs(self._cache) do
+        asset:release()
+        self._cache[path] = nil
+    end
+end 
+
+return BaseCache

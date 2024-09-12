@@ -1,9 +1,8 @@
 local Sprite = Drawable:extend("Sprite")
 
 function Sprite:new(image, x, y)
-    --[[ self.image = image ]]
     if type(image) == "string" then
-        self.image = love.graphics.newImage(image)
+        self.image = Cache:get("Image", image)
     else
         self.image = image
     end

@@ -1,6 +1,7 @@
 local path = ... .. "."
 
 require(path .. "Base")
+require(path .. "Cache")
 require(path .. "Format")
 require(path .. "System")
 require(path .. "Graphics")
