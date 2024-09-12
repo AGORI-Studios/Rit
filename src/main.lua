@@ -2,7 +2,6 @@ require("Engine")
 require("Game")
 
 function love.load()
-    Game:SwitchState(States.Testing.TestState)
 end
 
 function love.update(dt)

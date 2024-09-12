@@ -27,50 +27,19 @@ function Drawable:new(x, y, w, h)
     self.scalingType = "aspect-fixed"
 
     self.windowScale = 1
+    self.angle = 0 -- 0-360, uses math.rad in runtime
+    self.origin = {x = 0, y = 0}
+    self.offset = {x = 0, y = 0}
+    self.addOrigin = true
 
     self:resize(Game._windowWidth, Game._windowHeight)
 end
 
 function Drawable:update(dt)
     if self.scalingType ~= "stretch" and self.scalingType ~= "window-stretch" then
-        self.drawX = Game._windowWidth * (self.x / Game._gameWidth)
-        self.drawY = Game._windowHeight * (self.y / Game._gameHeight)
+        self.drawX = Game._windowWidth * ((self.x + self.offset.x + (self.addOrigin and self.origin.x or 0)) / Game._gameWidth)
+        self.drawY = Game._windowHeight * (self.y + self.offset.y + (self.addOrigin and self.origin.y or 0)) / Game._gameHeight
     end
-end
-
-function Drawable:draw()
-    love.graphics.push()
-        local lastBlendMode, lastBlendModeAlpha = love.graphics.getBlendMode()
-        local lastColour = {love.graphics.getColor()}
-        love.graphics.setBlendMode(self.blendMode, self.blendModeAlpha)
-        love.graphics.setColor(self.colour[1], self.colour[2], self.colour[3], self.alpha)
-
-        love.graphics.rectangle("fill", self.drawX, self.drawY, self.width, self.height)
-
-        love.graphics.setColor(lastColour)
-        love.graphics.setBlendMode(lastBlendMode, lastBlendModeAlpha)
-
-        if Game.debug then
-            self:__debugDraw()
-        end
-    love.graphics.pop()
-end
-
-function Drawable:__debugDraw()
-    love.graphics.push()
-        love.graphics.setColor(1, 0, 0)
-        love.graphics.rectangle("line", self.drawX, self.drawY, self.width, self.height)
-        love.graphics.setColor(0, 0, 0)
-        for x = -1, 1 do
-            for y = -1, 1 do
-                love.graphics.print("x: " .. math.floor(self.drawX) .. " y: " .. math.floor(self.drawY), self.drawX + x, self.drawY + y)
-                love.graphics.print("w: " .. math.floor(self.width) .. " h: " .. math.floor(self.height), self.drawX + x, self.drawY + y + 10)
-            end
-        end
-        love.graphics.setColor(1, 1, 1)
-        love.graphics.print("x: " .. math.floor(self.drawX) .. " y: " .. math.floor(self.drawY), self.drawX, self.drawY)
-        love.graphics.print("w: " .. math.floor(self.width) .. " h: " .. math.floor(self.height), self.drawX, self.drawY + 10)
-    love.graphics.pop()
 end
 
 ---@param w number
@@ -107,6 +76,45 @@ function Drawable:resize(w, h)
         self.width = w
         self.height = h
     end
+end
+
+function Drawable:draw()
+    love.graphics.push()
+        local lastBlendMode, lastBlendModeAlpha = love.graphics.getBlendMode()
+        local lastColour = {love.graphics.getColor()}
+        -- we have to convert with love.graphics.rotate
+        love.graphics.translate(self.drawX + self.width / 2, self.drawY + self.height / 2)
+        love.graphics.rotate(math.rad(self.angle))
+        love.graphics.translate(-self.drawX - self.width / 2, -self.drawY - self.height / 2)
+        love.graphics.setBlendMode(self.blendMode, self.blendModeAlpha)
+        love.graphics.setColor(self.colour[1], self.colour[2], self.colour[3], self.alpha)
+
+        love.graphics.rectangle("fill", self.drawX, self.drawY, self.width, self.height)
+
+        love.graphics.setColor(lastColour)
+        love.graphics.setBlendMode(lastBlendMode, lastBlendModeAlpha)
+
+        if Game.debug then
+            self:__debugDraw()
+        end
+    love.graphics.pop()
+end
+
+function Drawable:__debugDraw()
+    love.graphics.push()
+        love.graphics.setColor(1, 0, 0)
+        love.graphics.rectangle("line", self.drawX, self.drawY, self.width, self.height)
+        love.graphics.setColor(0, 0, 0)
+        for x = -1, 1 do
+            for y = -1, 1 do
+                love.graphics.print("x: " .. math.floor(self.drawX) .. " y: " .. math.floor(self.drawY), self.drawX + x, self.drawY + y)
+                love.graphics.print("w: " .. math.floor(self.width) .. " h: " .. math.floor(self.height), self.drawX + x, self.drawY + y + 10)
+            end
+        end
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.print("x: " .. math.floor(self.drawX) .. " y: " .. math.floor(self.drawY), self.drawX, self.drawY)
+        love.graphics.print("w: " .. math.floor(self.width) .. " h: " .. math.floor(self.height), self.drawX, self.drawY + 10)
+    love.graphics.pop()
 end
 
 function Drawable:move(x, y)
