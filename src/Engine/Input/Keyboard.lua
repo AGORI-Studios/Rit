@@ -56,14 +56,17 @@ function Keyboard:keyreleased(key)
     end
 end
 
+---@param control string
 function Keyboard:isDown(control)
     return self.down[control]
 end
 
+---@param control string
 function Keyboard:wasPressed(control)
     return self.pressed[control]
 end
 
+---@param control string
 function Keyboard:wasReleased(control)
     return self.released[control]
 end

@@ -15,10 +15,7 @@ function TestState:new()
         1,
         {
             ease = Ease.backInOut,
-            type = TweenType.PINGPONG,
-            onUpdate = function(self)
-                print(self._NAME .. " is updating")
-            end
+            type = TweenType.PINGPONG
         }
     )
 end

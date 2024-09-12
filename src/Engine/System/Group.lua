@@ -1,10 +1,12 @@
 local Group = Class:extend("Group")
 
+---@param size? number
 function Group:new(size)
     self.objects = {}
     self.size = size or 0
 end
 
+---@param object any
 function Group:add(object)
     if self.size > 0 and #self.objects >= self.size then
         print("Group is full (" .. #self.objects .. "/" .. self.size .. ")")
@@ -27,6 +29,8 @@ function Group:clear()
 end
 
 -- I Should probably just use a metatable for this
+
+---@param dt number
 function Group:update(dt)
     for _, obj in ipairs(self.objects) do
         if obj.update then
@@ -43,6 +47,8 @@ function Group:draw()
     end
 end
 
+---@param w number
+---@param h number
 function Group:resize(w, h)
     for _, obj in ipairs(self.objects) do
         if obj.resize then
@@ -51,6 +57,9 @@ function Group:resize(w, h)
     end
 end
 
+---@param key string
+---@param scancode string
+---@param isrepeat boolean
 function Group:keypressed(key, scancode, isrepeat)
     for _, obj in ipairs(self.objects) do
         if obj.keypressed then
@@ -59,6 +68,8 @@ function Group:keypressed(key, scancode, isrepeat)
     end
 end
 
+---@param key string
+---@param scancode string
 function Group:keyreleased(key, scancode)
     for _, obj in ipairs(self.objects) do
         if obj.keyreleased then
@@ -67,6 +78,11 @@ function Group:keyreleased(key, scancode)
     end
 end
 
+---@param x number
+---@param y number
+---@param button number
+---@param istouch boolean
+---@param presses number
 function Group:mousepressed(x, y, button, istouch, presses)
     for _, obj in ipairs(self.objects) do
         if obj.mousepressed then
@@ -75,6 +91,11 @@ function Group:mousepressed(x, y, button, istouch, presses)
     end
 end
 
+---@param x number
+---@param y number
+---@param button number
+---@param istouch boolean
+---@param presses number
 function Group:mousereleased(x, y, button, istouch, presses)
     for _, obj in ipairs(self.objects) do
         if obj.mousereleased then
@@ -83,6 +104,11 @@ function Group:mousereleased(x, y, button, istouch, presses)
     end
 end
 
+---@param x number
+---@param y number
+---@param dx number
+---@param dy number
+---@param istouch boolean
 function Group:mousemoved(x, y, dx, dy, istouch)
     for _, obj in ipairs(self.objects) do
         if obj.mousemoved then
@@ -91,6 +117,8 @@ function Group:mousemoved(x, y, dx, dy, istouch)
     end
 end
 
+---@param x number
+---@param y number
 function Group:wheelmoved(x, y)
     for _, obj in ipairs(self.objects) do
         if obj.wheelmoved then
@@ -99,7 +127,7 @@ function Group:wheelmoved(x, y)
     end
 end
 
---[[ function Group:__tostring()
+function Group:__tostring()
     if #self.objects == 0 then
         return "Group (empty)"
     elseif self.size > 0 then
@@ -107,7 +135,7 @@ end
     else
         return "Group (" .. #self.objects .. " objects)"
     end
-end ]]
+end
 
 function Group:kill()
     for _, obj in ipairs(self.objects) do

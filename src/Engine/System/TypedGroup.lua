@@ -1,8 +1,10 @@
 local TypedGroup = Group:extend("TypedGroup")
 
+---@param type table
+---@param size? number
 function TypedGroup:new(type, size)
     if not type then
-        error("TypedGroup:new(type, size) requires a type")
+        error("TypedGroup:new(type, ?size) requires a type")
     end
     Group.new(self, size)
     self.type = type
@@ -16,16 +18,6 @@ function TypedGroup:__tostring()
     else
         return "TypedGroup<" .. self.type._NAME .. "> (" .. #self.objects .. " objects)"
     end
-end
-
-function TypedGroup:kill()
-    for _, obj in ipairs(self.objects) do
-        if obj.kill then
-            obj:kill()
-        end
-    end
-
-    self:clear()
 end
 
 return TypedGroup

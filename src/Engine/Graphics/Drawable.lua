@@ -1,5 +1,9 @@
 local Drawable = Class:extend("Drawable")
 
+---@param x number
+---@param y number
+---@param w number
+---@param h number
 function Drawable:new(x, y, w, h)
     -- a drawable is an object that rescales itself based on the screen size
 
@@ -68,6 +72,8 @@ function Drawable:__debugDraw()
     love.graphics.pop()
 end
 
+---@param w number
+---@param h number
 function Drawable:resize(w, h)
     if self.scalingType == "stretch" then
         local scaleX = w / Game._gameWidth

@@ -18,10 +18,28 @@ end
 
 function love.keypressed(key)
     Input:keypressed(key)
+    Game:keypressed(key)
 end
 
 function love.keyreleased(key)
     Input:keyreleased(key)
+    Game:keyreleased(key)
+end
+
+function love.mousepressed(x, y, button)
+    Game:mousepressed(x, y, button)
+end
+
+function love.mousereleased(x, y, button)
+    Game:mousereleased(x, y, button)
+end
+
+function love.wheelmoved(x, y)
+    Game:wheelmoved(x, y)
+end
+
+function love.mousemoved(x, y, dx, dy)
+    Game:mousemoved(x, y, dx, dy)
 end
 
 function love.draw()

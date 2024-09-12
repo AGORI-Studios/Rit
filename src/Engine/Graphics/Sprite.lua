@@ -1,5 +1,8 @@
 local Sprite = Drawable:extend("Sprite")
 
+---@param image string|love.Image
+---@param x number
+---@param y number
 function Sprite:new(image, x, y)
     if type(image) == "string" then
         self.image = Cache:get("Image", image)

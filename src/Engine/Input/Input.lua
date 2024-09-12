@@ -2,6 +2,7 @@ Input = Class:extend("Input")
 
 -- take note of "Keyboard" input class. This is the class that will be used to then call keyboard ones (to extend onto mouse and joystick in the future)
 
+---@param controls table
 function Input:new(controls)
     self.controls = controls
     --[[
@@ -35,18 +36,21 @@ function Input:keyreleased(key)
     self.keyboardBase:keyreleased(key)
 end
 
+---@param control string
 function Input:isDown(control)
     if self.keyboardControls[control] then
         return self.keyboardBase:isDown(control)
     end
 end
 
+---@param control string
 function Input:wasPressed(control)
     if self.keyboardControls[control] then
         return self.keyboardBase:wasPressed(control)
     end
 end
 
+---@param control string
 function Input:wasReleased(control)
     if self.keyboardControls[control] then
         return self.keyboardBase:wasReleased(control)

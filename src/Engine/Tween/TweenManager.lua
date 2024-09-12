@@ -1,3 +1,4 @@
+---@class TweenManager
 local TweenManager = Class:extend("TweenManager")
 
 TweenManager._tweens = {}
@@ -7,6 +8,10 @@ function TweenManager:new()
     -- Initialization code
 end
 
+---@param Object table
+---@param Values table
+---@param Duration number
+---@param Options table
 function TweenManager:tween(Object, Values, Duration, Options)
     local tween = VarTween(Options, self)
     tween:tween(Object, Values, Duration)
@@ -25,10 +30,12 @@ function TweenManager:flicker(basic, duration, period, options)
     return self:add(tween)
 end ]]
 
+---@param basic table
 function TweenManager:isFlickering(basic)
     return self:containsTweensOf(basic, {"flicker"})
 end
 
+---@param basic table
 function TweenManager:stopFlickering(basic)
     self:cancelTweensOf(basic, {"flicker"})
 end
@@ -103,13 +110,14 @@ function TweenManager:destroy()
     -- Cleanup code
 end
 
-function TweenManager:update(elapsed)
+---@param dt number
+function TweenManager:update(dt)
     local finishedTweens = {}
     for _, tween in ipairs(self._tweens) do
         if not tween.active then
             goto continue
         end
-        tween:update(elapsed)
+        tween:update(dt)
         if tween.finished then
             table.insert(finishedTweens, tween)
         end
@@ -121,6 +129,8 @@ function TweenManager:update(elapsed)
     end
 end
 
+---@param Tween Tween
+---@param Start? boolean
 function TweenManager:add(Tween, Start)
     if not Tween then
         return nil
@@ -132,6 +142,8 @@ function TweenManager:add(Tween, Start)
     return Tween
 end
 
+---@param Tween Tween
+---@param Destroy? boolean
 function TweenManager:remove(Tween, Destroy)
     if not Tween then
         return nil
@@ -159,12 +171,16 @@ function TweenManager:clear()
     self._tweens = {}
 end
 
+---@param Object table
+---@param FieldPaths table
 function TweenManager:cancelTweensOf(Object, FieldPaths)
     self:forEachTweensOf(Object, FieldPaths, function(tween)
         tween:cancel()
     end)
 end
 
+---@param Object table  
+---@param FieldPaths table
 function TweenManager:completeTweensOf(Object, FieldPaths)
     self:forEachTweensOf(Object, FieldPaths, function(tween)
         if (bit.band(tween.type, TweenType.LOOPING) == 0) and (bit.band(tween.type, TweenType.PINGPONG) == 0) and tween.active then
@@ -173,6 +189,9 @@ function TweenManager:completeTweensOf(Object, FieldPaths)
     end)
 end
 
+---@param object table
+---@param fieldPaths table
+---@param func function
 function TweenManager:forEachTweensOf(object, fieldPaths, func)
     if not object then
         error("Cannot cancel tween variables of an object that is null.")
@@ -214,6 +233,8 @@ function TweenManager:forEachTweensOf(object, fieldPaths, func)
     end
 end
 
+---@param object table
+---@param fieldPaths table
 function TweenManager:containsTweensOf(object, fieldPaths)
     local found = false
     self:forEachTweensOf(object, fieldPaths, function()
@@ -230,6 +251,7 @@ function TweenManager:completeAll()
     end
 end
 
+---@param func function
 function TweenManager:forEach(func)
     for _, tween in ipairs(self._tweens) do
         func(tween)

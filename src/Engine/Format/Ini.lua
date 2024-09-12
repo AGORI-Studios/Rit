@@ -19,6 +19,7 @@ local function convert(str)
     end
 end
 
+---@param ini string
 function ini.parse(ini)
     -- is it a file or str
     local str
@@ -80,6 +81,8 @@ function ini.parse(ini)
     return data
 end
 
+---@param tab table
+---@param fileName string
 function ini.save(tab, fileName)
     -- sort 0-Z
     local newTab = {}

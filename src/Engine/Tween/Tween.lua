@@ -1,5 +1,8 @@
+---@class Tween
 local Tween = Class:extend("Tween")
 
+---@param options table
+---@param manager TweenManager
 function Tween:new(options, manager)
     self.manager = manager
     self.active = false
@@ -29,6 +32,7 @@ function Tween:new(options, manager)
     self._waitingForRestart = false
     self._chainedTweens = {}
     self._nextTweenInChain = nil
+    self._object = nil
 end
 
 function Tween:destroy()
@@ -41,14 +45,17 @@ function Tween:destroy()
     self._nextTweenInChain = nil
 end
 
+---@param tween Tween
 function Tween:_then(tween)
     return self:addChainedTween(tween)
 end
 
+---@param delay number
 function Tween:wait(delay)
     return self:addChainedTween(Tween:new({type = TweenType.ONESHOT}, self.manager))
 end
 
+---@param tween Tween
 function Tween:addChainedTween(tween)
     tween:setVarsOnEnd()
     tween.manager:remove(tween, false)
@@ -61,8 +68,9 @@ function Tween:addChainedTween(tween)
     return self
 end
 
-function Tween:update(elapsed)
-    self._secondsSinceStart = self._secondsSinceStart + elapsed
+---@param dt any
+function Tween:update(dt)
+    self._secondsSinceStart = self._secondsSinceStart + dt
     local delay = (self.executions > 0) and self.loopDelay or self.startDelay
     if self._secondsSinceStart < delay then
         return
@@ -85,7 +93,7 @@ function Tween:update(elapsed)
         self.finished = true
     else
         if self.onUpdate then
-            self.onUpdate(self)
+            self.onUpdate(self, self._object, self.scale)
         end
     end
 end
@@ -171,6 +179,7 @@ function Tween:processTweenChain()
     self._chainedTweens = nil
 end
 
+---@param tween Tween
 function Tween:doNextTween(tween)
     if not tween.active then
         tween:start()
@@ -179,6 +188,7 @@ function Tween:doNextTween(tween)
     tween:setChain(self._chainedTweens)
 end
 
+---@param previousChain table
 function Tween:setChain(previousChain)
     if previousChain then
         if not self._chainedTweens then
@@ -199,16 +209,24 @@ function Tween:restart()
     end
 end
 
+---@param object any
+---@param field any
+---@return boolean
 function Tween:isTweenOf(object, field)
     return false
 end
 
+---@param startDelay number
+---@param loopDelay number
+---@return Tween
 function Tween:setDelays(startDelay, loopDelay)
     self.startDelay = startDelay or 0
     self.loopDelay = loopDelay or 0
     return self
 end
 
+---@param value number
+---@return number
 function Tween:set_startDelay(value)
     local dly = math.abs(value)
     if self.executions == 0 then
@@ -217,6 +235,8 @@ function Tween:set_startDelay(value)
     return dly
 end
 
+---@param value number
+---@return number
 function Tween:set_loopDelay(value)
     local dly = math.abs(value)
     if self.executions > 0 then
@@ -234,11 +254,13 @@ function Tween:get_percent()
     return self:get_time() / self.duration
 end
 
+---@param value number
 function Tween:set_percent(value)
     self._secondsSinceStart = self.duration * value + self._delayToUse
     return value
 end
 
+---@param value number
 function Tween:set_type(value)
     if value == 0 then
         value = TweenType.ONESHOT
@@ -250,6 +272,7 @@ function Tween:set_type(value)
     return value
 end
 
+---@param value boolean
 function Tween:set_active(value)
     self.active = value
     if self._waitingForRestart then

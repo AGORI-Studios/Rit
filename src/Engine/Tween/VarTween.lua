@@ -3,10 +3,15 @@ local VarTween = Tween:extend("VarTween")
 local VarTweenProperty = {}
 VarTweenProperty.__index = VarTweenProperty
 
+---@param options table
+---@param manager TweenManager
 function VarTween:new(options, manager)
     Tween.new(self, options, manager)
 end
 
+---@param object table
+---@param properties table
+---@param duration number
 function VarTween:tween(object, properties, duration)
     if object == nil then
         error("Cannot tween variables of an object that is nil.")
@@ -23,17 +28,18 @@ function VarTween:tween(object, properties, duration)
     return self
 end
 
-function VarTween:update(elapsed)
+---@param dt number
+function VarTween:update(dt)
     local delay = (self.executions > 0) and self.loopDelay or self.startDelay
 
     if self._secondsSinceStart < delay then
-        VarTween.super.update(self, elapsed)
+        VarTween.super.update(self, dt)
     else
         if not self._propertyInfos[1].startValue then
             self:setStartValues()
         end
 
-        VarTween.super.update(self, elapsed)
+        VarTween.super.update(self, dt)
 
         if self.active then
             for _, info in ipairs(self._propertyInfos) do
@@ -102,6 +108,8 @@ function VarTween:destroy()
     self._propertyInfos = nil
 end
 
+---@param object table
+---@param field string
 function VarTween:isTweenOf(object, field)
     if object == self._object and field == nil then
         return true

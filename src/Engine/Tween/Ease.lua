@@ -1,7 +1,6 @@
 ---@diagnostic disable: deprecated
 local Ease = {}
 
--- Constants
 Ease.PI2 = math.pi / 2
 Ease.EL = 2 * math.pi / 0.45
 Ease.B1 = 1 / 2.75
@@ -13,12 +12,11 @@ Ease.B6 = 2.625 / 2.75
 Ease.ELASTIC_AMPLITUDE = 1
 Ease.ELASTIC_PERIOD = 0.4
 
--- Linear
+
 function Ease.linear(t)
     return t
 end
 
--- Quadratic
 function Ease.quadIn(t)
     return t * t
 end
@@ -36,7 +34,6 @@ function Ease.quadInOut(t)
     end
 end
 
--- Cubic
 function Ease.cubeIn(t)
     return t * t * t
 end
@@ -55,7 +52,6 @@ function Ease.cubeInOut(t)
     end
 end
 
--- Quartic
 function Ease.quartIn(t)
     return t * t * t * t
 end
@@ -74,7 +70,6 @@ function Ease.quartInOut(t)
     end
 end
 
--- Quintic
 function Ease.quintIn(t)
     return t * t * t * t * t
 end
@@ -94,7 +89,6 @@ function Ease.quintInOut(t)
     end
 end
 
--- SmoothStep
 function Ease.smoothStepIn(t)
     return 2 * Ease.smoothStepInOut(t / 2)
 end
@@ -107,7 +101,6 @@ function Ease.smoothStepInOut(t)
     return t * t * (t * -2 + 3)
 end
 
--- SmootherStep
 function Ease.smootherStepIn(t)
     return 2 * Ease.smootherStepInOut(t / 2)
 end
@@ -120,7 +113,6 @@ function Ease.smootherStepInOut(t)
     return t * t * t * (t * (t * 6 - 15) + 10)
 end
 
--- Sine
 function Ease.sineIn(t)
     return -math.cos(Ease.PI2 * t) + 1
 end
@@ -133,7 +125,6 @@ function Ease.sineInOut(t)
     return -math.cos(math.pi * t) / 2 + 0.5
 end
 
--- Bounce
 function Ease.bounceIn(t)
     return 1 - Ease.bounceOut(1 - t)
 end
@@ -161,7 +152,6 @@ function Ease.bounceInOut(t)
     end
 end
 
--- Circular
 function Ease.circIn(t)
     return -(math.sqrt(1 - t * t) - 1)
 end
@@ -179,7 +169,6 @@ function Ease.circInOut(t)
     end
 end
 
--- Exponential
 function Ease.expoIn(t)
     return math.pow(2, 10 * (t - 1))
 end
@@ -196,7 +185,6 @@ function Ease.expoInOut(t)
     end
 end
 
--- Back
 function Ease.backIn(t)
     return t * t * (2.70158 * t - 1.70158)
 end
@@ -216,7 +204,6 @@ function Ease.backInOut(t)
     end
 end
 
--- Elastic
 function Ease.elasticIn(t)
     return -(Ease.ELASTIC_AMPLITUDE * math.pow(2,
         10 * (t - 1)) * math.sin((t - (Ease.ELASTIC_PERIOD / (2 * math.pi) * math.asin(1 / Ease.ELASTIC_AMPLITUDE))) * (2 * math.pi) / Ease.ELASTIC_PERIOD))

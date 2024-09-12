@@ -4,6 +4,7 @@ function BaseCache:new()
     self._cache = {}
 end
 
+---@param path string
 function BaseCache:get(path)
     print("BaseCache:get(path) is not implemented.")
 end
