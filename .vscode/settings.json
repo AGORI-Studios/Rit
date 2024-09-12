@@ -2,6 +2,7 @@
     "pixelbyte.love2d.srcDir": "./src/",
     "Lua.runtime.version": "LuaJIT",
     "Lua.diagnostics.disable": [
-        "param-type-mismatch"
+        "param-type-mismatch",
+        "lowercase-global"
     ]
 }

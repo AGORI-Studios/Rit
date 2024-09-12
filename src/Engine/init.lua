@@ -2,6 +2,16 @@ local path = ... .. "."
 
 require(path .. "Lua")
 
+tryExcept(
+    function()
+        ffi = require("ffi") ---@type ffilib|nil
+    end,
+    function(exception)
+        print(exception)
+        ffi = nil
+    end
+)
+
 require(path .. "Base")
 require(path .. "Cache")
 require(path .. "Format")
@@ -34,4 +44,21 @@ end
 
 function Game:draw()
     self._currentState:draw()
+
+    if self.debug then
+        self:__printDebug()
+    end
+end
+
+function Game:__printDebug()
+    love.graphics.setColor(0, 0, 0, 1)
+    for x = -1, 1 do
+        for y = -1, 1 do
+            love.graphics.print("FPS: " .. love.timer.getFPS() ..
+                "\nGame: " .. Game:__tostring(), 10 + x, 10 + y)
+        end
+    end
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.print("FPS: " .. love.timer.getFPS() ..
+        "\nGame: " .. Game:__tostring(), 10, 10)
 end

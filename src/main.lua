@@ -1,12 +1,25 @@
 require("Engine")
 require("Game")
 
+
 function love.load()
+    for i = 1, 10 do
+        print("Hello World!", i)
+    end
 end
 
 function love.update(dt)
     Input:update()
     Game:update(dt)
+
+    if DiscordRPC then
+        DiscordRPC.timer = DiscordRPC.timer + dt
+        if DiscordRPC.timer >= DiscordRPC.maxTimer then
+            DiscordRPC.timer = 0
+
+            DiscordRPC:runCallbacks()
+        end
+    end
 end
 
 function love.resize(w, h)
@@ -44,8 +57,7 @@ end
 function love.draw()
     Game:draw()
 
-    love.graphics.print("FPS: " .. love.timer.getFPS(), 10, 10)
-    love.graphics.print("Game: " .. Game:__tostring(), 10, 30)
+    Game:__printDebug()
 
     if Input:isDown("MenuPress") then
         love.graphics.print("Menu Pressed", 10, 50)
