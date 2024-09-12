@@ -1,3 +1,4 @@
+---@class Drawable
 local Drawable = Class:extend("Drawable")
 
 ---@param x number

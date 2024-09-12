@@ -1,3 +1,4 @@
+---@class Input
 Input = Class:extend("Input")
 
 -- take note of "Keyboard" input class. This is the class that will be used to then call keyboard ones (to extend onto mouse and joystick in the future)

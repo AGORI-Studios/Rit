@@ -1,3 +1,4 @@
+---@class Sprite : Drawable
 local Sprite = Drawable:extend("Sprite")
 
 ---@param image string|love.Image

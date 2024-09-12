@@ -1,3 +1,4 @@
+---@class Group
 local Group = Class:extend("Group")
 
 ---@param size? number

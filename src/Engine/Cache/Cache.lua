@@ -1,3 +1,4 @@
+---@class Cache
 local Cache = Class:extend("Cache")
 
 function Cache:new()

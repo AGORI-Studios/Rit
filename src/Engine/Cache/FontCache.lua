@@ -1,3 +1,4 @@
+---@class FontCache : BaseCache
 local FontCache = BaseCache:extend("FontCache")
 
 ---@param path string

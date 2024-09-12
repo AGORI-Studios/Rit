@@ -1,3 +1,4 @@
+---@class ImageCache : BaseCache
 local ImageCache = BaseCache:extend("ImageCache")
 
 ---@param path string

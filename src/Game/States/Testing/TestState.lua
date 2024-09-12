@@ -1,3 +1,4 @@
+---@class TestState : State
 local TestState = State:extend("TestState")
 
 function TestState:new()

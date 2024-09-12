@@ -1,3 +1,4 @@
+---@class VarTween : Tween
 local VarTween = Tween:extend("VarTween")
 
 local VarTweenProperty = {}
@@ -33,13 +34,13 @@ function VarTween:update(dt)
     local delay = (self.executions > 0) and self.loopDelay or self.startDelay
 
     if self._secondsSinceStart < delay then
-        VarTween.super.update(self, dt)
+        Tween.update(self, dt)
     else
         if not self._propertyInfos[1].startValue then
             self:setStartValues()
         end
 
-        VarTween.super.update(self, dt)
+        Tween.update(self, dt)
 
         if self.active then
             for _, info in ipairs(self._propertyInfos) do
@@ -102,7 +103,7 @@ function VarTween:setStartValues()
 end
 
 function VarTween:destroy()
-    VarTween.super.destroy(self)
+    Tween.destroy(self)
     self._object = nil
     self._properties = nil
     self._propertyInfos = nil

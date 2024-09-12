@@ -1,3 +1,4 @@
+---@class TypedGroup : Group
 local TypedGroup = Group:extend("TypedGroup")
 
 ---@param type table

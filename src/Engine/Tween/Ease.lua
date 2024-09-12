@@ -1,4 +1,5 @@
 ---@diagnostic disable: deprecated
+---@class Ease
 local Ease = {}
 
 Ease.PI2 = math.pi / 2

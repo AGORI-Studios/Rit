@@ -16,30 +16,30 @@ function love.resize(w, h)
     Game._windowHeight = h
 end
 
-function love.keypressed(key)
+function love.keypressed(key, scancode, isrepeat)
     Input:keypressed(key)
-    Game:keypressed(key)
+    Game:keypressed(key, scancode, isrepeat)
 end
 
-function love.keyreleased(key)
+function love.keyreleased(key, scancode)
     Input:keyreleased(key)
-    Game:keyreleased(key)
+    Game:keyreleased(key, scancode)
 end
 
-function love.mousepressed(x, y, button)
-    Game:mousepressed(x, y, button)
+function love.mousepressed(x, y, button, istouch, presses)
+    Game:mousepressed(x, y, button, istouch, presses)
 end
 
-function love.mousereleased(x, y, button)
-    Game:mousereleased(x, y, button)
+function love.mousereleased(x, y, button, istouch, presses)
+    Game:mousereleased(x, y, button, istouch, presses)
 end
 
 function love.wheelmoved(x, y)
     Game:wheelmoved(x, y)
 end
 
-function love.mousemoved(x, y, dx, dy)
-    Game:mousemoved(x, y, dx, dy)
+function love.mousemoved(x, y, dx, dy, istouch)
+    Game:mousemoved(x, y, dx, dy, istouch)
 end
 
 function love.draw()

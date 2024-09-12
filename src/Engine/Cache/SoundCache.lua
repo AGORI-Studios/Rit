@@ -1,3 +1,4 @@
+---@class SoundCache : BaseCache
 local SoundCache = BaseCache:extend("SoundCache")
 
 ---@param path string

@@ -1,3 +1,4 @@
+---@class Keyboard
 local Keyboard = Class:extend("Keyboard")
 
 function Keyboard:new(controls)

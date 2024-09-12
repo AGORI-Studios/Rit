@@ -1,3 +1,4 @@
+---@enum TweenType
 local TweenType = {
     PERSIST = 1,
     LOOPING = 2,

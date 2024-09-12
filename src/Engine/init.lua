@@ -10,15 +10,15 @@ require(path .. "Graphics")
 require(path .. "Input")
 require(path .. "Tween")
 
-Game = TypedGroup(State)
-Game._currentState = State()
+Game = TypedGroup(State) --- @class Game:TypedGroup<State>
+Game._currentState = State() --- @type State
 Game:add(Game._currentState)
 Game.debug = true
 Game._windowWidth = 1280
 Game._windowHeight = 720
 Game._gameWidth = 1920
 Game._gameHeight = 1080
-Game.Tween = TweenManager()
+Game.Tween = TweenManager() --- @type TweenManager
 
 function Game:SwitchState(state)
     self._currentState:kill()
