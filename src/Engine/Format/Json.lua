@@ -169,21 +169,7 @@ end
 
 function Json:decode(s)
     s = s:gsub("%s", "")
-    print(s)
     return parse(s)
 end
-
-local test = Json:decode([[
-{
-    "name": "John",
-    "age": 30,
-    "cars": {
-        "car1": "Ford",
-        "car2": "BMW",
-        "car3": "Fiat"
-    },
-    "tools": ["hammer", "screwdriver", "wrench"]
-}
-]])
 
 return Json

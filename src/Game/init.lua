@@ -3,6 +3,7 @@ local path = ... .. "."
 require(path .. "External")
 require(path .. "States")
 require(path .. "Managers")
+require(path .. "Objects")
 
 local foldersOutdated = false
 local foldersLayoutVersion = "1"

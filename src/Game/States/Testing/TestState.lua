@@ -5,12 +5,12 @@ function TestState:new()
     State.new(self)
 
     --[[ self.TestSprite = Sprite("Assets/Textures/test.png", 0, 0) ]]
-    self.TestDrawable = Drawable(200, 200, 300, 200)
+    --[[ self.TestDrawable = Drawable(200, 200, 300, 200)
     self.TestDrawable.scalingType = ScalingTypes.WINDOW_STRETCH
     self.TestDrawable.angle = 45
     self.TestDrawable:resize(Game._windowWidth, Game._windowHeight)
+    --]]
 
-    self:add(self.TestDrawable)
 
     --[[ Game.Tween:tween(
         self.TestSprite,
