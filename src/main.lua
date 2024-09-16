@@ -58,10 +58,6 @@ function love.draw()
     Game:draw()
 
     Game:__printDebug()
-
-    if Input:isDown("MenuPress") then
-        love.graphics.print("Menu Pressed", 10, 50)
-    end
 end
 
 function love.quit()

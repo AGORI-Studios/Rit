@@ -35,6 +35,11 @@ function Drawable:new(x, y, w, h)
     self:resize(Game._windowWidth, Game._windowHeight)
 end
 
+function Drawable:centerOrigin()
+    self.origin.x = self.width / 2
+    self.origin.y = self.height / 2
+end
+
 function Drawable:update(dt)
     if self.scalingType ~= ScalingTypes.STRETCH and self.scalingType ~= ScalingTypes.WINDOW_STRETCH then
         --[[ self.drawX = Game._windowWidth * ((self.x + self.offset.x) / Game._gameWidth)
@@ -68,7 +73,6 @@ function Drawable:resize(w, h)
         self.windowScale.x, self.windowScale.y = scale, scale
         self.width = self.baseWidth * scale
         self.height = self.baseHeight * scale
-        print(self.width, self.height)
     elseif self.scalingType == ScalingTypes.WINDOW_FIXED then
         -- scales to the window size, but keeps the aspect ratio
         self.windowScale.x, self.windowScale.y = 1, 1

@@ -28,4 +28,4 @@ function Game:initialize()
 end
 
 Game:initialize()
-Game:SwitchState(States.Testing.TestState)
+Game:SwitchState(States.Screens.Game)

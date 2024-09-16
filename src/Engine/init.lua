@@ -37,6 +37,8 @@ function Game:SwitchState(state)
     self._currentState:kill()
     self:remove(self._currentState)
     self._currentState = state()
+    ---@diagnostic disable-next-line: inject-field
+    self._currentState.instance = self._currentState
     self:add(self._currentState)
 end
 

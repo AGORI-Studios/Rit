@@ -1,7 +1,23 @@
 local Quaver = {}
 
-function Quaver:parse(data)
+function Quaver:parse(path)
+    print("Parsing Quaver file: " .. path)
+    local data = love.filesystem.read(path):gsub("\r\n", "\n")
+    data = Yaml.parse(data)
 
+    for _, note in ipairs(data["HitObjects"]) do
+        table.insert(
+            States.Screens.Game.instance.hitObjectManager.hitObjects,
+            UnspawnObject(note.StartTime, note.EndTime, note.Lane)
+        )
+    end
+
+    for _, point in ipairs(data["SliderVelocities"]) do
+        table.insert(
+            States.Screens.Game.instance.hitObjectManager.scrollVelocities,
+            ScrollVelocity(point.StartTime, point.Multiplier)
+        )
+    end
 end
 
 ---@param data string
@@ -9,8 +25,7 @@ function Quaver:cache(data, filename, path)
     local pathToFile = path
     data = data:gsub("\r\n", "\n")
     -- remove all timing points between TimingPoints and HitObjects because sv heavy charts can cause very long loading times
-    data = data:gsub("TimingPoints(.-)HitObjects", "HitObjects")
-    love.filesystem.write("test.qua", data)
+    data = data:gsub("SliderVelocities(.-)HitObjects", "HitObjects")
     data = Yaml.parse(data)
 
     local title = data["Title"] or "Unknown"
@@ -37,7 +52,7 @@ function Quaver:cache(data, filename, path)
     for _, note in ipairs(data["HitObjects"]) do
         hitobj_count = hitobj_count + 1 -- jas StartTime and EndTime (can be nil)
         if note["EndTime"] then
-            length = math.max(length, note["EndTime"])
+            length = math.max(length, note["EndTime"] > note["StartTime"] and note["EndTime"] or note["StartTime"])
             if note["EndTime"] > note["StartTime"] then
                 ln_count = ln_count + 1
             end
