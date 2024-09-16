@@ -4,6 +4,8 @@ local HitObjectManager = Group:extend()
 function HitObjectManager:new(instance)
     Group.new(self)
     
+    self.receptorsGroup = Group()
+    self:add(self.receptorsGroup)
     self.hitObjects = {}
     self.drawableHitObjects = {}
     self.scrollVelocities = {}
@@ -27,16 +29,16 @@ function HitObjectManager:createReceptors()
         local receptor = Receptor(i)
         receptor.y = self.STRUM_Y
         receptor.x = midX + (i - (count/2)) * 200
-        self:add(receptor)
+        self.receptorsGroup:add(receptor)
     end
 end
 
 function HitObjectManager:isOnScreen(time)
-    return self:getNotePosition(time) < Game._windowHeight+400
+    return time - self.musicTime < 2000
 end
 
 function HitObjectManager:initSVMarks()
-    if #self.scrollVelocities == 0 then
+    if #self.scrollVelocities < 1 then
         return
     end
 
@@ -70,7 +72,7 @@ function HitObjectManager:getPositionFromTime(time, index)
         return time
     end
 
-    local prev = self.scrollVelocities[index - 1] or ScrollVelocity()
+    local prev = self.scrollVelocities[index - 1] or ScrollVelocity(0, 1)
     local pos = self.scrollVelocityMarks[index - 1] or 0
     pos = pos + (time - prev.StartTime) * prev.Multiplier
 
@@ -78,7 +80,7 @@ function HitObjectManager:getPositionFromTime(time, index)
 end
 
 function HitObjectManager:getNotePosition(time)
-    return self.STRUM_Y + (time - self.currentTime)
+    return self.STRUM_Y + (time - self.musicTime)
 end
 
 function HitObjectManager:updateTime(dt)
@@ -93,10 +95,13 @@ end
 function HitObjectManager:update(dt)
     self:updateTime(dt)
 
-    while #self.hitObjects > 0 and self:isOnScreen(self.hitObjects[1].StartTime)do
+    while #self.hitObjects > 0 and self:isOnScreen(self.hitObjects[1].StartTime) do
         local hitObject = self.hitObjects[1]
         local drawableHitObject = HitObject(hitObject)
         drawableHitObject.x = midX + (drawableHitObject.Data.Lane - (count/2)) * 200
+        drawableHitObject.initialSVTime = self:getPositionFromTime(hitObject.StartTime)
+        drawableHitObject.endSVTime = self:getPositionFromTime(hitObject.EndTime)
+        drawableHitObject:resize(Game._windowWidth, Game._windowHeight)
         self:add(drawableHitObject)
         table.insert(self.drawableHitObjects, drawableHitObject)
         table.remove(self.hitObjects, 1)
@@ -104,6 +109,36 @@ function HitObjectManager:update(dt)
 
     for _, hitObject in ipairs(self.drawableHitObjects) do
         hitObject.y = self:getNotePosition(hitObject.Data.StartTime)
+
+        if self.musicTime > hitObject.Data.StartTime+360 then
+            self:remove(hitObject)
+            hitObject:destroy()
+            table.remove(self.drawableHitObjects, table.findID(self.drawableHitObjects, hitObject))
+        end
+    end
+
+    for i = 1, 4 do
+        if Input:wasPressed(count .. "k" .. i) then
+            self.receptorsGroup.objects[i].down = true
+
+            for _, hitObject in ipairs(self.drawableHitObjects) do
+                local abs = math.abs(self.musicTime - hitObject.Data.StartTime)
+                if abs < 360 and hitObject.Data.Lane == i then
+                    hitObject:hit()
+                    self:remove(hitObject)
+                    hitObject:destroy()
+                    table.remove(self.drawableHitObjects, table.findID(self.drawableHitObjects, hitObject))
+
+                    break
+                end
+            end
+        end
+        if Input:isDown(count .. "k" .. i) then
+            
+        end
+        if Input:wasReleased(count .. "k" .. i) then
+            self.receptorsGroup.objects[i].down = false
+        end
     end
 
     Group.update(self, dt)

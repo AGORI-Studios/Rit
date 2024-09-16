@@ -71,6 +71,7 @@ end
 ---@param control string
 function Input:wasPressed(control)
     if self.keyboardControls[control] and self.keyboardBase:wasPressed(control) then
+        print(control)
         return true
     end
     if self.mouseControls[control] and self.mouseBase:wasPressed(control) then

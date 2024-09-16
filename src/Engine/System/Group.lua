@@ -19,6 +19,7 @@ end
 function Group:remove(object)
     for i, obj in ipairs(self.objects) do
         if obj == object then
+            print("Removed object from group")
             table.remove(self.objects, i)
             break
         end

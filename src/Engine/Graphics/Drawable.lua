@@ -151,4 +151,12 @@ function Drawable:scale(x, y)
     self.scale.y = y or x or 1
 end
 
+function Drawable:destroy()
+    self:kill()
+end
+
+function Drawable:kill()
+    self = nil
+end
+
 return Drawable

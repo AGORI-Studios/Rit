@@ -13,5 +13,10 @@ Input = InputClass({
         Key("space"),
         Key("m"),
         Button("1")
-    }
+    },
+
+    ["4k1"] = {Key("d")},
+    ["4k2"] = {Key("f")},
+    ["4k3"] = {Key("j")},
+    ["4k4"] = {Key("k")},
 })

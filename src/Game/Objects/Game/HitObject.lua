@@ -15,4 +15,8 @@ function HitObject:update(dt)
     Sprite.update(self, dt)
 end
 
+function HitObject:hit(time)
+    print("TODO: Finish HitObject:hit()")
+end
+
 return HitObject

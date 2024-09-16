@@ -1,6 +1,6 @@
 local Quaver = {}
 
-function Quaver:parse(path)
+function Quaver:parse(path, folderPath)
     print("Parsing Quaver file: " .. path)
     local data = love.filesystem.read(path):gsub("\r\n", "\n")
     data = Yaml.parse(data)
@@ -12,12 +12,14 @@ function Quaver:parse(path)
         )
     end
 
-    for _, point in ipairs(data["SliderVelocities"]) do
+    --[[ for _, point in ipairs(data["SliderVelocities"]) do
         table.insert(
             States.Screens.Game.instance.hitObjectManager.scrollVelocities,
             ScrollVelocity(point.StartTime, point.Multiplier)
         )
-    end
+    end ]]
+
+    States.Screens.Game.instance.song = love.audio.newSource(folderPath .. "/" .. data["AudioFile"], "stream")
 end
 
 ---@param data string

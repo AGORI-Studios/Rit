@@ -22,9 +22,13 @@ function Keyboard:update()
             end
             if self.keys[k] and not self.down[control] then
                 self.pressed[control] = true
+                self.down[control] = true
             end
             if not self.keys[k] and self.down[control] then
                 self.released[control] = true
+                self.down[control] = false
+                self.pressed[control] = false
+                self.keys[k] = false
             end
         end
         self.down[control] = down
@@ -36,7 +40,6 @@ function Keyboard:keypressed(key)
         for i, v in ipairs(k) do
             if v == key then
                 self.keys[v] = true
-                self.down[control] = true
 
                 break
             end
@@ -49,7 +52,6 @@ function Keyboard:keyreleased(key)
         for i, v in ipairs(k) do
             if v == key then
                 self.keys[v] = false
-                self.down[control] = false
 
                 break
             end
