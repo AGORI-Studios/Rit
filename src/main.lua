@@ -12,9 +12,6 @@ function love.load()
     os.rename = function() end
     os.setlocale = function() end
     os.tmpname = function() end
-
-    -- game setup is done, disable require
-    require = function() end
 end
 
 function love.update(dt)

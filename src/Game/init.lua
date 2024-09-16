@@ -29,4 +29,4 @@ function Game:initialize()
 end
 
 Game:initialize()
-Game:SwitchState(States.Menu.TitleMenu)
+Game:SwitchState(States.Screens.Game)
