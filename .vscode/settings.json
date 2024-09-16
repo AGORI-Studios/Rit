@@ -3,6 +3,7 @@
     "Lua.runtime.version": "LuaJIT",
     "Lua.diagnostics.disable": [
         "param-type-mismatch",
-        "lowercase-global"
+        "lowercase-global",
+        "undefined-field"
     ]
 }

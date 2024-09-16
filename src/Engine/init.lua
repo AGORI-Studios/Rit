@@ -1,6 +1,9 @@
 local path = ... .. "."
 
+utf8 = require("utf8")
+
 require(path .. "Lua")
+require(path .. "Love")
 
 tryExcept(
     function()

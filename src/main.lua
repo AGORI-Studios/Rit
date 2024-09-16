@@ -1,3 +1,4 @@
+jit.on()
 require("Engine")
 require("Game")
 

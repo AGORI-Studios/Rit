@@ -4,9 +4,10 @@ require(path .. "External")
 require(path .. "States")
 require(path .. "Managers")
 require(path .. "Objects")
+require(path .. "Cache")
+Parsers = require(path .. "Parsing")
+SongCache:loadSongsPath("Assets/IncludedSongs")
 
-local foldersOutdated = false
-local foldersLayoutVersion = "1"
 local function setupFolders()
     love.filesystem.createDirectory("CacheData")
     love.filesystem.createDirectory("CacheData/Beatmaps")
