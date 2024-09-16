@@ -62,3 +62,7 @@ function Game:__printDebug()
     love.graphics.print("FPS: " .. love.timer.getFPS() ..
         "\nGame: " .. Game:__tostring(), 10, 10)
 end
+
+function Game:quit()
+
+end

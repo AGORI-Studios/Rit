@@ -3,9 +3,6 @@ require("Game")
 
 
 function love.load()
-    for i = 1, 10 do
-        print("Hello World!", i)
-    end
 end
 
 function love.update(dt)
@@ -40,10 +37,12 @@ end
 
 function love.mousepressed(x, y, button, istouch, presses)
     Game:mousepressed(x, y, button, istouch, presses)
+    Input:mousepressed(button)
 end
 
 function love.mousereleased(x, y, button, istouch, presses)
     Game:mousereleased(x, y, button, istouch, presses)
+    Input:mousereleased(button)
 end
 
 function love.wheelmoved(x, y)
@@ -62,4 +61,8 @@ function love.draw()
     if Input:isDown("MenuPress") then
         love.graphics.print("Menu Pressed", 10, 50)
     end
+end
+
+function love.quit()
+    Game:quit()
 end
