@@ -1,5 +1,5 @@
 ---@class Text : Drawable
-local Text = Drawable:extend()
+local Text = Drawable:extend("Text")
 
 ---@param text string|nil
 ---@param x number|nil

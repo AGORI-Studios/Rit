@@ -1,5 +1,5 @@
 ---@class UnspawnObject
-local UnspawnObject = Class:extend()
+local UnspawnObject = Class:extend("UnspawnObject")
 
 function UnspawnObject:new(startTime, endTime, lane)
     self.StartTime = startTime or 0

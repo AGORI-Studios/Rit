@@ -15,11 +15,11 @@ function Sprite:new(image, x, y)
     self.baseHeight = self.image:getHeight()
     Drawable.new(self, x, y, self.baseWidth, self.baseHeight)
 
-    self.origin.x = self.baseWidth/2
-    self.origin.y = self.baseHeight/2
+    --[[ self.origin.x = self.baseWidth/2
+    self.origin.y = self.baseHeight/2 ]]
 
-    self.offset.x = -self.origin.x
-    self.offset.y = -self.origin.y
+    self.offset.x = 0
+    self.offset.y = 0
 end
 
 function Sprite:draw()
@@ -33,7 +33,7 @@ function Sprite:draw()
             love.graphics.translate(self.drawX, self.drawY)
             love.graphics.rotate(math.rad(self.angle))
             love.graphics.translate(-self.drawX, -self.drawY)
-            love.graphics.translate(-self.origin.x * self.windowScale.x, -self.origin.y * self.windowScale.y)
+            love.graphics.translate(-self.origin.x * self.windowScale.x * self.scale.x, -self.origin.y * self.windowScale.y * self.scale.y)
             self:__debugDraw()
         end
     love.graphics.pop()

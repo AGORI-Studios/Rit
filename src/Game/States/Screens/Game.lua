@@ -1,8 +1,8 @@
-local Gameplay = State:extend()
+local Game = State:extend("Game")
 
-function Gameplay:new()
+function Game:new()
     State.new(self)
-    Gameplay.instance = self
+    Game.instance = self
 
     self.hitObjectManager = HitObjectManager(self)
     self:add(self.hitObjectManager)
@@ -27,4 +27,4 @@ function Gameplay:new()
     self.accuracy = 0
 end
 
-return Gameplay
+return Game

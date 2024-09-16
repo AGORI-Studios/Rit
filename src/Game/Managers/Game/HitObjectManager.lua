@@ -1,5 +1,5 @@
 ---@class HitObjectManager
-local HitObjectManager = Group:extend()
+local HitObjectManager = Group:extend("HitObjectManager")
 
 function HitObjectManager:new(instance)
     Group.new(self)
