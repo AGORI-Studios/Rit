@@ -1,9 +1,20 @@
+---@diagnostic disable: duplicate-set-field
 jit.on()
 require("Engine")
 require("Game")
 
 
 function love.load()
+    -- disable dangerous os functions
+    os.execute = function() end
+    os.exit = function() end
+    os.remove = function() end
+    os.rename = function() end
+    os.setlocale = function() end
+    os.tmpname = function() end
+
+    -- game setup is done, disable require
+    require = function() end
 end
 
 function love.update(dt)

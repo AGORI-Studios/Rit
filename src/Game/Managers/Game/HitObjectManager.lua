@@ -17,6 +17,8 @@ function HitObjectManager:new(instance)
     self.STRUM_Y = 50
 
     self.screen = instance
+    self.scorePerNote = 0
+    self.accuracy = 1
 
     self:createReceptors()
 end
@@ -124,6 +126,7 @@ function HitObjectManager:update(dt)
             for _, hitObject in ipairs(self.drawableHitObjects) do
                 local abs = math.abs(self.musicTime - hitObject.Data.StartTime)
                 if abs < 360 and hitObject.Data.Lane == i then
+                    self.screen.score = self.screen.score + self.scorePerNote
                     hitObject:hit()
                     self:remove(hitObject)
                     hitObject:destroy()
