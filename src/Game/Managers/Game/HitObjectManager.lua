@@ -4,7 +4,7 @@ local HitObjectManager = Group:extend("HitObjectManager")
 function HitObjectManager:new(instance)
     Group.new(self)
     
-    self.receptorsGroup = Group()
+    self.receptorsGroup = TypedGroup(Receptor)
     self:add(self.receptorsGroup)
     self.hitObjects = {}
     self.drawableHitObjects = {}
