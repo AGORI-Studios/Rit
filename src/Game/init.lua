@@ -6,7 +6,6 @@ require(path .. "Managers")
 require(path .. "Objects")
 require(path .. "Cache")
 Parsers = require(path .. "Parsing")
-SongCache:loadSongsPath("Assets/IncludedSongs")
 
 local function setupFolders()
     love.filesystem.createDirectory("CacheData")
@@ -20,12 +19,13 @@ Folder structure:
 - Data: Contains data for the game. This folder is used for storing settings and other data.
 - Beatmaps: Contains parsed beatmaps for the game. This folder for storing your beatmaps.
 ]])
+
+    SongCache:loadSongsPath("Assets/IncludedSongs")
+    SongCache:loadSongsPath("Beatmaps")
 end
 
 function Game:initialize()
     setupFolders()
-
-    
 
     Skin = love.filesystem.load("Assets/IncludedSkins/Circle Default/Skin.lua")()
 end

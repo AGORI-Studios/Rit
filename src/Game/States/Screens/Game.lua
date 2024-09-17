@@ -7,8 +7,10 @@ function GameScreen:new()
     self.hitObjectManager = HitObjectManager(self)
     self:add(self.hitObjectManager)
 
-    Parsers["Quaver"]:parse("Assets/IncludedSongs/lapix feat. mami - Irradiate (Nightcore Ver.) - 841472/147043.qua",
-        "Assets/IncludedSongs/lapix feat. mami - Irradiate (Nightcore Ver.) - 841472/")
+    --[[ Parsers["Quaver"]:parse("Assets/IncludedSongs/lapix feat. mami - Irradiate (Nightcore Ver.) - 841472/147043.qua",
+        "Assets/IncludedSongs/lapix feat. mami - Irradiate (Nightcore Ver.) - 841472/") ]]
+    --[[  ]]
+    Parsers["Quaver"]:parse("Assets/IncludedSongs/purpleeater/91021.qua", "Assets/IncludedSongs/purpleeater/")
 
     for i = #self.hitObjectManager.hitObjects, 2, -1 do
         if self.hitObjectManager.hitObjects[i].StartTime == self.hitObjectManager.hitObjects[i - 1].StartTime then

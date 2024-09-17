@@ -22,6 +22,8 @@ function HitObjectManager:new(instance)
 
     self.started = false
 
+    self.initialSV = 1
+
     self:createReceptors()
 end
 
@@ -38,7 +40,7 @@ function HitObjectManager:createReceptors()
 end
 
 function HitObjectManager:isOnScreen(time)
-    return time - self.musicTime < 2000
+    return self:getNotePosition(self:getPositionFromTime(time)) <= Game._windowHeight+600
 end
 
 function HitObjectManager:initSVMarks()
@@ -61,30 +63,33 @@ function HitObjectManager:initSVMarks()
 end
 
 function HitObjectManager:getPositionFromTime(time, index)
-    local index = index or -1
+    index = index or -1
 
     if index == -1 then
-        for i = 1, #self.scrollVelocityMarks do
-            if time < self.scrollVelocityMarks[i] then
+        for i = 1, #self.scrollVelocities do
+            if time < self.scrollVelocities[i].StartTime then
                 index = i
                 break
+            else
+                index = 1
             end
         end
     end
 
-    if index == -1 then
-        return time
+    if index == 1 then
+        return time * self.initialSV
     end
+    
+    local previous = self.scrollVelocities[index-1] or ScrollVelocity(0, 1)
 
-    local prev = self.scrollVelocities[index - 1] or ScrollVelocity(0, 1)
-    local pos = self.scrollVelocityMarks[index - 1] or 0
-    pos = pos + (time - prev.StartTime) * prev.Multiplier
+    local pos = self.scrollVelocityMarks[index-1] or 0
+    pos = pos + (time - previous.StartTime) * previous.Multiplier
 
     return pos
 end
 
 function HitObjectManager:getNotePosition(time)
-    return self.STRUM_Y + (time - self.musicTime)
+    return self.STRUM_Y + (time - self.currentTime)
 end
 
 function HitObjectManager:updateTime(dt)
@@ -92,7 +97,8 @@ function HitObjectManager:updateTime(dt)
         return
     end
     self.musicTime = self.musicTime + dt * 1000
-    while (self.svIndex < #self.scrollVelocities and self.scrollVelocities[self.svIndex].StartTime <= self.musicTime) do
+
+    while (self.svIndex <= #self.scrollVelocities and self.musicTime >= self.scrollVelocities[self.svIndex].StartTime) do
         self.svIndex = self.svIndex + 1
     end
 
@@ -108,6 +114,7 @@ function HitObjectManager:update(dt)
         drawableHitObject.x = midX + (drawableHitObject.Data.Lane - (count/2)) * 200
         drawableHitObject.initialSVTime = self:getPositionFromTime(hitObject.StartTime)
         drawableHitObject.endSVTime = self:getPositionFromTime(hitObject.EndTime)
+        drawableHitObject.y = self:getNotePosition(drawableHitObject.initialSVTime)
         drawableHitObject:resize(Game._windowWidth, Game._windowHeight)
         self:add(drawableHitObject)
         table.insert(self.drawableHitObjects, drawableHitObject)
@@ -115,7 +122,7 @@ function HitObjectManager:update(dt)
     end
 
     for _, hitObject in ipairs(self.drawableHitObjects) do
-        hitObject.y = self:getNotePosition(hitObject.Data.StartTime)
+        hitObject.y = self:getNotePosition(hitObject.initialSVTime)
 
         if self.musicTime > hitObject.Data.StartTime+360 then
             self:remove(hitObject)

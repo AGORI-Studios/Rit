@@ -11,13 +11,15 @@ function Quaver:parse(path, folderPath)
             UnspawnObject(note.StartTime, note.EndTime, note.Lane)
         )
     end
-
-    --[[ for _, point in ipairs(data["SliderVelocities"]) do
+--[[ 
+    for _, point in ipairs(data["SliderVelocities"]) do
         table.insert(
             States.Screens.Game.instance.hitObjectManager.scrollVelocities,
             ScrollVelocity(point.StartTime, point.Multiplier)
         )
-    end ]]
+    end
+ ]]
+    States.Screens.Game.instance.hitObjectManager.initialSV = data["InitialScrollVelocity"] or 1
 
     States.Screens.Game.instance.song = love.audio.newSource(folderPath .. "/" .. data["AudioFile"], "stream")
 end
@@ -54,12 +56,12 @@ function Quaver:cache(data, filename, path)
     for _, note in ipairs(data["HitObjects"]) do
         hitobj_count = hitobj_count + 1 -- jas StartTime and EndTime (can be nil)
         if note["EndTime"] then
-            length = math.max(length, note["EndTime"] > note["StartTime"] and note["EndTime"] or note["StartTime"])
-            if note["EndTime"] > note["StartTime"] then
+            length = math.max(length, note["EndTime"] > (note["StartTime"] or 0) and note["EndTime"] or note["StartTime"] or 0)
+            if note["EndTime"] > note["StartTime"] or 0 then
                 ln_count = ln_count + 1
             end
         else
-            length = math.max(length, note["StartTime"])
+            length = math.max(length, note["StartTime"] or 0)
         end
     end
 

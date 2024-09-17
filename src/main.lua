@@ -1,5 +1,9 @@
 ---@diagnostic disable: duplicate-set-field
 jit.on()
+jit.opt.start(4, "hotloop=1", "hotexit=2", "loopunroll=8", "-sink", 
+    "-fold", "-cse", "-fuse", "-abc", "-dse", "-loop"
+)
+
 require("Engine")
 require("Game")
 

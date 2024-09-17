@@ -41,7 +41,12 @@ function SongCache:loadCache(filename, ogPath, fileExt)
         local songData = {}
         for line in data:gmatch("[^\n]+") do
             local key, value = line:match("([^:]+):(.+)")
+            if not key or not value then
+                goto continue
+            end
             songData[key] = value
+
+            ::continue::
         end
         return songData
     else

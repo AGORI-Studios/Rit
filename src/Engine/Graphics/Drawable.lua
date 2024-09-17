@@ -1,18 +1,18 @@
 ---@class Drawable
 local Drawable = Class:extend("Drawable")
 
----@param x number
----@param y number
----@param w number
----@param h number
+---@param x number|nil
+---@param y number|nil
+---@param w number|nil
+---@param h number|nil
 function Drawable:new(x, y, w, h)
     -- a drawable is an object that rescales itself based on the screen size
-    self.x = x
-    self.y = y 
+    self.x = x or 0
+    self.y = y or 0
     self.drawX = x
     self.drawY = y
-    self.width = w
-    self.height = h
+    self.width = w or 1
+    self.height = h or 1
     self.baseWidth = w
     self.baseHeight = h
     self.scale = {x = 1, y = 1}

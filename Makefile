@@ -30,6 +30,7 @@ win64: lovefile
 
 	cp requirements/win64/*.dll build/$(GameName)-win64
 	cp requirements/steam_appid.txt build/$(GameName)-win64
+	cp requirements/alsoft.ini build/$(GameName)-win64
 
 	cat build/$(GameName)-win64/love.exe build/$(GameName)-lovefile/$(GameName).love > build/$(GameName)-win64/$(GameName).exe
 	rm build/$(GameName)-win64/love.exe
@@ -42,6 +43,7 @@ macos: lovefile
 	cp requirements/macos/luasteam.so build/$(GameName)-macos/love.app/Contents/MacOS
 	cp requirements/macos/libsteam_api.dylib build/$(GameName)-macos/love.app/Contents/MacOS
 	cp requirements/steam_appid.txt build/$(GameName)-macos/love.app/Contents/MacOS
+	cp requirements/macos/alsoft.ini build/$(GameName)-macos/love.app/Contents/MacOS
 	cp requirements/macos/https.so build/$(GameName)-macos/love.app/Contents/MacOS
 	mv build/$(GameName)-macos/love.app build/$(GameName)-macos/$(GameName).app
 	cp build/$(GameName)-lovefile/$(GameName).love build/$(GameName)-macos/$(GameName).app/Contents/Resources/
