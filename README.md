@@ -41,6 +41,7 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 ### External Contributors
 - [Getsaa](https://twitter.com/GetsaaNG) - UI/UX Design, Rit's Branding
 - [Lumaah](https://github.com/Lumaah) - French translation
+- [Getkirill](https://github.com/getkirill) - Deprecated .ps1 makefile port
 
 ## Special Thanks
 - [LÖVE](https://love2d.org/) - The framework used to create this game
