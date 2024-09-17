@@ -25,6 +25,8 @@ end
 function Game:initialize()
     setupFolders()
 
+    
+
     Skin = love.filesystem.load("Assets/IncludedSkins/Circle Default/Skin.lua")()
 end
 

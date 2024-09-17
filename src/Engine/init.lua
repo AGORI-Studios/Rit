@@ -23,6 +23,7 @@ require(path .. "Graphics")
 require(path .. "Input")
 require(path .. "Tween")
 require(path .. "Wait")
+require(path .. "Save")
 
 Game = TypedGroup(State) --- @class Game:TypedGroup<State>
 Game._currentState = State() --- @type State
@@ -63,12 +64,14 @@ function Game:__printDebug()
     for x = -1, 1 do
         for y = -1, 1 do
             love.graphics.print("FPS: " .. love.timer.getFPS() ..
-                "\nGame: " .. Game:__tostring(), 10 + x, 10 + y)
+                "\nGame: " .. Game:__tostring() ..
+                "\n\t- Current State: " .. self._currentState:__tostring(), 10 + x, 10 + y)
         end
     end
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.print("FPS: " .. love.timer.getFPS() ..
-        "\nGame: " .. Game:__tostring(), 10, 10)
+        "\nGame: " .. Game:__tostring() ..
+        "\n\t- Current State: " .. self._currentState:__tostring(), 10, 10)
 end
 
 function Game:quit()

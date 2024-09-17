@@ -30,14 +30,14 @@ function SongCache:createCache(songData, filename, fileExt)
         strOut = strOut .. key .. ":" .. songData[key] .. "\n"
     end
 
-    love.filesystem.write("CacheData/Beatmaps/" .. filename .. ".scache", strOut)
+    FileHandler:writeEncryptedFile("CacheData/Beatmaps/" .. filename .. ".scache", strOut)
 
     return SongCacheFormat
 end
  
 function SongCache:loadCache(filename, ogPath, fileExt)
     if love.filesystem.getInfo("CacheData/Beatmaps/" .. filename .. ".scache") then
-        local data = love.filesystem.read("CacheData/Beatmaps/" .. filename .. ".scache")
+        local data = FileHandler:readEncryptedFile("CacheData/Beatmaps/" .. filename .. ".scache")
         local songData = {}
         for line in data:gmatch("[^\n]+") do
             local key, value = line:match("([^:]+):(.+)")

@@ -1,8 +1,8 @@
 local TitleButton = Sprite:extend("TitleButton")
 
 function TitleButton:new(path, borderPath, x, y, callback)
-    Sprite.new(self, path, x, y)
     self.Border = Sprite(borderPath, x, y)
+    Sprite.new(self, path, x, y)
 
     self:centerOrigin()
     self.Border:centerOrigin()
@@ -28,12 +28,6 @@ function TitleButton:update(dt)
 
     self.down = love.mouse.isDown(1) and self:checkCollision(mx, my)
 
-    --[[ if self.down then
-        self.scale = {x = self.baseScale.x * 0.9, y = self.baseScale.y * 0.9}
-    else
-        self.scale = {x = self.baseScale.x, y = self.baseScale.y}
-    end ]]
-    -- lerp scale with math.fpsLerp
     if self:checkCollision(mx, my) and not self.down then
         self.scale.x, self.scale.y = math.fpsLerp(self.scale.x, self.baseScale.x * 1.1, 25, dt), math.fpsLerp(self.scale.y, self.baseScale.y * 1.1, 25, dt)
         self.Border.scale.x, self.Border.scale.y = math.fpsLerp(self.Border.scale.x, self.baseScale.x * 1.1, 25, dt), math.fpsLerp(self.Border.scale.y, self.baseScale.y * 1.1, 25, dt)
@@ -44,18 +38,19 @@ function TitleButton:update(dt)
         self.scale.x, self.scale.y = math.fpsLerp(self.scale.x, self.baseScale.x, 25, dt), math.fpsLerp(self.scale.y, self.baseScale.y, 25, dt)
         self.Border.scale.x, self.Border.scale.y = math.fpsLerp(self.Border.scale.x, self.baseScale.x, 25, dt), math.fpsLerp(self.Border.scale.y, self.baseScale.y, 25, dt)
     end
-    --[[ if self.down then
-        self.scale.x, self.scale.y = math.fpsLerp(self.scale.x, self.baseScale.x * 0.9, 25, dt), math.fpsLerp(self.scale.y, self.baseScale.y * 0.9, 25, dt)
-        self.Border.scale.x, self.Border.scale.y = math.fpsLerp(self.Border.scale.x, self.baseScale.x * 0.92, 25, dt), math.fpsLerp(self.Border.scale.y, self.baseScale.y * 0.92, 25, dt)
-    else
-        
-    end ]]
 
     if self.released and self.Callback then
         self.Callback(self)
     end
 
     self.released = false
+end
+
+function TitleButton:resize(w, h)
+    Sprite.resize(self, w, h)
+    if self.Border then
+        self.Border:resize(w, h)
+    end
 end
 
 function TitleButton:hit()
