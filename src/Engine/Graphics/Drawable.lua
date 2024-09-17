@@ -7,7 +7,6 @@ local Drawable = Class:extend("Drawable")
 ---@param h number
 function Drawable:new(x, y, w, h)
     -- a drawable is an object that rescales itself based on the screen size
-
     self.x = x
     self.y = y 
     self.drawX = x
@@ -32,12 +31,14 @@ function Drawable:new(x, y, w, h)
     self.offset = {x = 0, y = 0}
     self.addOrigin = true
 
+    self.visible = true
+
     self:resize(Game._windowWidth, Game._windowHeight)
 end
 
 function Drawable:centerOrigin()
-    self.origin.x = self.width / 2
-    self.origin.y = self.height / 2
+    self.origin.x = self.baseWidth / 2
+    self.origin.y = self.baseHeight / 2
 end
 
 function Drawable:update(dt)
@@ -88,7 +89,21 @@ function Drawable:resize(w, h)
     end
 end
 
+function Drawable:checkCollision(x, y, w, h)
+    -- self.drawX - (self.origin.x * self.windowScale.x) -- this gets the real x of the object
+    w, h = w or 0, h or 1
+    local realX, realY = self.drawX - (self.origin.x * self.windowScale.x) - 15, self.drawY - (self.origin.y * self.windowScale.y) - 15
+    local realEndX, realEndY = realX + self.width+30, realY + self.height+30
+    return x >= realX and x <= realEndX and y >= realY and y <= realEndY
+end
+
+function Drawable:globalToLocal(x, y)
+    -- converts mouse coords to game coords
+    return (x - self.drawX) / self.windowScale.x, (y - self.drawY) / self.windowScale.y
+end
+
 function Drawable:draw()
+    if not self.visible then return end
     love.graphics.push()
         local lastBlendMode, lastBlendModeAlpha = love.graphics.getBlendMode()
         local lastColour = {love.graphics.getColor()}
@@ -117,12 +132,12 @@ function Drawable:__debugDraw()
         love.graphics.setColor(0, 0, 0)
         for x = -1, 1 do
             for y = -1, 1 do
-                love.graphics.print("x: " .. math.floor(self.drawX) .. " y: " .. math.floor(self.drawY), self.drawX + x, self.drawY + y)
+                love.graphics.print("x: " .. math.floor(self.drawX - (self.origin.x * self.windowScale.x)) .. " y: " .. math.floor(self.drawY - (self.origin.y * self.windowScale.y)), self.drawX + x, self.drawY + y)
                 love.graphics.print("w: " .. math.floor(self.width*self.scale.x) .. " h: " .. math.floor(self.height*self.scale.y), self.drawX + x, self.drawY + y + 10)
             end
         end
         love.graphics.setColor(1, 1, 1)
-        love.graphics.print("x: " .. math.floor(self.drawX) .. " y: " .. math.floor(self.drawY), self.drawX, self.drawY)
+        love.graphics.print("x: " .. math.floor(self.drawX - (self.origin.x * self.windowScale.x)) .. " y: " .. math.floor(self.drawY - (self.origin.y * self.windowScale.y)), self.drawX, self.drawY)
         love.graphics.print("w: " .. math.floor(self.width*self.scale.x) .. " h: " .. math.floor(self.height*self.scale.y), self.drawX, self.drawY + 10)
     love.graphics.pop()
 end

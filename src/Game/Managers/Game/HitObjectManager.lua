@@ -20,6 +20,8 @@ function HitObjectManager:new(instance)
     self.scorePerNote = 0
     self.accuracy = 1
 
+    self.started = false
+
     self:createReceptors()
 end
 
@@ -86,6 +88,9 @@ function HitObjectManager:getNotePosition(time)
 end
 
 function HitObjectManager:updateTime(dt)
+    if not self.started then
+        return
+    end
     self.musicTime = self.musicTime + dt * 1000
     while (self.svIndex < #self.scrollVelocities and self.scrollVelocities[self.svIndex].StartTime <= self.musicTime) do
         self.svIndex = self.svIndex + 1

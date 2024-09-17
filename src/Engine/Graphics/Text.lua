@@ -61,6 +61,7 @@ function Text:updateText(value)
 end
 
 function Text:draw()
+    if not self.visible then return end
     --[[ print(self.text, self.drawX, self.drawY) ]]
     if self.text == "" then return end
     local lastColour, lastFont = {love.graphics.getColor()}, love.graphics.getFont()

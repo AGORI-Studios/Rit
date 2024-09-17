@@ -22,6 +22,7 @@ require(path .. "System")
 require(path .. "Graphics")
 require(path .. "Input")
 require(path .. "Tween")
+require(path .. "Wait")
 
 Game = TypedGroup(State) --- @class Game:TypedGroup<State>
 Game._currentState = State() --- @type State
@@ -32,6 +33,7 @@ Game._windowHeight = 720
 Game._gameWidth = 1920
 Game._gameHeight = 1080
 Game.Tween = TweenManager() --- @type TweenManager
+Game.Wait = WaitManager --- @type WaitManager
 
 function Game:SwitchState(state)
     self._currentState:kill()
@@ -45,6 +47,7 @@ end
 function Game:update(dt)
     self._currentState:update(dt)
     self.Tween:update(dt)
+    self.Wait:update(dt)
 end
 
 function Game:draw()

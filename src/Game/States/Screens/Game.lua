@@ -1,8 +1,8 @@
-local Game = State:extend("Game")
+local GameScreen = State:extend("GameScreen")
 
-function Game:new()
+function GameScreen:new()
     State.new(self)
-    Game.instance = self
+    GameScreen.instance = self
 
     self.hitObjectManager = HitObjectManager(self)
     self:add(self.hitObjectManager)
@@ -25,6 +25,12 @@ function Game:new()
 
     self.score = 0
     self.accuracy = 0
+
+    --[[ self.hitObjectManager.started = true ]]
+    Game.Wait(1000, function()
+        self.hitObjectManager.started = true
+        print("Started")
+    end)
 end
 
-return Game
+return GameScreen

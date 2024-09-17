@@ -23,6 +23,7 @@ function Sprite:new(image, x, y)
 end
 
 function Sprite:draw()
+    if not self.visible then return end
     love.graphics.push()
         love.graphics.setBlendMode(self.blendMode, self.blendModeAlpha)
         love.graphics.setColor(self.colour[1], self.colour[2], self.colour[3], self.alpha)

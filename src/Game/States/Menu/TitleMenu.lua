@@ -1,6 +1,6 @@
 local TitleMenu = State:extend("TitleMenu")
 
-local curLogoScale = 0.75
+local curLogoScale = 0.65
 local bpm = 100 -- to be determined when we have a song lol
 local curBeat = 0
 local beatTime = 60 / bpm
@@ -13,10 +13,26 @@ function TitleMenu:new()
     self.bg:resize(Game._windowWidth, Game._windowHeight)
     self:add(self.bg)
 
-    self.logo = Sprite("Assets/Textures/Menu/Logo.png", 100, 200)
+    self.logo = Sprite("Assets/Textures/Menu/Logo.png", 50, 150)
     self.logo:centerOrigin()
     self.logo:setScale(curLogoScale, curLogoScale)
     self:add(self.logo)
+
+    self.buttonsGroup = TypedGroup(TitleButton)
+    self:add(self.buttonsGroup)
+
+    self.playButton = TitleButton("Assets/Textures/Menu/Buttons/PlayBtn.png", "Assets/Textures/Menu/Buttons/BigBtnBorder.png", 1250, 300, function()
+        print("Song Menu is not currently implemented")
+        Game:SwitchState(States.Screens.Game)
+    end)
+    self.playButton:setScale(1.35, 1.35)
+    self.ohButton = TitleButton("Assets/Textures/Menu/Buttons/OhBtn.png", "Assets/Textures/Menu/Buttons/BigBtnBorder.png", 1550, 300, function()
+        print("Online Hub is not currently implemented")
+    end)
+    self.ohButton:setScale(1.35, 1.35)
+
+    self.buttonsGroup:add(self.playButton)
+    self.buttonsGroup:add(self.ohButton)
 end
 
 function TitleMenu:update(dt)
@@ -25,13 +41,17 @@ function TitleMenu:update(dt)
     curBeat = curBeat + dt
     if curBeat >= beatTime then
         curBeat = 0
-        curLogoScale = 0.8
+        curLogoScale = 0.7
     end
     self.logo:setScale(curLogoScale, curLogoScale)
 
-    if curLogoScale > 0.75 then
-        curLogoScale = math.fpsLerp(curLogoScale, 0.75, 5, dt)
+    if curLogoScale > 0.65 then
+        curLogoScale = math.fpsLerp(curLogoScale, 0.65, 5, dt)
     end
+end
+
+function TitleMenu:mousemoved(x, y, dx, dy, istouch)
+    State.mousemoved(self, x, y, dx, dy, istouch)
 end
 
 return TitleMenu

@@ -1,5 +1,13 @@
 # Rit
 
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/AGORI-Studios/Rit/total)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/AGORI-Studios/Rit)
+![GitHub Tag](https://img.shields.io/github/v/tag/AGORI-Studios/Rit)
+![GitHub Release](https://img.shields.io/github/v/release/AGORI-Studios/Rit)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/AGORI-Studios/Rit/latest)
+
+
+
 A free, open-sourced rhythm game made in Lua using the LÖVE framework.
 
 ## Table of Contents
