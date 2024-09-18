@@ -4,6 +4,7 @@
     "Lua.diagnostics.disable": [
         "param-type-mismatch",
         "lowercase-global",
-        "undefined-field"
+        "undefined-field",
+        "duplicate-set-field"
     ]
 }
