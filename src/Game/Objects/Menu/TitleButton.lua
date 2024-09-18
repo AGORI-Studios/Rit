@@ -1,7 +1,7 @@
 local TitleButton = Sprite:extend("TitleButton")
 
 function TitleButton:new(path, borderPath, x, y, callback)
-    self.Border = Sprite(borderPath, x, y)
+    self.Border = Sprite(borderPath, x, y, true)
     Sprite.new(self, path, x, y)
 
     self:centerOrigin()

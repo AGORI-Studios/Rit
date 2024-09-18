@@ -55,8 +55,15 @@ local restrictedFuncs = {
 }
 
 function Text:updateText(value)
-    return self.format:gsub("{(.-)}", function(a) 
-        return loadstring("return " .. a:gsub("%%d", self.instance and self.instance[value] or _G[value] or value))()
+    return self.format:gsub("{(.-)}", function(a)
+        local num = self.instance and self.instance[value] or  _G[value] or value or 0
+        if tostring(num) == "inf" or tostring(num) == "-inf" or tostring(num) == "nan" then
+            return "0"
+        end
+        return loadstring("return " .. a:gsub(
+            "%%d",
+            num
+        ))()
     end)
 end
 

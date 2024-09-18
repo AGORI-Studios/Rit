@@ -5,6 +5,7 @@ local Group = Class:extend("Group")
 function Group:new(size)
     self.objects = {}
     self.size = size or 0
+    self.zorder = 0
 end
 
 ---@param object any
@@ -14,6 +15,11 @@ function Group:add(object)
         return
     end
     table.insert(self.objects, object)
+
+    -- sort by zorder
+    table.sort(self.objects, function(a, b)
+        return (a.zorder or -1000) < (b.zorder or -1000)
+    end)
 end
 
 function Group:remove(object)

@@ -8,17 +8,21 @@ local beatTime = 60 / bpm
 function TitleMenu:new()
     State.new(self)
 
-    self.bg = Sprite("Assets/Textures/Menu/PlayBG.png", 0, 0)
+    self.bg = Sprite("Assets/Textures/Menu/PlayBG.png", 0, 0, true)
     self.bg.scalingType = ScalingTypes.WINDOW_STRETCH
     self.bg:resize(Game._windowWidth, Game._windowHeight)
+    self.bg.zorder = -1
     self:add(self.bg)
 
-    self.logo = Sprite("Assets/Textures/Menu/Logo.png", 50, 150)
+    self.logo = Sprite("Assets/Textures/Menu/Logo.png", 50, 150, true)
     self.logo:centerOrigin()
     self.logo:setScale(curLogoScale, curLogoScale)
+    self.logo.zorder = 1
+
     self:add(self.logo)
 
     self.buttonsGroup = TypedGroup(TitleButton)
+    self.buttonsGroup.zorder = 2
     self:add(self.buttonsGroup)
 
     self.playButton = TitleButton("Assets/Textures/Menu/Buttons/PlayBtn.png", "Assets/Textures/Menu/Buttons/BigBtnBorder.png", 1250, 300, function()

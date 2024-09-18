@@ -5,6 +5,7 @@ require(path .. "States")
 require(path .. "Managers")
 require(path .. "Objects")
 require(path .. "Cache")
+require(path .. "Threads")
 Parsers = require(path .. "Parsing")
 
 local function setupFolders()

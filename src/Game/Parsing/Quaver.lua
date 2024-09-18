@@ -7,7 +7,7 @@ function Quaver:parse(path, folderPath)
 
     for _, note in ipairs(data["HitObjects"]) do
         table.insert(
-            States.Screens.Game.instance.hitObjectManager.hitObjects,
+            instance.hitObjects,
             UnspawnObject(note.StartTime, note.EndTime, note.Lane)
         )
     end
@@ -19,9 +19,9 @@ function Quaver:parse(path, folderPath)
         )
     end
  ]]
-    States.Screens.Game.instance.hitObjectManager.initialSV = data["InitialScrollVelocity"] or 1
+    instance.initialSV = data["InitialScrollVelocity"] or 1
 
-    States.Screens.Game.instance.song = love.audio.newSource(folderPath .. "/" .. data["AudioFile"], "stream")
+    instance.song = love.sound.newSoundData(folderPath .. "/" .. data["AudioFile"])
 end
 
 ---@param data string

@@ -51,4 +51,10 @@ function Cache:load(type, path, ...)
     return self._cache[type]:load(path, ...)
 end
 
+function Cache:update()
+    for _, cache in pairs(self._cache) do
+        cache:update()
+    end
+end
+
 return Cache

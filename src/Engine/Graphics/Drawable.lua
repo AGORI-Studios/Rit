@@ -13,8 +13,8 @@ function Drawable:new(x, y, w, h)
     self.drawY = y
     self.width = w or 1
     self.height = h or 1
-    self.baseWidth = w
-    self.baseHeight = h
+    self.baseWidth = self.width
+    self.baseHeight = self.height
     self.scale = {x = 1, y = 1}
 
     self.blendMode = "alpha"
@@ -33,12 +33,17 @@ function Drawable:new(x, y, w, h)
 
     self.visible = true
 
+    self.zorder = 0
+
     self:resize(Game._windowWidth, Game._windowHeight)
 end
 
 function Drawable:centerOrigin()
     self.origin.x = self.baseWidth / 2
     self.origin.y = self.baseHeight / 2
+    if self.threadedAsset then
+        self.memoryCenterOrigin = true
+    end
 end
 
 function Drawable:update(dt)
@@ -86,6 +91,11 @@ function Drawable:resize(w, h)
 
         self.drawX = self.origin.x * self.windowScale.x
         self.drawY = self.origin.y * self.windowScale.y
+    end
+
+    if self.memoryCenterOrigin then
+        self:centerOrigin()
+        self.memoryCenterOrigin = false
     end
 end
 

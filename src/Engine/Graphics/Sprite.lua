@@ -4,26 +4,42 @@ local Sprite = Drawable:extend("Sprite")
 ---@param image string|love.Image
 ---@param x number|nil
 ---@param y number|nil
-function Sprite:new(image, x, y)
-    if type(image) == "string" then
-        self.image = Cache:get("Image", image)
+function Sprite:new(image, x, y, threaded)
+    if not threaded then
+        if type(image) == "string" then
+            self.image = Cache:get("Image", image)
+        else
+            self.image = image
+        end
+        
+        self.baseWidth = self.image:getWidth()
+        self.baseHeight = self.image:getHeight()
     else
-        self.image = image
+        self.threadedAsset = threaded
+        self.threadAssetToLoad = image
     end
-    
-    self.baseWidth = self.image:getWidth()
-    self.baseHeight = self.image:getHeight()
     Drawable.new(self, x, y, self.baseWidth, self.baseHeight)
-
-    --[[ self.origin.x = self.baseWidth/2
-    self.origin.y = self.baseHeight/2 ]]
 
     self.offset.x = 0
     self.offset.y = 0
 end
 
+function Sprite:update(dt)
+    if self.threadedAsset then
+        self.image = Cache:get("Image", self.threadAssetToLoad)
+        if self.image then
+            self.baseWidth = self.image:getWidth()
+            self.baseHeight = self.image:getHeight()
+            self:resize(Game._windowWidth, Game._windowHeight)
+            self.threadedAsset = false
+        end
+    end
+
+    Drawable.update(self, dt)
+end
+
 function Sprite:draw()
-    if not self.visible then return end
+    if not self.visible or not self.image then return end
     love.graphics.push()
         love.graphics.setBlendMode(self.blendMode, self.blendModeAlpha)
         love.graphics.setColor(self.colour[1], self.colour[2], self.colour[3], self.alpha)

@@ -4,7 +4,7 @@ local HitObject = Sprite:extend("HitObject")
 function HitObject:new(data)
     local path = "Assets/IncludedSkins/SkinThrowbacks/notes/4K/note" .. data.Lane .. ".png"
 
-    Sprite.new(self, path, 0, 0)
+    Sprite.new(self, path, 0, 0, true)
 
     self:centerOrigin()
 

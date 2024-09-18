@@ -20,6 +20,7 @@ end
 
 function love.update(dt)
     Input:update()
+    Cache:update()
     Game:update(dt)
 
     --[[ if DiscordRPC then
