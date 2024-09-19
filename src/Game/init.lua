@@ -32,6 +32,18 @@ function Game:initialize()
     Skin:loadSkin("Assets/IncludedSkins/Circle Default/Skin.lua")
 end
 
+function Game:kill()
+    Game.super.kill(self)
+
+    love.thread.getChannel("thread.font"):push({path = "exit"})
+    love.thread.getChannel("thread.image"):push("exit")
+    love.thread.getChannel("thread.audio"):push("exit")
+
+    love.thread.getChannel("thread.font.out"):clear()
+    love.thread.getChannel("thread.image.out"):clear()
+    love.thread.getChannel("thread.audio.out"):clear()
+end
+
 Game:initialize()
 
 SongManager:loadSongList()
