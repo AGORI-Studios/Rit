@@ -13,17 +13,6 @@ function GameScreen:new(data)
     self.hitObjectManager = HitObjectManager(self)
     self:add(self.hitObjectManager)
 
-    --[[ Parsers["Quaver"]:parse("Assets/IncludedSongs/lapix feat. mami - Irradiate (Nightcore Ver.) - 841472/147043.qua",
-        "Assets/IncludedSongs/lapix feat. mami - Irradiate (Nightcore Ver.) - 841472/") ]]
-    --[[  ]]
-    --[[ Parsers["Quaver"]:parse("Assets/IncludedSongs/purpleeater/91021.qua", "Assets/IncludedSongs/purpleeater/") ]]
-    --[[ LoadSong:start({
-        filepath = "Assets/IncludedSongs/purpleeater/91021.qua",
-        folderpath = "Assets/IncludedSongs/purpleeater/",
-        mapType = "Quaver"
-    }) ]]
-    print(data.path) -- Assets/IncludedSongs/LeftRight/93184.qua
-    -- i want Assets/IncludedSongs/LeftRight/93184/ (length varies)
     local folderPath = data.path:match("(.+)/[^/]+$") .. "/"
     outChannel:clear()
     LoadSong:start({
@@ -38,12 +27,6 @@ function GameScreen:new(data)
 
     self.score = 0
     self.accuracy = 0
-
-    --[[ self.hitObjectManager.started = true ]]
-    --[[ Game.Wait(1000, function()
-        self.hitObjectManager.started = true
-        print("Started")
-    end) ]]
 end
 
 function Game:update(dt)
@@ -51,8 +34,8 @@ function Game:update(dt)
 
     if outChannel:peek() then
         local response = outChannel:pop()
+
         if response then
-            print("HELPPP MEEEEEE")
             local instance = response.instance
 
             GameScreen.instance.song = love.audio.newSource(instance.song, "stream")

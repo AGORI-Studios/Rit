@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Rit | Documentation | File Format</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<html lang="en">
+    <body class="bg-gray-600 text-white">
+        <nav class="bg-gray-500 p-2">
+            <div class="container mx-auto">
+                <div class="flex justify-between">
+                    <a href="index.html" class="text-white text-2xl font-bold">Rit</a>
+                    <div class="flex">
+                        <a href="index.html" class="p-2">Home</a>
+                        <a href="format.html" class="p-2">File Format</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <div class="container mx-auto mt-25 px-5 py-5 bg-gray-200">
+            <div class="text-center">
+                <h1 class="text-4xl font-bold text-black">File Format</h1>
+
+                <div class="text-left mt-5">
+                    <h2 class="text-2xl font-bold text-black">Table of Contents</h2>
+                    <ul class="list-disc ml-5">
+                        <li class="text-black"><a href="#metadata" class="text-black">Metadata</a></li>
+                        <li class="text-black"><a href="#timingpoints" class="text-black">TimingPoints</a></li>
+                        <li class="text-black"><a href="#hitobjects" class="text-black">HitObjects</a></li>
+                    </ul>
+                    
+                    <!--METADATA-->
+                    <!--Explain what metadata is-->
+                    <h2 id="metadata" class="text-2xl font-bold text-black mt-5">Metadata</h2>
+                    <p class="text-black mt-5">Metadata is the information about the beatmap.</p>
+                    <ul class="list-disc ml-5">
+                        <pre class="bg-gray-400 p-5 rounded-md mt-5 text-gray-200">
+<span style="color: #ffea00;">[Metadata]</span>
+
+<span style="color: #ffea00;">Title:</span> <span style="color: #ffffff;">Name</span>
+<span style="color: #ffea00;">DifficultyName:</span> <span style="color: #ffffff;">Name</span>
+<span style="color: #ffea00;">Description:</span> <span style="color: #ffffff;">Name</span>
+<span style="color: #ffea00;">Artist:</span> <span style="color: #ffffff;">Name</span>
+<span style="color: #ffea00;">Creator:</span> <span style="color: #ffffff;">Name</span>
+<span style="color: #ffea00;">Source:</span> <span style="color: #ffffff;">Name</span>
+<span style="color: #ffea00;">Tags:</span> <span style="color: #ffffff;">Name</span>
+<span style="color: #ffea00;">AudioFile:</span> <span style="color: #ffffff;">Name</span>
+<span style="color: #ffea00;">BackgroundFile:</span> <span style="color: #ffffff;">Name</span>
+<span style="color: #ffea00;">Keys:</span> <span style="color: #ffffff;">Number</span>
+<span style="color: #ffea00;">MapSetID:</span> <span style="color: #ffffff;">Number</span>
+<span style="color: #ffea00;">MapID:</span> <span style="color: #ffffff;">Number</span>
+<span style="color: #ffea00;">InitialSV:</span> <span style="color: #ffffff;">Number</span>
+                        </pre>
+                        
+                        <p class="text-black mt-5">The metadata section is required for the beatmap to be valid. The values are as follows:</p>
+                        <ul class="list-disc ml-5">
+                            <li class="text-black">Title: The title of the beatmap.</li>
+                            <li class="text-black">DifficultyName: The name of the difficulty.</li>
+                            <li class="text-black">Description: The description of the beatmap.</li>
+                            <li class="text-black">Artist: The artist of the song.</li>
+                            <li class="text-black">Creator: The creator of the beatmap.</li>
+                            <li class="text-black">Source: The source of the song.</li>
+                            <li class="text-black">Tags: The tags of the beatmap.</li>
+                            <li class="text-black">AudioFile: The name of the audio file.</li>
+                            <li class="text-black">BackgroundFile: The name of the background file.</li>
+                            <li class="text-black">Keys: The number of keys in the beatmap. (1K-10K)</li>
+                            <li class="text-black">MapSetID: The map set ID of the beatmap.</li>
+                            <li class="text-black">MapID: The map ID of the beatmap.</li>
+                            <li class="text-black">InitialSV: The initial scroll velocity of the beatmap.</li>
+                        </ul>
+                    </ul>
+
+                    <h2 id="timingpoints" class="text-2xl font-bold text-black mt-5">TimingPoints</h2>
+
+                    <p class="text-black">TimingPoints are the points in the beatmap where the scroll velocity or BPM changes. It holds the following values with the following defaults:</p>
+                    <ul class="list-disc ml-5">
+<pre class="bg-gray-400 p-5 rounded-md mt-5 text-gray-200">
+<span style="color: #ffea00;">[TimingPoints]</span>
+
+<span style="color: #ffea00;">SV:</span><span style="color: #ffffff;">time:multiplier</span>
+<span style="color: #ffea00;">BPM:</span><span style="color: #ffffff;">time:bpm</span>
+</pre>
+                        <p class="text-black mt-5">The timing points section is required for the beatmap to be valid. The values are as follows:</p>
+                        <ul class="list-disc ml-5">
+                            <li class="text-black">SV: The scroll velocity of the beatmap at a certain time.</li>
+                            <li class="text-black">BPM: The BPM of the beatmap at a certain time.</li>
+                        </ul>
+
+                        <p class="text-black mt-5">There has to be at least one BPM timing point for the beatmap to be valid.</p>
+                    </ul>
+
+                    <h2 id="hitobjects" class="text-2xl font-bold text-black mt-5">HitObjects</h2>
+
+                    <p class="text-black">HitObjects are the objects in the beatmap that the player has to hit. It holds the following values with the following defaults:</p>
+                    <ul class="list-disc ml-5">
+<pre class="bg-gray-400 p-5 rounded-md mt-5 text-gray-200">
+<span style="color: #ffea00;">[HitObjects]</span>
+
+<span style="color: #ffea00;">type:</span><span style="color: #ffffff;">lane:start_time:end_time:hitsounds</span>
+</pre>
+                        <p class="text-black
+                        mt-5">The hit objects section is required for the beatmap to be valid. The values are as follows:</p>
+                        <ul class="list-disc ml-5">
+                            <li class="text-black">type: The type of the hit object. (Currently, the only supported type is HIT)</li>
+                            <li class="text-black">lane: The lane of the hit object. (1-KeyCount)</li>
+                            <li class="text-black">start_time: The start time of the hit object.</li>
+                            <li class="text-black">end_time: The end time of the hit object.</li>
+                            <li class="text-black">hitsounds: The hitsounds of the hit object. Defaults to no string.</li>
+                        </ul>
+                    </ul>
+
+                </div>
+                            
+            </div>
+        </div>
+    
+    </body>
+</html>

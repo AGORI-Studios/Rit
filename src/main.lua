@@ -29,14 +29,14 @@ function love.update(dt)
     Cache:update()
     Game:update(dt)
 
-    --[[ if DiscordRPC then
+    if DiscordRPC then
         DiscordRPC.timer = DiscordRPC.timer + dt
         if DiscordRPC.timer >= DiscordRPC.maxTimer then
             DiscordRPC.timer = 0
 
             DiscordRPC:runCallbacks()
         end
-    end ]]
+    end
 end
 
 function love.resize(w, h)

@@ -23,7 +23,7 @@ end
 function Quaver:cache(data, filename, path)
     local pathToFile = path
     data = data:gsub("\r\n", "\n")
-    -- remove all timing points between TimingPoints and HitObjects because sv heavy charts can cause very long loading times
+
     data = data:gsub("SliderVelocities(.-)HitObjects", "HitObjects")
     data = Yaml.parse(data)
 

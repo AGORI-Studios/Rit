@@ -123,11 +123,13 @@ function HitObjectManager:update(dt)
     while #self.hitObjects > 0 and self:isOnScreen(self.hitObjects[1].StartTime) do
         local hitObject = self.hitObjects[1]
         local drawableHitObject = HitObject(hitObject, self.data.mode)
+
         drawableHitObject.x = midX + (drawableHitObject.Data.Lane - (self.data.mode/2)) * 200
         drawableHitObject.initialSVTime = self:getPositionFromTime(hitObject.StartTime)
         drawableHitObject.endSVTime = self:getPositionFromTime(hitObject.EndTime)
         drawableHitObject.y = self:getNotePosition(drawableHitObject.initialSVTime)
         drawableHitObject:resize(Game._windowWidth, Game._windowHeight)
+        
         self:add(drawableHitObject, false)
         table.insert(self.drawableHitObjects, drawableHitObject)
         table.remove(self.hitObjects, 1)

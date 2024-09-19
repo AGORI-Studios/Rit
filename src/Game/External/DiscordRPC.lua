@@ -154,6 +154,8 @@ function DiscordRPC:runCallbacks()
     discrpc.Discord_RunCallbacks()
 end
 
+jit.off(DiscordRPC.runCallbacks)
+
 function DiscordRPC:shutdown()
     discrpc.Discord_Shutdown()
 end
