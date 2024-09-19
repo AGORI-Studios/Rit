@@ -23,6 +23,7 @@ function HitObjectManager:new(instance)
     self.started = false
 
     self.initialSV = 1
+    self.length = 1000
 
     self:createReceptors()
 end
@@ -36,6 +37,15 @@ function HitObjectManager:createReceptors()
         receptor.y = self.STRUM_Y
         receptor.x = midX + (i - (count/2)) * 200
         self.receptorsGroup:add(receptor)
+    end
+
+    self:resortReceptors()
+end
+
+function HitObjectManager:resortReceptors()
+    -- sometimes positions get messed up
+    for i = 1, count do
+        self.receptorsGroup.objects[i].x = midX + (i - (count/2)) * 200
     end
 end
 
@@ -116,7 +126,7 @@ function HitObjectManager:update(dt)
         drawableHitObject.endSVTime = self:getPositionFromTime(hitObject.EndTime)
         drawableHitObject.y = self:getNotePosition(drawableHitObject.initialSVTime)
         drawableHitObject:resize(Game._windowWidth, Game._windowHeight)
-        self:add(drawableHitObject)
+        self:add(drawableHitObject, false)
         table.insert(self.drawableHitObjects, drawableHitObject)
         table.remove(self.hitObjects, 1)
     end
@@ -154,6 +164,10 @@ function HitObjectManager:update(dt)
         if Input:wasReleased(count .. "k" .. i) then
             self.receptorsGroup.objects[i].down = false
         end
+    end
+
+    if (self.musicTime or 0) > (self.length or 1000) then
+        Game:SwitchState(Skin:getSkinnedState("SongListMenu"))
     end
 
     Group.update(self, dt)

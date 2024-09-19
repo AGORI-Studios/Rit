@@ -14,10 +14,11 @@ local SongCacheFormat = {
     map_id = 0,
     mode = 4,
     game_mode = "mania",
+    map_type = "Quaver",
     hitobj_count = 0,
     ln_count = 0,
     length = 0,
-    metaType = 1
+    metaType = 2
 }
 
 local SongCache = Class:extend("SongCache")
@@ -26,7 +27,6 @@ SongCache.songs = {}
 function SongCache:createCache(songData, filename, fileExt)
     local strOut = ""
     for key, _ in pairs(SongCacheFormat) do
-
         strOut = strOut .. key .. ":" .. songData[key] .. "\n"
     end
 
@@ -48,11 +48,18 @@ function SongCache:loadCache(filename, ogPath, fileExt)
 
             ::continue::
         end
+        if songData["metaType"] == 1 then
+            -- delete the cache file and reload the song
+            love.filesystem.remove("CacheData/Beatmaps/" .. filename .. ".scache")
+            return self:loadCache(filename, ogPath, fileExt)
+        end
         return songData
     else
         if fileExt == ".qua" then
             local data = love.filesystem.read(ogPath)
             local songData = Parsers.Quaver:cache(data, filename, ogPath)
+            songData.metaType = 2
+            print("Caching " .. filename)
             return songData
         end
     end
@@ -65,7 +72,7 @@ function SongCache:loadSongsPath(path)
         if fileType == "directory" then
             for _, song in ipairs(love.filesystem.getDirectoryItems(path .. "/" .. file)) do
                 if song:endsWith(".qua") then
-                    local filename = file:gsub(".qua$", "")
+                    local filename = song:gsub(".qua$", "")
                     local fullPath = path .. "/" .. file .. "/" .. song
                     local fileExt = ".qua"
                     

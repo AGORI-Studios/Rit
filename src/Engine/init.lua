@@ -36,10 +36,10 @@ Game._gameHeight = 1080
 Game.Tween = TweenManager() --- @type TweenManager
 Game.Wait = WaitManager --- @type WaitManager
 
-function Game:SwitchState(state)
+function Game:SwitchState(state, ...)
     self._currentState:kill()
     self:remove(self._currentState)
-    self._currentState = state()
+    self._currentState = state(...)
     ---@diagnostic disable-next-line: inject-field
     self._currentState.instance = self._currentState
     self:add(self._currentState)
@@ -61,17 +61,18 @@ end
 
 function Game:__printDebug()
     love.graphics.setColor(0, 0, 0, 1)
+    local debugDisplay = "FPS: " .. love.timer.getFPS() ..
+        "\nGraphics Memory: " .. math.formatStorage(love.graphics.getStats().texturememory) ..
+        "\nLua Memory: " .. math.formatStorage(collectgarbage("count") * 1024) ..
+        "\nGame: " .. Game:__tostring() ..
+        "\n\t- Current State: " .. self._currentState:__tostring()
     for x = -1, 1 do
         for y = -1, 1 do
-            love.graphics.print("FPS: " .. love.timer.getFPS() ..
-                "\nGame: " .. Game:__tostring() ..
-                "\n\t- Current State: " .. self._currentState:__tostring(), 10 + x, 10 + y)
+            love.graphics.print(debugDisplay, 10 + x, 10 + y)
         end
     end
     love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.print("FPS: " .. love.timer.getFPS() ..
-        "\nGame: " .. Game:__tostring() ..
-        "\n\t- Current State: " .. self._currentState:__tostring(), 10, 10)
+    love.graphics.print(debugDisplay, 10, 10)
 end
 
 function Game:quit()

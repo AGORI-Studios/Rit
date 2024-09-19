@@ -9,7 +9,8 @@ function Group:new(size)
 end
 
 ---@param object any
-function Group:add(object)
+function Group:add(object, reorder)
+    reorder = reorder == nil and true or false
     if self.size > 0 and #self.objects >= self.size then
         print("Group is full (" .. #self.objects .. "/" .. self.size .. ")")
         return
@@ -17,6 +18,12 @@ function Group:add(object)
     table.insert(self.objects, object)
 
     -- sort by zorder
+    if reorder then
+        self:reorder()
+    end
+end
+
+function Group:reorder()
     table.sort(self.objects, function(a, b)
         return (a.zorder or -1000) < (b.zorder or -1000)
     end)

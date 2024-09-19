@@ -35,4 +35,11 @@ Skin.HUD = {
     }
 }
 
+Skin.Scripts = {}
+
+Skin.Scripts.States = {
+    TitleMenu = "scripts/states/TitleMenu.lua",
+    SongListMenu = "scripts/states/SongListMenu.lua",
+}
+
 return Skin

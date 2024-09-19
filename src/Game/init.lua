@@ -28,8 +28,12 @@ end
 function Game:initialize()
     setupFolders()
 
-    Skin = love.filesystem.load("Assets/IncludedSkins/Circle Default/Skin.lua")()
+    --[[ Skin = love.filesystem.load("Assets/IncludedSkins/Circle Default/Skin.lua")() ]]
+    Skin:loadSkin("Assets/IncludedSkins/Circle Default/Skin.lua")
 end
 
 Game:initialize()
-Game:SwitchState(States.Menu.TitleMenu)
+
+SongManager:loadSongList()
+
+Game:SwitchState(Skin:getSkinnedState("TitleMenu"))

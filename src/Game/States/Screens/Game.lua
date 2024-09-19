@@ -5,7 +5,7 @@ local GameScreen = State:extend("GameScreen")
 local channel = love.thread.getChannel("thread.song")
 local outChannel = love.thread.getChannel("thread.song.out")
 
-function GameScreen:new()
+function GameScreen:new(data)
     State.new(self)
     GameScreen.instance = self
     GameScreen.doneThread = false
@@ -17,10 +17,20 @@ function GameScreen:new()
         "Assets/IncludedSongs/lapix feat. mami - Irradiate (Nightcore Ver.) - 841472/") ]]
     --[[  ]]
     --[[ Parsers["Quaver"]:parse("Assets/IncludedSongs/purpleeater/91021.qua", "Assets/IncludedSongs/purpleeater/") ]]
-    LoadSong:start({
+    --[[ LoadSong:start({
         filepath = "Assets/IncludedSongs/purpleeater/91021.qua",
         folderpath = "Assets/IncludedSongs/purpleeater/",
         mapType = "Quaver"
+    }) ]]
+    print(data.path) -- Assets/IncludedSongs/LeftRight/93184.qua
+    -- i want Assets/IncludedSongs/LeftRight/93184/ (length varies)
+    local folderPath = data.path:match("(.+)/[^/]+$") .. "/"
+    outChannel:clear()
+    LoadSong:start({
+        filepath = data.path,
+        folderpath = folderPath,
+        mapType = data.map_type,
+        length = data.length
     })
 
     self.HUD = HUD(self)
@@ -42,27 +52,31 @@ function Game:update(dt)
     if outChannel:peek() then
         local response = outChannel:pop()
         if response then
+            print("HELPPP MEEEEEE")
             local instance = response.instance
 
             GameScreen.instance.song = love.audio.newSource(instance.song, "stream")
             GameScreen.instance.hitObjectManager.hitObjects = instance.hitObjects
             self.doneThread = true
 
-            for i = #GameScreen.instance.hitObjectManager.hitObjects, 2, -1 do
-                if GameScreen.instance.hitObjectManager.hitObjects[i].StartTime == GameScreen.instance.hitObjectManager.hitObjects[i - 1].StartTime then
-                    table.remove(GameScreen.instance.hitObjectManager.hitObjects, i)
-                end
-            end
             table.sort(GameScreen.instance.hitObjectManager.hitObjects, function(a, b) return a.StartTime < b.StartTime end)
             GameScreen.instance.hitObjectManager.scorePerNote = 1000000 / #GameScreen.instance.hitObjectManager.hitObjects
+            GameScreen.instance.hitObjectManager.length = tonumber(instance.length)
         end
     end
 
-    if self.doneThread and not GameScreen.instance.hitObjectManager.started then
+    if not GameScreen.instance then return end
+    if self.doneThread and not GameScreen.instance.hitObjectManager.started and GameScreen.instance.song then
         GameScreen.instance.song:play()
 
         GameScreen.instance.hitObjectManager.started = true
     end
+end
+
+function GameScreen:kill()
+    State.kill(self)
+    GameScreen.instance = nil
+    self = nil
 end
 
 return GameScreen

@@ -91,6 +91,15 @@ function Drawable:resize(w, h)
 
         self.drawX = self.origin.x * self.windowScale.x
         self.drawY = self.origin.y * self.windowScale.y
+    elseif self.scalingType == ScalingTypes.STRETCH_Y then
+        self.width = w
+        self.height = self.baseHeight * self.windowScale.y
+
+        self.windowScale.x = w / self.baseWidth
+        self.windowScale.y = h / self.baseHeight
+
+        self.drawX = self.origin.x * self.windowScale.x
+        self.drawY = self.origin.y * self.windowScale.y
     end
 
     if self.memoryCenterOrigin then

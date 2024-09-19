@@ -19,4 +19,17 @@ Input = InputClass({
     ["4k2"] = {Key("f")},
     ["4k3"] = {Key("j")},
     ["4k4"] = {Key("k")},
+
+    MenuDown = {
+        Key("down"),
+    },
+    MenuUp = {
+        Key("up"),
+    },
+    MenuBack = {
+        Key("escape"),
+    },
+    MenuConfirm = {
+        Key("return")
+    },
 })

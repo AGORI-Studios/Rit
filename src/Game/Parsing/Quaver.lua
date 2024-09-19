@@ -11,14 +11,7 @@ function Quaver:parse(path, folderPath)
             UnspawnObject(note.StartTime, note.EndTime, note.Lane)
         )
     end
---[[ 
-    for _, point in ipairs(data["SliderVelocities"]) do
-        table.insert(
-            States.Screens.Game.instance.hitObjectManager.scrollVelocities,
-            ScrollVelocity(point.StartTime, point.Multiplier)
-        )
-    end
- ]]
+
     instance.initialSV = data["InitialScrollVelocity"] or 1
 
     instance.song = love.sound.newSoundData(folderPath .. "/" .. data["AudioFile"])
@@ -85,6 +78,7 @@ function Quaver:cache(data, filename, path)
         ln_count = ln_count,
         length = length,
         metaType = 1,
+        map_type = "Quaver",
         bg_path = bg_path
     }
 

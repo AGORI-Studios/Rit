@@ -29,6 +29,7 @@ local mapType = data.mapType
 instance.path = data.filepath
 instance.folder = data.folderpath
 instance.mapType = data.mapType
+instance.length = data.length
 
 print(mapType, path, folder)
 
