@@ -35,6 +35,20 @@ Skin.HUD = {
     }
 }
 
+Skin.Notes = {}
+
+for laneCount = 1, 10 do
+    Skin.Notes[laneCount] = {}
+    for curLane = 1, laneCount do
+        Skin.Notes[laneCount][curLane] = {
+            ["Note"] = "notes/" .. laneCount .. "K/note" .. curLane .. ".png",
+
+            ["Pressed"] = "notes/" .. laneCount .. "K/receptor" .. curLane .. "-pressed.png",
+            ["Unpressed"] = "notes/" .. laneCount .. "K/receptor" .. curLane .. "-unpressed.png",
+        }
+    end
+end
+
 Skin.Scripts = {}
 
 Skin.Scripts.States = {

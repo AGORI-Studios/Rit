@@ -1,13 +1,11 @@
 local Receptor = Sprite:extend("Receptor")
 
-function Receptor:new(lane)
-    local unpressedPath = "Assets/IncludedSkins/SkinThrowbacks/notes/4K/receptor" .. lane .. "-unpressed.png"
-    local pressedPath = "Assets/IncludedSkins/SkinThrowbacks/notes/4K/receptor" .. lane .. "-pressed.png"
+function Receptor:new(lane, count)
     self.cache = {}
-    self.cache["unpressed"] = Cache:get("Image", unpressedPath, true)
-    self.cache["pressed"] = Cache:get("Image", pressedPath, true)
+    self.cache["unpressed"] = Skin._noteAssets[count][lane]["Unpressed"]
+    self.cache["pressed"] = Skin._noteAssets[count][lane]["Pressed"]
 
-    Sprite.new(self, unpressedPath, 0, 0)
+    Sprite.new(self, Skin._noteAssets[count][lane]["Unpressed"], 0, 0, false)
 
     self.Lane = lane
     self.down = false

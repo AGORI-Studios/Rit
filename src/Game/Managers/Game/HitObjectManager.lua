@@ -25,17 +25,19 @@ function HitObjectManager:new(instance)
     self.initialSV = 1
     self.length = 1000
 
-    self:createReceptors()
+    self.data = {
+        mode = 4
+    }
 end
 
 local midX = 1920/2.45
-local count = 4
 
-function HitObjectManager:createReceptors()
-    for i = 1, count do
-        local receptor = Receptor(i)
+function HitObjectManager:createReceptors(count)
+    self.data.mode = count
+    for i = 1, self.data.mode do
+        local receptor = Receptor(i, count)
         receptor.y = self.STRUM_Y
-        receptor.x = midX + (i - (count/2)) * 200
+        receptor.x = midX + (i - (self.data.mode/2)) * 200
         self.receptorsGroup:add(receptor)
     end
 
@@ -44,8 +46,8 @@ end
 
 function HitObjectManager:resortReceptors()
     -- sometimes positions get messed up
-    for i = 1, count do
-        self.receptorsGroup.objects[i].x = midX + (i - (count/2)) * 200
+    for i = 1, self.data.mode do
+        self.receptorsGroup.objects[i].x = midX + (i - (self.data.mode/2)) * 200
     end
 end
 
@@ -100,7 +102,7 @@ end
 
 function HitObjectManager:getNotePosition(time)
     return self.STRUM_Y + (time - self.currentTime)
-end
+end 
 
 function HitObjectManager:updateTime(dt)
     if not self.started then
@@ -120,8 +122,8 @@ function HitObjectManager:update(dt)
 
     while #self.hitObjects > 0 and self:isOnScreen(self.hitObjects[1].StartTime) do
         local hitObject = self.hitObjects[1]
-        local drawableHitObject = HitObject(hitObject)
-        drawableHitObject.x = midX + (drawableHitObject.Data.Lane - (count/2)) * 200
+        local drawableHitObject = HitObject(hitObject, self.data.mode)
+        drawableHitObject.x = midX + (drawableHitObject.Data.Lane - (self.data.mode/2)) * 200
         drawableHitObject.initialSVTime = self:getPositionFromTime(hitObject.StartTime)
         drawableHitObject.endSVTime = self:getPositionFromTime(hitObject.EndTime)
         drawableHitObject.y = self:getNotePosition(drawableHitObject.initialSVTime)
@@ -141,8 +143,8 @@ function HitObjectManager:update(dt)
         end
     end
 
-    for i = 1, 4 do
-        if Input:wasPressed(count .. "k" .. i) then
+    for i = 1, self.data.mode do
+        if Input:wasPressed(self.data.mode .. "k" .. i) then
             self.receptorsGroup.objects[i].down = true
 
             for _, hitObject in ipairs(self.drawableHitObjects) do
@@ -158,10 +160,10 @@ function HitObjectManager:update(dt)
                 end
             end
         end
-        if Input:isDown(count .. "k" .. i) then
+        if Input:isDown(self.data.mode .. "k" .. i) then
             
         end
-        if Input:wasReleased(count .. "k" .. i) then
+        if Input:wasReleased(self.data.mode .. "k" .. i) then
             self.receptorsGroup.objects[i].down = false
         end
     end

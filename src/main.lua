@@ -1,6 +1,10 @@
 ---@diagnostic disable: duplicate-set-field
+local defaultGlobals = {}
+for k, _ in pairs(_G) do
+    table.insert(defaultGlobals, k)
+end
 jit.on()
-jit.opt.start(4, 
+jit.opt.start(4,
     "hotloop=1", "hotexit=2", "loopunroll=8", "-sink", 
     "-fold", "-cse", "-fuse", "-abc", "-dse", "-loop"
 )
@@ -8,6 +12,7 @@ jit.opt.start(4,
 require("Engine")
 require("Game")
 
+local GENERATE_GLOBALS_LIST = true
 
 function love.load()
     -- disable dangerous os functions
@@ -75,5 +80,21 @@ function love.draw()
 end
 
 function love.quit()
+    if GENERATE_GLOBALS_LIST then
+        local globalList = {}
+        for k, _ in pairs(_G) do
+            table.insert(globalList, k)
+        end
+        -- remove the default globals
+        for _, v in ipairs(defaultGlobals) do
+            table.remove(globalList, table.findID(globalList, v))
+        end
+        table.sort(globalList)
+
+        print("Writing global list to file")
+        
+        love.filesystem.write("globalList.txt", table.concat(globalList, "\n"))
+    end
+    
     Game:quit()
 end

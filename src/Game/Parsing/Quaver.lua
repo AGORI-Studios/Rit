@@ -15,6 +15,8 @@ function Quaver:parse(path, folderPath)
     instance.initialSV = data["InitialScrollVelocity"] or 1
 
     instance.song = love.sound.newSoundData(folderPath .. "/" .. data["AudioFile"])
+    instance.mode = data.Mode:gsub("Keys", "")
+    instance.mode = tonumber(instance.mode)
 end
 
 ---@param data string

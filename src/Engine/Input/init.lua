@@ -20,6 +20,14 @@ Input = InputClass({
     ["4k3"] = {Key("j")},
     ["4k4"] = {Key("k")},
 
+    ["7k1"] = {Key("s")},
+    ["7k2"] = {Key("d")},
+    ["7k3"] = {Key("f")},
+    ["7k4"] = {Key("space")},
+    ["7k5"] = {Key("j")},
+    ["7k6"] = {Key("k")},
+    ["7k7"] = {Key("l")},
+
     MenuDown = {
         Key("down"),
     },

@@ -62,6 +62,9 @@ function Game:update(dt)
             table.sort(GameScreen.instance.hitObjectManager.hitObjects, function(a, b) return a.StartTime < b.StartTime end)
             GameScreen.instance.hitObjectManager.scorePerNote = 1000000 / #GameScreen.instance.hitObjectManager.hitObjects
             GameScreen.instance.hitObjectManager.length = tonumber(instance.length)
+            GameScreen.instance.data = response.instance
+
+            GameScreen.instance.hitObjectManager:createReceptors(GameScreen.instance.data.mode)
         end
     end
 

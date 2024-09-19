@@ -6,6 +6,7 @@ function Skin:loadSkin(path)
     self.skin.__lua_path = path
     self.skin.__folder_path = path:match("(.*/)")
     self.skinnedStates = {}
+    self.skin._noteAssets = {}
 
     for name, state in pairs(self.skin.Scripts.States) do
         local filename = state:match("([^/]+)$")
@@ -14,6 +15,22 @@ function Skin:loadSkin(path)
             self.skinnedStates[name] = love.filesystem.load(self.skin.__folder_path .. state)()
         else
             self.skinnedStates[name] = love.filesystem.load("Assets/IncludedSkins/SkinThrowbacks/scripts/states/" .. filename)()
+        end
+    end
+
+    for i, lanes in ipairs(self.skin.Notes) do
+        self.skin._noteAssets[i] = {}
+        for j, curLane in ipairs(lanes) do
+            --[[ local noteAssetPath = self.skin.__folder_path .. curLane["Note"] ]]
+            local noteAssetPath = self:getPath(curLane["Note"])
+            local receptorPressedPath = self:getPath(curLane["Pressed"])
+            local receptorUnpressedPath = self:getPath(curLane["Unpressed"])
+            self.skin._noteAssets[i][j] = {
+                ["Note"] = love.graphics.newImage(noteAssetPath),
+                
+                ["Pressed"] = love.graphics.newImage(receptorPressedPath),
+                ["Unpressed"] = love.graphics.newImage(receptorUnpressedPath)
+            }
         end
     end
 

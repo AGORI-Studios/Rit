@@ -18,7 +18,7 @@ function DiffButton:updateYFromIndex(index, dt)
     self.drawY = math.fpsLerp(self.lastDrawY, self.lerpedDrawY, 15, dt)
     self.lastDrawY = self.drawY
 
-    if self.index-1 == index then
+    if self.index == index then
         self.colour[1], self.colour[2], self.colour[3] = 1, 1, 1
     else
         self.colour[1], self.colour[2], self.colour[3] = 0.5, 0.5, 0.5
