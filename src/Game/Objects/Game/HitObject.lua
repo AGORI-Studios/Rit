@@ -20,12 +20,21 @@ function HitObject:update(dt)
     if self.holdSprite then
         self.holdSprite.x = self.x
         self.holdSprite.y = self.y + self.baseHeight/2
+
         self.holdSprite:update(dt, self.endY)
     end
 end
 
 function HitObject:hit(time)
     print("TODO: Finish HitObject:hit()")
+end
+
+function HitObject:resize(w, h)
+    Sprite.resize(self, w, h)
+
+    if self.holdSprite then
+        self.holdSprite:resize(w, h)
+    end
 end
 
 function HitObject:draw()

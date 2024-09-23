@@ -6,8 +6,7 @@ function HoldObject:new(endTime, lane, count, parent)
     self.parent = parent
     self.child = EndObject(endTime, lane, count, self)
     self:centerOrigin()
-    self.forcedDimensions = true
-    self.dimensions = {self.image:getWidth(), self.image:getHeight()}
+    self.forcedDimensions = false
 
     self.endTime = endTime
     self.lane = lane
@@ -16,13 +15,25 @@ function HoldObject:new(endTime, lane, count, parent)
 end
 
 function HoldObject:update(dt, endY)
-    local parentY = self.parent.y
-    local length = endY - parentY
-    self.dimensions[2] = length - self.child.baseHeight
     self.origin.y = 0
 
+    local nendY = endY
+
+    nendY = nendY + self.offset.y
+
+    if self.addOrigin then
+        nendY = nendY + self.origin.x
+        nendY = nendY + self.origin.y
+    end
+
+    nendY = Game._windowHeight * (nendY / Game._gameHeight)
+
+    local scaleY = (nendY - self.parent.drawY - self.child.height) / self.height
+    self.scale.y = scaleY
+
+
     self.child.x = self.x
-    self.child.y = self.y + self.dimensions[2]
+    self.child.y = endY
     if Skin.flipHoldEnd then
         self.child.scale.y = -1
     end
@@ -33,6 +44,11 @@ end
 
 function HoldObject:hit(time)
     print("TODO: Finish HoldObject:hit()")
+end
+
+function HoldObject:resize(w, h)
+    VertexSprite.resize(self, w, h)
+    self.child:resize(w, h)
 end
 
 function HoldObject:draw()

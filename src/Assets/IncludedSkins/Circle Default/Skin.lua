@@ -48,7 +48,6 @@ for laneCount = 1, 10 do
             ["Pressed"] = "notes/" .. laneCount .. "K/receptor" .. curLane .. "-pressed.png",
             ["Unpressed"] = "notes/" .. laneCount .. "K/receptor" .. curLane .. "-unpressed.png",
         }
-        print(Skin.Notes[laneCount][curLane]["Hold"])
     end
 end
 

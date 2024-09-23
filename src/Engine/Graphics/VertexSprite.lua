@@ -77,8 +77,8 @@ function VertexSprite:draw()
         
         local sx, sy = self.scale.x * self.windowScale.x, self.scale.y * self.windowScale.y
         if self.forcedDimensions then
-            sx = self.dimensions[1] / self.baseWidth * self.windowScale.x
-            sy = self.dimensions[2] / self.baseHeight * self.windowScale.y
+            sx = self.dimensions[1] / self.baseWidth
+            sy = self.dimensions[2] / self.baseHeight
         end
         love.graphics.draw(self.mesh, self.drawX, self.drawY, math.rad(self.angle), sx, sy, self.origin.x, self.origin.y)
 
