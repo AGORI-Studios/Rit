@@ -1,6 +1,10 @@
 -- Skin (not) automatically generated using Rit's skin editor
 local Skin = {}
 
+Skin.Name = "Circle Default"
+Skin.Creator = "Getsaa"
+Skin.Description = "Rit's default skin"
+
 Skin.HUD = {
     TopLeft = {
         members = {
@@ -50,6 +54,30 @@ for laneCount = 1, 10 do
         }
     end
 end
+
+Skin.Combo = {}
+
+for i = 0, 9 do
+    Skin.Combo[i] = "combo/COMBO" .. i .. ".png"
+end
+
+Skin.Judgements = {
+    ["miss"] = "judgements/MISS.png",
+    ["bad"] = "judgements/BAD.png",
+    ["good"] = "judgements/GOOD.png",
+    ["great"] = "judgements/GREAT.png",
+    ["perfect"] = "judgements/PERFECT.png",
+    ["marvellous"] = "judgements/MARVELLOUS.png",
+}
+
+Skin.Sounds = {
+    Hit = {
+        ["hit"] = "sounds/sound-hit.wav",
+        ["hitclap"] = "sounds/sound-hitclap.wav",
+        ["hitwhistle"] = "sounds/sound-hitwhistle.wav",
+        ["hitfinish"] = "sounds/sound-hitfinish.wav",
+    }
+}
 
 Skin.Scripts = {}
 

@@ -7,6 +7,9 @@ function Skin:loadSkin(path)
     self.skin.__folder_path = path:match("(.*/)")
     self.skinnedStates = {}
     self.skin._noteAssets = {}
+    self.skin._comboAssets = {}
+    self.skin._judgementAssets = {}
+    self.skin._soundAssets = {Hit = {}}
     self.flipHoldEnd = true
 
     for name, state in pairs(self.skin.Scripts.States) do
@@ -36,6 +39,23 @@ function Skin:loadSkin(path)
                 ["Pressed"] = love.graphics.newImage(receptorPressedPath),
                 ["Unpressed"] = love.graphics.newImage(receptorUnpressedPath)
             }
+        end
+    end
+
+    for i, combo in ipairs(self.skin.Combo) do
+        local comboAssetPath = self:getPath(combo)
+        self.skin._comboAssets[i] = love.graphics.newImage(comboAssetPath)
+    end
+
+    for judgement, path in pairs(self.skin.Judgements) do
+        local judgementAssetPath = self:getPath(path)
+        self.skin._judgementAssets[judgement] = love.graphics.newImage(judgementAssetPath)
+    end
+
+    for soundtype, data in pairs(self.skin.Sounds) do
+        for sound, path in pairs(data) do
+            local soundAssetPath = self:getPath(path)
+            self.skin._soundAssets[soundtype][sound] = love.audio.newSource(soundAssetPath, "static")
         end
     end
 
