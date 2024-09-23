@@ -18,7 +18,7 @@ local function event(name, a, ...)
 end
 
 local _, _, flags = love.window.getMode()
-love._drawrate = (flags.refreshrate or 59) + 1
+love._drawrate = (((flags.refreshrate and flags.refreshrate ~= 0) and flags.refreshrate) or 59) + 1
 love._updaterate = 500
 local drawFPS, updateFPS = 0, 0
 local updateCur, drawCur = 0, 0

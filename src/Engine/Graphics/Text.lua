@@ -7,32 +7,35 @@ local Text = Drawable:extend("Text")
 ---@param size number|nil
 ---@param colour table|nil
 ---@param font string|number|nil
-function Text:new(text, x, y, size, colour, font, format, value, instance)
+function Text:new(text, x, y, size, colour, font, format, value, instance, trimmed, trimWidth)
     text = text or ""
     x = x or 0
     y = y or 0
     size = size or 12
     colour = colour or {1, 1, 1, 1}
 
-    Drawable.new(self, x, y, 0, 0)
+    Drawable.new(self, x, y, trimWidth or 1920, 1080)
 
     self.text = text
     if not font or font == "" then
         font = size
         size = nil
     end
-    self.font = love.graphics.newFont(font, size)
+    self.font = Cache:get("Font", font, size)
     self.colour = colour
     self.format = format
     self.value = value
     self.instance = instance
+    self.trimmed = trimmed
+    self.trimWidth = trimWidth
 
     -- format layout: "%s" or "{math.floor(%d)}"
 end
 
 function Text:update(dt)
-    self.width = self.font:getWidth(self.text)
-    self.height = self.font:getHeight()
+    self.baseWidth = self.font:getWidth(self.text)
+    self.baseHeight = self.font:getHeight()
+
     Drawable.update(self, dt)
 
     -- update text value
@@ -55,6 +58,7 @@ local restrictedFuncs = {
 }
 
 function Text:updateText(value)
+    if not self.format then return self.text end
     return self.format:gsub("{(.-)}", function(a)
         local num = self.instance and self.instance[value] or  _G[value] or value or 0
         if tostring(num) == "inf" or tostring(num) == "-inf" or tostring(num) == "nan" then
@@ -69,16 +73,24 @@ end
 
 function Text:draw()
     if not self.visible then return end
-    --[[ print(self.text, self.drawX, self.drawY) ]]
+    love.graphics.push()
+    love.graphics.translate(self.drawX, self.drawY)
+    love.graphics.rotate(math.rad(self.angle))
+    love.graphics.translate(-self.drawX, -self.drawY)
     if self.text == "" then return end
     local lastColour, lastFont = {love.graphics.getColor()}, love.graphics.getFont()
     love.graphics.setFont(self.font)
     love.graphics.setColor(self.colour)
 
-    love.graphics.print(self.text, self.drawX, self.drawY)
+    if not self.trimmed then
+        love.graphics.print(self.text, self.drawX, self.drawY)
+    else
+        love.graphics.printWithTrimmed(self.text, self.drawX, self.drawY, self.trimWidth, self.scale.x * self.windowScale.x, self.scale.y * self.windowScale.y)
+    end
 
     love.graphics.setColor(lastColour)
     love.graphics.setFont(lastFont)
+    love.graphics.pop()
 end
 
 return Text

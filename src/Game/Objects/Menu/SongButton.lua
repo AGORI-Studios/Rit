@@ -17,6 +17,7 @@ function SongButton:new(songData)
 
     table.sort(self.children, function(a, b) return a.index < b.index end)
 
+    self.textObj = Text(self.title, 0, 0, 20, {1, 1, 1, 1}, nil, nil, nil, nil, true, 1920)
     self.leBar = Sprite("Assets/Textures/Menu/SongTagSelectedBar.png", 0, 0, true)
 
     Sprite.new(self, "Assets/Textures/Menu/SongTag.png", 0, 0, true)
@@ -37,7 +38,8 @@ end
 function SongButton:update(dt)
     Sprite.update(self, dt)
     self.leBar:update(dt)
-    
+    self.textObj:update(dt)
+
     if not self.showChildren then return end
     for _, child in pairs(self.children) do
         child:update(dt)
@@ -52,6 +54,7 @@ function SongButton:resize(w, h)
         child:resize(w, h)
     end
     self.leBar:resize(w, h)
+    self.textObj:resize(w, h)
 end
 
 function SongButton:updateYFromIndex(index, diffIndex, dt)
@@ -84,6 +87,8 @@ function SongButton:updateYFromIndex(index, diffIndex, dt)
         self.colour[1], self.colour[2], self.colour[3] = 0.5, 0.5, 0.5
     end
 
+    self.textObj.drawX, self.textObj.drawY = self.drawX + 20, self.drawY + 20
+
     if not self.showChildren then return end
     for _, child in pairs(self.children) do
         child:updateYFromIndex(diffIndex, dt)
@@ -93,7 +98,10 @@ end
 function SongButton:draw()
     self.leBar:draw()
     Sprite.draw(self)
-    love.graphics.printWithTrimmed(self.title, self.drawX + 20, self.drawY + 20, 300)
+    --[[ love.graphics.printWithTrimmed(self.title, self.drawX + 20, self.drawY + 20, 300) ]]
+    -- draw trimmed text scaled with the window in aspect fixed mode
+    --love.graphics.printWithTrimmed(self.title, self.drawX + 20, self.drawY + 20, 300)
+    self.textObj:draw()
 
     if not self.showChildren then return end
     for _, child in pairs(self.children) do

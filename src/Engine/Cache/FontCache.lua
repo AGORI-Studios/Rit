@@ -20,11 +20,11 @@ function FontCache:get(path, size, threaded)
             size = size
         })
     end
-    if not self._cache[path .. size] then
-        self._cache[path .. size] = love.graphics.newFont(path, size or 12)
+    if not self._cache[path .. (size or "")] then
+        self._cache[path .. (size or "")] = love.graphics.newFont(path, size)
     end
 
-    return self._cache[path .. size]
+    return self._cache[path .. (size or "")]
 end
 
 function FontCache:update()

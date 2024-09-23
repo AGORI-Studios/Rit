@@ -11,17 +11,17 @@ Skin.HUD = {
                 format = "{math.floor(%d)}",
                 value = "score",
                 font = nil,
-                size = 12,
+                size = 24,
                 color = {1, 1, 1, 1}
             },
             {
                 type = "Text",
                 x = 0,
-                y = 20,
+                y = 26,
                 format = "{math.floor(%d*100)}",
                 value = "accuracy",
                 font = nil,
-                size = 12,
+                size = 24,
                 color = {1, 1, 1, 1}
             },
             {

@@ -1,4 +1,4 @@
-function love.graphics.printWithTrimmed(text, x, y, limit)
+function love.graphics.printWithTrimmed(text, x, y, limit, sx, sy)
     local font = love.graphics.getFont()
     local width = font:getWidth(text)
     if width > limit then
@@ -8,5 +8,5 @@ function love.graphics.printWithTrimmed(text, x, y, limit)
         end
         text = trimmed .. "..."
     end
-    love.graphics.print(text, x, y)
+    love.graphics.print(text, x, y, 0, sx, sy)
 end
