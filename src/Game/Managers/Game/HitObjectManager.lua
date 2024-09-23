@@ -52,7 +52,7 @@ function HitObjectManager:resortReceptors()
 end
 
 function HitObjectManager:isOnScreen(time)
-    return self:getNotePosition(self:getPositionFromTime(time)) <= Game._windowHeight+600
+    return self:getNotePosition(self:getPositionFromTime(time), true) <= Game._windowHeight+600
 end
 
 function HitObjectManager:initSVMarks()
@@ -100,7 +100,10 @@ function HitObjectManager:getPositionFromTime(time, index)
     return pos
 end
 
-function HitObjectManager:getNotePosition(time)
+function HitObjectManager:getNotePosition(time, moveWithScroll)
+    if not moveWithScroll then
+        return self.STRUM_Y
+    end
     return self.STRUM_Y + (time - self.currentTime)
 end 
 
@@ -127,7 +130,7 @@ function HitObjectManager:update(dt)
         drawableHitObject.x = midX + (drawableHitObject.Data.Lane - (self.data.mode/2)) * 200
         drawableHitObject.initialSVTime = self:getPositionFromTime(hitObject.StartTime)
         drawableHitObject.endSVTime = self:getPositionFromTime(hitObject.EndTime)
-        drawableHitObject.y = self:getNotePosition(drawableHitObject.initialSVTime)
+        drawableHitObject.y = self:getNotePosition(drawableHitObject.initialSVTime, drawableHitObject.moveWithScroll)
         drawableHitObject:resize(Game._windowWidth, Game._windowHeight)
         
         self:add(drawableHitObject, false)
@@ -136,8 +139,8 @@ function HitObjectManager:update(dt)
     end
 
     for _, hitObject in ipairs(self.drawableHitObjects) do
-        hitObject.y = self:getNotePosition(hitObject.initialSVTime)
-        hitObject.endY = self:getNotePosition(hitObject.Data.EndTime)
+        hitObject.y = self:getNotePosition(hitObject.initialSVTime, hitObject.moveWithScroll)
+        hitObject.endY = self:getNotePosition(hitObject.Data.EndTime, true)
 
         if self.musicTime > hitObject.Data.StartTime+360 then
             self:remove(hitObject)
@@ -155,19 +158,40 @@ function HitObjectManager:update(dt)
                 if abs < 360 and hitObject.Data.Lane == i then
                     self.screen.score = self.screen.score + self.scorePerNote
                     hitObject:hit()
-                    self:remove(hitObject)
-                    hitObject:destroy()
-                    table.remove(self.drawableHitObjects, table.findID(self.drawableHitObjects, hitObject))
+                    if not hitObject.holdSprite then
+                        self:remove(hitObject)
+                        hitObject:destroy()
+                        table.remove(self.drawableHitObjects, table.findID(self.drawableHitObjects, hitObject))
+                    else
+                        hitObject.moveWithScroll = false
+                    end
 
                     break
                 end
             end
         end
         if Input:isDown(self.data.mode .. "k" .. i) then
-            
+            for _, hitObject in ipairs(self.drawableHitObjects) do
+                if hitObject.Data.Lane == i and hitObject.holdSprite and hitObject.holdSprite.endTime - self.musicTime <= 50 then
+                    hitObject:hit(true)
+                    self:remove(hitObject)
+                    hitObject:destroy()
+                    table.remove(self.drawableHitObjects, table.findID(self.drawableHitObjects, hitObject))
+                end
+            end
         end
         if Input:wasReleased(self.data.mode .. "k" .. i) then
             self.receptorsGroup.objects[i].down = false
+
+            for _, hitObject in ipairs(self.drawableHitObjects) do
+                if hitObject.Data.Lane == i then
+                    if not hitObject.moveWithScroll then
+                        self:remove(hitObject)
+                        hitObject:destroy()
+                        table.remove(self.drawableHitObjects, table.findID(self.drawableHitObjects, hitObject))
+                    end
+                end
+            end
         end
     end
 
