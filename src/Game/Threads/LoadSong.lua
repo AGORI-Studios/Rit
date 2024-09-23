@@ -3,6 +3,7 @@ require "love.audio"
 require "love.timer"
 require "love.math"
 require "love.sound"
+require "Engine.Lua"
 
 local data = ...
 

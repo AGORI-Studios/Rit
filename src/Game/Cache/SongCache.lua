@@ -27,6 +27,7 @@ SongCache.songs = {}
 function SongCache:createCache(songData, filename, fileExt)
     local strOut = ""
     for key, _ in pairs(SongCacheFormat) do
+        print(key, songData[key])
         strOut = strOut .. key .. ":" .. songData[key] .. "\n"
     end
 
@@ -61,6 +62,12 @@ function SongCache:loadCache(filename, ogPath, fileExt)
             songData.metaType = 2
             print("Caching " .. filename)
             return songData
+        elseif fileExt == ".osu" then
+            local data = love.filesystem.read(ogPath)
+            local songData = Parsers.Osu:cache(data, filename, ogPath)
+            songData.metaType = 2
+            print("Caching " .. filename)
+            return songData
         end
     end
 end
@@ -75,6 +82,12 @@ function SongCache:loadSongsPath(path)
                     local filename = song:gsub(".qua$", "")
                     local fullPath = path .. "/" .. file .. "/" .. song
                     local fileExt = ".qua"
+                    
+                    self:loadCache(filename, fullPath, fileExt)
+                elseif song:endsWith(".osu") then
+                    local filename = song:gsub(".osu$", "")
+                    local fullPath = path .. "/" .. file .. "/" .. song
+                    local fileExt = ".osu"
                     
                     self:loadCache(filename, fullPath, fileExt)
                 end

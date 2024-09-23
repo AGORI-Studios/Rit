@@ -3,7 +3,7 @@ local HitObjectManager = Group:extend("HitObjectManager")
 
 function HitObjectManager:new(instance)
     Group.new(self)
-    
+
     self.receptorsGroup = TypedGroup(Receptor)
     self:add(self.receptorsGroup)
     self.hitObjects = {}
@@ -12,7 +12,7 @@ function HitObjectManager:new(instance)
     self.scrollVelocityMarks = {}
     self.musicTime = 0
     self.currentTime = 0
-    
+
     self.svIndex = 1
     self.STRUM_Y = 50
 
@@ -142,7 +142,7 @@ function HitObjectManager:update(dt)
         hitObject.y = self:getNotePosition(hitObject.initialSVTime, hitObject.moveWithScroll)
         hitObject.endY = self:getNotePosition(hitObject.Data.EndTime, true)
 
-        if self.musicTime > hitObject.Data.StartTime+360 then
+        if self.musicTime > hitObject.Data.StartTime+360 and hitObject.moveWithScroll then
             self:remove(hitObject)
             hitObject:destroy()
             table.remove(self.drawableHitObjects, table.findID(self.drawableHitObjects, hitObject))
