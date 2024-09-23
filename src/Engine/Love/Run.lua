@@ -17,8 +17,9 @@ local function event(name, a, ...)
     return love.handlers[name](a, ...)
 end
 
-love._drawrate = 165
-love._updaterate = 15
+local _, _, flags = love.window.getMode()
+love._drawrate = (flags.refreshrate or 59) + 1
+love._updaterate = 500
 local drawFPS, updateFPS = 0, 0
 local updateCur, drawCur = 0, 0
 
