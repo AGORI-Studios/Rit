@@ -24,13 +24,13 @@ Skin.HUD = {
                 size = 24,
                 color = {1, 1, 1, 1}
             },
-            {
+            --[[ {
                 type = "Sprite",
                 x = 1500,
                 y = 0,
                 path = "Game:Assets/Textures/test.png", -- when prefixed with "Game:", it will look for the file in the game's directory instead of the skin's directory
                 scale = 0.15 -- scale can be a number or a table with x and y values
-            }
+            } ]]
         }
     }
 }

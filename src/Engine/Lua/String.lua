@@ -33,4 +33,20 @@ function string:__tostring()
     return self
 end
 
+function string:capitalize()
+    return self:sub(1, 1):upper()..self:sub(2)
+end
+
+function string:uncapitalize()
+    return self:sub(1, 1):lower()..self:sub(2)
+end
+
+function string:insert(index, value)
+    return self:sub(1, index - 1)..value..self:sub(index)
+end
+
+function string:remove(index)
+    return self:sub(1, index - 1)..self:sub(index + 1)
+end
+
 return string

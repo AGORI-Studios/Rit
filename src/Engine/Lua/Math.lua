@@ -6,8 +6,40 @@ function math.fpsLerp(a, b, t, dt)
     return a + (b - a) * (1 - math.exp(-t * dt))
 end
 
+function math.inverseLerp(a, b, x)
+    return (x - a) / (b - a)
+end
+
+function math.remap(x, a, b, c, d)
+    return c + (d - c) * (x - a) / (b - a)
+end
+
+function math.remapClamped(x, a, b, c, d)
+    return math.clamp(math.remap(x, a, b, c, d), math.min(c, d), math.max(c, d))
+end
+
+function math.distance(x1, y1, x2, y2)
+    return math.sqrt((x2 - x1)^2 + (y2 - y1)^2)
+end
+
+function math.angle(x1, y1, x2, y2)
+    return math.atan2(y2 - y1, x2 - x1)
+end
+
 function math.clamp(x, min, max)
     return x < min and min or (x > max and max or x)
+end
+
+function math.sign(x)
+    return x > 0 and 1 or (x < 0 and -1 or 0)
+end
+
+function math.round(x)
+    return math.floor(x + 0.5)
+end
+
+function math.roundTo(x, n)
+    return math.floor(x / n + 0.5) * n
 end
 
 local storageUnit = {
@@ -35,3 +67,4 @@ function math.formatStorage(size)
 
     return string.format("%.2f %s", size, unit)
 end
+
