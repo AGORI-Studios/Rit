@@ -75,8 +75,6 @@ end
 
 function love.draw()
     Game:draw()
-
-    Game:__printDebug()
 end
 
 function love.quit()

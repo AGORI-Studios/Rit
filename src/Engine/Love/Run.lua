@@ -17,13 +17,17 @@ local function event(name, a, ...)
     return love.handlers[name](a, ...)
 end
 
-love._framerate = 500
+love._drawrate = 165
+love._updaterate = 15
+local drawFPS, updateFPS = 0, 0
+local updateCur, drawCur = 0, 0
 
 function love.run()
     local g_origin, g_clear, g_present = love.graphics.origin, love.graphics.clear, love.graphics.present
     local g_active, g_getBGColour = love.graphics.isActive, love.graphics.getBackgroundColor
     local e_pump, e_poll, t, n = love.event.pump, love.event.poll, {}, 0
     local t_step, t_sleep, t_getTime = love.timer.step, love.timer.sleep, love.timer.getTime
+    local t_getDelta = love.timer.getDelta
 
     ---@diagnostic disable-next-line: redundant-parameter
 	if love.load then love.load(love.arg.parseGameArguments(arg), arg) end
@@ -65,21 +69,26 @@ function love.run()
 
         dt = t_step()
 
+
         love.update(dt)
 
-        while love._framerate and t_getTime() - lastFrame < 1 / love._framerate do
-            t_sleep(0.0005)
-        end
-
-        lastFrame = t_getTime()
-        if g_active() then
+        drawCur = drawCur + dt
+        if g_active() and drawCur >= 1 / love._drawrate then
+            drawFPS = 1 / drawCur
+            drawCur = 0
             g_origin()
             g_clear(g_getBGColour())
             love.draw()
             g_present()
         end
 
-        t_sleep(0.001)
         collectgarbage("step")
+
+        updateFPS = 1 / dt
+        t_sleep(0.001)
 	end
+end
+
+function love.timer.getFPS()
+    return math.floor(updateFPS), math.floor(drawFPS)
 end

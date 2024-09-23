@@ -45,6 +45,16 @@ function Game:SwitchState(state, ...)
     self:add(self._currentState)
 end
 
+local infoUpdateTimer = 0.25
+local infoUpdateTimerMax = 0.25
+local infoData = {
+    ["FPS"] = {love.timer.getFPS()},
+    ["Graphics Memory"] = math.formatStorage(love.graphics.getStats().texturememory),
+    ["Lua Memory"] = math.formatStorage(collectgarbage("count") * 1024),
+    ["Game"] = "Game",
+    ["Current State"] = "State"
+}
+
 function Game:update(dt)
     self._currentState:update(dt)
     self.Tween:update(dt)
@@ -55,17 +65,40 @@ function Game:draw()
     self._currentState:draw()
 
     if self.debug then
+        self:__updateDebug()
         self:__printDebug()
+    end
+end
+
+function Game:__updateDebug()
+    if self.debug then
+        if infoUpdateTimer >= infoUpdateTimerMax then
+            infoData = {
+                ["FPS"] = {love.timer.getFPS()},
+                ["Graphics Memory"] = math.formatStorage(love.graphics.getStats().texturememory),
+                ["Lua Memory"] = math.formatStorage(collectgarbage("count") * 1024),
+                ["Game"] = self:__tostring(),
+                ["Current State"] = self._currentState:__tostring()
+            }
+            infoUpdateTimer = 0
+        else
+            infoUpdateTimer = infoUpdateTimer + love.timer.getDelta()
+        end
     end
 end
 
 function Game:__printDebug()
     love.graphics.setColor(0, 0, 0, 1)
-    local debugDisplay = "FPS: " .. love.timer.getFPS() ..
+    --[[ local debugDisplay = "FPS: " .. updateFPS .. " / " .. drawFPS ..
         "\nGraphics Memory: " .. math.formatStorage(love.graphics.getStats().texturememory) ..
         "\nLua Memory: " .. math.formatStorage(collectgarbage("count") * 1024) ..
         "\nGame: " .. Game:__tostring() ..
-        "\n\t- Current State: " .. self._currentState:__tostring()
+        "\n\t- Current State: " .. self._currentState:__tostring() ]]
+    local debugDisplay = "FPS: " .. infoData["FPS"][1] .. " / " .. infoData["FPS"][2] ..
+        "\nGraphics Memory: " .. infoData["Graphics Memory"] ..
+        "\nLua Memory: " .. infoData["Lua Memory"] ..
+        "\nGame: " .. infoData["Game"] ..
+        "\n\t- Current State: " .. infoData["Current State"]
     for x = -1, 1 do
         for y = -1, 1 do
             love.graphics.print(debugDisplay, 10 + x, 10 + y)

@@ -31,14 +31,15 @@ function HoldObject:update(dt, endY)
     local scaleY = (nendY - self.parent.drawY - self.child.height) / self.height
     self.scale.y = scaleY
 
+    if self.child then
+        self.child.x = self.x
+        self.child.y = endY
+        if Skin.flipHoldEnd then
+            self.child.scale.y = -1
+        end
 
-    self.child.x = self.x
-    self.child.y = endY
-    if Skin.flipHoldEnd then
-        self.child.scale.y = -1
+        self.child:update(dt)
     end
-
-    self.child:update(dt)
     VertexSprite.update(self, dt)
 end
 
@@ -48,11 +49,13 @@ end
 
 function HoldObject:resize(w, h)
     VertexSprite.resize(self, w, h)
+    if not self.child then return end
     self.child:resize(w, h)
 end
 
 function HoldObject:draw()
     VertexSprite.draw(self)
+    if not self.child then return end
     self.child:draw()
 end
 
