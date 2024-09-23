@@ -62,6 +62,15 @@ function Drawable:centerOrigin()
     end
 end
 
+function Drawable:screenCenter(axes)
+    if axes:find("X") then
+        self.x = Game._gameWidth / 2 - self.baseWidth / 2
+    end
+    if axes:find("Y") then
+        self.y = Game._gameHeight / 2 - self.baseHeight / 2
+    end
+end
+
 function Drawable:update(dt)
     if self.scalingType ~= ScalingTypes.STRETCH and self.scalingType ~= ScalingTypes.WINDOW_STRETCH then
         local drawX, drawY = self.x, self.y

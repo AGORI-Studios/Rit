@@ -28,7 +28,7 @@ require(path .. "Save")
 Game = TypedGroup(State) --- @class Game:TypedGroup<State>
 Game._currentState = State() --- @type State
 Game:add(Game._currentState)
-Game.debug = true
+Game.debug = false
 Game._windowWidth = 1280
 Game._windowHeight = 720
 Game._gameWidth = 1920

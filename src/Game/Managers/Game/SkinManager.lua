@@ -42,8 +42,8 @@ function Skin:loadSkin(path)
         end
     end
 
-    for i, combo in ipairs(self.skin.Combo) do
-        local comboAssetPath = self:getPath(combo)
+    for i = 0, 9 do
+        local comboAssetPath = self:getPath(self.skin.Combo[i])
         self.skin._comboAssets[i] = love.graphics.newImage(comboAssetPath)
     end
 

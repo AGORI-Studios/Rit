@@ -27,6 +27,12 @@ function GameScreen:new(data)
 
     self.score = 0
     self.accuracy = 0
+    self.combo = 0
+
+    self.judgement = Judgement()
+    self.comboDisplay = Combo()
+    self:add(self.judgement)
+    self:add(self.comboDisplay)
 end
 
 function Game:update(dt)

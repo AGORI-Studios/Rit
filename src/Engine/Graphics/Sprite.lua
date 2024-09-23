@@ -5,7 +5,7 @@ local Sprite = Drawable:extend("Sprite")
 ---@param x number|nil
 ---@param y number|nil
 function Sprite:new(image, x, y, threaded)
-    if not threaded then
+    if not threaded and image then
         if type(image) == "string" then
             self.image = Cache:get("Image", image)
         else
@@ -14,7 +14,7 @@ function Sprite:new(image, x, y, threaded)
 
         self.baseWidth = self.image:getWidth()
         self.baseHeight = self.image:getHeight()
-    else
+    elseif threaded and image then
         self.threadedAsset = threaded
         self.threadAssetToLoad = image
     end
@@ -36,6 +36,18 @@ function Sprite:update(dt)
     end
 
     Drawable.update(self, dt)
+end
+
+function Sprite:setImage(image)
+    if type(image) == "string" then
+        self.image = Cache:get("Image", image)
+    else
+        self.image = image
+    end
+
+    self.baseWidth = self.image:getWidth()
+    self.baseHeight = self.image:getHeight()
+    self:resize(Game._windowWidth, Game._windowHeight)
 end
 
 function Sprite:draw()
