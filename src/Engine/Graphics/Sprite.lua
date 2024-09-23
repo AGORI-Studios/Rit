@@ -44,7 +44,13 @@ function Sprite:draw()
         love.graphics.setBlendMode(self.blendMode, self.blendModeAlpha)
         love.graphics.setColor(self.colour[1], self.colour[2], self.colour[3], self.alpha)
         
-        love.graphics.draw(self.image, self.drawX, self.drawY, math.rad(self.angle), self.scale.x * self.windowScale.x, self.scale.y * self.windowScale.y, self.origin.x, self.origin.y)
+        -- determine new scale
+        local sx, sy = self.scale.x * self.windowScale.x, self.scale.y * self.windowScale.y
+        if self.forcedDimensions then
+            sx = self.dimensions[1] / self.baseWidth * self.windowScale.x
+            sy = self.dimensions[2] / self.baseHeight * self.windowScale.y
+        end
+        love.graphics.draw(self.image, self.drawX, self.drawY, math.rad(self.angle), sx, sy, self.origin.x, self.origin.y)
 
         if Game.debug then
             love.graphics.translate(self.drawX, self.drawY)

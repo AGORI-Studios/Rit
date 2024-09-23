@@ -7,14 +7,32 @@ function HitObject:new(data, count)
     self:centerOrigin()
 
     self.Data = data
+    if data.EndTime ~= 0 and data.EndTime > data.StartTime then
+        self.holdSprite = HoldObject(data.EndTime, data.Lane, count, self)
+    end
+    self.endY = data.EndTime
+    self.moveWithScroll = true
 end
 
 function HitObject:update(dt) 
     Sprite.update(self, dt)
+
+    if self.holdSprite then
+        self.holdSprite.x = self.x
+        self.holdSprite.y = self.y + self.baseHeight/2
+        self.holdSprite:update(dt, self.endY)
+    end
 end
 
 function HitObject:hit(time)
     print("TODO: Finish HitObject:hit()")
+end
+
+function HitObject:draw()
+    if self.holdSprite then
+        self.holdSprite:draw()
+    end
+    Sprite.draw(self)
 end
 
 return HitObject

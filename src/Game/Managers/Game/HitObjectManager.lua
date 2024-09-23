@@ -137,6 +137,7 @@ function HitObjectManager:update(dt)
 
     for _, hitObject in ipairs(self.drawableHitObjects) do
         hitObject.y = self:getNotePosition(hitObject.initialSVTime)
+        hitObject.endY = self:getNotePosition(hitObject.Data.EndTime)
 
         if self.musicTime > hitObject.Data.StartTime+360 then
             self:remove(hitObject)

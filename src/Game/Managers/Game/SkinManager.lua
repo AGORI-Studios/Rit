@@ -7,6 +7,7 @@ function Skin:loadSkin(path)
     self.skin.__folder_path = path:match("(.*/)")
     self.skinnedStates = {}
     self.skin._noteAssets = {}
+    self.flipHoldEnd = true
 
     for name, state in pairs(self.skin.Scripts.States) do
         local filename = state:match("([^/]+)$")
@@ -23,10 +24,14 @@ function Skin:loadSkin(path)
         for j, curLane in ipairs(lanes) do
             --[[ local noteAssetPath = self.skin.__folder_path .. curLane["Note"] ]]
             local noteAssetPath = self:getPath(curLane["Note"])
+            local holdNoteAssetPath = self:getPath(curLane["Hold"])
+            local endNotePath = self:getPath(curLane["End"])
             local receptorPressedPath = self:getPath(curLane["Pressed"])
             local receptorUnpressedPath = self:getPath(curLane["Unpressed"])
             self.skin._noteAssets[i][j] = {
                 ["Note"] = love.graphics.newImage(noteAssetPath),
+                ["Hold"] = love.graphics.newImage(holdNoteAssetPath),
+                ["End"] = love.graphics.newImage(endNotePath),
                 
                 ["Pressed"] = love.graphics.newImage(receptorPressedPath),
                 ["Unpressed"] = love.graphics.newImage(receptorUnpressedPath)

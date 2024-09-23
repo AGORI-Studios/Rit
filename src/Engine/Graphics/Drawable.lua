@@ -16,6 +16,8 @@ function Drawable:new(x, y, w, h)
     self.baseWidth = self.width
     self.baseHeight = self.height
     self.scale = {x = 1, y = 1}
+    self.forcedDimensions = false
+    self.dimensions = {w, h}
 
     self.blendMode = "alpha"
     self.blendModeAlpha = "alphamultiply"
@@ -36,6 +38,20 @@ function Drawable:new(x, y, w, h)
     self.zorder = 0
 
     self:resize(Game._windowWidth, Game._windowHeight)
+end
+
+function Drawable:getWidth()
+    if self.forcedDimensions then
+        return self.dimensions[1]
+    end
+    return self.baseWidth
+end
+
+function Drawable:getHeight()
+    if self.forcedDimensions then
+        return self.dimensions[2]
+    end
+    return self.baseHeight
 end
 
 function Drawable:centerOrigin()

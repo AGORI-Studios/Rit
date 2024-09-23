@@ -14,7 +14,7 @@ function TitleMenu:new()
     self.bg.zorder = -1
     self:add(self.bg)
 
-    self.logo = Sprite("Assets/Textures/Menu/Logo.png", 50, 150, true)
+    self.logo = VertexSprite("Assets/Textures/Menu/Logo.png", 50, 150, 4)
     self.logo:centerOrigin()
     self.logo:setScale(curLogoScale, curLogoScale)
     self.logo.zorder = 1

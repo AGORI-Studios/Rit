@@ -6,8 +6,6 @@ local channel = {
     tick = love.thread.getChannel("thread.event.tick")
 }
 
-local clock = 0
-
 local function event(name, a, ...)
     if name == "quit" and not love.quit() then
         channel.event:clear()
@@ -19,12 +17,13 @@ local function event(name, a, ...)
     return love.handlers[name](a, ...)
 end
 
+love._framerate = 500
+
 function love.run()
     local g_origin, g_clear, g_present = love.graphics.origin, love.graphics.clear, love.graphics.present
     local g_active, g_getBGColour = love.graphics.isActive, love.graphics.getBackgroundColor
     local e_pump, e_poll, t, n = love.event.pump, love.event.poll, {}, 0
-    local t_step, t_getTime, t_sleep = love.timer.step, love.timer.getTime, love.timer.sleep
-    local a, b
+    local t_step, t_sleep, t_getTime = love.timer.step, love.timer.sleep, love.timer.getTime
 
     ---@diagnostic disable-next-line: redundant-parameter
 	if love.load then love.load(love.arg.parseGameArguments(arg), arg) end
@@ -33,6 +32,7 @@ function love.run()
 	if love.timer then t_step() end
 
 	local dt = 0
+    local lastFrame = 0
 
     t_step()
     collectgarbage()
@@ -43,7 +43,7 @@ function love.run()
             channel.active:push(1)
             a = channel.event:pop()
             while a do
-                clock, b = channel.event:demand(), channel.event:demand()
+                b = channel.event:demand()
                 for i =  1, b do
                     t[i] = channel.event:demand()
                 end
@@ -63,10 +63,15 @@ function love.run()
            if a then return a, b end
         end
 
-        dt, clock = t_step(), t_getTime()
+        dt = t_step()
 
         love.update(dt)
 
+        while love._framerate and t_getTime() - lastFrame < 1 / love._framerate do
+            t_sleep(0.0005)
+        end
+
+        lastFrame = t_getTime()
         if g_active() then
             g_origin()
             g_clear(g_getBGColour())
@@ -74,7 +79,7 @@ function love.run()
             g_present()
         end
 
-        t_sleep((1 / 1000) - dt)
+        t_sleep(0.001)
         collectgarbage("step")
 	end
 end
