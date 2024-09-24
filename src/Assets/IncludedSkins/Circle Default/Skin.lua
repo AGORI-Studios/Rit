@@ -13,7 +13,7 @@ Skin.HUD = {
                 x = 0,
                 y = 0,
                 format = "{math.floor(%d)}",
-                value = "score",
+                value = "lerpedScore",
                 font = nil,
                 size = 24,
                 color = {1, 1, 1, 1}
@@ -24,7 +24,7 @@ Skin.HUD = {
                 y = 28,
 
                 format = "{string.format('%.2f', %d * 100)}%",
-                value = "accuracy",
+                value = "lerpedAccuracy",
                 font = nil,
                 size = 24,
                 color = {1, 1, 1, 1}

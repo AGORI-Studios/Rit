@@ -32,6 +32,9 @@ function GameScreen:new(data)
     self.rated = 0
     self.totalNotes = 0
 
+    self.lerpedScore = 0
+    self.lerpedAccuracy = 0
+
     self.judgement = Judgement()
     self.comboDisplay = Combo()
     self:add(self.judgement)
@@ -64,6 +67,15 @@ function Game:update(dt)
     if not GameScreen.instance then return end
     GameScreen.instance:calculateAccuracy()
     GameScreen.instance:calculateScore()
+
+    GameScreen.instance.lerpedScore = math.fpsLerp(GameScreen.instance.lerpedScore, GameScreen.instance.score, 25, dt)
+    GameScreen.instance.lerpedAccuracy = math.fpsLerp(GameScreen.instance.lerpedAccuracy, GameScreen.instance.accuracy, 25, dt)
+    if tostring(GameScreen.instance.lerpedScore):match("nan") then
+        GameScreen.instance.lerpedScore = 0
+    end
+    if tostring(GameScreen.instance.lerpedAccuracy):match("nan") then
+        GameScreen.instance.lerpedAccuracy = 0
+    end
 
     if self.doneThread and not GameScreen.instance.hitObjectManager.started and GameScreen.instance.song then
         GameScreen.instance.song:play()
