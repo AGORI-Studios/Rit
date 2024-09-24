@@ -13,7 +13,6 @@ Ease.B6 = 2.625 / 2.75
 Ease.ELASTIC_AMPLITUDE = 1
 Ease.ELASTIC_PERIOD = 0.4
 
-
 function Ease.linear(t)
     return t
 end

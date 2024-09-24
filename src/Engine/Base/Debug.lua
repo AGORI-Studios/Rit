@@ -1,7 +1,6 @@
 function debug.error(...)
-    ---@type string
     local message = {...}
-    local errorMessage = message
+    local errorMessage = ""
     if type(message) == "table" then
         errorMessage = "[ERROR] "
         for key, value in pairs(message) do
@@ -12,9 +11,8 @@ function debug.error(...)
 end
 
 function debug.warn(...)
-    ---@type string
     local message = {...}
-    local errorMessage = message
+    local errorMessage = ""
     if type(message) == "table" then
         errorMessage = "[WARN] "
         for key, value in pairs(message) do
@@ -25,9 +23,8 @@ function debug.warn(...)
 end
 
 function debug.log(...)
-    ---@type string
     local message = {...}
-    local errorMessage = message
+    local errorMessage = ""
     if type(message) == "table" then
         errorMessage = "[LOG] "
         for key, value in pairs(message) do
@@ -38,9 +35,8 @@ function debug.log(...)
 end
 
 function debug.info(...)
-    ---@type string
     local message = {...}
-    local errorMessage = message
+    local errorMessage = ""
     if type(message) == "table" then
         errorMessage = "[INFO] "
         for key, value in pairs(message) do

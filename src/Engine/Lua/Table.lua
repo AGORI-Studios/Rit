@@ -7,7 +7,7 @@ function table.findID(tbl, val)
 end
 
 function table.find(tbl, val)
-    for i, v in pairs(tbl) do
+    for _, v in pairs(tbl) do
         if v == val then
             return v
         end

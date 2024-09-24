@@ -5,7 +5,7 @@ for k, _ in pairs(_G) do
 end
 jit.on()
 jit.opt.start(4,
-    "hotloop=1", "hotexit=2", "loopunroll=8", "-sink", 
+    "hotloop=1", "hotexit=2", "loopunroll=8", "-sink",
     "-fold", "-cse", "-fuse", "-abc", "-dse", "-loop"
 )
 
@@ -90,9 +90,9 @@ function love.quit()
         table.sort(globalList)
 
         print("Writing global list to file")
-        
+
         love.filesystem.write("globalList.txt", table.concat(globalList, "\n"))
     end
-    
+
     Game:quit()
 end

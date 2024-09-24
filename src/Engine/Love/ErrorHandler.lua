@@ -98,7 +98,7 @@ function love.errorhandler(msg)
 	return function()
 		love.event.pump()
 
-		for e, a, b, c in love.event.poll() do
+		for e, a in love.event.poll() do
 			if e == "quit" then
 				return 1
 			elseif e == "keypressed" and a == "escape" then

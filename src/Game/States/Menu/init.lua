@@ -1,4 +1,3 @@
 local path = ... .. "."
 
 States.Menu = {}
-
