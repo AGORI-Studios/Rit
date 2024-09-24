@@ -28,7 +28,7 @@ require(path .. "Save")
 Game = TypedGroup(State) --- @class Game:TypedGroup<State>
 Game._currentState = State() --- @type State
 Game:add(Game._currentState)
-Game.debug = false
+Game.debug = true
 Game._windowWidth = 1280
 Game._windowHeight = 720
 Game._gameWidth = 1920
@@ -89,16 +89,13 @@ end
 
 function Game:__printDebug()
     love.graphics.setColor(0, 0, 0, 1)
-    --[[ local debugDisplay = "FPS: " .. updateFPS .. " / " .. drawFPS ..
-        "\nGraphics Memory: " .. math.formatStorage(love.graphics.getStats().texturememory) ..
-        "\nLua Memory: " .. math.formatStorage(collectgarbage("count") * 1024) ..
-        "\nGame: " .. Game:__tostring() ..
-        "\n\t- Current State: " .. self._currentState:__tostring() ]]
+
     local debugDisplay = "FPS: " .. infoData["FPS"][1] .. " / " .. infoData["FPS"][2] ..
         "\nGraphics Memory: " .. infoData["Graphics Memory"] ..
         "\nLua Memory: " .. infoData["Lua Memory"] ..
         "\nGame: " .. infoData["Game"] ..
         "\n\t- Current State: " .. infoData["Current State"]
+        
     for x = -1, 1 do
         for y = -1, 1 do
             love.graphics.print(debugDisplay, 10 + x, 10 + y)

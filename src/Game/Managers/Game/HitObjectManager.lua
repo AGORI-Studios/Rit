@@ -151,6 +151,7 @@ function HitObjectManager:update(dt)
 
     for i = 1, self.data.mode do
         if Input:wasPressed(self.data.mode .. "k" .. i) then
+            if not self.receptorsGroup.objects[i] then return end
             self.receptorsGroup.objects[i].down = true
 
             for _, hitObject in ipairs(self.drawableHitObjects) do
@@ -182,6 +183,7 @@ function HitObjectManager:update(dt)
             end
         end
         if Input:wasReleased(self.data.mode .. "k" .. i) then
+            if not self.receptorsGroup.objects[i] then return end
             self.receptorsGroup.objects[i].down = false
 
             for _, hitObject in ipairs(self.drawableHitObjects) do
