@@ -21,8 +21,10 @@ Skin.HUD = {
             {
                 type = "Text",
                 x = 0,
-                y = 26,
-                format = "{math.floor(%d*100)}",
+                y = 28,
+                -- round to 2 decimal places (its a value 0-1, make it 0-100 with 2 decimal places) w/ string.format
+                --format = "{math.floor(%d * 10000) / 100}",
+                format = "{string.format('%.2f', %d * 100)}%",
                 value = "accuracy",
                 font = nil,
                 size = 24,

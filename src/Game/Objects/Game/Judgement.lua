@@ -3,33 +3,27 @@ local Judgement = Sprite:extend("Judgement")
 Judgement.data = {
     {
         name = "marvellous", img = nil,
-        time = 23, scoreMult = 1, weight = 125,
-        forLN = true, colour = {1, 1, 1}
+        time = 23, forLN = true, colour = {1, 1, 1}
     },
     {
         name = "perfect", img = nil,
-        time = 40, scoreMult = 1, weight = 125,
-        forLN = true, colour = {1, 1, 1}
+        time = 40, forLN = true, colour = {1, 1, 1}
     },
     {
         name = "great", img = nil,
-        time = 74, scoreMult = 1, weight = 125,
-        forLN = true, colour = {1, 1, 1}
+        time = 74, forLN = true, colour = {1, 1, 1}
     },
     {
         name = "good", img = nil,
-        time = 103, scoreMult = 1, weight = 125,
-        forLN = false, colour = {1, 1, 1}
+        time = 103, forLN = false, colour = {1, 1, 1}
     },
     {
         name = "bad", img = nil,
-        time = 127, scoreMult = 1, weight = 125,
-        forLN = false, colour = {1, 1, 1}
+        time = 127, forLN = false, colour = {1, 1, 1}
     },
     {
         name = "miss", img = nil,
-        time = 160, scoreMult = 1, weight = 125,
-        forLN = false, colour = {1, 1, 1}
+        time = 160, forLN = false, colour = {1, 1, 1}
     },
 }
 
@@ -50,11 +44,13 @@ end
 
 function Judgement:hit(time)
     local absTime = math.abs(time)
+    local judgename = "miss"
     self.image = nil
     self:setImage(Skin._judgementAssets["miss"])
     for _, data in ipairs(Judgement.data) do
         if absTime < data.time then
             self:setImage(data.img)
+            judgename = data.name
             break
         end
     end
@@ -66,6 +62,8 @@ function Judgement:hit(time)
     self.timer = 0.5
     self.scale.x, self.scale.y = 1.1, 1.1
     self.y = self.y - 75
+
+    States.Screens.Game.instance.hitObjectManager.judgeCounts[judgename] = States.Screens.Game.instance.hitObjectManager.judgeCounts[judgename] + 1
 end
 
 function Judgement:update(dt)

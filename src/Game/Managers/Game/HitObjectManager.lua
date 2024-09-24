@@ -28,6 +28,15 @@ function HitObjectManager:new(instance)
     self.data = {
         mode = 4
     }
+
+    self.judgeCounts = {
+        ["marvellous"] = 0,
+        ["perfect"] = 0,
+        ["great"] = 0,
+        ["good"] = 0,
+        ["bad"] = 0,
+        ["miss"] = 0
+    }
 end
 
 local midX = 1920/2.45
@@ -158,8 +167,8 @@ function HitObjectManager:update(dt)
                 local abs = math.abs(self.musicTime - hitObject.Data.StartTime)
                 if abs < 360 and hitObject.Data.Lane == i then
                     hitObject:hit(self.musicTime - hitObject.Data.StartTime)
-                    self.screen.score = self.screen.score + self.scorePerNote * self.screen.judgement:getJudgementData().scoreMult
                     self.screen.combo = self.screen.combo + 1
+                    self.screen.maxCombo = math.max(self.screen.maxCombo, self.screen.combo)
                     if not hitObject.holdSprite then
                         self:remove(hitObject)
                         hitObject:destroy()
@@ -175,7 +184,7 @@ function HitObjectManager:update(dt)
         if Input:isDown(self.data.mode .. "k" .. i) then
             for _, hitObject in ipairs(self.drawableHitObjects) do
                 if hitObject.Data.Lane == i and hitObject.holdSprite and hitObject.holdSprite.endTime - self.musicTime <= 50 then
-                    hitObject:hit(self.musicTime - hitObject.Data.EndTime)
+                    --[[ hitObject:hit(self.musicTime - hitObject.Data.EndTime) ]]
                     self:remove(hitObject)
                     hitObject:destroy()
                     table.remove(self.drawableHitObjects, table.findID(self.drawableHitObjects, hitObject))

@@ -31,6 +31,7 @@ instance.path = data.filepath
 instance.folder = data.folderpath
 instance.mapType = data.mapType
 instance.length = data.length
+instance.noteCount = data.noteCount
 
 print(mapType, path, folder)
 

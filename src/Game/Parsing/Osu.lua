@@ -2,11 +2,13 @@ local osu = {}
 
 local currentSection = ""
 local curData = {}
+local noteCount = 0
 
 function osu:parse(path, folderPath)
     local data = love.filesystem.read(path)
     currentSection = ""
     curData = {}
+    noteCount = 0
 
     local lines = data:split("\n")
 
@@ -243,6 +245,7 @@ function osu:parseHitObjects(line, inParse)
     local endTime = tonumber(params[1]) or 0
 
     if not inParse then
+        noteCount = noteCount + 1
         table.insert(curData.HitObjects, {
             X = x,
             Y = y,

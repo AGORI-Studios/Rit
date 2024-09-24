@@ -4,8 +4,10 @@ function Quaver:parse(path, folderPath)
     print("Parsing Quaver file: " .. path)
     local data = love.filesystem.read(path):gsub("\r\n", "\n")
     data = Yaml.parse(data)
+    local noteCount = 0
 
     for _, note in ipairs(data["HitObjects"]) do
+        noteCount = noteCount + 1
         table.insert(
             instance.hitObjects,
             UnspawnObject(note.StartTime, note.EndTime, note.Lane)
@@ -17,6 +19,7 @@ function Quaver:parse(path, folderPath)
     instance.song = love.sound.newSoundData(folderPath .. "/" .. data["AudioFile"])
     instance.mode = data.Mode:gsub("Keys", "")
     instance.mode = tonumber(instance.mode)
+    instance.noteCount = noteCount
 end
 
 ---@param data string
