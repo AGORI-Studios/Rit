@@ -75,7 +75,12 @@ end
 function GameScreen:calculateAccuracy()
     -- use judgecount and total ntoes hit to calculate accuracy
     local judgeCount = GameScreen.instance.hitObjectManager.judgeCounts
-    local totalNotesHit = judgeCount["marvellous"] + judgeCount["perfect"] + judgeCount["great"] + judgeCount["good"] + judgeCount["bad"] + judgeCount["miss"]
+    local totalNotesHit = judgeCount["marvellous"] +
+        judgeCount["perfect"] +
+        judgeCount["great"] +
+        judgeCount["good"] +
+        judgeCount["bad"] +
+        judgeCount["miss"]
     local totalNotes = GameScreen.instance.totalNotes
 
     GameScreen.instance.rated = (
