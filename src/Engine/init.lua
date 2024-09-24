@@ -28,7 +28,7 @@ require(path .. "Save")
 Game = TypedGroup(State) --- @class Game:TypedGroup<State>
 Game._currentState = State() --- @type State
 Game:add(Game._currentState)
-Game.debug = false
+Game.debug = true 
 Game._windowWidth = 1280
 Game._windowHeight = 720
 Game._gameWidth = 1920
@@ -49,7 +49,8 @@ local infoUpdateTimer = 0.25
 local infoUpdateTimerMax = 0.25
 local infoData = {
     ["FPS"] = {love.timer.getFPS()},
-    ["Graphics Memory"] = math.formatStorage(love.graphics.getStats().texturememory),
+    ["Graphics Stats"] = math.formatStorage(love.graphics.getStats()),
+    ["Renderer Info"] = {love.graphics.getRendererInfo()},
     ["Lua Memory"] = math.formatStorage(collectgarbage("count") * 1024),
     ["Game"] = "Game",
     ["Current State"] = "State"
@@ -75,7 +76,8 @@ function Game:__updateDebug()
         if infoUpdateTimer >= infoUpdateTimerMax then
             infoData = {
                 ["FPS"] = {love.timer.getFPS()},
-                ["Graphics Memory"] = math.formatStorage(love.graphics.getStats().texturememory),
+                ["Graphics Stats"] = love.graphics.getStats(),
+                ["Renderer Info"] = {love.graphics.getRendererInfo()},
                 ["Lua Memory"] = math.formatStorage(collectgarbage("count") * 1024),
                 ["Game"] = self:__tostring(),
                 ["Current State"] = self._currentState:__tostring()
@@ -91,7 +93,9 @@ function Game:__printDebug()
     love.graphics.setColor(0, 0, 0, 1)
 
     local debugDisplay = "FPS: " .. infoData["FPS"][1] .. " / " .. infoData["FPS"][2] ..
-        "\nGraphics Memory: " .. infoData["Graphics Memory"] ..
+        "\nRenderer Info: " .. infoData["Renderer Info"][1] .. " / " .. infoData["Renderer Info"][2] .. " / " .. infoData["Renderer Info"][3] .. " / " .. infoData["Renderer Info"][4] ..
+        "\nGraphics Memory: " .. math.formatStorage(infoData["Graphics Stats"].texturememory) ..
+        "\nDraw Calls: " .. infoData["Graphics Stats"].drawcalls ..
         "\nLua Memory: " .. infoData["Lua Memory"] ..
         "\nGame: " .. infoData["Game"] ..
         "\n\t- Current State: " .. infoData["Current State"]

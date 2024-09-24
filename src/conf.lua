@@ -9,4 +9,6 @@ function love.conf(t)
     t.window.resizable = true
 
     t.modules.physics = false
+
+    t.renderers = {"opengl", "vulkan"}
 end
