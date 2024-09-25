@@ -1,4 +1,4 @@
 External libraries
 
-Json.lua - Read file for more info
-Yaml.lua
+Json.lua - Read Json.license for info
+Yaml.lua - Read Yaml.license for info

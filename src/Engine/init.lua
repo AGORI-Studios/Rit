@@ -2,6 +2,7 @@ local path = ... .. "."
 
 utf8 = require("utf8")
 
+require(path .. "Lib")
 require(path .. "Lua")
 require(path .. "Love")
 
