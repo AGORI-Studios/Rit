@@ -37,6 +37,7 @@ Game._gameHeight = 1080
 Game.Tween = TweenManager() --- @type TweenManager
 Game.Wait = WaitManager --- @type WaitManager
 
+
 function Game:SwitchState(state, ...)
     self._currentState:kill()
     self:remove(self._currentState)

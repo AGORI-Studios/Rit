@@ -49,4 +49,15 @@ function string:remove(index)
     return self:sub(1, index - 1)..self:sub(index + 1)
 end
 
+function string:splitAllChars()
+    local t = {}
+    for i = 1, #self do
+        t[i] = self:sub(i, i)
+        if t[i] == " " then
+            t[i] = "space"
+        end
+    end
+    return t
+end
+
 return string

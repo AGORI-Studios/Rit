@@ -58,11 +58,19 @@ end
 function love.mousepressed(x, y, button, istouch, presses)
     Game:mousepressed(x, y, button, istouch, presses)
     Input:mousepressed(button)
+
+    if VirtualPad and VirtualPad._CURRENT and not istouch then
+        VirtualPad._CURRENT:mousepressed(x, y, button)
+    end
 end
 
 function love.mousereleased(x, y, button, istouch, presses)
     Game:mousereleased(x, y, button, istouch, presses)
     Input:mousereleased(button)
+
+    if VirtualPad and VirtualPad._CURRENT and not istouch then
+        VirtualPad._CURRENT:mousereleased(x, y, button)
+    end
 end
 
 function love.wheelmoved(x, y)
@@ -71,10 +79,22 @@ end
 
 function love.mousemoved(x, y, dx, dy, istouch)
     Game:mousemoved(x, y, dx, dy, istouch)
+
+    if VirtualPad and VirtualPad._CURRENT and not istouch then
+        VirtualPad._CURRENT:mousemoved(x, y, dx, dy, istouch)
+    end
 end
 
 function love.draw()
     Game:draw()
+
+    if not love.system.isMobile() then return end
+    love.graphics.push()
+    love.graphics.scale(Game._windowWidth / Game._gameWidth, Game._windowHeight / Game._gameHeight)
+    if VirtualPad and VirtualPad._CURRENT then
+        VirtualPad._CURRENT:draw()
+    end
+    love.graphics.pop()
 end
 
 function love.quit()

@@ -61,6 +61,34 @@ function Game:update(dt)
             GameScreen.instance.totalNotes = #GameScreen.instance.hitObjectManager.hitObjects
 
             GameScreen.instance.hitObjectManager:createReceptors(GameScreen.instance.data.mode)
+
+            -- setup le mobile inputs
+            local curkeylist = GameplayBinds[GameScreen.instance.data.mode]
+            if love.system.isMobile() then
+                local keys = {}
+                for i, key in ipairs(string.splitAllChars(curkeylist)) do
+                    -- calculate size and position for the mobile button (1920 width, at bottom of screen)
+                    local size = {1920 / #curkeylist, 1080 / 2}
+                    local position = {(i - 1) * size[1], 1080 - size[2]}
+                    local color = {1, 1, 1}
+                    local alpha = 0.25
+                    local downAlpha = 0.5
+                    local border = true
+                    
+                    table.insert(keys, {
+                        key = key,
+                        size = size,
+                        position = position,
+                        color = color,
+                        alpha = alpha,
+                        downAlpha = downAlpha,
+                        border = border
+                    })
+                end
+
+                GameplayPad = VirtualPad(keys)
+                VirtualPad._CURRENT = GameplayPad
+            end
         end
     end
 
@@ -120,6 +148,7 @@ function GameScreen:kill()
     State.kill(self)
     GameScreen.instance = nil
     self = nil
+    VirtualPad._CURRENT = MenuPad
 end
 
 return GameScreen
