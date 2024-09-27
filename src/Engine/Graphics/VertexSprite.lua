@@ -21,7 +21,9 @@ function VertexSprite:new(image, x, y, verticeCount)
     -- Map the vertices to the mesh depending on the image
     self:mapVertices()
 
-    self.mesh:setTexture(self.image)
+    if self.image then
+        self.mesh:setTexture(self.image)
+    end
     self.mesh:setVertices(self.vertices)
 end
 
@@ -31,8 +33,12 @@ function VertexSprite:update(dt)
 end
 
 function VertexSprite:mapVertices()
-    local width = self.image:getWidth()
-    local height = self.image:getHeight()
+    local width = 0
+    local height = 0
+    if self.image then
+        width = self.image:getWidth()
+        height = self.image:getHeight()
+    end
 
     local verticesPerEdge = math.floor(self.verticeCount / 4)
     local remainder = self.verticeCount % 4

@@ -3,10 +3,8 @@ local path = ... .. "."
 UnspawnObject = require(path .. "UnspawnObject")
 ScrollVelocity = require(path .. "ScrollVelocity")
 
-Receptor = require(path .. "Receptor")
-HitObject = require(path .. "HitObject")
-HoldObject = require(path .. "HoldObject")
-EndObject = require(path .. "EndObject")
+require(path .. "Mania")
+require(path .. "Mobile") -- TODO : Rename this
 
 Judgement = require(path .. "Judgement")
 Combo = require(path .. "Combo")

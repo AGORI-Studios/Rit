@@ -11,6 +11,8 @@ require "Engine.Format"
 Parsers = require "Game.Parsing"
 Class = require "Engine.Base.Class"
 UnspawnObject = require "Game.Objects.Game.UnspawnObject"
+UnspawnTap = require "Game.Objects.Game.Mobile.UnspawnTap"
+UnspawnSlide = require "Game.Objects.Game.Mobile.UnspawnSlide"
 
 instance = {
     hitObjects = {}
@@ -32,6 +34,7 @@ instance.folder = data.folderpath
 instance.mapType = data.mapType
 instance.length = data.length
 instance.noteCount = data.noteCount
+instance.gameMode = "Mania"
 
 print(mapType, path, folder)
 

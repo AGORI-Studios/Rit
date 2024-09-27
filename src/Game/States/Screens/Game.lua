@@ -10,7 +10,12 @@ function GameScreen:new(data)
     GameScreen.instance = self
     GameScreen.doneThread = false
 
-    self.hitObjectManager = HitObjectManager(self)
+    self.hitObjectManager = nil--HitObjectManager(self)
+    if data.game_mode == "Mania" then
+        self.hitObjectManager = HitObjectManager(self)
+    else
+        self.hitObjectManager = MobileObjectManager(self)
+    end
     self:add(self.hitObjectManager)
 
     local folderPath = data.path:match("(.+)/[^/]+$") .. "/"
@@ -60,7 +65,9 @@ function Game:update(dt)
             GameScreen.instance.data = response.instance
             GameScreen.instance.totalNotes = #GameScreen.instance.hitObjectManager.hitObjects
 
-            GameScreen.instance.hitObjectManager:createReceptors(GameScreen.instance.data.mode)
+            if GameScreen.instance.data.gameMode == "Mania" then
+                GameScreen.instance.hitObjectManager:createReceptors(GameScreen.instance.data.mode)
+            end
 
             -- setup le mobile inputs
             local curkeylist = GameplayBinds[GameScreen.instance.data.mode]
@@ -148,7 +155,9 @@ function GameScreen:kill()
     State.kill(self)
     GameScreen.instance = nil
     self = nil
-    VirtualPad._CURRENT = MenuPad
+    if VirtualPad then
+        VirtualPad._CURRENT = MenuPad
+    end
 end
 
 return GameScreen

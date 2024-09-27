@@ -13,12 +13,12 @@ local SongCacheFormat = {
     mapset_id = 0,
     map_id = 0,
     mode = 4,
-    game_mode = "mania",
+    game_mode = "Mania",
     map_type = "Quaver",
     hitobj_count = 0,
     ln_count = 0,
     length = 0,
-    metaType = 2
+    metaType = 2,
 }
 
 local SongCache = Class:extend("SongCache")
@@ -60,12 +60,21 @@ function SongCache:loadCache(filename, ogPath, fileExt)
             local data = love.filesystem.read(ogPath)
             local songData = Parsers.Quaver:cache(data, filename, ogPath)
             songData.metaType = 2
+            songData.game_mode = "Mania"
             print("Caching " .. filename)
             return songData
         elseif fileExt == ".osu" then
             local data = love.filesystem.read(ogPath)
             local songData = Parsers.Osu:cache(data, filename, ogPath)
             songData.metaType = 2
+            songData.game_mode = "Mania"
+            print("Caching " .. filename)
+            return songData
+        elseif fileExt == ".ritm" then
+            local data = love.filesystem.read(ogPath)
+            local songData = Parsers.RitM:cache(data, filename, ogPath)
+            songData.metaType = 2
+            songData.game_mode = "Mobile"
             print("Caching " .. filename)
             return songData
         end
@@ -88,6 +97,12 @@ function SongCache:loadSongsPath(path)
                     local filename = song:gsub(".osu$", "")
                     local fullPath = path .. "/" .. file .. "/" .. song
                     local fileExt = ".osu"
+                    
+                    self:loadCache(filename, fullPath, fileExt)
+                elseif song:endsWith(".ritm") then
+                    local filename = song:gsub(".ritm$", "")
+                    local fullPath = path .. "/" .. file .. "/" .. song
+                    local fileExt = ".ritm"
                     
                     self:loadCache(filename, fullPath, fileExt)
                 end

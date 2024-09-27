@@ -11,7 +11,7 @@ function Sprite:new(image, x, y, threaded)
         else
             self.image = image
         end
-
+        
         self.baseWidth = self.image:getWidth()
         self.baseHeight = self.image:getHeight()
     elseif threaded and image then

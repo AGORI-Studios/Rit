@@ -133,6 +133,7 @@ function HitObjectManager:update(dt)
     self:updateTime(dt)
 
     while #self.hitObjects > 0 and self:isOnScreen(self.hitObjects[1].StartTime) do
+    print("hitObject")
         local hitObject = self.hitObjects[1]
         local drawableHitObject = HitObject(hitObject, self.data.mode)
 
