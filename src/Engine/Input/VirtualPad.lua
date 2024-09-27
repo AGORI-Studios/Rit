@@ -25,6 +25,7 @@ function VirtualPad:new(settings)
         end
         self.keys[key.key] = key
         self.keys[key.key].down = false
+        self.keys[key.key].touchid = nil
     end
 end
 
@@ -36,7 +37,8 @@ end
 function VirtualPad:touchpressed(id, x, y, dx, dy, pressure)
     x, y = toGameScale(x, y)
     for i, key in ipairs(self.settings) do
-        if x >= key.position[1] and x <= key.position[1] + key.size[1] and y >= key.position[2] and y <= key.position[2] + key.size[2] then
+        if x >= key.position[1] and x <= key.position[1] + key.size[1] and y >= key.position[2] and y <= key.position[2] + key.size[2] and not self.keys[key.key].touchid then
+            self.keys[key.key].touchid = id
             if not self.keys[key.key].down then
                 love.keypressed(key.key, nil, false)
             end
@@ -49,7 +51,8 @@ end
 function VirtualPad:touchreleased(id, x, y, dx, dy, pressure)
     x, y = toGameScale(x, y)
     for i, key in ipairs(self.settings) do
-        if x >= key.position[1] and x <= key.position[1] + key.size[1] and y >= key.position[2] and y <= key.position[2] + key.size[2] then
+        if x >= key.position[1] and x <= key.position[1] + key.size[1] and y >= key.position[2] and y <= key.position[2] + key.size[2] and self.keys[key.key].touchid == id then
+            self.keys[key.key].touchid = nil
             if self.keys[key.key].down then
                 love.keyreleased(key.key, nil)
             end
@@ -63,7 +66,8 @@ function VirtualPad:touchmoved(id, x, y, dx, dy, pressure)
     x, y = toGameScale(x, y)
     for i, key in ipairs(self.settings) do
         -- if moved out, release the key
-        if not (x >= key.position[1] and x <= key.position[1] + key.size[1] and y >= key.position[2] and y <= key.position[2] + key.size[2]) then
+        if not (x >= key.position[1] and x <= key.position[1] + key.size[1] and y >= key.position[2] and y <= key.position[2] + key.size[2]) and self.keys[key.key].touchid == id then
+            self.keys[key.key].touchid = nil
             if self.keys[key.key].down then
                 love.keyreleased(key.key, nil)
             end
