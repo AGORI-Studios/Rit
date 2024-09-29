@@ -46,7 +46,7 @@ function Quaver:cache(data, filename, path)
     local bg_path = data["BackgroundFile"] or "Unknown"
     ---@diagnostic disable-next-line: cast-local-type
     mode = tonumber(mode)
-    local game_mode = "mania"
+    local game_mode = "Mania"
     local hitobj_count = 0
     local ln_count = 0
     local length = 0 -- found from hit objects
@@ -55,7 +55,7 @@ function Quaver:cache(data, filename, path)
         hitobj_count = hitobj_count + 1 -- jas StartTime and EndTime (can be nil)
         if note["EndTime"] then
             length = math.max(length, note["EndTime"] > (note["StartTime"] or 0) and note["EndTime"] or note["StartTime"] or 0)
-            if note["EndTime"] > note["StartTime"] or 0 then
+            if note["EndTime"] or 0 > note["StartTime"] or 0 then
                 ln_count = ln_count + 1
             end
         else

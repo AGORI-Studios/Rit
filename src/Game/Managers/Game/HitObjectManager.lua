@@ -1,5 +1,6 @@
 ---@class HitObjectManager
 local HitObjectManager = Group:extend("HitObjectManager")
+local GAME = States.Screens.Game
 
 function HitObjectManager:new(instance)
     Group.new(self)
@@ -14,7 +15,7 @@ function HitObjectManager:new(instance)
     self.currentTime = 0
 
     self.svIndex = 1
-    self.STRUM_Y = 50
+    self.STRUM_Y = 1080-225
 
     self.screen = instance
     self.scorePerNote = 0
@@ -42,6 +43,7 @@ end
 local midX = 1920/2.45
 
 function HitObjectManager:createReceptors(count)
+    self.data = {mode = 4}
     self.data.mode = count
     for i = 1, self.data.mode do
         local receptor = Receptor(i, count)
@@ -61,7 +63,7 @@ function HitObjectManager:resortReceptors()
 end
 
 function HitObjectManager:isOnScreen(time)
-    return self:getNotePosition(self:getPositionFromTime(time), true) <= Game._windowHeight+600
+    return self:getNotePosition(self:getPositionFromTime(time), true) >= -500
 end
 
 function HitObjectManager:initSVMarks()
@@ -113,7 +115,7 @@ function HitObjectManager:getNotePosition(time, moveWithScroll)
     if not moveWithScroll then
         return self.STRUM_Y
     end
-    return self.STRUM_Y + (time - self.currentTime)
+    return self.STRUM_Y - (time - self.currentTime) * 2.2
 end 
 
 function HitObjectManager:updateTime(dt)

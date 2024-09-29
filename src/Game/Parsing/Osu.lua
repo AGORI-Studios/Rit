@@ -102,7 +102,7 @@ function osu:cache(data, filename, path)
         mapset_id = curData.BeatmapSetID,
         map_id = curData.BeatmapID,
         mode = curData.CircleSize,
-        game_mode = "mania",
+        game_mode = "Mania",
         hitobj_count = curData.noteCount,
         ln_count = curData.lnCount,
         length = curData.length,
@@ -162,8 +162,10 @@ function osu:parseDifficulty(line)
 
     if key == "CircleSize" then
         curData.CircleSize = tonumber(value:trim())
-        instance.mode = curData.CircleSize or 4
-        instance.mode = tonumber(instance.mode)
+        if instance then
+            instance.mode = curData.CircleSize or 4
+            instance.mode = tonumber(instance.mode)
+        end
     elseif key == "OverallDifficulty" then
         curData.OverallDifficulty = tonumber(value:trim())
     elseif key == "ApproachRate" then

@@ -11,6 +11,7 @@ function GameScreen:new(data)
     GameScreen.doneThread = false
 
     self.hitObjectManager = nil--HitObjectManager(self)
+
     if data.game_mode == "Mania" then
         self.hitObjectManager = HitObjectManager(self)
     else

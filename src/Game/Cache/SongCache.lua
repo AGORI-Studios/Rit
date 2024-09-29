@@ -27,7 +27,6 @@ SongCache.songs = {}
 function SongCache:createCache(songData, filename, fileExt)
     local strOut = ""
     for key, _ in pairs(SongCacheFormat) do
-        print(key, songData[key])
         strOut = strOut .. key .. ":" .. songData[key] .. "\n"
     end
 
@@ -61,21 +60,18 @@ function SongCache:loadCache(filename, ogPath, fileExt)
             local songData = Parsers.Quaver:cache(data, filename, ogPath)
             songData.metaType = 2
             songData.game_mode = "Mania"
-            print("Caching " .. filename)
             return songData
         elseif fileExt == ".osu" then
             local data = love.filesystem.read(ogPath)
             local songData = Parsers.Osu:cache(data, filename, ogPath)
             songData.metaType = 2
             songData.game_mode = "Mania"
-            print("Caching " .. filename)
             return songData
         elseif fileExt == ".ritm" then
             local data = love.filesystem.read(ogPath)
             local songData = Parsers.RitM:cache(data, filename, ogPath)
             songData.metaType = 2
             songData.game_mode = "Mobile"
-            print("Caching " .. filename)
             return songData
         end
     end

@@ -3,7 +3,16 @@ local SongManager = {}
 SongManager.songCache = {}
 
 function SongManager:getSongList()
-    return self.songCache
+    local sortedList = {}
+    for _, v in pairs(self.songCache) do
+        table.insert(sortedList, v)
+    end
+    
+    table.sort(sortedList, function(a, b)
+        return a.index < b.index
+    end)
+
+    return sortedList
 end
 
 function SongManager:loadSongList()
