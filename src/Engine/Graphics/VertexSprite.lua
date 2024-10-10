@@ -88,7 +88,7 @@ function VertexSprite:draw()
         end
         love.graphics.draw(self.mesh, self.drawX, self.drawY, math.rad(self.angle), sx, sy, self.origin.x, self.origin.y)
 
-        if Game.debug then
+        if Game.objectDebug then
             love.graphics.translate(self.drawX, self.drawY)
             love.graphics.rotate(math.rad(self.angle))
             love.graphics.translate(-self.drawX, -self.drawY)

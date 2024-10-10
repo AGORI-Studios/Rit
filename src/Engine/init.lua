@@ -31,7 +31,8 @@ require(path .. "PrebuiltDLL")
 Game = TypedGroup(State) --- @class Game:TypedGroup<State>
 Game._currentState = State() --- @type State
 Game:add(Game._currentState)
-Game.debug = true 
+Game.objectDebug = false
+Game.debug = true
 Game._windowWidth = 1280
 Game._windowHeight = 720
 Game._gameWidth = 1920

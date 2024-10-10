@@ -7,7 +7,7 @@ local Text = Drawable:extend("Text")
 ---@param size number|nil
 ---@param colour table|nil
 ---@param font string|number|nil
-function Text:new(text, x, y, size, colour, font, format, value, instance, trimmed, trimWidth)
+function Text:new(text, x, y, size, colour, font, format, value, instance, trimmed, trimWidth, printf)
     text = text or ""
     x = x or 0
     y = y or 0
@@ -32,6 +32,7 @@ function Text:new(text, x, y, size, colour, font, format, value, instance, trimm
     self.instance = instance
     self.trimmed = trimmed
     self.trimWidth = trimWidth
+    self.printf = printf
 
     -- format layout: "%s" or "{math.floor(%d)}"
 end
@@ -72,6 +73,26 @@ function Text:updateText(value)
     end)
 end
 
+function Text:getTextWidth()
+    --[[ return self.font:getWidth(self.text) ]]
+    local width = self.font:getWidth(self.text)
+    -- if trimmed, make sure to do so!
+    local text = self.text
+    if width > self.trimWidth then
+        local trimmed = self.text
+        while self.font:getWidth(trimmed .. "...") > self.trimWidth do
+            trimmed = trimmed:sub(1, #trimmed - 1)
+        end
+        text = trimmed .. "..."
+    end
+
+    return self.font:getWidth(text)
+end
+
+function Text:getTextHeight()
+    return self.font:getHeight(self.text)
+end
+
 function Text:draw()
     if not self.visible then return end
     if self.text == "" then return end
@@ -84,9 +105,14 @@ function Text:draw()
     love.graphics.setColor(self.colour)
 
     if not self.trimmed then
-        love.graphics.print(self.text, self.drawX, self.drawY)
+        --love.graphics.print(self.text, self.drawX, self.drawY, 0, 1, 1, 0, 0, self.shear.x, self.shear.y)
+        if not self.printf then
+            love.graphics.print(self.text, self.drawX, self.drawY, 0, 1, 1, 0, 0, self.shear.x, self.shear.y)
+        else
+            love.graphics.printf(self.text, self.drawX, self.drawY, self.trimWidth, "left", 0, 1, 1, 0, 0, self.shear.x, self.shear.y)
+        end
     else
-        love.graphics.printWithTrimmed(self.text, self.drawX, self.drawY, self.trimWidth, self.scale.x * self.windowScale.x, self.scale.y * self.windowScale.y)
+        love.graphics.printWithTrimmed(self.text, self.drawX, self.drawY, self.trimWidth, self.scale.x * self.windowScale.x, self.scale.y * self.windowScale.y, self.shear.x, self.shear.y)
     end
 
     love.graphics.setColor(lastColour)

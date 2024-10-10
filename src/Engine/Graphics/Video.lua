@@ -66,7 +66,7 @@ function Video:draw()
 
         love.graphics.draw(self.image, self.drawX, self.drawY, math.rad(self.angle), sx, sy, self.origin.x, self.origin.y)
 
-        if Game.debug and self.debug then
+        if Game.objectDebug and self.debug then
             love.graphics.translate(self.drawX, self.drawY)
             love.graphics.rotate(math.rad(self.angle))
             love.graphics.translate(-self.drawX, -self.drawY)

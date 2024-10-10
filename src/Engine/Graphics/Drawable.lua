@@ -19,6 +19,8 @@ function Drawable:new(x, y, w, h)
     self.forcedDimensions = false
     self.dimensions = {w, h}
     self.rounding = 0
+    self.roundingX = 0
+    self.roundingY = 0
 
     self.blendMode = "alpha"
     self.blendModeAlpha = "alphamultiply"
@@ -32,6 +34,7 @@ function Drawable:new(x, y, w, h)
     self.angle = 0 -- 0-360, uses math.rad in runtime
     self.origin = {x = 0, y = 0}
     self.offset = {x = 0, y = 0}
+    self.shear = {x = 0, y = 0}
     self.addOrigin = true
 
     self.visible = true
@@ -173,17 +176,19 @@ function Drawable:draw()
         local lastColour = {love.graphics.getColor()}
         -- we have to convert with love.graphics.rotate
         love.graphics.translate(self.drawX + self.width / 2, self.drawY + self.height / 2)
+        love.graphics.shear(self.shear.x, self.shear.y)
         love.graphics.rotate(math.rad(self.angle))
         love.graphics.translate(-self.drawX - self.width / 2, -self.drawY - self.height / 2)
+
         love.graphics.setBlendMode(self.blendMode, self.blendModeAlpha)
         love.graphics.setColor(self.colour[1], self.colour[2], self.colour[3], self.alpha)
 
-        love.graphics.rectangle("fill", self.drawX, self.drawY, self.width, self.height, self.rounding)
+        love.graphics.rectangle("fill", self.drawX, self.drawY, self.width, self.height, self.roundingX + self.rounding, self.roundingY + self.rounding)
 
         love.graphics.setColor(lastColour)
         love.graphics.setBlendMode(lastBlendMode, lastBlendModeAlpha)
 
-        if Game.debug and self.debug then
+        if Game.objectDebug and self.debug then
             self:__debugDraw()
         end
     love.graphics.pop()
