@@ -17,11 +17,15 @@ function Text:new(text, x, y, size, colour, font, format, value, instance, trimm
     Drawable.new(self, x, y, trimWidth or 1920, 1080)
 
     self.text = text
-    if not font or font == "" then
-        font = size
-        size = nil
+    if type(font) ~= "userdata" then
+        if not font or font == "" then
+            font = size
+            size = nil
+        end
+        self.font = Cache:get("Font", font, size)
+    else
+        self.font = font
     end
-    self.font = Cache:get("Font", font, size)
     self.colour = colour
     self.format = format
     self.value = value
@@ -39,8 +43,6 @@ function Text:update(dt)
     if self.format then
         self.text = self:updateText(self.value)
     end
-
-    self.drawX, self.drawY = self.x, self.y
 end
 
 -- if true, the function is restricted
@@ -72,11 +74,11 @@ end
 
 function Text:draw()
     if not self.visible then return end
+    if self.text == "" then return end
     love.graphics.push()
     love.graphics.translate(self.drawX, self.drawY)
     love.graphics.rotate(math.rad(self.angle))
     love.graphics.translate(-self.drawX, -self.drawY)
-    if self.text == "" then return end
     local lastColour, lastFont = {love.graphics.getColor()}, love.graphics.getFont()
     love.graphics.setFont(self.font)
     love.graphics.setColor(self.colour)

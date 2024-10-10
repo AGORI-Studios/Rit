@@ -143,6 +143,12 @@ function HitObjectManager:updateTime(dt)
     self.currentTime = self:getPositionFromTime(self.musicTime, self.svIndex)
 end
 
+function HitObjectManager:resize(w, h)
+    Group.resize(self, w, h)
+    self.STRUM_Y = h-225
+    self:resortReceptors()
+end
+
 function HitObjectManager:update(dt)
     self:updateTime(dt)
 
@@ -228,7 +234,6 @@ function HitObjectManager:update(dt)
         Script:call("OnSongEnd")
         Game:SwitchState(Skin:getSkinnedState("SongListMenu"))
     end
-
     Group.update(self, dt)
 end
 

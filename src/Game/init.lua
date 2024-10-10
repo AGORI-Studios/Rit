@@ -25,11 +25,20 @@ Folder structure:
     SongCache:loadSongsPath("Beatmaps")
 end
 
+Game.fonts = {}
+
 function Game:initialize()
     setupFolders()
 
     --[[ Skin = love.filesystem.load("Assets/IncludedSkins/Circle Default/Skin.lua")() ]]
     Skin:loadSkin("Assets/IncludedSkins/Circle Default/Skin.lua")
+
+    -- wooo fonts
+    local fonts = love.filesystem.load("Assets/Data/Fonts.lua")()
+    for _, font in ipairs(fonts) do
+--[[         FontCache:get("Assets/Fonts/" .. font.path, font.size, false, font.name)]]
+        Game.fonts[font.name] = love.graphics.newFont("Assets/Fonts/" .. font.path, font.size)
+    end
 end
 
 function Game:kill()

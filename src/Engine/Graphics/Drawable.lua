@@ -127,6 +127,15 @@ function Drawable:resize(w, h)
 
         self.drawX = self.origin.x * self.windowScale.x
         self.drawY = self.origin.y * self.windowScale.y
+    elseif self.scalingType == ScalingTypes.STRETCH_X then
+        self.width = self.baseWidth * self.windowScale.x
+        self.height = h
+
+        self.windowScale.x = w / self.baseWidth
+        self.windowScale.y = h / self.baseHeight
+
+        self.drawX = self.origin.x * self.windowScale.x
+        self.drawY = self.origin.y * self.windowScale.y
     elseif self.scalingType == ScalingTypes.WINDOW_LARGEST then
         local scale = math.max(w / self.baseWidth, h / self.baseHeight)
         self.windowScale.x, self.windowScale.y = scale, scale

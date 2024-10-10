@@ -8,8 +8,9 @@ local outChannel = love.thread.getChannel("thread.font.out")
 ---@param path string
 ---@param size? number
 ---@return love.Font
-function FontCache:get(path, size, threaded)
-    if threaded then
+function FontCache:get(path, size, threaded, name)
+    name = name or path .. (size or "")
+    if threaded and not self._cache[name] then
         table.insert(self.threaded, {
             channel = outChannel,
             path = path,
@@ -20,11 +21,11 @@ function FontCache:get(path, size, threaded)
             size = size
         })
     end
-    if not self._cache[path .. (size or "")] then
-        self._cache[path .. (size or "")] = love.graphics.newFont(path, size)
+    if not self._cache[name] then
+        self._cache[name] = love.graphics.newFont(path, size)
     end
 
-    return self._cache[path .. (size or "")]
+    return self._cache[name]
 end
 
 function FontCache:update()

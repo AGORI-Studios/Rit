@@ -16,12 +16,8 @@ function SongList:new()
     self.bg.zorder = -1
     self:add(self.bg)
 
-    self.playTab = Sprite("Assets/Textures/Menu/PlayTab.png", 0, 0, true)
-    self.playTab.zorder = 0
-    self.playTab.scalingType = ScalingTypes.STRETCH_Y
-    self.playTab.x = 1120
-    self.playTab.y = 0
-    self:add(self.playTab)
+    self.songInfo = SongInfoTab()
+    self:add(self.songInfo)
 
     self.SongButtonGroup = TypedGroup(SongButton)
     self.SongButtonGroup.zorder = 1
@@ -41,6 +37,7 @@ function SongList:new()
 
     self:add(self.SongButtonGroup)
 
+    Header.zorder = 1000
     self:add(Header)
 end
 
@@ -67,8 +64,12 @@ end
 function SongList:update(dt)
     State.update(self, dt)
 
-    for _, songButton in pairs(self.SongButtonGroup.objects) do
+    for i, songButton in pairs(self.SongButtonGroup.objects) do
         songButton:updateYFromIndex(self.currentIndex, self.currentDiffIndex, dt)
+
+        if i == self.currentIndex then
+            self.songInfo:updateInfo(songButton.data)
+        end
     end
 
     if currentMenuState == 1 then
@@ -105,6 +106,76 @@ function SongList:update(dt)
             --Game:SwitchState(Skin:getSkinnedState("Gameplay"))
             Game:SwitchState(States.Screens.Game, self.currentButton.children[self.currentDiffIndex].data)
         end
+    end
+end
+
+function SongList:mousepressed(x, y, button, istouch, presses)
+    State.mousepressed(self, x, y, button, istouch, presses)
+
+    if Header:mousepressed(x, y, button, istouch, presses) then return end
+
+    if currentMenuState == 1 then
+        local didPress = false
+        for _, songButton in pairs(self.SongButtonGroup.objects) do
+            if songButton:checkCollision(x, y) then
+                --self.currentIndex = songButton.index
+                if songButton.index == self.currentIndex then
+                    self.currentButton = songButton
+                    self.currentButton.showChildren = true
+                    currentMenuState = 2
+
+                    -- HIDE ALL SONG BUTTONS
+                    for _, songBtn in pairs(self.SongButtonGroup.objects) do
+                        songBtn.hidden = true
+                    end
+                else
+                    self.currentIndex = songButton.index
+                end
+            end
+        end
+    else
+        for _, diffButton in pairs(self.currentButton.children) do
+            if diffButton:checkCollision(x, y) then
+                --self.currentDiffIndex = diffButton.index
+                if diffButton.index == self.currentDiffIndex then
+                    Game:SwitchState(States.Screens.Game, diffButton.data)
+                else
+                    self.currentDiffIndex = diffButton.index
+                end
+            end
+        end
+    end
+end
+
+function SongList:wheelmoved(x, y)
+    State.wheelmoved(self, x, y)
+
+    if currentMenuState == 1 then
+        if y > 0 then
+            self.currentIndex = self.currentIndex - 1
+        elseif y < 0 then
+            self.currentIndex = self.currentIndex + 1
+        end
+
+        if x > 0 then
+            self.currentIndex = self.currentIndex - 3
+        elseif x < 0 then
+            self.currentIndex = self.currentIndex + 3
+        end
+        self.currentIndex = math.clamp(self.currentIndex, 1, #self.SongButtonGroup.objects)
+    else
+        if y > 0 then
+            self.currentDiffIndex = self.currentDiffIndex - 1
+        elseif y < 0 then
+            self.currentDiffIndex = self.currentDiffIndex + 1
+        end
+
+        if x > 0 then
+            self.currentDiffIndex = self.currentDiffIndex - 3
+        elseif x < 0 then
+            self.currentDiffIndex = self.currentDiffIndex + 3
+        end
+        self.currentDiffIndex = math.clamp(self.currentDiffIndex, 1, #self.currentButton.children)
     end
 end
 

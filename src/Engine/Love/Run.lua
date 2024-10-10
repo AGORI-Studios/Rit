@@ -89,6 +89,7 @@ function love.run()
 	end
 end
 
+local o_timer_getFPS = love.timer.getFPS
 function love.timer.getFPS()
-    return math.floor(updateFPS), math.floor(drawFPS)
+    return o_timer_getFPS(), math.floor(drawFPS)
 end

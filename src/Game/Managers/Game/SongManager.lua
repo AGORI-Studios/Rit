@@ -29,6 +29,7 @@ function SongManager:loadSongList()
             self.songCache[songData.mapset_id] = {
                 title = songData.title or "Unknown",
                 artist = songData.artist or "Unknown",
+                creator = songData.creator or "Unknown",
                 difficulties = {},
                 index = index
             }

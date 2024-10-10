@@ -44,7 +44,6 @@ function SongButton:update(dt)
     for _, child in pairs(self.children) do
         child:update(dt)
     end
-    
 end
 
 function SongButton:resize(w, h)
