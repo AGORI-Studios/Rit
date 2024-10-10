@@ -46,6 +46,14 @@ function Header:resize(w, h)
     end
 end
 
+function Header:checkCollision(x, y)
+    -- instead of width/ or height, use 1920 or self.baseHeight * 0.75
+    return x < self.drawX + 1920 and
+           self.drawX < x + 1920 and
+           y < self.drawY + self.baseHeight * 0.75 and
+           self.drawY < y + self.baseHeight * 0.75
+end
+
 function Header:mousepressed(x, y, button, istouch, presses)
     self.group:mousepressed(x, y, button, istouch, presses)
 

@@ -95,6 +95,13 @@ function SongButton:updateYFromIndex(index, diffIndex, dt)
     end
 end
 
+function SongButton:checkCollision(x, y)
+    return x < self.drawX + self.width and
+           self.drawX < x + 1 and
+           y < self.drawY + self.height and
+           self.drawY < y + 1
+end
+
 function SongButton:draw()
     self.leBar:draw()
     Sprite.draw(self)

@@ -14,7 +14,26 @@ function SongInfo:new()
     self.songTitle = Text("", 1170, 120, nil, nil, Game.fonts["menuExtraBoldX3"], false, nil, Skin:getSkinnedState("SongListMenu"), true, 550)
     self.artist = Text("", 1170, 200, nil, nil, Game.fonts["menuExtraBoldX2"], false, nil, Skin:getSkinnedState("SongListMenu"), true, 400)
     self.mapper = Text("", 1170, 260, nil, nil, Game.fonts["defaultBoldX2"], false, nil, Skin:getSkinnedState("SongListMenu"), true, 400)
-    self.desc = Text("", 1120, 350, nil, nil, Game.fonts["NatsRegular26"], false, nil, Skin:getSkinnedState("SongListMenu"), false)
+    self.desc = Text("", 1195, 705, nil, nil, Game.fonts["NatsRegular26"], false, nil, Skin:getSkinnedState("SongListMenu"), false)
+
+    self.pictureShadow = Drawable(1755, 120, 125, 125)
+    self.pictureShadow.colour = {128/255, 34/255, 88/255}
+    self.pictureShadow.alpha = 0.3
+    self.pictureShadow.rounding = 10
+    self:add(self.pictureShadow)
+
+    --1920/1.625, 775, 1920/2.74, 235, 25, 25
+    self.infoBox = Drawable(1655, 350, 235, 275)
+    self.infoBox.colour = {0, 0, 0}
+    self.infoBox.alpha = 0.15
+    self.infoBox.rounding = 10
+    self:add(self.infoBox)
+
+    self.descBox = Drawable(1190, 700, 700, 365)
+    self.descBox.colour = {0, 0, 0}
+    self.descBox.alpha = 0.6
+    self.descBox.rounding = 25
+    self:add(self.descBox)
 
     self:add(self.songTitle)
     self:add(self.artist)
@@ -27,14 +46,23 @@ function SongInfo:update(dt)
 end
 
 function SongInfo:resize(w, h)
-    Group.resize(self, w, h)    
+    Group.resize(self, w, h)
+
+    local x = self.playTab.drawX
+    local xWithWidth = x + self.playTab.width
+    local offScreen = xWithWidth - w
+    local newWidth = self.playTab.baseWidth - offScreen
+    self.playTab.width = newWidth
+    self.playTab.windowScale.x = newWidth / self.playTab.baseWidth
+    -- convert h
+    self.playTab.windowScale.y = h / self.playTab.baseHeight
 end
 
 function SongInfo:updateInfo(data)
     self.songTitle.text = data.title
     self.artist.text = "By " .. (data.artist or "Unknown")
     self.mapper.text = "Mapped by " .. (data.creator or "Unknown")
-    self.desc.text = data.desc or ""
+    self.desc.text = data.desc or "This map has no description."
 end
 
 return SongInfo

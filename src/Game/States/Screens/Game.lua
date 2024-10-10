@@ -115,12 +115,6 @@ function GameScreen:update(dt)
     if tostring(self.lerpedAccuracy):match("nan") then
         self.lerpedAccuracy = 0
     end
-
-    --[[ if not self.hitObjectManager.started and self.song then
-        self.song:play()
-
-        self.hitObjectManager.started = true
-    end ]]
 end
 
 function GameScreen:calculateAccuracy()

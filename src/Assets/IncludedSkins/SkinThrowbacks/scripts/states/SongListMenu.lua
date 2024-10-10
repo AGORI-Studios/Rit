@@ -103,7 +103,6 @@ function SongList:update(dt)
                 end
             end
         else
-            --Game:SwitchState(Skin:getSkinnedState("Gameplay"))
             Game:SwitchState(States.Screens.Game, self.currentButton.children[self.currentDiffIndex].data)
         end
     end
