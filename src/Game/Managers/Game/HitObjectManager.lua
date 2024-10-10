@@ -130,6 +130,7 @@ function HitObjectManager:updateTime(dt)
     if self.musicTime >= 0 then
         self.started = true
         GAME.instance.song:play()
+        Script:call("OnSongStart")
     end
     if not self.started then
         return
@@ -173,6 +174,7 @@ function HitObjectManager:update(dt)
 
     for i = 1, self.data.mode do
         if Input:wasPressed(self.data.mode .. "k" .. i) then
+            Script:call("OnPress", i, self.musicTime)
             if not self.receptorsGroup.objects[i] then return end
             self.receptorsGroup.objects[i].down = true
 
@@ -182,6 +184,7 @@ function HitObjectManager:update(dt)
                     hitObject:hit(self.musicTime - hitObject.Data.StartTime)
                     self.screen.combo = self.screen.combo + 1
                     self.screen.maxCombo = math.max(self.screen.maxCombo, self.screen.combo)
+                    Script:call("OnHit", i, self.musicTime, hitObject, self.screen.combo)
                     if not hitObject.holdSprite then
                         self:remove(hitObject)
                         hitObject:destroy()
@@ -220,7 +223,9 @@ function HitObjectManager:update(dt)
         end
     end
 
+    Script:call("OnUpdate", dt, self.musicTime)
     if (self.musicTime or 0) > ((self.length or 1000)+500) then
+        Script:call("OnSongEnd")
         Game:SwitchState(Skin:getSkinnedState("SongListMenu"))
     end
 

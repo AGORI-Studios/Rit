@@ -27,6 +27,8 @@ function GameScreen:new(data)
     end
 
     Parsers[self.data.mapType]:parse(self.data.filepath, folderPath)
+    Script:loadScript(folderPath .. "script/script.lua")
+    Script:call("Load")
 
     self.song = love.audio.newSource(self.data.song, "stream")
     self.hitObjectManager.hitObjects = self.data.hitObjects
