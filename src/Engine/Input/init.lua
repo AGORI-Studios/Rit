@@ -99,6 +99,9 @@ local controlsTbl = {
     MenuConfirm = {
         Key("return")
     },
+    MenuSearch = {
+        Key("\\")
+    }
 }
 
 for i = 1, #GameplayBinds do

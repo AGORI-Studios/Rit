@@ -30,6 +30,8 @@ function SongManager:loadSongList()
                 title = songData.title or "Unknown",
                 artist = songData.artist or "Unknown",
                 creator = songData.creator or "Unknown",
+                mapType = songData.map_type or "Unknown",
+                tags = songData.tags or "Unknown",
                 difficulties = {},
                 index = index
             }

@@ -142,6 +142,15 @@ function Group:wheelmoved(x, y)
     end
 end
 
+---@param text string
+function Group:textinput(text)
+    for _, obj in ipairs(self.objects) do
+        if obj.textinput then
+            obj:textinput(text)
+        end
+    end
+end
+
 function Group:__tostring()
     if #self.objects == 0 then
         return "Group (empty)"

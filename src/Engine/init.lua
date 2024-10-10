@@ -66,6 +66,10 @@ function Game:update(dt)
     self.Wait:update(dt)
 end
 
+function Game:textinput(text)
+    self._currentState:textinput(text)
+end
+
 function Game:draw()
     self._currentState:draw()
 

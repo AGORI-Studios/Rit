@@ -85,6 +85,10 @@ function love.mousemoved(x, y, dx, dy, istouch)
     end
 end
 
+function love.textinput(t)
+    Game:textinput(t)
+end
+
 function love.draw()
     Game:draw()
 

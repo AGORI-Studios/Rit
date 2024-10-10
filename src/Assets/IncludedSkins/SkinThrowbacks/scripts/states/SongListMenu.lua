@@ -1,6 +1,7 @@
 local SongList = State:extend("SongList")
 
 --[[
+CurrentMenuState -
 1: SongList
 2: DifficultyList
 ]]
@@ -21,6 +22,8 @@ function SongList:new()
 
     self.SongButtonGroup = TypedGroup(SongButton)
     self.SongButtonGroup.zorder = 1
+    self.searchInput = ""
+    self.searchTyping = false
 
     for _, song in pairs(SongManager:getSongList()) do
         local id = #self.SongButtonGroup.objects + 1
@@ -32,6 +35,17 @@ function SongList:new()
         end
     end
 
+    SearchManager:init(self.SongButtonGroup.objects)
+
+    self.searchTab = Sprite("Assets/Textures/Menu/SearchCatTab.png", 0, 100)
+    self.searchTab.zorder = 100
+    self:add(self.searchTab)
+
+    self.searchInputText = Text("Search", 30, 110, nil, nil, Game.fonts["menuBold"], nil, nil, nil, nil, nil)
+    self.searchInputText.colour[4] = 0.5
+    self.searchInputText.zorder = 101
+    self:add(self.searchInputText)
+
     self.currentIndex = 1
     self.currentDiffIndex = 1
 
@@ -39,6 +53,7 @@ function SongList:new()
 
     Header.zorder = 1000
     self:add(Header)
+    love.keyboard.setKeyRepeat(true)
 end
 
 function SongList:updateSongList(dt)
@@ -91,20 +106,68 @@ function SongList:update(dt)
     end
 
     if Input:wasPressed("MenuConfirm") then
-        if currentMenuState == 1 then
-            currentMenuState = 2
-            for _, songBtn in pairs(self.SongButtonGroup.objects) do
-                songBtn.hidden = true
-                songBtn.showChildren = false
+        if not self.searchInput then
+            if currentMenuState == 1 then
+                currentMenuState = 2
+                for _, songBtn in pairs(self.SongButtonGroup.objects) do
+                    songBtn.hidden = true
+                    songBtn.showChildren = false
 
-                if songBtn.index == self.currentIndex then
-                    songBtn.showChildren = true
-                    self.currentButton = songBtn
+                    if songBtn.index == self.currentIndex then
+                        songBtn.showChildren = true
+                        self.currentButton = songBtn
+                    end
                 end
+            else
+                Game:SwitchState(States.Screens.Game, self.currentButton.children[self.currentDiffIndex].data)
             end
         else
-            Game:SwitchState(States.Screens.Game, self.currentButton.children[self.currentDiffIndex].data)
+            self.SongButtonGroup.objects = {}
+            for _, btn in ipairs(SearchManager:doSearch(self.searchInput)) do
+                self.SongButtonGroup:add(btn)
+            end
+            self.searchTyping = false
         end
+            
+    end
+
+    if Input:wasPressed("MenuSearch") then
+        self.searchTyping = not self.searchTyping
+    end
+end
+
+local utf8 = require("utf8")
+function SongList:keypressed(k)
+    if k == "backspace" and self.searchTyping then
+        local byteoffset = utf8.offset(self.searchInput, -1)
+
+        if byteoffset then
+            self.searchInput = string.sub(self.searchInput, 1, byteoffset - 1)
+        end
+
+        if #self.searchInput > 0 then
+            self.searchInputText.text = self.searchInput
+            self.searchInputText.colour[4] = 1
+        else
+            self.searchInputText.text = "Search"
+            self.searchInputText.colour[4] = 0.5
+        end
+    end
+end
+
+function SongList:textinput(t)
+    if t == "\\" then return end
+
+    if self.searchTyping then
+        self.searchInput = self.searchInput .. t
+    end
+
+    if #self.searchInput > 0 then
+        self.searchInputText.text = self.searchInput
+        self.searchInputText.colour[4] = 1
+    else
+        self.searchInputText.text = "Search"
+        self.searchInputText.colour[4] = 0.5
     end
 end
 
