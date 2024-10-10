@@ -22,6 +22,7 @@ function Quaver:parse(path, folderPath)
     state.instance.data.mode = data.Mode:gsub("Keys", "")
     state.instance.data.mode = tonumber(state.instance.data.mode)
     state.instance.data.noteCount = noteCount
+    state.instance.data.bgFile = folderPath .. "/" .. data["BackgroundFile"]
 end
 
 ---@param data string

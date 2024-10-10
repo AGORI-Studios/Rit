@@ -6,15 +6,6 @@ function GameScreen:new(data)
     State.new(self)
     GameScreen.instance = self
 
-    self.hitObjectManager = nil--HitObjectManager(self)
-
-    --[[ if data.game_mode == "Mania" then
-        self.hitObjectManager = HitObjectManager(self)
-    else
-        self.hitObjectManager = MobileObjectManager(self)
-    end ]]
-    self:add(self.hitObjectManager)
-
     local folderPath = data.path:match("(.+)/[^/]+$") .. "/"
 
     self.data = {
@@ -43,6 +34,7 @@ function GameScreen:new(data)
     table.sort(self.hitObjectManager.hitObjects, function(a, b) return a.StartTime < b.StartTime end)
     self.hitObjectManager.scorePerNote = 1000000 / #self.hitObjectManager.hitObjects
     self.hitObjectManager.length = tonumber(self.data.length)
+    print(self.hitObjectManager.length)
     self.totalNotes = #self.hitObjectManager.hitObjects
     
     if self.data.gameMode == "Mania" then
@@ -76,6 +68,13 @@ function GameScreen:new(data)
         GameplayPad = VirtualPad(keys)
         VirtualPad._CURRENT = GameplayPad
     end
+
+    self.BG = Background(self.data.bgFile)
+    self.BG.zorder = -10
+    self:add(self.BG)
+    self.BG.scalingType = ScalingTypes.WINDOW_LARGEST
+
+    self:add(self.hitObjectManager)
 
     self.HUD = HUD(self)
     self:add(self.HUD)
@@ -115,11 +114,11 @@ function GameScreen:update(dt)
         self.lerpedAccuracy = 0
     end
 
-    if not self.hitObjectManager.started and self.song then
+    --[[ if not self.hitObjectManager.started and self.song then
         self.song:play()
 
         self.hitObjectManager.started = true
-    end
+    end ]]
 end
 
 function GameScreen:calculateAccuracy()
@@ -131,7 +130,6 @@ function GameScreen:calculateAccuracy()
         judgeCount["good"] +
         judgeCount["bad"] +
         judgeCount["miss"]
-    local totalNotes = self.totalNotes
 
     self.rated = (
         judgeCount["marvellous"] * 1 +

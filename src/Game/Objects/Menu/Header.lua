@@ -7,6 +7,9 @@ function Header:new() -- Only 1 instance of this object will exist
 
     local gearIcon = Icon("Gear", 5, 10)
     local homeIcon = Icon("Home", 15 + gearIcon.baseWidth, 10)
+    homeIcon.onPress = function(self)
+        Game:SwitchState(Skin:getSkinnedState("TitleMenu"))
+    end
     local barLineIcon = Icon("BarLine", 15 + gearIcon.baseWidth*2, 10)
     local importIcon = Icon("Import", 1920-gearIcon.baseWidth*2-15, 10)
     local barsIcon = Icon("Bars", 1920-gearIcon.baseWidth-5, 10)
@@ -28,6 +31,10 @@ function Header:resize(w, h)
     Sprite.resize(self, w, h)
 
     self.group:resize(w, h)
+end
+
+function Header:mousepressed(x, y, button, istouch, presses)
+    self.group:mousepressed(x, y, button, istouch, presses)
 end
 
 function Header:draw()

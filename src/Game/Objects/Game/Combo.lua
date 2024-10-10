@@ -23,7 +23,7 @@ function Combo:getComboSprite(digit)
 end
 
 function Combo:draw()
-    local num = States.Screens.Game.combo
+    local num = States.Screens.Game.instance.combo
     if num == 0 then
         return
     end
@@ -37,7 +37,7 @@ function Combo:draw()
         local digit = tonumber(char)
         local spr = self:getComboSprite(digit or 0)
 
-        spr.x = Game._gameWidth / 2 - ((spr.width * 1.5) * #str) / 2 + (i - 1) * (spr.width * 1.5)
+        spr.x = 1920 / 2 + (i - #str / 2) * 100
         spr.y = 1080 / 2
         spr:update(love.timer.getDelta())
         spr:resize(Game._windowWidth, Game._windowHeight)

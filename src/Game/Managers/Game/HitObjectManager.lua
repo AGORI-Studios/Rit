@@ -6,12 +6,15 @@ function HitObjectManager:new(instance)
     Group.new(self)
 
     self.receptorsGroup = TypedGroup(Receptor)
+    self.underlay = Underlay(4)
+    self:add(self.underlay)
+
     self:add(self.receptorsGroup)
     self.hitObjects = {}
     self.drawableHitObjects = {}
     self.scrollVelocities = {}
     self.scrollVelocityMarks = {}
-    self.musicTime = 0
+    self.musicTime = -1000
     self.currentTime = 0
 
     self.svIndex = 1
@@ -52,13 +55,17 @@ function HitObjectManager:createReceptors(count)
         self.receptorsGroup:add(receptor)
     end
 
+    self.underlay:updateCount(count)
+
     self:resortReceptors()
 end
 
 function HitObjectManager:resortReceptors()
     -- sometimes positions get messed up
     for i = 1, self.data.mode do
-        self.receptorsGroup.objects[i].x = midX + (i - (self.data.mode/2)) * 200
+        -- sort based off of underlay width and pos
+        local receptor = self.receptorsGroup.objects[i]
+        receptor.x = self.underlay.x + ((i-1) * 200)
     end
 end
 
@@ -119,10 +126,14 @@ function HitObjectManager:getNotePosition(time, moveWithScroll)
 end 
 
 function HitObjectManager:updateTime(dt)
+    self.musicTime = self.musicTime + dt * 1000
+    if self.musicTime >= 0 then
+        self.started = true
+        GAME.instance.song:play()
+    end
     if not self.started then
         return
     end
-    self.musicTime = self.musicTime + dt * 1000
 
     while (self.svIndex <= #self.scrollVelocities and self.musicTime >= self.scrollVelocities[self.svIndex].StartTime) do
         self.svIndex = self.svIndex + 1
@@ -135,11 +146,10 @@ function HitObjectManager:update(dt)
     self:updateTime(dt)
 
     while #self.hitObjects > 0 and self:isOnScreen(self.hitObjects[1].StartTime) do
-    print("hitObject")
         local hitObject = self.hitObjects[1]
         local drawableHitObject = HitObject(hitObject, self.data.mode)
 
-        drawableHitObject.x = midX + (drawableHitObject.Data.Lane - (self.data.mode/2)) * 200
+        drawableHitObject.x = self.receptorsGroup.objects[hitObject.Lane].x
         drawableHitObject.initialSVTime = self:getPositionFromTime(hitObject.StartTime)
         drawableHitObject.endSVTime = self:getPositionFromTime(hitObject.EndTime)
         drawableHitObject.y = self:getNotePosition(drawableHitObject.initialSVTime, drawableHitObject.moveWithScroll)
@@ -210,7 +220,7 @@ function HitObjectManager:update(dt)
         end
     end
 
-    if (self.musicTime or 0) > (self.length or 1000) then
+    if (self.musicTime or 0) > ((self.length or 1000)+500) then
         Game:SwitchState(Skin:getSkinnedState("SongListMenu"))
     end
 

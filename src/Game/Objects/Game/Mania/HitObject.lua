@@ -26,7 +26,7 @@ function HitObject:update(dt)
 end
 
 function HitObject:hit(time)
-    States.Screens.Game.judgement:hit(time)
+    States.Screens.Game.instance.judgement:hit(time)
 end
 
 function HitObject:resize(w, h)

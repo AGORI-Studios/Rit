@@ -42,3 +42,9 @@ function table.random(tbl)
 
     return rnd[love.math.random(1, #rnd)]
 end
+
+function table.print(tbl)
+    for k, v in pairs(tbl) do
+        print(k, v)
+    end
+end

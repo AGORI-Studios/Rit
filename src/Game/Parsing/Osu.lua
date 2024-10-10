@@ -110,7 +110,8 @@ function osu:cache(data, filename, path)
         length = curData.length,
         metaType = 1,
         map_type = "Osu",
-        bg_path = curData.Background
+        bg_path = curData.Background,
+        video_path = ""
     }
 
     SongCache:createCache(songData, filename, ".osu")

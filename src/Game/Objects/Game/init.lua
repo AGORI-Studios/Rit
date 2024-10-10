@@ -10,3 +10,6 @@ Judgement = require(path .. "Judgement")
 Combo = require(path .. "Combo")
 
 HUD = require(path .. "HUD")
+
+Background = require(path .. "Background")
+Underlay = require(path .. "Underlay")

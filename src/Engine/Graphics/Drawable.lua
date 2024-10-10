@@ -146,7 +146,7 @@ end
 
 function Drawable:checkCollision(x, y, w, h)
     -- self.drawX - (self.origin.x * self.windowScale.x) -- this gets the real x of the object
-    w, h = w or 0, h or 1
+    w, h = w or 1, h or 1
     local realX, realY = self.drawX - (self.origin.x * self.windowScale.x) - 15, self.drawY - (self.origin.y * self.windowScale.y) - 15
     local realEndX, realEndY = realX + self.width+30, realY + self.height+30
     return x >= realX and x <= realEndX and y >= realY and y <= realEndY
