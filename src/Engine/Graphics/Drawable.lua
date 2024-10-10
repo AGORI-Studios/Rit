@@ -18,6 +18,7 @@ function Drawable:new(x, y, w, h)
     self.scale = {x = 1, y = 1}
     self.forcedDimensions = false
     self.dimensions = {w, h}
+    self.rounding = 0
 
     self.blendMode = "alpha"
     self.blendModeAlpha = "alphamultiply"
@@ -36,6 +37,7 @@ function Drawable:new(x, y, w, h)
     self.visible = true
 
     self.zorder = 0
+    self.debug = true
 
     self:resize(Game._windowWidth, Game._windowHeight)
 end
@@ -125,6 +127,15 @@ function Drawable:resize(w, h)
 
         self.drawX = self.origin.x * self.windowScale.x
         self.drawY = self.origin.y * self.windowScale.y
+    elseif self.scalingType == ScalingTypes.WINDOW_LARGEST then
+        local scale = math.max(w / self.baseWidth, h / self.baseHeight)
+        self.windowScale.x, self.windowScale.y = scale, scale
+        self.width = self.baseWidth * scale
+        self.height = self.baseHeight * scale
+
+        -- center the object to middle of the screen
+        self.x = w / 2 - self.width / 2
+        self.y = h / 2 - self.height / 2
     end
 
     if self.memoryCenterOrigin then
@@ -158,12 +169,12 @@ function Drawable:draw()
         love.graphics.setBlendMode(self.blendMode, self.blendModeAlpha)
         love.graphics.setColor(self.colour[1], self.colour[2], self.colour[3], self.alpha)
 
-        love.graphics.rectangle("fill", self.drawX, self.drawY, self.width, self.height)
+        love.graphics.rectangle("fill", self.drawX, self.drawY, self.width, self.height, self.rounding)
 
         love.graphics.setColor(lastColour)
         love.graphics.setBlendMode(lastBlendMode, lastBlendModeAlpha)
 
-        if Game.debug then
+        if Game.debug and self.debug then
             self:__debugDraw()
         end
     love.graphics.pop()

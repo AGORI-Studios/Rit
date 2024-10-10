@@ -1,5 +1,7 @@
 local Quaver = {}
 
+local state = States.Screens.Game
+
 function Quaver:parse(path, folderPath)
     print("Parsing Quaver file: " .. path)
     local data = love.filesystem.read(path):gsub("\r\n", "\n")
@@ -9,17 +11,17 @@ function Quaver:parse(path, folderPath)
     for _, note in ipairs(data["HitObjects"]) do
         noteCount = noteCount + 1
         table.insert(
-            instance.hitObjects,
+            state.instance.data.hitObjects,
             UnspawnObject(note.StartTime, note.EndTime, note.Lane)
         )
     end
 
-    instance.initialSV = data["InitialScrollVelocity"] or 1
+    state.instance.data.initialSV = data["InitialScrollVelocity"] or 1
 
-    instance.song = love.sound.newSoundData(folderPath .. "/" .. data["AudioFile"])
-    instance.mode = data.Mode:gsub("Keys", "")
-    instance.mode = tonumber(instance.mode)
-    instance.noteCount = noteCount
+    state.instance.data.song = love.sound.newSoundData(folderPath .. "/" .. data["AudioFile"])
+    state.instance.data.mode = data.Mode:gsub("Keys", "")
+    state.instance.data.mode = tonumber(state.instance.data.mode)
+    state.instance.data.noteCount = noteCount
 end
 
 ---@param data string

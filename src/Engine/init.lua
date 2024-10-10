@@ -2,9 +2,9 @@ local path = ... .. "."
 
 utf8 = require("utf8")
 
-require(path .. "Lib")
 require(path .. "Lua")
 require(path .. "Love")
+require(path .. "Lib")
 
 tryExcept(
     function()
@@ -26,6 +26,8 @@ require(path .. "Tween")
 require(path .. "Wait")
 require(path .. "Save")
 
+require(path .. "PrebuiltDLL")
+
 Game = TypedGroup(State) --- @class Game:TypedGroup<State>
 Game._currentState = State() --- @type State
 Game:add(Game._currentState)
@@ -36,7 +38,6 @@ Game._gameWidth = 1920
 Game._gameHeight = 1080
 Game.Tween = TweenManager() --- @type TweenManager
 Game.Wait = WaitManager --- @type WaitManager
-
 
 function Game:SwitchState(state, ...)
     self._currentState:kill()

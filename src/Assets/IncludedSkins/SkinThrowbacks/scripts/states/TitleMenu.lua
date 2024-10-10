@@ -9,7 +9,7 @@ function TitleMenu:new()
     State.new(self)
 
     self.bg = Sprite("Assets/Textures/Menu/PlayBG.png", 0, 0, true)
-    self.bg.scalingType = ScalingTypes.WINDOW_STRETCH
+    self.bg.scalingType = ScalingTypes.WINDOW_LARGEST
     self.bg:resize(Game._windowWidth, Game._windowHeight)
     self.bg.zorder = -1
     self:add(self.bg)
@@ -36,6 +36,8 @@ function TitleMenu:new()
 
     self.buttonsGroup:add(self.playButton)
     self.buttonsGroup:add(self.ohButton)
+
+    self:add(Header)
 end
 
 function TitleMenu:update(dt)

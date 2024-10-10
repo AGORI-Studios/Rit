@@ -81,13 +81,14 @@ function SongButton:updateYFromIndex(index, diffIndex, dt)
         self.lastDrawX = self.drawX
     end
 
+    self.textObj.drawX = self.drawX + 20 * self.textObj.windowScale.x
+    self.textObj.drawY = self.drawY + 20 * self.textObj.windowScale.y
+
     if self.index == index then
         self.colour[1], self.colour[2], self.colour[3] = 1, 1, 1
     else
         self.colour[1], self.colour[2], self.colour[3] = 0.5, 0.5, 0.5
     end
-
-    self.textObj.drawX, self.textObj.drawY = self.drawX + 20, self.drawY + 20
 
     if not self.showChildren then return end
     for _, child in pairs(self.children) do

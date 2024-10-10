@@ -33,11 +33,11 @@ end
 function ModifierManager:getScoreMultiplier()
     local curMult = 1
 
-    if States.Screens.Game.instance.LongNotes and table.contains(self.ActiveModifiers, "No LN") then
+    if States.Screens.Game.LongNotes and table.contains(self.ActiveModifiers, "No LN") then
         curMult = curMult + self:getModifier("No LN")[3]
     end
 
-    if States.Screens.Game.instance.ScrollVelocity and table.contains(self.ActiveModifiers, "No SV") then
+    if States.Screens.Game.ScrollVelocity and table.contains(self.ActiveModifiers, "No SV") then
         curMult = curMult + self:getModifier("No SV")[3]
     end
 

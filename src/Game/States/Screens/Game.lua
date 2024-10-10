@@ -2,31 +2,80 @@
 ---@class GameScreen : State
 local GameScreen = State:extend("GameScreen")
 
-local channel = love.thread.getChannel("thread.song")
-local outChannel = love.thread.getChannel("thread.song.out")
-
 function GameScreen:new(data)
     State.new(self)
     GameScreen.instance = self
-    GameScreen.doneThread = false
 
     self.hitObjectManager = nil--HitObjectManager(self)
 
-    if data.game_mode == "Mania" then
+    --[[ if data.game_mode == "Mania" then
+        self.hitObjectManager = HitObjectManager(self)
+    else
+        self.hitObjectManager = MobileObjectManager(self)
+    end ]]
+    self:add(self.hitObjectManager)
+
+    local folderPath = data.path:match("(.+)/[^/]+$") .. "/"
+
+    self.data = {
+        filepath = data.path,
+        folderpath = folderPath,
+        mapType = data.map_type,
+        length = data.length,
+        path = "",
+        folder = "",
+        noteCount = 0,
+        gameMode = "Mania",
+        hitObjects = {}
+    }
+
+    if self.data.gameMode == "Mania" then
         self.hitObjectManager = HitObjectManager(self)
     else
         self.hitObjectManager = MobileObjectManager(self)
     end
-    self:add(self.hitObjectManager)
 
-    local folderPath = data.path:match("(.+)/[^/]+$") .. "/"
-    outChannel:clear()
-    LoadSong:start({
-        filepath = data.path,
-        folderpath = folderPath,
-        mapType = data.map_type,
-        length = data.length
-    })
+    Parsers[self.data.mapType]:parse(self.data.filepath, folderPath)
+
+    self.song = love.audio.newSource(self.data.song, "stream")
+    self.hitObjectManager.hitObjects = self.data.hitObjects
+
+    table.sort(self.hitObjectManager.hitObjects, function(a, b) return a.StartTime < b.StartTime end)
+    self.hitObjectManager.scorePerNote = 1000000 / #self.hitObjectManager.hitObjects
+    self.hitObjectManager.length = tonumber(self.data.length)
+    self.totalNotes = #self.hitObjectManager.hitObjects
+    
+    if self.data.gameMode == "Mania" then
+        self.hitObjectManager:createReceptors(self.data.mode)
+    end
+
+    -- setup le mobile inputs
+    local curkeylist = GameplayBinds[self.data.mode]
+    if love.system.isMobile() then
+        local keys = {}
+        for i, key in ipairs(string.splitAllChars(curkeylist)) do
+            -- calculate size and position for the mobile button (1920 width, at bottom of screen)
+            local size = {1920 / #curkeylist, 1080 / 2}
+            local position = {(i - 1) * size[1], 1080 - size[2]}
+            local color = {1, 1, 1}
+            local alpha = 0.25
+            local downAlpha = 0.5
+            local border = true
+            
+            table.insert(keys, {
+                key = key,
+                size = size,
+                position = position,
+                color = color,
+                alpha = alpha,
+                downAlpha = downAlpha,
+                border = border
+            })
+        end
+
+        GameplayPad = VirtualPad(keys)
+        VirtualPad._CURRENT = GameplayPad
+    end
 
     self.HUD = HUD(self)
     self:add(self.HUD)
@@ -47,91 +96,44 @@ function GameScreen:new(data)
     self:add(self.comboDisplay)
 end
 
-function Game:update(dt)
+function GameScreen:update(dt)
     State.update(self, dt)
 
-    if outChannel:peek() then
-        local response = outChannel:pop()
-
-        if response then
-            local instance = response.instance
-
-            GameScreen.instance.song = love.audio.newSource(instance.song, "stream")
-            GameScreen.instance.hitObjectManager.hitObjects = instance.hitObjects
-            self.doneThread = true
-
-            table.sort(GameScreen.instance.hitObjectManager.hitObjects, function(a, b) return a.StartTime < b.StartTime end)
-            GameScreen.instance.hitObjectManager.scorePerNote = 1000000 / #GameScreen.instance.hitObjectManager.hitObjects
-            GameScreen.instance.hitObjectManager.length = tonumber(instance.length)
-            GameScreen.instance.data = response.instance
-            GameScreen.instance.totalNotes = #GameScreen.instance.hitObjectManager.hitObjects
-
-            if GameScreen.instance.data.gameMode == "Mania" then
-                GameScreen.instance.hitObjectManager:createReceptors(GameScreen.instance.data.mode)
-            end
-
-            -- setup le mobile inputs
-            local curkeylist = GameplayBinds[GameScreen.instance.data.mode]
-            if love.system.isMobile() then
-                local keys = {}
-                for i, key in ipairs(string.splitAllChars(curkeylist)) do
-                    -- calculate size and position for the mobile button (1920 width, at bottom of screen)
-                    local size = {1920 / #curkeylist, 1080 / 2}
-                    local position = {(i - 1) * size[1], 1080 - size[2]}
-                    local color = {1, 1, 1}
-                    local alpha = 0.25
-                    local downAlpha = 0.5
-                    local border = true
-                    
-                    table.insert(keys, {
-                        key = key,
-                        size = size,
-                        position = position,
-                        color = color,
-                        alpha = alpha,
-                        downAlpha = downAlpha,
-                        border = border
-                    })
-                end
-
-                GameplayPad = VirtualPad(keys)
-                VirtualPad._CURRENT = GameplayPad
-            end
-        end
+    if not self.calculateScore then
+        return
     end
 
-    if not GameScreen.instance then return end
-    GameScreen.instance:calculateAccuracy()
-    GameScreen.instance:calculateScore()
+    self:calculateAccuracy()
+    self:calculateScore()
 
-    GameScreen.instance.lerpedScore = math.fpsLerp(GameScreen.instance.lerpedScore, GameScreen.instance.score, 25, dt)
-    GameScreen.instance.lerpedAccuracy = math.fpsLerp(GameScreen.instance.lerpedAccuracy, GameScreen.instance.accuracy, 25, dt)
-    if tostring(GameScreen.instance.lerpedScore):match("nan") then
-        GameScreen.instance.lerpedScore = 0
+    self.lerpedScore = math.fpsLerp(self.lerpedScore, self.score, 25, dt)
+    self.lerpedAccuracy = math.fpsLerp(self.lerpedAccuracy, self.accuracy, 25, dt)
+    if tostring(self.lerpedScore):match("nan") then
+        self.lerpedScore = 0
     end
-    if tostring(GameScreen.instance.lerpedAccuracy):match("nan") then
-        GameScreen.instance.lerpedAccuracy = 0
+    if tostring(self.lerpedAccuracy):match("nan") then
+        self.lerpedAccuracy = 0
     end
 
-    if self.doneThread and not GameScreen.instance.hitObjectManager.started and GameScreen.instance.song then
-        GameScreen.instance.song:play()
+    if not self.hitObjectManager.started and self.song then
+        self.song:play()
 
-        GameScreen.instance.hitObjectManager.started = true
+        self.hitObjectManager.started = true
     end
 end
 
 function GameScreen:calculateAccuracy()
     -- use judgecount and total ntoes hit to calculate accuracy
-    local judgeCount = GameScreen.instance.hitObjectManager.judgeCounts
+    local judgeCount = self.hitObjectManager.judgeCounts
     local totalNotesHit = judgeCount["marvellous"] +
         judgeCount["perfect"] +
         judgeCount["great"] +
         judgeCount["good"] +
         judgeCount["bad"] +
         judgeCount["miss"]
-    local totalNotes = GameScreen.instance.totalNotes
+    local totalNotes = self.totalNotes
 
-    GameScreen.instance.rated = (
+    self.rated = (
         judgeCount["marvellous"] * 1 +
         judgeCount["perfect"] * 0.98 +
         judgeCount["great"] * 0.85 +
@@ -139,22 +141,22 @@ function GameScreen:calculateAccuracy()
         judgeCount["bad"] * 0.5
     ) / totalNotesHit
     
-    GameScreen.instance.accuracy = GameScreen.instance.rated
+    self.accuracy = self.rated
 end
 
 function GameScreen:calculateScore()
     local scoreMult = ModifierManager:getScoreMultiplier()
     local leMax = 1000000 * scoreMult
 
-    local accScore = GameScreen.instance.rated / GameScreen.instance.totalNotes * (leMax * 0.85)
-    local comboScore = GameScreen.instance.maxCombo / GameScreen.instance.totalNotes * (leMax * 0.15)
+    local accScore = self.rated / self.totalNotes * (leMax * 0.85)
+    local comboScore = self.maxCombo / self.totalNotes * (leMax * 0.15)
 
-    GameScreen.instance.score = accScore + comboScore
+    self.score = accScore + comboScore
 end
 
 function GameScreen:kill()
     State.kill(self)
-    GameScreen.instance = nil
+    self = nil
     self = nil
     if VirtualPad then
         VirtualPad._CURRENT = MenuPad

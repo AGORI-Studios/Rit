@@ -4,7 +4,8 @@ local ScalingTypes = {
     ASPECT_FIXED = 2,
     WINDOW_FIXED = 4,
     WINDOW_STRETCH = 8,
-    STRETCH_Y = 16
+    STRETCH_Y = 16,
+    WINDOW_LARGEST = 32,
 }
 
 return ScalingTypes

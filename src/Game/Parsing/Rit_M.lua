@@ -4,6 +4,8 @@ local currentSection = ""
 local curData = {}
 local noteCount = 0
 
+local state = States.Screens.Game
+
 function RitM:parse(path, folderPath)
     currentSection = ""
     curData = {}
@@ -25,10 +27,10 @@ function RitM:parse(path, folderPath)
         end
     end
 
-    instance.initialSV = curData.InitialSV or 1
-    instance.song = love.sound.newSoundData(folderPath .. "/" .. curData.AudioFile)
-    instance.noteCount = noteCount
-    instance.length = 10000
+    state.instance.data.initialSV = curData.InitialSV or 1
+    state.instance.data.song = love.sound.newSoundData(folderPath .. "/" .. curData.AudioFile)
+    state.instance.data.noteCount = noteCount
+    state.instance.data.length = 10000
 end
 
 function RitM:cache(data, filename, path)
@@ -117,8 +119,8 @@ function RitM:parseMetadata(line)
     elseif key == "GameMode" then
         -- 1 = Mania, 2 = Mobile, TODO: More modes
         curData.GameMode = value
-        if instance then
-            instance.gameMode = value
+        if state.instance.data then
+            state.instance.data.gameMode = value
         end
     end
 end
@@ -173,7 +175,7 @@ function RitM:parseNoteObjects(line, isCache)
             "TAP"
         )
 
-        instance.hitObjects[#instance.hitObjects + 1] = tapNote
+        state.instance.data.hitObjects[#state.instance.data.hitObjects + 1] = tapNote
     elseif type == "SLIDE" then
         -- slide note
         local width = tonumber(params[1])
@@ -215,7 +217,7 @@ function RitM:parseNoteObjects(line, isCache)
             data
         )
 
-        instance.hitObjects[#instance.hitObjects + 1] = slideNote
+        state.instance.data.hitObjects[#state.instance.data.hitObjects + 1] = slideNote
     elseif type == "FLICK" then
         -- flick note
     elseif type == "CATCH" then

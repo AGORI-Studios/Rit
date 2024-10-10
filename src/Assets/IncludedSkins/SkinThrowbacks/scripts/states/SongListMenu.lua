@@ -11,7 +11,7 @@ function SongList:new()
     State.new(self)
 
     self.bg = Sprite("Assets/Textures/Menu/PlayBG.png", 0, 0, true)
-    self.bg.scalingType = ScalingTypes.WINDOW_STRETCH
+    self.bg.scalingType = ScalingTypes.WINDOW_LARGEST
     self.bg:resize(Game._windowWidth, Game._windowHeight)
     self.bg.zorder = -1
     self:add(self.bg)
@@ -40,6 +40,8 @@ function SongList:new()
     self.currentDiffIndex = 1
 
     self:add(self.SongButtonGroup)
+
+    self:add(Header)
 end
 
 function SongList:updateSongList(dt)

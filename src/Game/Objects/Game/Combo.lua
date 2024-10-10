@@ -16,13 +16,14 @@ function Combo:getComboSprite(digit)
     if not self.sprites[digit] then
         self.sprites[digit] = Sprite(Skin._comboAssets[digit], 0, 0, false)
         self.sprites[digit].scale.x, self.sprites[digit].scale.y = 1.5, 1.7
+        self.sprites[digit].debug = false
     end
 
     return self.sprites[digit]
 end
 
 function Combo:draw()
-    local num = States.Screens.Game.instance.combo
+    local num = States.Screens.Game.combo
     if num == 0 then
         return
     end
@@ -34,7 +35,7 @@ function Combo:draw()
     for i = 1, #str do
         local char = str:sub(i, i)
         local digit = tonumber(char)
-        local spr = self:getComboSprite(digit)
+        local spr = self:getComboSprite(digit or 0)
 
         spr.x = Game._gameWidth / 2 - ((spr.width * 1.5) * #str) / 2 + (i - 1) * (spr.width * 1.5)
         spr.y = 1080 / 2

@@ -33,15 +33,14 @@ function Text:new(text, x, y, size, colour, font, format, value, instance, trimm
 end
 
 function Text:update(dt)
-    self.baseWidth = self.font:getWidth(self.text)
-    self.baseHeight = self.font:getHeight()
-
     Drawable.update(self, dt)
 
     -- update text value
     if self.format then
         self.text = self:updateText(self.value)
     end
+
+    self.drawX, self.drawY = self.x, self.y
 end
 
 -- if true, the function is restricted

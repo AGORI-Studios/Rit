@@ -4,6 +4,8 @@ local currentSection = ""
 local curData = {}
 local noteCount = 0
 
+local state = States.Screens.Game
+
 function osu:parse(path, folderPath)
     local data = love.filesystem.read(path)
     currentSection = ""
@@ -34,13 +36,13 @@ function osu:parse(path, folderPath)
         end
     end
 
-    instance.initialSV = 1
-    instance.song = love.sound.newSoundData(folderPath .. "/" .. curData.AudioFilename)
+    state.instance.data.initialSV = 1
+    state.instance.data.song = love.sound.newSoundData(folderPath .. "/" .. curData.AudioFilename)
 
     for _, note in ipairs(curData.HitObjects) do
         table.insert(
-            instance.hitObjects,
-            UnspawnObject(note.Time, note.EndTime, math.floor(note.X * (instance.mode / 512) + 1))
+            state.instance.data.hitObjects,
+            UnspawnObject(note.Time, note.EndTime, math.floor(note.X * (state.instance.data.mode / 512) + 1))
         )
     end
 end
@@ -162,9 +164,9 @@ function osu:parseDifficulty(line)
 
     if key == "CircleSize" then
         curData.CircleSize = tonumber(value:trim())
-        if instance then
-            instance.mode = curData.CircleSize or 4
-            instance.mode = tonumber(instance.mode)
+        if state.instance.data then
+            state.instance.data.mode = curData.CircleSize or 4
+            state.instance.data.mode = tonumber(state.instance.data.mode)
         end
     elseif key == "OverallDifficulty" then
         curData.OverallDifficulty = tonumber(value:trim())
