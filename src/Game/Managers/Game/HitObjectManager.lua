@@ -14,7 +14,7 @@ function HitObjectManager:new(instance)
     self.drawableHitObjects = {}
     self.scrollVelocities = {}
     self.scrollVelocityMarks = {}
-    self.musicTime = -1000
+    self.musicTime = -1500
     self.currentTime = 0
 
     self.svIndex = 1
@@ -62,10 +62,12 @@ end
 
 function HitObjectManager:resortReceptors()
     -- sometimes positions get messed up
+    local diff = 0
     for i = 1, self.data.mode do
         -- sort based off of underlay width and pos
         local receptor = self.receptorsGroup.objects[i]
         receptor.x = self.underlay.x + ((i-1) * 200)
+        receptor:update(love.timer.getDelta())
     end
 end
 
@@ -132,9 +134,6 @@ function HitObjectManager:updateTime(dt)
         GAME.instance.song:play()
         Script:call("OnSongStart")
     end
-    if not self.started then
-        return
-    end
 
     while (self.svIndex <= #self.scrollVelocities and self.musicTime >= self.scrollVelocities[self.svIndex].StartTime) do
         self.svIndex = self.svIndex + 1
@@ -145,8 +144,8 @@ end
 
 function HitObjectManager:resize(w, h)
     Group.resize(self, w, h)
-    self.STRUM_Y = h-225
     self:resortReceptors()
+    self.STRUM_Y = h-225
 end
 
 function HitObjectManager:update(dt)

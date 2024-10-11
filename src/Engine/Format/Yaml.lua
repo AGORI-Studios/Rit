@@ -94,18 +94,15 @@ local types = {
 }
 
 local Null = types.null
+
 function Null.__tostring()
     return "yaml.null"
 end
+
 function Null.isnull(v)
-    if v == nil then
-        return true
-    end
-    if type(v) == "table" and getmetatable(v) == Null then
-        return true
-    end
-    return false
+    return v == nil or (type(v) == "table" and getmetatable(v) == Null)
 end
+
 local null = Null()
 
 function types.timestamp:__init(y, m, d, h, i, s, f, z)
@@ -115,13 +112,7 @@ function types.timestamp:__init(y, m, d, h, i, s, f, z)
     self.hour = tonumber(h or 0)
     self.minute = tonumber(i or 0)
     self.second = tonumber(s or 0)
-    if type(f) == "string" and sfind(f, "^%d+$") then
-        self.fraction = tonumber(f) * math.pow(10, 3 - #f)
-    elseif f then
-        self.fraction = f
-    else
-        self.fraction = 0
-    end
+    self.fraction = (type(f) == "string" and sfind(f, "^%d+$")) and tonumber(f) * math.pow(10, 3 - #f) or (f or 0)
     self.timezone = z
 end
 
@@ -135,7 +126,7 @@ function types.timestamp:__tostring()
         self.minute,
         self.second,
         self.fraction,
-        self:gettz()
+        self.timezone
     )
 end
 

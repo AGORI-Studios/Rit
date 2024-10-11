@@ -3,12 +3,12 @@ local Background = Class:extend("Background")
 function Background:new(bgIMAGE, bgVIDEO)
     self.sprite = Sprite(bgIMAGE, 0, 0)
     self.sprite:centerOrigin()
-    self.sprite.scalingType = ScalingTypes.WINDOW_LARGEST
+    self.sprite.scalingType = ScalingTypes.WINDOW_STRETCH
     self.sprite:resize(Game._windowWidth, Game._windowHeight)
-    --self.video = Video(bgVIDEO, 0, 0)
+    
     self.video = Video(bgVIDEO, 0, 0)
     self.video:centerOrigin()
-    self.video.scalingType = ScalingTypes.WINDOW_LARGEST
+    self.video.scalingType = ScalingTypes.WINDOW_STRETCH
     self.video:resize(Game._windowWidth, Game._windowHeight)
 end
 

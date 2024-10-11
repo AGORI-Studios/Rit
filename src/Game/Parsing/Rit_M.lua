@@ -119,7 +119,7 @@ function RitM:parseMetadata(line)
     elseif key == "GameMode" then
         -- 1 = Mania, 2 = Mobile, TODO: More modes
         curData.GameMode = value
-        if state.instance.data then
+        if state.instance and state.instance.data then
             state.instance.data.gameMode = value
         end
     end

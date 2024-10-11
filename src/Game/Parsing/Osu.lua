@@ -165,7 +165,7 @@ function osu:parseDifficulty(line)
 
     if key == "CircleSize" then
         curData.CircleSize = tonumber(value:trim())
-        if state.instance.data then
+        if state.instance and state.instance.data then
             state.instance.data.mode = curData.CircleSize or 4
             state.instance.data.mode = tonumber(state.instance.data.mode)
         end

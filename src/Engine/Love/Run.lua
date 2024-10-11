@@ -85,7 +85,7 @@ function love.run()
         collectgarbage("step")
 
         updateFPS = 1 / dt
-        t_sleep(0.001)
+        --t_sleep(0.001)
 	end
 end
 
