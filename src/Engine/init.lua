@@ -4,6 +4,7 @@ utf8 = require("utf8")
 
 require(path .. "Lua")
 require(path .. "Love")
+require(path .. "PrebuiltDLL")
 require(path .. "Lib")
 
 tryExcept(
@@ -25,8 +26,6 @@ require(path .. "Input")
 require(path .. "Tween")
 require(path .. "Wait")
 require(path .. "Save")
-
-require(path .. "PrebuiltDLL")
 
 Game = TypedGroup(State) --- @class Game:TypedGroup<State>
 Game._currentState = State() --- @type State
