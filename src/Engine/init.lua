@@ -118,5 +118,5 @@ function Game:__printDebug()
 end
 
 function Game:quit()
-
+    self:kill()
 end

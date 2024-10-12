@@ -51,6 +51,10 @@ function Game:kill()
     love.thread.getChannel("thread.font.out"):clear()
     love.thread.getChannel("thread.image.out"):clear()
     love.thread.getChannel("thread.audio.out"):clear()
+
+    if DiscordRPC then
+        DiscordRPC.shutdown()
+    end
 end
 
 Game:initialize()

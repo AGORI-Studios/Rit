@@ -13,9 +13,12 @@ love.audio.setVolume(0.25)
 require("Engine")
 require("Game")
 
-local GENERATE_GLOBALS_LIST = true
+local GENERATE_GLOBALS_LIST = false
 
-function love.load()
+function love.load(args)
+    if args and (args[1] or "") == "-globals" then
+        GENERATE_GLOBALS_LIST = true
+    end
     -- disable dangerous os functions
     os.execute = function() end
     os.exit = function() end
@@ -35,7 +38,7 @@ function love.update(dt)
         if DiscordRPC.timer >= DiscordRPC.maxTimer then
             DiscordRPC.timer = 0
 
-            DiscordRPC:runCallbacks()
+            DiscordRPC.runCallbacks()
         end
     end
 end

@@ -38,6 +38,17 @@ function TitleMenu:new()
     self.buttonsGroup:add(self.ohButton)
 
     self:add(Header)
+
+    if DiscordRPC then
+        print("Setting presence")
+        DiscordRPC.presence = {
+            details = "In the menu",
+            state = "",
+            largeImageKey = "totallyreallogo",
+            largeImageText = "Rit" .. (Game.debug and " - Debug" or ""),
+        }
+        DiscordRPC.updatePresence()
+    end
 end
 
 function TitleMenu:update(dt)
