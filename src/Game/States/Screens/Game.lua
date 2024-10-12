@@ -17,7 +17,8 @@ function GameScreen:new(data)
         folder = "",
         noteCount = 0,
         gameMode = "Mania",
-        hitObjects = {}
+        hitObjects = {},
+        scrollVelocities = {}
     }
 
     if self.data.gameMode == "Mania" then
@@ -32,6 +33,8 @@ function GameScreen:new(data)
 
     self.song = love.audio.newSource(self.data.song, "stream")
     self.hitObjectManager.hitObjects = self.data.hitObjects
+    self.hitObjectManager.scrollVelocities = self.data.scrollVelocities
+    self.hitObjectManager:initSVMarks()
 
     table.sort(self.hitObjectManager.hitObjects, function(a, b) return a.StartTime < b.StartTime end)
     self.hitObjectManager.scorePerNote = 1000000 / #self.hitObjectManager.hitObjects

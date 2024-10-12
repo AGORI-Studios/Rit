@@ -41,6 +41,8 @@ function HitObjectManager:new(instance)
         ["bad"] = 0,
         ["miss"] = 0
     }
+
+    self.previousFrameTime = nil
 end
 
 local midX = 1920/2.45
@@ -67,6 +69,7 @@ function HitObjectManager:resortReceptors()
         -- sort based off of underlay width and pos
         local receptor = self.receptorsGroup.objects[i]
         receptor.x = self.underlay.x + ((i-1) * 200)
+        receptor.y = self.STRUM_Y
         receptor:update(love.timer.getDelta())
     end
 end
@@ -124,11 +127,12 @@ function HitObjectManager:getNotePosition(time, moveWithScroll)
     if not moveWithScroll then
         return self.STRUM_Y
     end
-    return self.STRUM_Y - (time - self.currentTime) * 2.2
+    return self.STRUM_Y - (time - self.currentTime) * SettingsManager:getSetting("Game", "ScrollSpeed")
 end 
 
 function HitObjectManager:updateTime(dt)
-    self.musicTime = self.musicTime + dt * 1000
+    self.musicTime = self.musicTime + (self.previousFrameTime and (love.timer.getTime() - self.previousFrameTime) or 0) * 1000
+    self.previousFrameTime = love.timer.getTime()
     if self.musicTime >= 0 then
         self.started = true
         GAME.instance.song:play()
@@ -145,7 +149,6 @@ end
 function HitObjectManager:resize(w, h)
     Group.resize(self, w, h)
     self:resortReceptors()
-    self.STRUM_Y = h-225
 end
 
 function HitObjectManager:update(dt)

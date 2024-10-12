@@ -3,7 +3,7 @@ local Underlay = Drawable:extend("Underlay")
 function Underlay:new(receptorCount)
     self.count = receptorCount
 
-    Drawable.new(self, 0, 0, 200*receptorCount, 1080)
+    Drawable.new(self, 0, 0, 200*receptorCount, 1080*5) -- lol
     self.colour = {0, 0, 0}
 
     self.x = 1920/2 - self.baseWidth/2
