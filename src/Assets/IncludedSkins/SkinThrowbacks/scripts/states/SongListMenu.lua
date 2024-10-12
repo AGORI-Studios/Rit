@@ -106,7 +106,7 @@ function SongList:update(dt)
     end
 
     if Input:wasPressed("MenuConfirm") then
-        if not self.searchInput then
+        if not self.searchTyping then
             if currentMenuState == 1 then
                 currentMenuState = 2
                 for _, songBtn in pairs(self.SongButtonGroup.objects) do

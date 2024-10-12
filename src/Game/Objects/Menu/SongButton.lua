@@ -104,8 +104,6 @@ function SongButton:updateYFromIndex(index, diffIndex, dt)
         self.targetX = 0
     else
         self.colour[1], self.colour[2], self.colour[3] = 0.5, 0.5, 0.5
-        --self.targetX = -25
-        -- wheel-like effect based off current index and this index
         self.targetX = -35 * math.abs(index - self.index)
     end
 

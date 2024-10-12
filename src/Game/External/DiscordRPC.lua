@@ -191,7 +191,7 @@ function DiscordRPC.updatePresence(presence)
     end
     presence.button1Label = presence.button1Label or "GitHub"
     presence.button1Url = presence.button1Url or "https://github.com/AGORI-Studios/Rit"
-    
+
     local func = "DiscordRPC.updatePresence"
     checkArg(presence, "table", "presence", func)
 
