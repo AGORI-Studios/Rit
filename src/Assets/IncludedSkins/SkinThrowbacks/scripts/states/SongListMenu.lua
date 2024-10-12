@@ -17,7 +17,12 @@ function SongList:new()
     self.bg.zorder = -1
     self:add(self.bg)
 
+    self.BGBubbles = BGBubbles()
+    self.BGBubbles.zorder = 0
+    self:add(self.BGBubbles)
+
     self.songInfo = SongInfoTab()
+    self.songInfo.zorder = 1
     self:add(self.songInfo)
 
     self.SongButtonGroup = TypedGroup(SongButton)
