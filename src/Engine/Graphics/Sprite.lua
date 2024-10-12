@@ -22,6 +22,8 @@ function Sprite:new(image, x, y, threaded)
 
     self.offset.x = 0
     self.offset.y = 0
+
+    self.flip = {x = false, y = false}
 end
 
 function Sprite:update(dt)
@@ -62,7 +64,17 @@ function Sprite:draw()
             sx = self.dimensions[1] / self.baseWidth * self.windowScale.x
             sy = self.dimensions[2] / self.baseHeight * self.windowScale.y
         end
-        love.graphics.draw(self.image, self.drawX, self.drawY, math.rad(self.angle), sx, sy, self.origin.x, self.origin.y)
+        --love.graphics.draw(self.image, self.drawX, self.drawY, math.rad(self.angle), sx * (self.flip.x and -1 or 1), sy * (self.flip.y and -1 or 1), self.origin.x, self.origin.y)
+        love.graphics.draw(
+            self.image,
+            self.drawX + (self.flip.x and self.width * sx or 0),
+            self.drawY + (self.flip.y and self.height * sy or 0),
+            math.rad(self.angle),
+            sx * (self.flip.x and -1 or 1),
+            sy * (self.flip.y and -1 or 1),
+            self.origin.x,
+            self.origin.y
+        )
 
         if Game.objectDebug and self.debug then
             love.graphics.translate(self.drawX, self.drawY)

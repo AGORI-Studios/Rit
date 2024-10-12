@@ -18,7 +18,8 @@ function HitObjectManager:new(instance)
     self.currentTime = 0
 
     self.svIndex = 1
-    self.STRUM_Y = 1080-225
+    self.STRUM_Y_DOWN = 1080-225
+    self.STRUM_Y_UP = 0
 
     self.screen = instance
     self.scorePerNote = 0
@@ -50,9 +51,16 @@ local midX = 1920/2.45
 function HitObjectManager:createReceptors(count)
     self.data = {mode = 4}
     self.data.mode = count
+    local dir = SettingsManager:getSetting("Game", "ScrollDirection")
     for i = 1, self.data.mode do
         local receptor = Receptor(i, count)
-        receptor.y = self.STRUM_Y
+        --receptor.y = self.STRUM_Y
+        receptor.y = dir == "Down" and self.STRUM_Y_DOWN or self.STRUM_Y_UP
+        if dir == "Split" then
+            receptor.y = i <= math.ceil(self.data.mode/2) and self.STRUM_Y_DOWN or self.STRUM_Y_UP
+        elseif dir == "Alternate" then
+            receptor.y = i % 2 == 0 and self.STRUM_Y_DOWN or self.STRUM_Y_UP
+        end
         receptor.x = midX + (i - (self.data.mode/2)) * 200
         self.receptorsGroup:add(receptor)
     end
@@ -65,17 +73,23 @@ end
 function HitObjectManager:resortReceptors()
     -- sometimes positions get messed up
     local diff = 0
+    local dir = SettingsManager:getSetting("Game", "ScrollDirection")
     for i = 1, self.data.mode do
         -- sort based off of underlay width and pos
         local receptor = self.receptorsGroup.objects[i]
         receptor.x = self.underlay.x + ((i-1) * 200)
-        receptor.y = self.STRUM_Y
+        receptor.y = dir == "Down" and self.STRUM_Y_DOWN or self.STRUM_Y_UP
+        if dir == "Split" then
+            receptor.y = i <= math.ceil(self.data.mode/2) and self.STRUM_Y_DOWN or self.STRUM_Y_UP
+        elseif dir == "Alternate" then
+            receptor.y = i % 2 == 0 and self.STRUM_Y_DOWN or self.STRUM_Y_UP
+        end
         receptor:update(love.timer.getDelta())
     end
 end
 
-function HitObjectManager:isOnScreen(time)
-    return self:getNotePosition(self:getPositionFromTime(time), true) >= -500
+function HitObjectManager:isOnScreen(time, lane)
+    return self:getNotePosition(self:getPositionFromTime(time), lane, true) >= -500
 end
 
 function HitObjectManager:initSVMarks()
@@ -123,11 +137,44 @@ function HitObjectManager:getPositionFromTime(time, index)
     return pos
 end
 
-function HitObjectManager:getNotePosition(time, moveWithScroll)
+function HitObjectManager:getNotePosition(time, lane, moveWithScroll)
+    local dir = SettingsManager:getSetting("Game", "ScrollDirection")
     if not moveWithScroll then
-        return self.STRUM_Y
+        if dir == "Split" then
+            if lane <= math.ceil(self.data.mode/2) then
+                return self.STRUM_Y_DOWN, true
+            else
+                return self.STRUM_Y_UP, false
+            end
+        elseif dir == "Alternate" then
+            if lane % 2 == 0 then
+                return self.STRUM_Y_DOWN, true
+            else
+                return self.STRUM_Y_UP, false
+            end
+        elseif dir == "Down" then
+            return self.STRUM_Y_DOWN, true
+        elseif dir == "Up" then
+            return self.STRUM_Y_UP, false
+        end
     end
-    return self.STRUM_Y - (time - self.currentTime) * SettingsManager:getSetting("Game", "ScrollSpeed")
+    if dir == "Down" then
+        return self.STRUM_Y_DOWN - (time - self.currentTime) * SettingsManager:getSetting("Game", "ScrollSpeed"), true
+    elseif dir == "Up" then
+        return self.STRUM_Y_UP + (time - self.currentTime) * SettingsManager:getSetting("Game", "ScrollSpeed"), false
+    elseif dir == "Split" then
+        if lane <= math.ceil(self.data.mode/2) then
+            return self.STRUM_Y_DOWN - (time - self.currentTime) * SettingsManager:getSetting("Game", "ScrollSpeed"), true
+        else
+            return self.STRUM_Y_UP + (time - self.currentTime) * SettingsManager:getSetting("Game", "ScrollSpeed"), false
+        end
+    elseif dir == "Alternate" then
+        if lane % 2 == 0 then
+            return self.STRUM_Y_DOWN - (time - self.currentTime) * SettingsManager:getSetting("Game", "ScrollSpeed"), true
+        else
+            return self.STRUM_Y_UP + (time - self.currentTime) * SettingsManager:getSetting("Game", "ScrollSpeed"), false
+        end
+    end
 end 
 
 function HitObjectManager:updateTime(dt)
@@ -154,14 +201,14 @@ end
 function HitObjectManager:update(dt)
     self:updateTime(dt)
 
-    while #self.hitObjects > 0 and self:isOnScreen(self.hitObjects[1].StartTime) do
+    while #self.hitObjects > 0 and self:isOnScreen(self.hitObjects[1].StartTime, self.hitObjects[1].Lane) do
         local hitObject = self.hitObjects[1]
         local drawableHitObject = HitObject(hitObject, self.data.mode)
 
         drawableHitObject.x = self.receptorsGroup.objects[hitObject.Lane].x
         drawableHitObject.initialSVTime = self:getPositionFromTime(hitObject.StartTime)
         drawableHitObject.endSVTime = self:getPositionFromTime(hitObject.EndTime)
-        drawableHitObject.y = self:getNotePosition(drawableHitObject.initialSVTime, drawableHitObject.moveWithScroll)
+        drawableHitObject.y = self:getNotePosition(drawableHitObject.initialSVTime, drawableHitObject.Data.Lane, drawableHitObject.moveWithScroll)
         drawableHitObject:resize(Game._windowWidth, Game._windowHeight)
         
         self:add(drawableHitObject, false)
@@ -170,8 +217,12 @@ function HitObjectManager:update(dt)
     end
 
     for _, hitObject in ipairs(self.drawableHitObjects) do
-        hitObject.y = self:getNotePosition(hitObject.initialSVTime, hitObject.moveWithScroll)
-        hitObject.endY = self:getNotePosition(hitObject.Data.EndTime, true)
+        hitObject.y = self:getNotePosition(hitObject.initialSVTime, hitObject.Data.Lane, hitObject.moveWithScroll)
+        local goinDown = false
+        hitObject.endY, goinDown = self:getNotePosition(hitObject.Data.EndTime, hitObject.Data.Lane, true)
+        if goinDown and hitObject.holdSprite then
+            hitObject.holdSprite.child.flip.y = true
+        end
 
         if self.musicTime > hitObject.Data.StartTime+360 and hitObject.moveWithScroll then
             self:remove(hitObject)

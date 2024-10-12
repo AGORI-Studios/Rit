@@ -7,6 +7,7 @@ love.filesystem.createDirectory("CacheData/User")
 local SettingsDefault = {
     Game = {
         ScrollSpeed = 70,
+        ScrollDirection = "Down"
     },
     Audio = {
         Master = 1,
@@ -19,6 +20,14 @@ function SettingsManager:loadSettings()
     local exists = love.filesystem.getInfo(settingsFilePath)
     if exists then
         self._settings = Json.decode(FileHandler:readEncryptedFile(settingsFilePath))
+
+        for category, settings in pairs(SettingsDefault) do
+            for setting, value in pairs(settings) do
+                if self._settings[category][setting] == nil then
+                    self._settings[category][setting] = value
+                end
+            end
+        end
     else
         FileHandler:writeEncryptedFile(settingsFilePath, Json.encode(SettingsDefault))
 

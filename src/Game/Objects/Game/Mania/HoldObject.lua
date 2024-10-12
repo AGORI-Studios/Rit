@@ -26,15 +26,15 @@ function HoldObject:update(dt, endY)
         nendY = nendY + self.origin.y
     end
 
-    nendY = Game._windowHeight * (nendY / Game._gameHeight)
+    nendY = Game._windowHeight * (nendY / Game._gameHeight) + 100
 
     local scaleY = (nendY - self.parent.drawY - self.child.height) / self.height
     self.scale.y = scaleY
 
     if self.child then
         self.child.x = self.x
-        self.child.y = endY
-        if Skin.flipHoldEnd then
+        self.child.y = endY + 125
+        if self.child.flip.y then
             self.child.scale.y = -1
         end
 
