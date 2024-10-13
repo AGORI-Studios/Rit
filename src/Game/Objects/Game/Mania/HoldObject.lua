@@ -1,7 +1,14 @@
+---@diagnostic disable: need-check-nil
 ---@class HoldObject : VertexSprite
 local HoldObject = VertexSprite:extend("HoldObject")
 
 function HoldObject:new(endTime, lane, count, parent)
+    if not Skin._noteAssets[count] then
+        Skin._noteAssets[count] = Skin._noteAssets[1]
+    end
+    if not Skin._noteAssets[count][lane] then
+        Skin._noteAssets[count][lane] = Skin._noteAssets[count][1]
+    end
     VertexSprite.new(self, Skin._noteAssets[count][lane]["Hold"], 0, 0, 16)
     self.parent = parent
     self.child = EndObject(endTime, lane, count, self)

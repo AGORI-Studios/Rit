@@ -19,7 +19,7 @@ function HitObjectManager:new(instance)
 
     self.svIndex = 1
     self.STRUM_Y_DOWN = 1080-225
-    self.STRUM_Y_UP = 0
+    self.STRUM_Y_UP = 25
 
     self.screen = instance
     self.scorePerNote = 0
@@ -72,7 +72,6 @@ end
 
 function HitObjectManager:resortReceptors()
     -- sometimes positions get messed up
-    local diff = 0
     local dir = SettingsManager:getSetting("Game", "ScrollDirection")
     for i = 1, self.data.mode do
         -- sort based off of underlay width and pos

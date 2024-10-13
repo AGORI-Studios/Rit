@@ -1,7 +1,14 @@
+---@diagnostic disable: need-check-nil
 ---@class HitObject : Sprite
 local HitObject = Sprite:extend("HitObject")
 
 function HitObject:new(data, count)
+    if not Skin._noteAssets[count] then
+        Skin._noteAssets[count] = Skin._noteAssets[1]
+    end
+    if not Skin._noteAssets[count][data.Lane] then
+        Skin._noteAssets[count][data.Lane] = Skin._noteAssets[count][1]
+    end
     Sprite.new(self, Skin._noteAssets[count][data.Lane]["Note"], 0, 0, false)
 
     self:centerOrigin()
@@ -14,7 +21,7 @@ function HitObject:new(data, count)
     self.moveWithScroll = true
 end
 
-function HitObject:update(dt) 
+function HitObject:update(dt)
     Sprite.update(self, dt)
 
     if self.holdSprite then

@@ -37,11 +37,46 @@ function osu:parse(path, folderPath)
 
     state.instance.data.initialSV = 1
     state.instance.data.song = love.sound.newSoundData(folderPath .. "/" .. curData.AudioFilename)
+    
+    math.randomseed(curData.BeatmapID)
 
-    for _, note in ipairs(curData.HitObjects) do
+    --[[ state.instance.data.mode = 1
+    for i, note in ipairs(curData.HitObjects) do
+        local normalLane = math.floor(note.X / (512/state.instance.data.mode) + 1)
+        local targetLaneCount = 1
+        local newLane = love.math.random(1, targetLaneCount)
         table.insert(
             state.instance.data.hitObjects,
-            UnspawnObject(note.Time, note.EndTime, math.floor(note.X * (state.instance.data.mode / 512) + 1))
+            UnspawnObject(note.Time, note.EndTime, newLane)
+        )
+        for j = 1, 5 do
+            local try = 0
+            local last = state.instance.data.hitObjects[#state.instance.data.hitObjects - i] or {Lane = -10000, StartTime = -10000}
+            while math.abs(last.Lane - newLane) < 2 and math.abs(last.StartTime - note.Time) < 50 do
+                newLane = love.math.random(1, targetLaneCount)
+                try = try + 1
+                if try > 5 then
+                    table.remove(state.instance.data.hitObjects, #state.instance.data.hitObjects)
+                end
+            end
+        end
+    end
+
+    -- remove overlapping notes
+    for i = 1, #state.instance.data.hitObjects do
+        local note = state.instance.data.hitObjects[i]
+        for j = i + 1, #state.instance.data.hitObjects do
+            local other = state.instance.data.hitObjects[j] or {Lane = -10000, StartTime = -10000}
+            if note.StartTime == other.StartTime and note.Lane == other.Lane then
+                table.remove(state.instance.data.hitObjects, j)
+            end
+        end
+    end ]]
+    -- TODO: Add above into seperate Modifiers manager
+    for i, note in ipairs(curData.HitObjects) do
+        table.insert(
+            state.instance.data.hitObjects,
+            UnspawnObject(note.Time, note.EndTime, math.floor(note.X / (512/curData.CircleSize) + 1))
         )
     end
 end
@@ -268,7 +303,7 @@ function osu:parseHitObjects(line, inParse)
         end
         curData.noteCount = curData.noteCount + 1
         table.insert(curData.notes, {
-            Lane = math.floor(x * (curData.mode / 512) + 1),
+            Lane = math.floor(x * (512/curData.mode) + 1),
             StartTime = time,
         })
         curData.length = math.max(curData.length, endTime > time and endTime or time)

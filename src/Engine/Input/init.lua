@@ -71,7 +71,7 @@ end
 GameplayBinds = {
     " ",
     "fj",
-    "d j",
+    "f j",
     "dfjk",
     "df jk",
     "sdfjkl",
