@@ -8,6 +8,9 @@ require(path .. "Cache")
 require(path .. "Threads")
 Parsers = require(path .. "Parsing")
 
+require(path .. "Difficulty")
+
+
 local function setupFolders()
     love.filesystem.createDirectory("CacheData")
     love.filesystem.createDirectory("CacheData/Beatmaps")

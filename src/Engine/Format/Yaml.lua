@@ -715,71 +715,67 @@ end
 
 -- : (list<str>)->dict
 local function parsedocuments(lines)
-    lines =
-        select(
-        lines,
-        function(s)
-            return not isemptyline(s)
-        end
-    )
-
-    if sfind(lines[1], "^%%YAML") then
-        tremove(lines, 1)
-    end
-
     local root = {}
     local in_document = false
-    while #lines > 0 do
-        local line = lines[1]
-        -- Do we have a document header?
+    local index = 1
+
+    -- Filter out empty lines
+    local function filter_lines()
+        local filtered = {}
+        for _, line in ipairs(lines) do
+            if not isemptyline(line) then
+                table.insert(filtered, line)
+            end
+        end
+        return filtered
+    end
+
+    lines = filter_lines()
+
+    -- Check for YAML header
+    if sfind(lines[1], "^%%YAML") then
+        index = index + 1
+    end
+
+    while index <= #lines do
+        local line = lines[index]
         local docright
+
         if sfind(line, "^%-%-%-") then
-            -- Handle scalar documents
             docright = ssub(line, 4)
-            tremove(lines, 1)
+            index = index + 1
             in_document = true
         end
+
         if docright then
-            if (not sfind(docright, "^%s+$") and not sfind(docright, "^%s+#")) then
+            if not sfind(docright, "^%s+$") and not sfind(docright, "^%s+#") then
                 tinsert(root, parsescalar(docright, lines))
             end
-        elseif #lines == 0 or startswith(line, "---") then
-            -- XXX The final '-+$' is to look for -- which ends up being an
-            -- error later.
-            -- A naked document
+        elseif index > #lines or startswith(line, "---") then
             tinsert(root, null)
-            while #lines > 0 and not sfind(lines[1], "---") do
-                tremove(lines, 1)
+            while index <= #lines and not sfind(lines[index], "---") do
+                index = index + 1
             end
             in_document = false
         elseif not in_document and #root > 0 then
-            -- only the first document can be explicit
             error("parse error: " .. line)
         elseif sfind(line, "^%s*%-") then
-            -- An array at the root
             tinsert(root, parseseq("", lines, 0))
         elseif sfind(line, "^%s*[^%s]") then
-            -- A hash at the root
             local level = countindent(line)
             tinsert(root, parsemap("", lines, level))
         else
-            -- Shouldn't get here.  @lines have whitespace-only lines
-            -- stripped, and previous match is a line with any
-            -- non-whitespace.  So this clause should only be reachable via
-            -- a perlbug where \s is not symmetric with \S
-
-            -- uncoverable statement
             error("parse error: " .. line)
         end
     end
+
     if #root > 1 and Null.isnull(root[1]) then
         tremove(root, 1)
-        return root
     end
+
     return root
 end
 
---- Parse yaml string into table.
 local function parse(source)
     local lines = {}
     for line in string.gmatch(source .. "\n", "(.-)\r?\n") do

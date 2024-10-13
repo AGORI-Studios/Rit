@@ -18,7 +18,7 @@ local SongCacheFormat = {
     hitobj_count = 0,
     ln_count = 0,
     length = 0,
-    metaType = 2,
+    metaType = 3,
 }
 
 local SongCache = Class:extend("SongCache")
@@ -30,14 +30,14 @@ function SongCache:createCache(songData, filename, fileExt)
         strOut = strOut .. key .. ":" .. songData[key] .. "\n"
     end
 
-    FileHandler:writeEncryptedFile("CacheData/Beatmaps/" .. filename .. ".scache", strOut)
+    love.filesystem.write("CacheData/Beatmaps/" .. filename .. ".rsc", strOut)
 
     return SongCacheFormat
 end
  
 function SongCache:loadCache(filename, ogPath, fileExt)
-    if love.filesystem.getInfo("CacheData/Beatmaps/" .. filename .. ".scache") then
-        local data = FileHandler:readEncryptedFile("CacheData/Beatmaps/" .. filename .. ".scache")
+    if love.filesystem.getInfo("CacheData/Beatmaps/" .. filename .. ".rsc") then
+        local data = love.filesystem.read("CacheData/Beatmaps/" .. filename .. ".rsc")
         local songData = {}
         for line in data:gmatch("[^\n]+") do
             local key, value = line:match("([^:]+):(.+)")
@@ -48,9 +48,9 @@ function SongCache:loadCache(filename, ogPath, fileExt)
 
             ::continue::
         end
-        if songData["metaType"] == 1 then
+        if tonumber(songData["metaType"]) ~= 3 then
             -- delete the cache file and reload the song
-            love.filesystem.remove("CacheData/Beatmaps/" .. filename .. ".scache")
+            love.filesystem.remove("CacheData/Beatmaps/" .. filename .. ".rsc")
             return self:loadCache(filename, ogPath, fileExt)
         end
         return songData
@@ -58,21 +58,21 @@ function SongCache:loadCache(filename, ogPath, fileExt)
         if fileExt == ".qua" then
             local data = love.filesystem.read(ogPath)
             local songData = Parsers.Quaver:cache(data, filename, ogPath)
-            songData.metaType = 2
+            songData.metaType = 3
             songData.game_mode = "Mania"
             return songData
         elseif fileExt == ".osu" then
             local data = love.filesystem.read(ogPath)
             local songData = Parsers.Osu:cache(data, filename, ogPath)
-            songData.metaType = 2
+            songData.metaType = 3
             songData.game_mode = "Mania"
             return songData
-        elseif fileExt == ".ritm" then
+        --[[ elseif fileExt == ".ritm" then
             local data = love.filesystem.read(ogPath)
             local songData = Parsers.RitM:cache(data, filename, ogPath)
             songData.metaType = 2
             songData.game_mode = "Mobile"
-            return songData
+            return songData ]]
         end
     end
 end
@@ -95,12 +95,12 @@ function SongCache:loadSongsPath(path)
                     local fileExt = ".osu"
                     
                     self:loadCache(filename, fullPath, fileExt)
-                elseif song:endsWith(".ritm") then
+                --[[ elseif song:endsWith(".ritm") then
                     local filename = song:gsub(".ritm$", "")
                     local fullPath = path .. "/" .. file .. "/" .. song
                     local fileExt = ".ritm"
                     
-                    self:loadCache(filename, fullPath, fileExt)
+                    self:loadCache(filename, fullPath, fileExt) ]]
                 end
             end
         elseif fileType == "file" then

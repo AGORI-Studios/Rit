@@ -65,9 +65,12 @@ function Quaver:cache(data, filename, path)
     local hitobj_count = 0
     local ln_count = 0
     local length = 0 -- found from hit objects
+    local notes = {}
+    local difficulty = 0
 
     for _, note in ipairs(data["HitObjects"]) do
         hitobj_count = hitobj_count + 1 -- jas StartTime and EndTime (can be nil)
+        table.insert(notes, note)
         if note["EndTime"] then
             length = math.max(length, note["EndTime"] > (note["StartTime"] or 0) and note["EndTime"] or note["StartTime"] or 0)
             if note["EndTime"] or 0 > note["StartTime"] or 0 then
@@ -77,6 +80,8 @@ function Quaver:cache(data, filename, path)
             length = math.max(length, note["StartTime"] or 0)
         end
     end
+
+    difficulty = DifficultyCalculator:calculate(notes)
 
     local songData = {
         title = title,
@@ -97,9 +102,10 @@ function Quaver:cache(data, filename, path)
         hitobj_count = hitobj_count,
         ln_count = ln_count,
         length = length,
-        metaType = 1,
+        metaType = 3,
         map_type = "Quaver",
-        bg_path = bg_path
+        bg_path = bg_path,
+        difficulty = difficulty
     }
 
     SongCache:createCache(songData, filename, ".qua")

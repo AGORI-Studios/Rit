@@ -41,6 +41,7 @@ function GameScreen:new(data)
     self.hitObjectManager.length = tonumber(self.data.length)
     print(self.hitObjectManager.length)
     self.totalNotes = #self.hitObjectManager.hitObjects
+    DifficultyCalculator:calculate(self.hitObjectManager.hitObjects)
     
     if self.data.gameMode == "Mania" then
         self.hitObjectManager:createReceptors(self.data.mode)

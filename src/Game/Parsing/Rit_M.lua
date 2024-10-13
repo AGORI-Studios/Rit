@@ -84,7 +84,7 @@ function RitM:cache(data, filename, path)
         hitobj_count = curData.noteCount,
         ln_count = curData.lnCount,
         length = curData.length,
-        metaType = 1,
+        metaType = 3,
         map_type = "RitM",
         bg_path = curData.BackgroundFile
     }

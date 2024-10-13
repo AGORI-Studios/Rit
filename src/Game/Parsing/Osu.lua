@@ -20,7 +20,6 @@ function osu:parse(path, folderPath)
             currentSection = line:sub(2, -2)
         else
             if currentSection == "General" then
-                print(line, "GENERAL")
                 self:parseGeneral(line)
             elseif currentSection == "Metadata" then
                 self:parseMetadata(line)
@@ -48,8 +47,6 @@ function osu:parse(path, folderPath)
 end
 
 function osu:cache(data, filename, path)
-    print("Caching " .. filename)
-
     local isMania = false
     local matched = data:match("Mode: 3")
     if matched then
@@ -63,7 +60,8 @@ function osu:cache(data, filename, path)
     curData = {
         noteCount = 0,
         lnCount = 0,
-        length = 0
+        length = 0,
+        notes = {}
     }
 
     local lines = data:split("\n")
@@ -108,7 +106,7 @@ function osu:cache(data, filename, path)
         hitobj_count = curData.noteCount,
         ln_count = curData.lnCount,
         length = curData.length,
-        metaType = 1,
+        metaType = 3,
         map_type = "Osu",
         bg_path = curData.Background,
         video_path = ""
@@ -126,7 +124,6 @@ function osu:parseGeneral(line)
         return
     end
 
-    print(key, value)
     if key == "AudioFilename" then
         curData.AudioFilename = value:trim()
     elseif key == "PreviewTime" then
@@ -168,6 +165,8 @@ function osu:parseDifficulty(line)
         if state.instance and state.instance.data then
             state.instance.data.mode = curData.CircleSize or 4
             state.instance.data.mode = tonumber(state.instance.data.mode)
+        else
+            curData.mode = curData.CircleSize or 4
         end
     elseif key == "OverallDifficulty" then
         curData.OverallDifficulty = tonumber(value:trim())
@@ -264,6 +263,10 @@ function osu:parseHitObjects(line, inParse)
             curData.lnCount = curData.lnCount + 1
         end
         curData.noteCount = curData.noteCount + 1
+        table.insert(curData.notes, {
+            Lane = math.floor(x * (curData.mode / 512) + 1),
+            StartTime = time,
+        })
         curData.length = math.max(curData.length, endTime > time and endTime or time)
     end
 end
