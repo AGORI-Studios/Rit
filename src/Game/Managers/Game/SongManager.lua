@@ -3,16 +3,11 @@ local SongManager = {}
 SongManager.songCache = {}
 
 function SongManager:getSongList()
-    local sortedList = {}
-    for _, v in pairs(self.songCache) do
-        table.insert(sortedList, v)
+    if not self.songCache or #self.songCache == 0 then
+        self:loadSongList()
     end
-    
-    table.sort(sortedList, function(a, b)
-        return a.index < b.index
-    end)
 
-    return sortedList
+    return self.songCache
 end
 
 function SongManager:loadSongList()
@@ -46,8 +41,38 @@ function SongManager:loadSongList()
         songData.index = diffIndexes[songData.mapset_id or 0]
         self.songCache[songData.mapset_id or 0].difficulties[songData.map_id or 0] = songData
         diffIndexes[songData.mapset_id or 0] = diffIndexes[songData.mapset_id or 0] + 1
-
         ::continue::
+    end
+
+    local sortedList = {}
+    for _, v in pairs(self.songCache) do
+        table.insert(sortedList, v)
+    end
+    table.sort(sortedList, function(a, b)
+        return a.title < b.title
+    end)
+
+    self.songCache = {}
+    for i, v in ipairs(sortedList) do
+        v.index = i
+        table.insert(self.songCache, v)
+    end
+
+    -- now sort difficulties based off difficulty
+    for _, v in pairs(self.songCache) do
+        local sortedDiffs = {}
+        for _, diff in pairs(v.difficulties) do
+            table.insert(sortedDiffs, diff)
+        end
+        table.sort(sortedDiffs, function(a, b)
+            return a.difficulty < b.difficulty
+        end)
+
+        v.difficulties = {}
+        for i, diff in ipairs(sortedDiffs) do
+            diff.index = i
+            table.insert(v.difficulties, diff)
+        end
     end
 
     return self.songCache

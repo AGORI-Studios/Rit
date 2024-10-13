@@ -79,6 +79,7 @@ function SongList:updateDiffList(dt)
     end
 
     self.currentDiffIndex = math.clamp(self.currentDiffIndex, 1, #self.currentButton.children)
+    self.songInfo:updateDiffData(self.currentButton.children[self.currentDiffIndex].data)
 end
 
 function SongList:update(dt)
@@ -107,11 +108,14 @@ function SongList:update(dt)
                 songBtn.hidden = false
                 songBtn.showChildren = false
             end
+
+            self.songInfo:toggleDiffDisplay()
         end
     end
 
     if Input:wasPressed("MenuConfirm") then
         if not self.searchTyping then
+            self.songInfo:toggleDiffDisplay()
             if currentMenuState == 1 then
                 currentMenuState = 2
                 for _, songBtn in pairs(self.SongButtonGroup.objects) do
@@ -195,6 +199,8 @@ function SongList:mousepressed(x, y, button, istouch, presses)
                     for _, songBtn in pairs(self.SongButtonGroup.objects) do
                         songBtn.hidden = true
                     end
+
+                    self.songInfo:toggleDiffDisplay()
                 else
                     self.currentIndex = songButton.index
                 end
@@ -208,6 +214,7 @@ function SongList:mousepressed(x, y, button, istouch, presses)
                     Game:SwitchState(States.Screens.Game, diffButton.data)
                 else
                     self.currentDiffIndex = diffButton.index
+                    self.songInfo:updateDiffData(self.currentButton.children[self.currentDiffIndex].data)
                 end
             end
         end
@@ -243,6 +250,8 @@ function SongList:wheelmoved(x, y)
             self.currentDiffIndex = self.currentDiffIndex + 3
         end
         self.currentDiffIndex = math.clamp(self.currentDiffIndex, 1, #self.currentButton.children)
+
+        self.songInfo:updateDiffData(self.currentButton.children[self.currentDiffIndex].data)
     end
 end
 

@@ -87,6 +87,8 @@ function osu:cache(data, filename, path)
         end
     end
 
+    local difficulty, nps = DifficultyCalculator:calculate(curData.notes, curData.mode)
+
     local songData = {
         title = curData.Title,
         artist = curData.Artist,
@@ -106,10 +108,12 @@ function osu:cache(data, filename, path)
         hitobj_count = curData.noteCount,
         ln_count = curData.lnCount,
         length = curData.length,
-        metaType = 3,
+        metaType = 4,
         map_type = "Osu",
         bg_path = curData.Background,
-        video_path = ""
+        video_path = "",
+        difficulty = difficulty,
+        nps = nps,
     }
 
     SongCache:createCache(songData, filename, ".osu")

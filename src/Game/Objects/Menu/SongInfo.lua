@@ -15,6 +15,8 @@ function SongInfo:new()
     self.artist = Text("", 1170, 200, nil, {200/255, 80/255, 104/255, 1}, Game.fonts["menuExtraBoldX2"], false, nil, Skin:getSkinnedState("SongListMenu"), true, 400)
     self.mapper = Text("", 1170, 260, nil, {200/255, 80/255, 104/255, 1}, Game.fonts["defaultBoldX2"], false, nil, Skin:getSkinnedState("SongListMenu"), true, 400)
     self.desc = Text("", 1200, 800, nil, nil, Game.fonts["NatsRegular26"], false, nil, Skin:getSkinnedState("SongListMenu"), false, Game.fonts["NatsRegular26"]:getWidth("Hi this is testing a \"very long\" description in rit to see how it displays. Look off? Please report it. Description's should look no longer than this."), true)
+    self.diffDisplay = Text("", 1660, 375, nil, nil, Game.fonts["NatsRegular26"], false, nil, Skin:getSkinnedState("SongListMenu"), true, 200)
+    self.diffDisplay.visible = false
 
     self.pictureShadow = Drawable(1755, 120, 125, 125)
     self.pictureShadow.colour = {128/255, 34/255, 88/255}
@@ -34,8 +36,7 @@ function SongInfo:new()
     self.descBox.rounding = 25
     self:add(self.descBox)
 
-    --[[ self.icon = Sprite("Assets/Textures/CoverArts/Placeholder.png", 790, 1170)
-    self:add(self.icon) ]]
+    self.currentDiffData = {}
     
     self.seperator = Drawable(1170, self.mapper.y+75, 700, 2)
     self.seperator.alpha = 0.2
@@ -45,6 +46,7 @@ function SongInfo:new()
     self:add(self.artist)
     self:add(self.mapper)
     self:add(self.desc)
+    self:add(self.diffDisplay)
 end
 
 function SongInfo:update(dt)
@@ -60,7 +62,6 @@ function SongInfo:resize(w, h)
     local newWidth = self.playTab.baseWidth - offScreen
     self.playTab.width = newWidth
     self.playTab.windowScale.x = newWidth / self.playTab.baseWidth
-    -- convert h
     self.playTab.windowScale.y = h / self.playTab.baseHeight
 end
 
@@ -69,6 +70,15 @@ function SongInfo:updateInfo(data)
     self.artist.text = "By " .. (data.artist or "Unknown")
     self.mapper.text = "Mapped by " .. (data.creator or "Unknown")
     self.desc.text = data.desc or "This map has no description."
+end
+
+function SongInfo:updateDiffData(data)
+    self.currentDiffData = data
+    self.diffDisplay.text = "NPS: " .. string.format("%.2f", data.nps) .. "\nDifficulty: " .. string.format("%.2f", data.difficulty)
+end
+
+function SongInfo:toggleDiffDisplay()
+    self.diffDisplay.visible = not self.diffDisplay.visible
 end
 
 return SongInfo

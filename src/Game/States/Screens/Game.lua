@@ -39,9 +39,7 @@ function GameScreen:new(data)
     table.sort(self.hitObjectManager.hitObjects, function(a, b) return a.StartTime < b.StartTime end)
     self.hitObjectManager.scorePerNote = 1000000 / #self.hitObjectManager.hitObjects
     self.hitObjectManager.length = tonumber(self.data.length)
-    print(self.hitObjectManager.length)
     self.totalNotes = #self.hitObjectManager.hitObjects
-    DifficultyCalculator:calculate(self.hitObjectManager.hitObjects)
     
     if self.data.gameMode == "Mania" then
         self.hitObjectManager:createReceptors(self.data.mode)
