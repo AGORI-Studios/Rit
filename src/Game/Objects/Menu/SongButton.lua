@@ -20,7 +20,7 @@ function SongButton:new(songData)
     self.unhoveredTextObj = Text(self.title, 0, 0, 20, {1, 1, 1, 1}, Game.fonts["menuExtraBoldX3"], nil, nil, nil, true, 600)
     self.textObj = Text(self.title, 0, 0, 20, {1, 1, 1, 1}, Game.fonts["menuExtraBoldX2"], nil, nil, nil, true, 600)
     self.leBar = Sprite("Assets/Textures/Menu/SongTagSelectedBar.png", 0, 0, true)
-    self.artistText = Text("By " .. self.artist, 0, 0, 20, {200/255, 80/255, 104/255, 1}, Game.fonts["menuExtraBoldX1.5"], nil, nil, nil, true, 370)
+    self.artistText = Text(Locale("By ") .. self.artist, 0, 0, 20, {200/255, 80/255, 104/255, 1}, Game.fonts["menuExtraBoldX1.5"], nil, nil, nil, true, 370)
 
     self.difficultyBars = TypedGroup(Drawable)
     self.showPlus = false
@@ -37,7 +37,7 @@ function SongButton:new(songData)
     if self.showPlus then
         self.plusText = Text("+", 0, 0, 20, {1, 1, 1, 1}, Game.fonts["menuExtraBoldX1.5"], nil, nil, nil, true, 400)
     end
-    self.difficultyText = Text(#self.difficultyBars.objects .. " Difficult" .. (#self.difficultyBars.objects == 1 and "y" or "ies"), 0, 0, 20, {200/255, 80/255, 104/255, 1}, Game.fonts["menuBoldX1.5"], nil, nil, nil, true, 400)
+    self.difficultyText = Text(#self.difficultyBars.objects .. Locale(" Difficult" .. (#self.difficultyBars.objects == 1 and "y" or "ies")), 0, 0, 20, {200/255, 80/255, 104/255, 1}, Game.fonts["menuBoldX1.5"], nil, nil, nil, true, 400)
     self.difficultyText.shear.x = -0.3
 
     Sprite.new(self, "Assets/Textures/Menu/SongTag.png", 0, 0, true)

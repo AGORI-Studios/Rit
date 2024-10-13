@@ -46,7 +46,7 @@ function SongList:new()
     self.searchTab.zorder = 100
     self:add(self.searchTab)
 
-    self.searchInputText = Text("Search", 30, 110, nil, nil, Game.fonts["menuBold"], nil, nil, nil, nil, nil)
+    self.searchInputText = Text(Locale("Search"), 30, 110, nil, nil, Game.fonts["menuBold"], nil, nil, nil, nil, nil)
     self.searchInputText.colour[4] = 0.5
     self.searchInputText.zorder = 101
     self:add(self.searchInputText)
@@ -158,7 +158,7 @@ function SongList:keypressed(k)
             self.searchInputText.text = self.searchInput
             self.searchInputText.colour[4] = 1
         else
-            self.searchInputText.text = "Search"
+            self.searchInputText.text = Locale("Search")
             self.searchInputText.colour[4] = 0.5
         end
     end
@@ -175,7 +175,7 @@ function SongList:textinput(t)
         self.searchInputText.text = self.searchInput
         self.searchInputText.colour[4] = 1
     else
-        self.searchInputText.text = "Search"
+        self.searchInputText.text = Locale("Search")
         self.searchInputText.colour[4] = 0.5
     end
 end

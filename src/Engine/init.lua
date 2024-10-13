@@ -27,6 +27,8 @@ require(path .. "Tween")
 require(path .. "Wait")
 require(path .. "Save")
 
+Locale = require(path .. "Locale")
+
 Game = TypedGroup(State) --- @class Game:TypedGroup<State>
 Game._currentState = State() --- @type State
 Game:add(Game._currentState)

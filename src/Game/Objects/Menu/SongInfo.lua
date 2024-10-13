@@ -67,9 +67,9 @@ end
 
 function SongInfo:updateInfo(data)
     self.songTitle.text = data.title
-    self.artist.text = "By " .. (data.artist or "Unknown")
-    self.mapper.text = "Mapped by " .. (data.creator or "Unknown")
-    self.desc.text = data.desc or "This map has no description."
+    self.artist.text = Locale("By ") .. (data.artist or Locale("Unknown"))
+    self.mapper.text = Locale("Mapped by ") .. (data.creator or Locale("Unknown"))
+    self.desc.text = data.desc or Locale("This map has no description.")
 end
 
 function SongInfo:updateDiffData(data)
