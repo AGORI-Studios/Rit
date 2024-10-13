@@ -32,8 +32,9 @@ Game._currentState = State() --- @type State
 Game:add(Game._currentState)
 Game.objectDebug = false
 Game.debug = true
-Game._windowWidth = 1280
-Game._windowHeight = 720
+local desktopWidth, desktopHeight = love.window.getDesktopDimensions()
+Game._windowWidth = desktopWidth * 0.8
+Game._windowHeight = desktopHeight * 0.8
 Game._gameWidth = 1920
 Game._gameHeight = 1080
 Game.Tween = TweenManager() --- @type TweenManager
