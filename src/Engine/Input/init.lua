@@ -109,5 +109,10 @@ for i = 1, #GameplayBinds do
         controlsTbl[i .. "k" .. j] = {Key(_splittedBinds[i][j])}
     end
 end
+--[[ controlsTbl["26k"] ]]
+local k26 = splitInputChars("qwertyuiopasdfghjklzxcvbnm,.")
+for i = 1, #k26 do
+    controlsTbl["26k" .. i] = {Key(k26[i])}
+end
 
 Input = InputClass(controlsTbl)
