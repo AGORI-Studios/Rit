@@ -1716,4 +1716,5 @@ elseif ffi.os == "OSX" then
 else
 	file = x64 and "steam_api64.dll" or "steam_api.dll"
 end
-return ffi.load(file)
+
+return ffi.load(love.filesystem.getSaveDirectory().."/DLL/"..file)
