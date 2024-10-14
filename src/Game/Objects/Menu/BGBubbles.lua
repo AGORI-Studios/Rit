@@ -1,7 +1,16 @@
 local BGBubbles = TypedGroup:extend("BGBubbles")
 
+function BGBubbles:get()
+    if not BGBubbles.instance then
+        BGBubbles.instance = BGBubbles()
+    end
+
+    return BGBubbles.instance
+end
+
 function BGBubbles:new()
     TypedGroup.new(self, Sprite)
+    self.deleteOnClear = false
     self.bubbles = {}
     for i = 1, 5 do
         local bubble = Sprite("Assets/Textures/Menu/Bubbles/BGBubble" .. i .. ".png", 0, 0)

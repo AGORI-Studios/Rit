@@ -90,7 +90,25 @@ function Text:getTextWidth()
 end
 
 function Text:getTextHeight()
-    return self.font:getHeight(self.text)
+    --[[ return self.font:getHeight(self.text) ]]
+    local lineCount = 1
+    for _ in self.text:gmatch("\n") do
+        lineCount = lineCount + 1
+    end
+    return self.font:getHeight() * lineCount
+end
+
+function Text:getWidth()
+    return self:getTextWidth()
+end
+
+function Text:getHeight()
+    return self:getTextHeight()
+end
+
+function Text:centerOrigin()
+    self.origin.x = self:getTextWidth() / 2
+    self.origin.y = self:getTextHeight() / 2
 end
 
 function Text:draw()
@@ -99,11 +117,14 @@ function Text:draw()
     love.graphics.push()
     love.graphics.translate(self.drawX, self.drawY)
     love.graphics.rotate(math.rad(self.angle))
+    love.graphics.translate(self.origin.x, self.origin.y)
+    love.graphics.scale(self.scale.x, self.scale.y)
+    love.graphics.translate(-self.origin.x, -self.origin.y)
     love.graphics.translate(-self.drawX, -self.drawY)
     local lastColour, lastFont = {love.graphics.getColor()}, love.graphics.getFont()
     love.graphics.setFont(self.font)
     love.graphics.setColor(self.colour)
-
+    -- translate origin
     if not self.trimmed then
         --love.graphics.print(self.text, self.drawX, self.drawY, 0, 1, 1, 0, 0, self.shear.x, self.shear.y)
         if not self.printf then
@@ -112,7 +133,7 @@ function Text:draw()
             love.graphics.printf(self.text, self.drawX, self.drawY, self.trimWidth, "left", 0, 1, 1, 0, 0, self.shear.x, self.shear.y)
         end
     else
-        love.graphics.printWithTrimmed(self.text, self.drawX, self.drawY, self.trimWidth, self.scale.x * self.windowScale.x, self.scale.y * self.windowScale.y, self.shear.x, self.shear.y)
+        love.graphics.printWithTrimmed(self.text, self.drawX + self.offset.x, self.drawY + self.offset.y, self.trimWidth, self.windowScale.x, self.windowScale.y, self.shear.x, self.shear.y)
     end
 
     love.graphics.setColor(lastColour)

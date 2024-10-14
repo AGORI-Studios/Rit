@@ -14,7 +14,7 @@ function TitleMenu:new()
     self.bg.zorder = -1
     self:add(self.bg)
 
-    self.BGBubbles = BGBubbles()
+    self.BGBubbles = BGBubbles:get()
     self.BGBubbles.zorder = 0
     self:add(self.BGBubbles)
 
@@ -29,11 +29,11 @@ function TitleMenu:new()
     self.buttonsGroup.zorder = 2
     self:add(self.buttonsGroup)
 
-    self.playButton = TitleButton("Assets/Textures/Menu/Buttons/PlayBtn.png", "Assets/Textures/Menu/Buttons/BigBtnBorder.png", 1250, 300, function()
+    self.playButton = TitleButton("Play", "Assets/Textures/Menu/Buttons/PlayBtn.png", "Assets/Textures/Menu/Buttons/BigBtnBorder.png", 1250, 300, function()
         Game:SwitchState(Skin:getSkinnedState("SongListMenu"))
     end)
     self.playButton:setScale(1.35, 1.35)
-    self.ohButton = TitleButton("Assets/Textures/Menu/Buttons/OhBtn.png", "Assets/Textures/Menu/Buttons/BigBtnBorder.png", 1550, 300, function()
+    self.ohButton = TitleButton("Online\nHub", "Assets/Textures/Menu/Buttons/OhBtn.png", "Assets/Textures/Menu/Buttons/BigBtnBorder.png", 1550, 300, function()
         print("Online Hub is not currently implemented")
     end)
     self.ohButton:setScale(1.35, 1.35)

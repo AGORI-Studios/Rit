@@ -162,7 +162,7 @@ end
 
 function Group:kill()
     for _, obj in ipairs(self.objects) do
-        if obj.kill then
+        if obj.kill and (obj.deleteOnClear or obj.deleteOnClear == nil) then
             obj:kill()
         end
     end
