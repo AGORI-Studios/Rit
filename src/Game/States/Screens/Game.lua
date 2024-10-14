@@ -37,9 +37,9 @@ function GameScreen:new(data)
     self.hitObjectManager:initSVMarks()
 
     table.sort(self.hitObjectManager.hitObjects, function(a, b) return a.StartTime < b.StartTime end)
-    self.hitObjectManager.scorePerNote = 1000000 / #self.hitObjectManager.hitObjects
+    self.hitObjectManager.scorePerNote = 1000000 / #self.data.hitObjects
     self.hitObjectManager.length = tonumber(self.data.length)
-    self.totalNotes = #self.hitObjectManager.hitObjects
+    self.totalNotes = #self.data.hitObjects
     
     if self.data.gameMode == "Mania" then
         self.hitObjectManager:createReceptors(self.data.mode)
@@ -88,7 +88,6 @@ function GameScreen:new(data)
     self.combo = 0
     self.maxCombo = 0
     self.rated = 0
-    self.totalNotes = 0
 
     self.lerpedScore = 0
     self.lerpedAccuracy = 0
@@ -131,22 +130,19 @@ function GameScreen:calculateAccuracy()
         judgeCount["bad"] +
         judgeCount["miss"]
 
-    self.totalNotes = totalNotesHit
-
     self.rated = (
         judgeCount["marvellous"] * 1 +
         judgeCount["perfect"] * 0.98 +
         judgeCount["great"] * 0.85 +
         judgeCount["good"] * 0.67 +
         judgeCount["bad"] * 0.5
-    ) / self.totalNotes
+    ) / totalNotesHit
     
     self.accuracy = self.rated
 end
 
 function GameScreen:calculateScore()
-    local scoreMult = ModifierManager:getScoreMultiplier()
-    local leMax = 1000000 * scoreMult
+    local leMax = 1000000 * ModifierManager:getScoreMultiplier()
 
     local accScore = self.rated / self.totalNotes * (leMax * 0.85)
     local comboScore = self.maxCombo / self.totalNotes * (leMax * 0.15)

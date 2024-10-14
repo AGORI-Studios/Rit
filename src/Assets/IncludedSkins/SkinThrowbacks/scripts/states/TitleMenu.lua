@@ -44,7 +44,6 @@ function TitleMenu:new()
     self:add(Header)
 
     if DiscordRPC then
-        print("Setting presence")
         DiscordRPC.presence = {
             details = "In the menu",
             state = "",
@@ -55,7 +54,13 @@ function TitleMenu:new()
     end
 end
 
+local lastMX, lastMY = 0, 0
 function TitleMenu:update(dt)
+
+    local mx, my = love.mouse.getPosition()
+    local paralaxStrength = 100
+    local pmx, pmy = mx - lastMX, my - lastMY
+    self.logo.x, self.logo.y = self.logo.x + -pmx / paralaxStrength, self.logo.y + -pmy / paralaxStrength
     State.update(self, dt)
 
     curBeat = curBeat + dt
@@ -68,6 +73,8 @@ function TitleMenu:update(dt)
     if curLogoScale > 0.65 then
         curLogoScale = math.fpsLerp(curLogoScale, 0.65, 5, dt)
     end
+
+    lastMX, lastMY = mx, my
 end
 
 function TitleMenu:mousemoved(x, y, dx, dy, istouch)
