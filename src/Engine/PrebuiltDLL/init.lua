@@ -26,7 +26,8 @@ else
     print("UNSUPPORTED OS! " .. os)
 end
 
-love.filesystem.setCRequirePath("DLL/?.dll;DLL/?/init.dll;DLL/?.so;DLL/?/init.so;DLL/?.dylib;DLL/?/init.dylib")
+local savepath = love.filesystem.getSaveDirectory()
+package.cpath = package.cpath .. ";" .. savepath .. "/DLL/?.dll"
 
 tryExcept(function()
     DLL_Video = require("video")

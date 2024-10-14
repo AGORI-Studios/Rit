@@ -1,4 +1,27 @@
 ---@diagnostic disable: duplicate-set-field
+
+local disabledModules = {
+    "os"
+}
+local o_require = require
+function require(path)
+    for _, module in ipairs(disabledModules) do
+        if path:find(module) then
+            print("Not allowed to load module: " .. module)
+            return nil
+        end
+    end
+
+    local success, result = pcall(o_require, path)
+    if success then
+        return result
+    else
+        print("Error loading module: " .. path)
+        print(result)
+        return nil
+    end
+end
+
 local defaultGlobals = {}
 for k, _ in pairs(_G) do
     table.insert(defaultGlobals, k)
@@ -19,13 +42,12 @@ function love.load(args)
     if args and (args[1] or "") == "-globals" then
         GENERATE_GLOBALS_LIST = true
     end
-    -- disable dangerous os functions
-    os.execute = function() end
-    os.exit = function() end
-    os.remove = function() end
-    os.rename = function() end
-    os.setlocale = function() end
-    os.tmpname = function() end
+
+    os.execute = function() print("os.execute is disabled") end
+    os.exit = function() print("os.exit is disabled") end
+    os.remove = function() print("os.remove is disabled") end
+    os.rename = function() print("os.rename is disabled") end
+    os.setlocale = function() print("os.setlocale is disabled") end
 end
 
 function love.update(dt)
