@@ -63,6 +63,10 @@ function Judgement:hit(time)
     self.scale.x, self.scale.y = 1.1, 1.1
     self.y = self.y - 75
 
+    if judgename == "miss" then
+        States.Screens.Game.instance.combo = 0
+    end
+
     States.Screens.Game.instance.hitObjectManager.judgeCounts[judgename] = States.Screens.Game.instance.hitObjectManager.judgeCounts[judgename] + 1
 end
 

@@ -33,6 +33,7 @@ function Text:new(text, x, y, size, colour, font, format, value, instance, trimm
     self.trimmed = trimmed
     self.trimWidth = trimWidth
     self.printf = printf
+    self.align = "left"
 
     -- format layout: "%s" or "{math.floor(%d)}"
 end

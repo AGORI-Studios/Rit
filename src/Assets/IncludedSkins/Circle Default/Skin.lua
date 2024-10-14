@@ -12,11 +12,14 @@ Skin.HUD = {
                 type = "Text",
                 x = 0,
                 y = 0,
+                
                 format = "{math.floor(%d)}",
                 value = "lerpedScore",
                 font = nil,
                 size = 24,
-                color = {1, 1, 1, 1}
+                color = {1, 1, 1, 1},
+                printf = true,
+                align = "right"
             },
             {
                 type = "Text",
@@ -27,7 +30,9 @@ Skin.HUD = {
                 value = "lerpedAccuracy",
                 font = nil,
                 size = 24,
-                color = {1, 1, 1, 1}
+                color = {1, 1, 1, 1},
+                printf = true,
+                align = "right"
             },
             --[[ {
                 type = "Sprite",

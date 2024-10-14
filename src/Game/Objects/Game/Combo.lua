@@ -7,7 +7,6 @@ end
 
 function Combo:doHit()
     for _, sprite in pairs(self.sprites) do
-        sprite.scale.y = 1.55
         sprite.scale.x, sprite.scale.y = 1.5, 1.85
     end
 end
@@ -15,8 +14,9 @@ end
 function Combo:getComboSprite(digit)
     if not self.sprites[digit] then
         self.sprites[digit] = Sprite(Skin._comboAssets[digit], 0, 0, false)
-        self.sprites[digit].scale.x, self.sprites[digit].scale.y = 1.5, 1.7
+        self.sprites[digit].scale.x, self.sprites[digit].scale.y = 1.5, 1.85
         self.sprites[digit].debug = false
+        self.sprites[digit].visible = true
     end
 
     return self.sprites[digit]
@@ -24,6 +24,7 @@ end
 
 function Combo:draw()
     local num = States.Screens.Game.instance.combo
+
     if num == 0 then
         return
     end
@@ -36,8 +37,9 @@ function Combo:draw()
         local char = str:sub(i, i)
         local digit = tonumber(char)
         local spr = self:getComboSprite(digit or 0)
-
-        spr.x = 1920 / 2 + (i - #str / 2) * 100
+        spr:centerOrigin()
+        local w = spr.baseWidth * spr.scale.x
+        spr.x = 1920 / 2 - w * (#str / 2) + (i - 1) * w
         spr.y = 1080 / 2
         spr:update(love.timer.getDelta())
         spr:resize(Game._windowWidth, Game._windowHeight)

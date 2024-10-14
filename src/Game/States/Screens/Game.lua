@@ -94,7 +94,9 @@ function GameScreen:new(data)
     self.lerpedAccuracy = 0
 
     self.judgement = Judgement()
+    self.judgement.zorder = 999
     self.comboDisplay = Combo()
+    self.comboDisplay.zorder = 1000
     self:add(self.judgement)
     self:add(self.comboDisplay)
 end
@@ -129,13 +131,15 @@ function GameScreen:calculateAccuracy()
         judgeCount["bad"] +
         judgeCount["miss"]
 
+    self.totalNotes = totalNotesHit
+
     self.rated = (
         judgeCount["marvellous"] * 1 +
         judgeCount["perfect"] * 0.98 +
         judgeCount["great"] * 0.85 +
         judgeCount["good"] * 0.67 +
         judgeCount["bad"] * 0.5
-    ) / totalNotesHit
+    ) / self.totalNotes
     
     self.accuracy = self.rated
 end

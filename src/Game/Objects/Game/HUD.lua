@@ -10,7 +10,10 @@ function HUD:new(instance)
 
         for _, element in ipairs(elements.members) do
             if element.type == "Text" then
-                self.elements[name]:add(Text("", element.x, element.y, element.size, element.color, element.font, element.format, element.value, self.screen, false, 1920))
+                local textObject = Text("", element.x, element.y, element.size, element.color, element.font, element.format, element.value, self.screen, false, 1920, element.printf)
+                textObject.align = element.align
+                self.elements[name]:add(textObject)
+
                 self.elements[name].data = element
             elseif element.type == "Sprite" then
                 local path = element.path:gsub("Game:", "")
