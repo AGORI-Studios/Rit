@@ -227,6 +227,7 @@ function HitObjectManager:update(dt)
             self:remove(hitObject)
             hitObject:destroy()
             table.remove(self.drawableHitObjects, table.findID(self.drawableHitObjects, hitObject))
+            self.screen.judgement:hit(1000)
         end
     end
 
@@ -240,8 +241,6 @@ function HitObjectManager:update(dt)
                 local abs = math.abs(self.musicTime - hitObject.Data.StartTime)
                 if abs < 360 and hitObject.Data.Lane == i then
                     hitObject:hit(self.musicTime - hitObject.Data.StartTime)
-                    self.screen.combo = self.screen.combo + 1
-                    self.screen.maxCombo = math.max(self.screen.maxCombo, self.screen.combo)
                     Script:call("OnHit", i, self.musicTime, hitObject, self.screen.combo)
                     if not hitObject.holdSprite then
                         self:remove(hitObject)

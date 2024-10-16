@@ -18,7 +18,8 @@ function GameScreen:new(data)
         noteCount = 0,
         gameMode = "Mania",
         hitObjects = {},
-        scrollVelocities = {}
+        scrollVelocities = {},
+        rating = tonumber(data.difficulty)
     }
 
     if self.data.gameMode == "Mania" then
@@ -88,9 +89,11 @@ function GameScreen:new(data)
     self.combo = 0
     self.maxCombo = 0
     self.rated = 0
+    self.performance = 0
 
     self.lerpedScore = 0
     self.lerpedAccuracy = 0
+    self.lerpedPerformance = 0
 
     self.judgement = Judgement()
     self.judgement.zorder = 999
@@ -109,14 +112,19 @@ function GameScreen:update(dt)
 
     self:calculateAccuracy()
     self:calculateScore()
+    self:calculateRating()
 
     self.lerpedScore = math.fpsLerp(self.lerpedScore, self.score, 25, dt)
     self.lerpedAccuracy = math.fpsLerp(self.lerpedAccuracy, self.accuracy, 25, dt)
+    self.lerpedPerformance = math.fpsLerp(self.lerpedPerformance, self.rating, 25, dt)
     if tostring(self.lerpedScore):match("nan") then
         self.lerpedScore = 0
     end
     if tostring(self.lerpedAccuracy):match("nan") then
         self.lerpedAccuracy = 0
+    end
+    if tostring(self.lerpedPerformance):match("nan") then
+        self.lerpedPerformance = 0
     end
 end
 
@@ -148,6 +156,11 @@ function GameScreen:calculateScore()
     local comboScore = self.maxCombo / self.totalNotes * (leMax * 0.15)
 
     self.score = accScore + comboScore
+end
+
+function GameScreen:calculateRating()
+    self.rating = self.data.rating * math.pow(self.accuracy / (95/100), 5)
+    print(self.data.rating, self.accuracy, self.rating)
 end
 
 function GameScreen:kill()

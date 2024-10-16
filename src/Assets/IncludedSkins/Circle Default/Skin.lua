@@ -34,6 +34,19 @@ Skin.HUD = {
                 printf = true,
                 align = "right"
             },
+            {
+                type = "Text",
+                x = 0,
+                y = 56,
+
+                format = "{string.format('%.2f', %d)}",
+                value = "lerpedPerformance",
+                font = nil,
+                size = 24,
+                color = {1, 1, 1, 1},
+                printf = true,
+                align = "right"
+            },
             --[[ {
                 type = "Sprite",
                 x = 1500,

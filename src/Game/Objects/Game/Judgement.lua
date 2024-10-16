@@ -65,6 +65,9 @@ function Judgement:hit(time)
 
     if judgename == "miss" then
         States.Screens.Game.instance.combo = 0
+    else
+        States.Screens.Game.instance.combo = States.Screens.Game.instance.combo + 1
+        States.Screens.Game.instance.maxCombo = math.max(States.Screens.Game.instance.maxCombo, States.Screens.Game.instance.combo)
     end
 
     States.Screens.Game.instance.hitObjectManager.judgeCounts[judgename] = States.Screens.Game.instance.hitObjectManager.judgeCounts[judgename] + 1
