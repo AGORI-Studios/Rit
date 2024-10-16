@@ -19,7 +19,7 @@ function GameScreen:new(data)
         gameMode = "Mania",
         hitObjects = {},
         scrollVelocities = {},
-        rating = tonumber(data.difficulty)
+        rating = tonumber(data.difficulty),
     }
 
     if self.data.gameMode == "Mania" then
@@ -39,7 +39,6 @@ function GameScreen:new(data)
 
     table.sort(self.hitObjectManager.hitObjects, function(a, b) return a.StartTime < b.StartTime end)
     self.hitObjectManager.scorePerNote = 1000000 / #self.data.hitObjects
-    self.hitObjectManager.length = tonumber(self.data.length)
     self.totalNotes = #self.data.hitObjects
     
     if self.data.gameMode == "Mania" then
@@ -128,8 +127,8 @@ function GameScreen:update(dt)
     end
 end
 
+--- Use judgecount and total notes hit to calculate accuracy
 function GameScreen:calculateAccuracy()
-    -- use judgecount and total ntoes hit to calculate accuracy
     local judgeCount = self.hitObjectManager.judgeCounts
     local totalNotesHit = judgeCount["marvellous"] +
         judgeCount["perfect"] +
@@ -149,6 +148,11 @@ function GameScreen:calculateAccuracy()
     self.accuracy = self.rated
 end
 
+--- Calculates the score based on both the accuracy and the combo
+--- 
+--- 85% of the score is accuracy-based
+--- 
+--- 15% of the score is combo-based
 function GameScreen:calculateScore()
     local leMax = 1000000 * ModifierManager:getScoreMultiplier()
 
@@ -160,7 +164,6 @@ end
 
 function GameScreen:calculateRating()
     self.rating = self.data.rating * math.pow(self.accuracy / (95/100), 5)
-    print(self.data.rating, self.accuracy, self.rating)
 end
 
 function GameScreen:kill()

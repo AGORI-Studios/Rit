@@ -14,7 +14,8 @@ function SongInfo:new()
     self.songTitle = Text("", 1170, 120, nil, nil, Game.fonts["menuExtraBoldX3"], false, nil, Skin:getSkinnedState("SongListMenu"), true, 550)
     self.artist = Text("", 1170, 200, nil, {200/255, 80/255, 104/255, 1}, Game.fonts["menuExtraBoldX2"], false, nil, Skin:getSkinnedState("SongListMenu"), true, 400)
     self.mapper = Text("", 1170, 260, nil, {200/255, 80/255, 104/255, 1}, Game.fonts["defaultBoldX2"], false, nil, Skin:getSkinnedState("SongListMenu"), true, 400)
-    self.desc = Text("", 1200, 800, nil, nil, Game.fonts["NatsRegular26"], false, nil, Skin:getSkinnedState("SongListMenu"), false, Game.fonts["NatsRegular26"]:getWidth("Hi this is testing a \"very long\" description in rit to see how it displays. Look off? Please report it. Description's should look no longer than this."), true)
+    self.desc = Text("", 1205, 800, nil, nil, Game.fonts["NatsRegular26"], false, nil, Skin:getSkinnedState("SongListMenu"), false, Game.fonts["NatsRegular26"]:getWidth("Hi this is testing a \"very long\" description in rit to see how it displays. Look off? Please report it. Description's should look no longer than this."), true)
+    self.desc.zorder = 101
     self.diffDisplay = Text("", 1660, 375, nil, nil, Game.fonts["NatsRegular26"], false, nil, Skin:getSkinnedState("SongListMenu"), true, 200)
     self.diffDisplay.visible = false
 
@@ -34,6 +35,7 @@ function SongInfo:new()
     self.descBox.colour = {0, 0, 0}
     self.descBox.alpha = 0.6
     self.descBox.rounding = 25
+    self.descBox.zorder = 100
     self:add(self.descBox)
 
     self.currentDiffData = {}

@@ -28,7 +28,7 @@ function HitObjectManager:new(instance)
     self.started = false
 
     self.initialSV = 1
-    self.length = 1000
+    self.length = self.screen.data.length
 
     self.data = {
         mode = 4
@@ -281,6 +281,7 @@ function HitObjectManager:update(dt)
     end
 
     Script:call("OnUpdate", dt, self.musicTime)
+
     if (self.musicTime or 0) > ((self.length or 1000)+500) then
         Script:call("OnSongEnd")
         Game:SwitchState(Skin:getSkinnedState("SongListMenu"))

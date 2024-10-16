@@ -18,7 +18,7 @@ local function event(name, a, ...)
 end
 
 local _, _, flags = love.window.getMode()
-love._drawrate = 500
+love._drawrate = flags.refreshrate
 love._updaterate = 500
 local drawFPS, updateFPS = 0, 0
 local updateCur, drawCur = 0, 0
@@ -73,7 +73,7 @@ function love.run()
         love.update(dt)
 
         drawCur = drawCur + dt
-        if g_active() --[[ and drawCur >= 1 / love._drawrate ]] then
+        if g_active()--[[  and drawCur >= 1 / love._drawrate ]] then
             drawFPS = 1 / drawCur
             drawCur = 0
             g_origin()

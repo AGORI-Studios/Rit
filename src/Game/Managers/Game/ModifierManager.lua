@@ -30,22 +30,26 @@ function ModifierManager:getModifier(name)
     end
 end
 
+--- Calculates the score multiplier based off the currently enabled modifiers
+--- 
+--- Only calculates the score multipliers if it is applicable to the map
+---@return number mult The score multiplier
 function ModifierManager:getScoreMultiplier()
-    local curMult = 1
+    local mult = 1
 
     if States.Screens.Game.LongNotes and table.contains(self.ActiveModifiers, "No LN") then
-        curMult = curMult + self:getModifier("No LN")[3]
+        mult = mult + self:getModifier("No LN")[3]
     end
 
     if States.Screens.Game.ScrollVelocity and table.contains(self.ActiveModifiers, "No SV") then
-        curMult = curMult + self:getModifier("No SV")[3]
+        mult = mult + self:getModifier("No SV")[3]
     end
 
     for _, mod in ipairs(self.ActiveModifiers) do
-        curMult = curMult + self:getModifier(mod)[3]
+        mult = mult + self:getModifier(mod)[3]
     end
 
-    return curMult
+    return mult
 end
 
 return ModifierManager
