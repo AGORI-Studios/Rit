@@ -44,7 +44,9 @@ function DifficultyCalculator:calculate(notes, laneCount)
     end
 
     for _, note in ipairs(rightHand) do
-        table.insert(rightHandFingers[note.Lane - countForLeft], note)
+        if rightHandFingers[note.Lane - countForLeft] ~= nil then
+            table.insert(rightHandFingers[note.Lane - countForLeft], note)
+        end
     end
 
     local length = ((notes[#notes].StartTime / 1000) / 0.5)+1
