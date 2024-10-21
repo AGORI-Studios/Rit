@@ -32,7 +32,7 @@ function GameScreen:new(data)
     Script:loadScript(folderPath .. "script/script.lua")
     Script:call("Load")
 
-    self.song = love.audio.newSource(self.data.song, "stream")
+    self.song = love.audio.newAdvancedSource(self.data.song)
     self.hitObjectManager.hitObjects = self.data.hitObjects
     self.hitObjectManager.scrollVelocities = self.data.scrollVelocities
     self.hitObjectManager:initSVMarks()

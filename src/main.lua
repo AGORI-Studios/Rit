@@ -137,10 +137,6 @@ function love.draw()
 end
 
 function love.quit()
-    --[[ if not ConfirmQuitSubstate.confirmed then
-        Game:AddSubstateIfNotExists(ConfirmQuitSubstate)
-        return true
-    end ]]
     if GENERATE_GLOBALS_LIST then
         local globalList = {}
         for k, _ in pairs(_G) do

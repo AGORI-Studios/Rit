@@ -1,7 +1,7 @@
 local path = ... .. "."
 
 zfft = require(path .. "zorgfft.zfft")
-love.audio.newAdvancedSorce = require(path .. "asl.asl")
+love.audio.newAdvancedSource = require(path .. "asl.asl")
 tryExcept(function()
     Steam = require(path .. "sworks.main")
 end)
@@ -16,3 +16,5 @@ if Steam then
         Steam.USERNAME = Steam.USER:getName()
     end
 end
+
+MD5 = require(path .. "md5")

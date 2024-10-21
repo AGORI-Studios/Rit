@@ -28,7 +28,6 @@ win64: lovefile
 	cp -r requirements/win64/love/* build/$(GameName)-win64
 	rm -rf requirements/win64/love
 
-	cp requirements/win64/*.dll build/$(GameName)-win64
 	cp requirements/steam_appid.txt build/$(GameName)-win64
 	cp requirements/alsoft.ini build/$(GameName)-win64
 

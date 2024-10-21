@@ -1,3 +1,3 @@
 local path = ... .. "."
 
---NetworkingClient = require(path .. "Client")
+NetworkingClient = require(path .. "Client")

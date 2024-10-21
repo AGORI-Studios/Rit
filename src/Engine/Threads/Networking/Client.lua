@@ -108,18 +108,11 @@ function Client:enterFrame()
     end
 end
 
-local client = Client.new({ server = "127.2.0.1", port = 1337 })
+local client = Client.new({ server = "server.rit.agori.dev", port = 1337 })
+
 client:subscribe({
-    channel = "hello-world";
-      callback = function(message)
-        print("Received message: " .. message)
-
-          if(message.action == "ping")   then
-              print("Pong!")
-          end;
-
-      end;
-  });
+    channel = "test-channel"
+});
 
 while true do
     local controlMessage = controlChannel:pop()

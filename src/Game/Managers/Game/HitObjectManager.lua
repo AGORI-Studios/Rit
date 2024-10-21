@@ -232,6 +232,7 @@ function HitObjectManager:update(dt)
     end
 
     for i = 1, self.data.mode do
+        local notesInRange = {}
         if Input:wasPressed(self.data.mode .. "k" .. i) then
             Script:call("OnPress", i, self.musicTime)
             if not self.receptorsGroup.objects[i] then return end
@@ -240,17 +241,29 @@ function HitObjectManager:update(dt)
             for _, hitObject in ipairs(self.drawableHitObjects) do
                 local abs = math.abs(self.musicTime - hitObject.Data.StartTime)
                 if abs < 360 and hitObject.Data.Lane == i then
-                    hitObject:hit(self.musicTime - hitObject.Data.StartTime)
-                    Script:call("OnHit", i, self.musicTime, hitObject, self.screen.combo)
-                    if not hitObject.holdSprite then
-                        self:remove(hitObject)
-                        hitObject:destroy()
-                        table.remove(self.drawableHitObjects, table.findID(self.drawableHitObjects, hitObject))
-                    else
-                        hitObject.moveWithScroll = false
-                    end
+                    table.insert(notesInRange, hitObject)
+                end
+            end
 
-                    break
+            local closest = nil
+            local closestTime = 100000
+            for _, note in ipairs(notesInRange) do
+                local abs = math.abs(self.musicTime - note.Data.StartTime)
+                if abs < closestTime then
+                    closest = note
+                    closestTime = abs
+                end
+            end
+
+            if closest then
+                closest:hit(self.musicTime - closest.Data.StartTime)
+                Script:call("OnHit", i, self.musicTime, closest, self.screen.combo)
+                if not closest.holdSprite then
+                    self:remove(closest)
+                    closest:destroy()
+                    table.remove(self.drawableHitObjects, table.findID(self.drawableHitObjects, closest))
+                else
+                    closest.moveWithScroll = false
                 end
             end
         end
