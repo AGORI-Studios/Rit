@@ -26,6 +26,8 @@ require(path .. "Input")
 require(path .. "Tween")
 require(path .. "Wait")
 require(path .. "Save")
+require(path .. "Threads")
+require(path .. "Networking")
 
 Locale = require(path .. "Locale")
 
@@ -121,4 +123,5 @@ end
 
 function Game:quit()
     self:kill()
+    NetworkingClient:control("quit")
 end
