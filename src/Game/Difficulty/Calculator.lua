@@ -129,7 +129,9 @@ function DifficultyCalculator:calculate(notes, laneCount)
             fys[i] = {}
         end
         for _, note in ipairs(ve) do
-            table.insert(fys[note.Lane - countForLeft], note)
+            if fys[note.Lane - countForLeft] ~= nil then
+                table.insert(fys[note.Lane - countForLeft], note)
+            end
         end
 
         local c = {}
