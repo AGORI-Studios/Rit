@@ -111,7 +111,7 @@ function Game:__printDebug()
         "\nLua Memory: " .. infoData["Lua Memory"] ..
         "\nGame: " .. infoData["Game"] ..
         "\n\t- Current State: " .. infoData["Current State"]
-        
+
     for x = -1, 1 do
         for y = -1, 1 do
             love.graphics.print(debugDisplay, 10 + x, 10 + y)
@@ -123,5 +123,5 @@ end
 
 function Game:quit()
     self:kill()
-    NetworkingClient:control("quit")
+    --NetworkingClient:control("quit")
 end

@@ -39,7 +39,7 @@ function Game:initialize()
     -- wooo fonts
     local fonts = love.filesystem.load("Assets/Data/Fonts.lua")()
     for _, font in ipairs(fonts) do
---[[         FontCache:get("Assets/Fonts/" .. font.path, font.size, false, font.name)]]
+    --[[ FontCache:get("Assets/Fonts/" .. font.path, font.size, false, font.name )]]
         Game.fonts[font.name] = love.graphics.newFont("Assets/Fonts/" .. font.path, font.size)
     end
 end
