@@ -2,6 +2,7 @@ local path = ... .. "."
 
 require(path .. "External")
 require(path .. "States")
+require(path .. "Substates")
 require(path .. "Managers")
 require(path .. "Objects")
 require(path .. "Cache")

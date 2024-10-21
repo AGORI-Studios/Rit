@@ -1,7 +1,7 @@
 local path = ... .. "."
 
 Key = require(path .. "Key")
-Button = require(path .. "Button")
+MouseButton = require(path .. "MouseButton")
 
 Keyboard = require(path .. "Keyboard")
 Mouse = require(path .. "Mouse")

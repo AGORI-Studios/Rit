@@ -24,6 +24,11 @@ function TitleButton:update(dt)
     end
 
     local mx, my = love.mouse.getPosition()
+    if ConfirmQuitSubstate.instance then
+        if ConfirmQuitSubstate.instance:checkCollision(mx, my) then
+            return
+        end
+    end
 
     if self.down and self.released then
         self.released = false

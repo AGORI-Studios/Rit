@@ -9,13 +9,20 @@ function Group:new(size)
 end
 
 ---@param object any
-function Group:add(object, reorder)
+function Group:add(object, reorder, pos)
+    local pos = pos or #self.objects + 1
+    if type(reorder) == "number" then
+        pos = reorder
+        reorder = true
+    end
+
     reorder = reorder == nil and true or false
     if self.size > 0 and #self.objects >= self.size then
         print("Group is full (" .. #self.objects .. "/" .. self.size .. ")")
         return
     end
-    table.insert(self.objects, object)
+
+    table.insert(self.objects, pos, object)
 
     -- sort by zorder
     if reorder then

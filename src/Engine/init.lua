@@ -33,6 +33,7 @@ Locale = require(path .. "Locale")
 
 Game = TypedGroup(State) --- @class Game:TypedGroup<State>
 Game._currentState = State() --- @type State
+Game._substates = {}
 Game:add(Game._currentState)
 Game.objectDebug = false
 Game.debug = true
@@ -46,11 +47,46 @@ Game.Wait = WaitManager --- @type WaitManager
 
 function Game:SwitchState(state, ...)
     self._currentState:kill()
-    self:remove(self._currentState)
+    self:remove(self._currentState, 1)
     self._currentState = state(...)
     ---@diagnostic disable-next-line: inject-field
-    self._currentState.instance = self._currentState
-    self:add(self._currentState)
+    state.instance = self._currentState
+    self:add(self._currentState, 1)
+end
+
+function Game:AddSubstate(state, ...)
+    local substate = state(...)
+    ---@diagnostic disable-next-line: inject-field
+    state.instance = substate
+    substate.__originObject = state
+    substate.checkCollision = substate.checkCollision or function() return false end
+    self:add(substate, #self._substates + 1)
+    table.insert(self._substates, substate)
+end
+
+function Game:AddSubstateIfNotExists(state, ...)
+    for _, substate in ipairs(self._substates) do
+        if substate.__originObject == state then
+            return
+        end
+    end
+    self:AddSubstate(state, ...)
+end
+
+function Game:RemoveSubstate(state)
+    for i = #self._substates, 1, -1 do
+        if self._substates[i].__originObject == state then
+            self:remove(self._substates[i], 1)
+            table.remove(self._substates, i)
+        end
+    end
+end
+
+function Game:killAllSubstates()
+    for i = #self._substates, 1, -1 do
+        self:remove(self._substates[i], 1)
+        table.remove(self._substates, i)
+    end
 end
 
 local infoUpdateTimer = 0.25
@@ -66,16 +102,27 @@ local infoData = {
 
 function Game:update(dt)
     self._currentState:update(dt)
+    for _, substate in ipairs(self._substates) do
+        substate:update(dt)
+    end
     self.Tween:update(dt)
     self.Wait:update(dt)
 end
 
 function Game:textinput(text)
     self._currentState:textinput(text)
+
+    for _, substate in ipairs(self._substates) do
+        substate:textinput(text)
+    end
 end
 
 function Game:draw()
     self._currentState:draw()
+    
+    for _, substate in ipairs(self._substates) do
+        substate:draw()
+    end
 
     if self.debug then
         self:__updateDebug()
@@ -111,6 +158,9 @@ function Game:__printDebug()
         "\nLua Memory: " .. infoData["Lua Memory"] ..
         "\nGame: " .. infoData["Game"] ..
         "\n\t- Current State: " .. infoData["Current State"]
+    for _, substate in ipairs(self._substates) do
+        debugDisplay = debugDisplay .. "\n\t- Substate: " .. substate:__tostring()
+    end
 
     for x = -1, 1 do
         for y = -1, 1 do
@@ -123,5 +173,8 @@ end
 
 function Game:quit()
     self:kill()
+    for _, substate in ipairs(self._substates) do
+        substate:kill()
+    end
     --NetworkingClient:control("quit")
 end

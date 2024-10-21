@@ -82,7 +82,16 @@ function love.keyreleased(key, scancode)
 end
 
 function love.mousepressed(x, y, button, istouch, presses)
-    Game:mousepressed(x, y, button, istouch, presses)
+    local ok = true
+    for _, substate in ipairs(Game._substates) do
+        if substate:mousepressed(x, y, button) then
+            ok = false
+            break
+        end
+    end
+    if ok then
+        Game:mousepressed(x, y, button, istouch, presses)
+    end
     Input:mousepressed(button)
 
     if VirtualPad and VirtualPad._CURRENT and not istouch then
@@ -128,6 +137,10 @@ function love.draw()
 end
 
 function love.quit()
+    --[[ if not ConfirmQuitSubstate.confirmed then
+        Game:AddSubstateIfNotExists(ConfirmQuitSubstate)
+        return true
+    end ]]
     if GENERATE_GLOBALS_LIST then
         local globalList = {}
         for k, _ in pairs(_G) do
