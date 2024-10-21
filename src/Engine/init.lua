@@ -60,7 +60,7 @@ function Game:AddSubstate(state, ...)
     state.instance = substate
     substate.__originObject = state
     substate.checkCollision = substate.checkCollision or function() return false end
-    self:add(substate, #self._substates + 1)
+    self:add(substate, 1+#self._substates + 1)
     table.insert(self._substates, substate)
 end
 
