@@ -1,15 +1,13 @@
 ---@diagnostic disable: need-check-nil
 local socket = require("socket")
-local json = require("Engine.format.Json")
+local json = require("Engine.Format.Json")
 require("love.timer")
 
--- Channels for communication with the main thread
 local messageChannel = love.thread.getChannel("thread.networking.message")
 local controlChannel = love.thread.getChannel("thread.networking.control")
 local publishChannel = love.thread.getChannel("thread.networking.publish")
-local subscribeChannel = love.thread.getChannel("thread.networking.subscribe")
+--local subscribeChannel = love.thread.getChannel("thread.networking.subscribe")
 
--- Client definition
 Client = {}
 Client.__index = Client
 
@@ -108,7 +106,14 @@ function Client:enterFrame()
     end
 end
 
-local client = Client.new({ server = "server.rit.agori.dev", port = 1337 })
+setmetatable(Client, {
+    __call = function(cls, ...)
+        return cls.new(...)
+    end
+})
+
+-- Maybe I should put the client class in a separate file?
+local client = Client({ server = "server.rit.agori.dev", port = 1337 })
 
 client:subscribe({
     channel = "test-channel"
